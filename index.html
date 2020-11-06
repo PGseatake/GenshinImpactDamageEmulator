@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Genshin Impact Damage Emulator</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+    <script type="text/javascript" src="./js/class.js"></script>
+    <script type="text/javascript" src="./js/param.js"></script>
+    <script type="text/javascript" src="./js/artifact.js"></script>
+    <script type="text/javascript" src="./js/weapon.js"></script>
+    <script type="text/javascript" src="./js/script.js"></script>
+</head>
+
+<body>
+    <div class="caption">
+        <button type="button" onclick="saveData()">保存</button>
+        <button type="button" onclick="clearPreCheck(false)">削除</button>
+        <button type="button" onclick="clearPreCheck(true)">全削除</button>
+        <button type="button" onclick="exportData()">エクスポート</button>
+        <button type="button" onclick="importPreCheck()">インポート</button>
+        <input id="import" class="import" type="file" accept=".json" onchange="importData()">
+    </div>
+    <div class="tab_wrap">
+        <input id="tab_equip" type="radio" name="TAB" class="tab_switch" checked="checked" />
+        <label class="tab_label" for="tab_equip">装備</label>
+        <div class="tab_content">
+            <table id="tbl_equip">
+                <thead>
+                    <tr>
+                        <!-- <thead>は必ず2行にする -->
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="eqchara">キャラクター</th>
+                        <th id="eqweapon">武器</th>
+                        <th id="eqflower">生の花</th>
+                        <th id="eqfeather">死の羽</th>
+                        <th id="eqsands">時の砂</th>
+                        <th id="eqgoblet">空の杯</th>
+                        <th id="eqcirclet">理の冠</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_equip')">+</button>
+        </div>
+        <input id="tab_team" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_team">チーム</label>
+        <div class="tab_content">
+            <table id="tbl_team">
+                <tbody>
+                    <tr>
+                        <th>装備</th>
+                        <th rowspan="22"></th>
+                        <td id="player1" colspan="2"><select onchange="changeTeamMember(0)"></select></td>
+                        <th rowspan="22"></th>
+                        <td id="player2" colspan="2"><select onchange="changeTeamMember(1)"></select></td>
+                        <th rowspan="22"></th>
+                        <td id="player3" colspan="2"><select onchange="changeTeamMember(2)"></select></td>
+                        <th rowspan="22"></th>
+                        <td id="player4" colspan="2"><select onchange="changeTeamMember(3)"></select></td>
+                    </tr>
+                    <tr>
+                        <td><button type="button" onclick="updateTeam()">更新</button></td>
+                        <th class="team">基礎</th>
+                        <th class="team">追加</th>
+                        <th class="team">基礎</th>
+                        <th class="team">追加</th>
+                        <th class="team">基礎</th>
+                        <th class="team">追加</th>
+                        <th class="team">基礎</th>
+                        <th class="team">追加</th>
+                    </tr>
+                    <tr id="hp">
+                        <th>HP上限</th>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr id="atk">
+                        <th>攻撃力</th>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr id="def">
+                        <th>防御力</th>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr id="elem">
+                        <th>元素熟知</th>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr id="cri_rate">
+                        <th>会心率</th>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                    </tr>
+                    <tr id="cri_dmg">
+                        <th>会心ダメージ</th>
+                        <td>50.0%</td>
+                        <td>0.0%</td>
+                        <td>50.0%</td>
+                        <td>0.0%</td>
+                        <td>50.0%</td>
+                        <td>0.0%</td>
+                        <td>50.0%</td>
+                        <td>0.0%</td>
+                    </tr>
+                    <tr id="en_rec">
+                        <th>元素チャージ効率</th>
+                        <td>100.0%</td>
+                        <td>0.0%</td>
+                        <td>100.0%</td>
+                        <td>0.0%</td>
+                        <td>100.0%</td>
+                        <td>0.0%</td>
+                        <td>100.0%</td>
+                        <td>0.0%</td>
+                    </tr>
+                    <tr id="pyro_dmg">
+                        <th>炎元素ダメージバフ</th>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                    </tr>
+                    <tr id="hydro_dmg">
+                        <th>水元素ダメージバフ</th>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                    </tr>
+                    <tr id="elect_dmg">
+                        <th>雷元素ダメージバフ</th>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                    </tr>
+                    <tr id="anemo_dmg">
+                        <th>風元素ダメージバフ</th>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                    </tr>
+                    <tr id="cryo_dmg">
+                        <th>氷元素ダメージバフ</th>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                    </tr>
+                    <tr id="geo_dmg">
+                        <th>岩元素ダメージバフ</th>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                    </tr>
+                    <tr id="phys_dmg">
+                        <th>物理ダメージバフ</th>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                    </tr>
+                    <tr id="normal_dmg">
+                        <th>通常攻撃ダメージ</th>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="heavy_dmg">
+                        <th>重撃ダメージ</th>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="heavy_cri">
+                        <th>重撃会心率</th>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="skill_dmg">
+                        <th>元素スキルダメージ</th>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="skill_dmg">
+                        <th>元素爆発ダメージ</th>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="any_dmg">
+                        <th>与ダメージ</th>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <input id="tab_chara" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_chara">キャラクター</label>
+        <div class="tab_content">
+            <table id="tbl_chara">
+                <thead>
+                    <tr>
+                        <th colspan="6"></th>
+                        <th colspan="2">固有ステータス</th>
+                        <th colspan="3">天賦レベル</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="cname">名前</th>
+                        <th id="clevel">Lv.</th>
+                        <th id="hp">HP</th>
+                        <th id="atk">攻撃力</th>
+                        <th id="def">防御力</th>
+                        <th id="sptype">タイプ</th>
+                        <th id="spval">値</th>
+                        <th id="talentc">通常攻撃</th>
+                        <th id="talents">元素ｽｷﾙ</th>
+                        <th id="talente">元素爆発</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_chara')">+</button>
+        </div>
+        <input id="tab_sword" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_sword">片手剣</label>
+        <div class="tab_content">
+            <table id="tbl_sword">
+                <thead>
+                    <tr>
+                        <th colspan="4"></th>
+                        <th colspan="2">追加効果</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="wsname">名前</th>
+                        <th id="wrank">錬成</th>
+                        <th id="atk">攻撃力</th>
+                        <th id="wssecond">タイプ</th>
+                        <th id="wssecval">値</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_sword')">+</button>
+        </div>
+        <input id="tab_claymore" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_claymore">両手剣</label>
+        <div class="tab_content">
+            <table id="tbl_claymore">
+                <thead>
+                    <tr>
+                        <th colspan="4"></th>
+                        <th colspan="2">追加効果</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="wmname">名前</th>
+                        <th id="wrank">錬成</th>
+                        <th id="atk">攻撃力</th>
+                        <th id="wmsecond">タイプ</th>
+                        <th id="wmsecval">値</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_claymore')">+</button>
+        </div>
+        <input id="tab_polearm" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_polearm">長柄武器</label>
+        <div class="tab_content">
+            <table id="tbl_polearm">
+                <thead>
+                    <tr>
+                        <th colspan="4"></th>
+                        <th colspan="2">追加効果</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="wpname">名前</th>
+                        <th id="wrank">錬成</th>
+                        <th id="atk">攻撃力</th>
+                        <th id="wpsecond">タイプ</th>
+                        <th id="wpsecval">値</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_polearm')">+</button>
+        </div>
+        <input id="tab_bow" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_bow">弓</label>
+        <div class="tab_content">
+            <table id="tbl_bow">
+                <thead>
+                    <tr>
+                        <th colspan="4"></th>
+                        <th colspan="2">追加効果</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="wbname">名前</th>
+                        <th id="wrank">錬成</th>
+                        <th id="atk">攻撃力</th>
+                        <th id="wbsecond">タイプ</th>
+                        <th id="wbsecval">値</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_bow')">+</button>
+        </div>
+        <input id="tab_catalyst" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_catalyst">法器</label>
+        <div class="tab_content">
+            <table id="tbl_catalyst">
+                <thead>
+                    <tr>
+                        <th colspan="4"></th>
+                        <th colspan="2">追加効果</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="wcname">名前</th>
+                        <th id="wrank">錬成</th>
+                        <th id="atk">攻撃力</th>
+                        <th id="wcsecond">タイプ</th>
+                        <th id="wcsecval">値</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_catalyst')">+</button>
+        </div>
+        <input id="tab_flower" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_flower">生の花</label>
+        <div class="tab_content">
+            <table id="tbl_flower">
+                <thead>
+                    <tr>
+                        <th colspan="4"></th>
+                        <th colspan="2">サブ効果1</th>
+                        <th colspan="2">サブ効果2</th>
+                        <th colspan="2">サブ効果3</th>
+                        <th colspan="2">サブ効果4</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="awname">名前</th>
+                        <th id="astar">☆</th>
+                        <th id="alevel">Lv.</th>
+                        <th id="asub1">タイプ</th>
+                        <th id="aval1">値</th>
+                        <th id="asub2">タイプ</th>
+                        <th id="aval2">値</th>
+                        <th id="asub3">タイプ</th>
+                        <th id="aval3">値</th>
+                        <th id="asub4">タイプ</th>
+                        <th id="aval4">値</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_flower')">+</button>
+        </div>
+        <input id="tab_feather" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_feather">死の羽</label>
+        <div class="tab_content">
+            <table id="tbl_feather">
+                <thead>
+                    <tr>
+                        <th colspan="4"></th>
+                        <th colspan="2">サブ効果1</th>
+                        <th colspan="2">サブ効果2</th>
+                        <th colspan="2">サブ効果3</th>
+                        <th colspan="2">サブ効果4</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="afname">名前</th>
+                        <th id="astar">☆</th>
+                        <th id="alevel">Lv.</th>
+                        <th id="asub1">タイプ</th>
+                        <th id="aval1">値</th>
+                        <th id="asub2">タイプ</th>
+                        <th id="aval2">値</th>
+                        <th id="asub3">タイプ</th>
+                        <th id="aval3">値</th>
+                        <th id="asub4">タイプ</th>
+                        <th id="aval4">値</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_feather')">+</button>
+        </div>
+        <input id="tab_sands" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_sands">時の砂</label>
+        <div class="tab_content">
+            <table id="tbl_sands">
+                <thead>
+                    <tr>
+                        <th colspan="5"></th>
+                        <th colspan="2">サブ効果1</th>
+                        <th colspan="2">サブ効果2</th>
+                        <th colspan="2">サブ効果3</th>
+                        <th colspan="2">サブ効果4</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="asname">名前</th>
+                        <th id="astar">☆</th>
+                        <th id="alevel">Lv.</th>
+                        <th id="asmain">メイン効果</th>
+                        <th id="asub1">タイプ</th>
+                        <th id="aval1">値</th>
+                        <th id="asub2">タイプ</th>
+                        <th id="aval2">値</th>
+                        <th id="asub3">タイプ</th>
+                        <th id="aval3">値</th>
+                        <th id="asub4">タイプ</th>
+                        <th id="aval4">値</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_sands')">+</button>
+        </div>
+        <input id="tab_goblet" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_goblet">空の杯</label>
+        <div class="tab_content">
+            <table id="tbl_goblet">
+                <thead>
+                    <tr>
+                        <th colspan="5"></th>
+                        <th colspan="2">サブ効果1</th>
+                        <th colspan="2">サブ効果2</th>
+                        <th colspan="2">サブ効果3</th>
+                        <th colspan="2">サブ効果4</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="agname">名前</th>
+                        <th id="astar">☆</th>
+                        <th id="alevel">Lv.</th>
+                        <th id="agmain">メイン効果</th>
+                        <th id="asub1">タイプ</th>
+                        <th id="aval1">値</th>
+                        <th id="asub2">タイプ</th>
+                        <th id="aval2">値</th>
+                        <th id="asub3">タイプ</th>
+                        <th id="aval3">値</th>
+                        <th id="asub4">タイプ</th>
+                        <th id="aval4">値</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_goblet')">+</button>
+        </div>
+        <input id="tab_circlet" type="radio" name="TAB" class="tab_switch" />
+        <label class="tab_label" for="tab_circlet">理の冠</label>
+        <div class="tab_content">
+            <table id="tbl_circlet">
+                <thead>
+                    <tr>
+                        <th colspan="5"></th>
+                        <th colspan="2">サブ効果1</th>
+                        <th colspan="2">サブ効果2</th>
+                        <th colspan="2">サブ効果3</th>
+                        <th colspan="2">サブ効果4</th>
+                    </tr>
+                    <tr>
+                        <th id="index">No</th>
+                        <th id="acname">名前</th>
+                        <th id="astar">☆</th>
+                        <th id="alevel">Lv.</th>
+                        <th id="acmain">メイン効果</th>
+                        <th id="asub1">タイプ</th>
+                        <th id="aval1">値</th>
+                        <th id="asub2">タイプ</th>
+                        <th id="aval2">値</th>
+                        <th id="asub3">タイプ</th>
+                        <th id="aval3">値</th>
+                        <th id="asub4">タイプ</th>
+                        <th id="aval4">値</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" onclick="insertRow('tbl_circlet')">+</button>
+        </div>
+    </div>
+</body>
+
+</html>

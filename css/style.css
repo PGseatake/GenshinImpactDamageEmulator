@@ -1,0 +1,111 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 10px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+div.caption {
+    height: 40px;
+    border-bottom: 1px solid gray;
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th {
+    border: 1px solid gray;
+    padding: 2px 2px;
+    text-align: center;
+}
+
+th.team {
+    width: 80px;
+}
+
+td {
+    border: 1px solid gray;
+    padding: 2px;
+    text-align: center;
+}
+
+input.import {
+    display: none;
+}
+
+input.numeric {
+    text-align: right;
+    width: 50px;
+}
+
+input.bonus {
+    width: 85px;
+}
+
+
+/**
+ * タブ系のスタイル
+ */
+
+.tab_wrap {
+    height: 100%;
+    min-height: 300px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.tab_label {
+    width: 150px;
+    color: White;
+    background: LightGray;
+    font-weight: bold;
+    white-space: nowrap;
+    text-align: center;
+    border: 1px solid Gray;
+    border-radius: 4px 0 0 4px;
+    margin: 2px -1px 2px 1px;
+    padding: 2px .5em;
+    order: -1;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    float: left;
+}
+
+.tab_content {
+    display: none;
+}
+
+
+/* アクティブなタブ */
+
+.tab_switch:checked+.tab_label {
+    color: Gray;
+    background: White;
+    border-right-color: White;
+}
+
+.tab_switch:checked+.tab_label+.tab_content {
+    width: calc(100% - 150px);
+    height: 100%;
+    padding: 15px;
+    border-left: 1px solid Gray;
+    display: block;
+}
+
+
+/* ラジオボタン非表示 */
+
+.tab_switch {
+    display: none;
+}
