@@ -44,11 +44,11 @@ input.import {
 
 input.numeric {
     text-align: right;
-    width: 50px;
+    width: 5em;
 }
 
 input.bonus {
-    width: 85px;
+    width: 7em;
 }
 
 

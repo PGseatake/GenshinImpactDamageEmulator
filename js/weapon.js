@@ -1,8 +1,10 @@
+const WEAPON_RANK_MAX = 5;
+
 const SWORD_LIST = {
     other: {
         name: "-",
         star: 1,
-        second: "none",
+        second: "other",
         passive: null
     },
     AquilaFavonia: {
@@ -119,7 +121,7 @@ const CLAYMORE_LIST = {
     other: {
         name: "-",
         star: 1,
-        second: "none",
+        second: "other",
         passive: null
     },
     WolfsGravestone: {
@@ -227,7 +229,7 @@ const POLEARM_LIST = {
     other: {
         name: "-",
         star: 1,
-        second: "none",
+        second: "other",
         passive: null
     },
     PrimordialSpear: {
@@ -308,7 +310,7 @@ const BOW_LIST = {
     other: {
         name: "-",
         star: 1,
-        second: "none",
+        second: "other",
         passive: null
     },
     AmosBow: {
@@ -410,7 +412,7 @@ const CATALYST_LIST = {
     other: {
         name: "-",
         star: 1,
-        second: "none",
+        second: "other",
         passive: null
     },
     SkywardAtlas: {

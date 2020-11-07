@@ -77,9 +77,11 @@ class IntCell extends Cell {
         }
 
         let child = document.createElement("input");
-        child.type = "text";
+        child.type = "number";
+        child.step = "1";
+        child.min = "0";
         child.value = str;
-        child.pattern = "[0-9]+";
+        child.pattern = "[0-9]*";
         child.className = "numeric";
 
         cell.appendChild(child);
@@ -113,9 +115,11 @@ class RateCell extends Cell {
         }
 
         let child = document.createElement("input");
-        child.type = "text";
+        child.type = "number";
+        child.step = "0.1";
+        child.min = 0;
         child.value = str;
-        child.pattern = "[0-9\.]+";
+        child.pattern = "[0-9\.]*";
         child.className = "numeric";
 
         cell.appendChild(child);

@@ -26,7 +26,7 @@ const CellBuilder = {
     elem: new IntCell(),
     index: new IndexCell(),
     // キャラクター
-    cname: new DictCell(CHARACTER, "name", "traveler", { change: changeCharaCell }),
+    cname: new DictCell(CHARACTER, "name", "TravelAnemo", { change: changeCharaCell }),
     clevel: new CharacterLevelCell(),
     sptype: new BonusCell("cname", CHARACTER, "special"),
     spval: new SecondBonusCell("cname", CHARACTER, "special"),
@@ -34,11 +34,11 @@ const CellBuilder = {
     talents: new TalentCell(1, TALENT_LV_MAX),
     talente: new TalentCell(1, TALENT_LV_MAX),
     // 武器
-    wsname: new DictCell(SWORD_LIST, "name", "none", { change: changeWeaponCell }),
-    wmname: new DictCell(CLAYMORE_LIST, "name", "none", { change: changeWeaponCell }),
-    wpname: new DictCell(POLEARM_LIST, "name", "none", { change: changeWeaponCell }),
-    wbname: new DictCell(BOW_LIST, "name", "none", { change: changeWeaponCell }),
-    wcname: new DictCell(CATALYST_LIST, "name", "none", { change: changeWeaponCell }),
+    wsname: new DictCell(SWORD_LIST, "name", "other", { change: changeWeaponCell }),
+    wmname: new DictCell(CLAYMORE_LIST, "name", "other", { change: changeWeaponCell }),
+    wpname: new DictCell(POLEARM_LIST, "name", "other", { change: changeWeaponCell }),
+    wbname: new DictCell(BOW_LIST, "name", "other", { change: changeWeaponCell }),
+    wcname: new DictCell(CATALYST_LIST, "name", "other", { change: changeWeaponCell }),
     wssecond: new BonusCell("wsname", SWORD_LIST, "second"),
     wmsecond: new BonusCell("wmname", CLAYMORE_LIST, "second"),
     wpsecond: new BonusCell("wpname", POLEARM_LIST, "second"),
@@ -150,7 +150,7 @@ function saveTableData(name) {
 }
 
 // データ削除前の確認
-function clearPreCheck(all) {
+function clearConfirm(all) {
     if (all) {
         let yes = confirm("すべてのタブの内容が破棄されます。よろしいですか？");
         if (yes) {
@@ -213,7 +213,7 @@ function exportData() {
 }
 
 // インポート前の確認
-function importPreCheck() {
+function importConfirm() {
     let yes = confirm("すべてのタブの内容が上書きされます。よろしいですか？");
     if (yes) {
         document.getElementById("import").click();
@@ -333,27 +333,33 @@ function insertRow(name) {
 
 // 1行削除
 function removeRow(e) {
-    // TODO: ブラウザによって<tbody>があったりなかったりする？
-    let tbl = e.target.parentNode.parentNode.parentNode.parentNode;
+    let row = e.target.parentNode.parentNode;
+    let yes = confirm(`No.${row.rowIndex - 1}を削除します。よろしいですか？`);
+    if (yes) {
+        // TODO: ブラウザによって<tbody>があったりなかったりする？
+        let tbl = row.parentNode.parentNode;
 
-    // e.target == button
-    document.getElementById(e.target.id).remove();
+        // e.target == button
+        document.getElementById(e.target.id).remove();
 
-    // indexの再設定
-    let builder = CellBuilder.index;
-    let rows = tbl.rows;
-    for (let i = 2, len = rows.length; i < len; ++i) {
-        builder.update(rows[i].cells[0]);
+        // indexの再設定
+        let builder = CellBuilder.index;
+        let rows = tbl.rows;
+        for (let i = 2, len = rows.length; i < len; ++i) {
+            builder.update(rows[i].cells[0]);
+        }
+
+        // TODO: 削除したものを使用している他タブの要素をどうする？
+
+        changeValue();
     }
-
-    changeValue();
 }
 
 // 値変更
 function changeValue() {
     if (!g_updated) {
         g_updated = true
-        document.title = g_def_title + " *";
+        document.title = "* " + g_def_title;
     }
 }
 

@@ -1,21 +1,7 @@
-const ELEMENT = {
-    none: "",
-    anemo: "風",
-    geo: "岩",
-    electro: "雷",
-    dendro: "草",
-    hydro: "水",
-    pyro: "火",
-    cryo: "氷"
-};
-
 const CHARA_LV_STEP = [20, 40, 50, 60, 70, 80];
 const TALENT_LV_MAX = 15;
-const WEAPON_RANK_MAX = 5;
-const ARTIFACT_STAR_MAX = 5;
 
 const BONUS_UNIT = {
-    none: { name: "なし", unit: "n" },
     other: { name: "その他", unit: "n" },
     hp: { name: "HP", unit: "i" },
     hp_buf: { name: "HP(%)", unit: "f" },
@@ -27,7 +13,7 @@ const BONUS_UNIT = {
     elem: { name: "元素熟知", unit: "i" },
     en_rec: { name: "元素ﾁｬｰｼﾞ率", unit: "f" },
     cri_rate: { name: "会心率", unit: "f" },
-    cri_dmg: { name: "会心ダメ", unit: "f" },
+    cri_dmg: { name: "会心ダメージ", unit: "f" },
     any_dmg: { name: "ダメージ", unit: "f" },
     elem_dmg: { name: "元素バフ", unit: "f" },
     pyro_dmg: { name: "炎元素バフ", unit: "f" },
@@ -49,7 +35,7 @@ function getBonusUnit(id) {
     if (id in BONUS_UNIT) {
         return BONUS_UNIT[id];
     }
-    return BONUS_UNIT.none;
+    return BONUS_UNIT.other;
 };
 
 class Status {
@@ -113,16 +99,39 @@ class Bonus {
     }
 };
 
-const PARTY_BONUS = {
+const TEAM_BONUS = {
     pyro: new Bonus("atk_buf", 25),
     cryo: new Bonus("cri_rate", 15, "氷元素付着または凍結状態の敵"),
     geo: new Bonus("any_dmg", 15, "シールドが存在する時")
 };
 
 const CHARACTER = {
-    other: { name: "旅人", element: "none", weapon: "none", special: "none" },
-    trvanemo: { name: "旅人(風)", element: "anemo", weapon: "sword", special: "atk_buf" },
-    trvgeo: { name: "旅人(岩)", element: "geo", weapon: "sword", special: "atk_buf" },
-    fischl: { name: "フィッシュル", element: "electo", weapon: "bow", special: "atk_buf" },
-    ningguang: { name: "凝光", element: "geo", weapon: "catalyst", special: "geo_dmg" },
+    TravelAnemo: { name: "旅人(風)", star: 5, element: "anemo", weapon: "sword", special: "atk_buf" },
+    TravelGeo: { name: "旅人(岩)", star: 5, element: "geo", weapon: "sword", special: "atk_buf" },
+    Amber: { name: "アンバー", star: 4, element: "pyro", weapon: "bow", special: "atk_buf" },
+    Barbara: { name: "バーバラ", star: 4, element: "hydro", weapon: "catalyst", special: "hp_buf" },
+    Beidou: { name: "北斗", star: 4, element: "elect", weapon: "claymore", special: "elect_dmg" },
+    Bennett: { name: "ベネット", star: 4, element: "pyro", weapon: "sword", special: "en_rec" },
+    Chongyun: { name: "重雲", star: 4, element: "cryo", weapon: "claymore", special: "atk_buf" },
+    Diluc: { name: "ディルック", star: 5, element: "pyro", weapon: "claymore", special: "cri_rate" },
+    Diona: { name: "ディオナ", star: 4, element: "cryo", weapon: "bow", special: "other" },
+    Fischl: { name: "フィッシュル", star: 4, element: "electo", weapon: "bow", special: "atk_buf" },
+    Jean: { name: "ジン", star: 5, element: "anemo", weapon: "sword", special: "other" },
+    Kaeya: { name: "ガイア", star: 4, element: "cryo", weapon: "sword", special: "en_rec" },
+    Keqing: { name: "刻晴", star: 5, element: "elect", weapon: "sword", special: "cri_dmg" },
+    Klee: { name: "クレー", star: 5, element: "pyro", weapon: "sword", special: "pyro_dmg" },
+    Lisa: { name: "リサ", star: 4, element: "elect", weapon: "catalyst", special: "elem" },
+    Mona: { name: "モナ", star: 5, element: "hydro", weapon: "catalyst", special: "en_rec" },
+    Ningguang: { name: "凝光", star: 4, element: "geo", weapon: "catalyst", special: "geo_dmg" },
+    Noelle: { name: "ノエル", star: 4, element: "geo", weapon: "claymore", special: "def_buf" },
+    Qiqi: { name: "七七", star: 5, element: "cryo", weapon: "sword", special: "other" },
+    Razor: { name: "レザー", star: 4, element: "elect", weapon: "claymore", special: "phys_dmg" },
+    Sucrose: { name: "スクロース", star: 4, element: "anemo", weapon: "catalyst", special: "anemo_dmg" },
+    Tartaglia: { name: "タルタリヤ", star: 5, element: "hydro", weapon: "bow", special: "other" },
+    Venti: { name: "ウェンティ", star: 5, element: "anemo", weapon: "bow", special: "en_rec" },
+    Xiangling: { name: "香菱", star: 4, element: "pyro", weapon: "polearm", special: "elem" },
+    Xiao: { name: "魈", star: 5, element: "anemo", weapon: "polearm", special: "other" },
+    Xingqiu: { name: "行秋", star: 4, element: "hydro", weapon: "sword", special: "atk_buf" },
+    Xinyan: { name: "辛炎", star: 4, element: "pyro", weapon: "claymore", special: "other" },
+    Zhongli: { name: "鍾離", star: 5, element: "geo", weapon: "polearm", special: "other" },
 };

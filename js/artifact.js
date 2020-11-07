@@ -1,3 +1,4 @@
+const ARTIFACT_STAR_MAX = 5;
 const ARTIFACT_LEVEL = [0, 0, 0, 12, 16, 20]
 
 // https://genshin-impact.fandom.com/wiki/Artifacts/Main_Stat_Scaling
@@ -90,11 +91,6 @@ function getArtifactParam(star, level, bonus) {
 }
 
 const ARTIFACT_SET = {
-    other: {
-        name: "-",
-        set2: null,
-        set4: null
-    },
     Adventurer: {
         name: "冒険者",
         set2: new Bonus("hp", 1000), // TODO: hp_buf が係るのか検証
@@ -211,7 +207,7 @@ const ARTIFACT_SET = {
 };
 
 const FLOWER_LIST = {
-    other: "その他",
+    other: "-",
     Adventurer: "冒険者の花",
     LuckyDog: "幸運のクローバー",
     Doctor: "医者のアネモネ",
@@ -240,7 +236,7 @@ const FLOWER_LIST = {
 };
 
 const FEATHER_LIST = {
-    other: "その他",
+    other: "-",
     Adventurer: "冒険者の羽根",
     LuckyDog: "幸運の鷹の羽根",
     Doctor: "医者の梟の羽根",
@@ -269,7 +265,7 @@ const FEATHER_LIST = {
 };
 
 const SANDS_LIST = {
-    other: "その他",
+    other: "-",
     Adventurer: "冒険者の懐中時計",
     LuckyDog: "幸運の砂時計",
     Doctor: "医者の懐中時計",
@@ -298,7 +294,7 @@ const SANDS_LIST = {
 };
 
 const GOBLET_LIST = {
-    other: "その他",
+    other: "-",
     Adventurer: "冒険者の金杯",
     LuckyDog: "幸運のコップ",
     Doctor: "医者の薬壺",
@@ -327,7 +323,7 @@ const GOBLET_LIST = {
 };
 
 const CIRCLET_LIST = {
-    other: "その他",
+    other: "-",
     Adventurer: "冒険者のバンダナ",
     LuckyDog: "幸運の冠",
     Doctor: "医者の方巾",

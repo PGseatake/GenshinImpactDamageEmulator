@@ -16,10 +16,10 @@
 <body>
     <div class="caption">
         <button type="button" onclick="saveData()">保存</button>
-        <button type="button" onclick="clearPreCheck(false)">削除</button>
-        <button type="button" onclick="clearPreCheck(true)">全削除</button>
+        <button type="button" onclick="clearConfirm(false)">削除</button>
+        <button type="button" onclick="clearConfirm(true)">全削除</button>
         <button type="button" onclick="exportData()">エクスポート</button>
-        <button type="button" onclick="importPreCheck()">インポート</button>
+        <button type="button" onclick="importConfirm()">インポート</button>
         <input id="import" class="import" type="file" accept=".json" onchange="importData()">
     </div>
     <div class="tab_wrap">
