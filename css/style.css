@@ -38,6 +38,11 @@ td {
     text-align: center;
 }
 
+td.bonus {
+    text-align: left;
+    width: 7em;
+}
+
 input.import {
     display: none;
 }
@@ -47,8 +52,12 @@ input.numeric {
     width: 5em;
 }
 
-input.bonus {
-    width: 7em;
+select.bonus {
+    width: 8em;
+}
+
+.hide {
+    display: none;
 }
 
 

@@ -140,7 +140,7 @@
                         <td>0.0%</td>
                     </tr>
                     <tr id="en_rec">
-                        <th>元素チャージ効率</th>
+                        <th>元素ﾁｬｰｼﾞ効率</th>
                         <td>100.0%</td>
                         <td>0.0%</td>
                         <td>100.0%</td>
@@ -151,7 +151,7 @@
                         <td>0.0%</td>
                     </tr>
                     <tr id="pyro_dmg">
-                        <th>炎元素ダメージバフ</th>
+                        <th>炎元素バフ</th>
                         <td>0.0%</td>
                         <td>0.0%</td>
                         <td>0.0%</td>
@@ -162,7 +162,7 @@
                         <td>0.0%</td>
                     </tr>
                     <tr id="hydro_dmg">
-                        <th>水元素ダメージバフ</th>
+                        <th>水元素バフ</th>
                         <td>0.0%</td>
                         <td>0.0%</td>
                         <td>0.0%</td>
@@ -173,7 +173,7 @@
                         <td>0.0%</td>
                     </tr>
                     <tr id="elect_dmg">
-                        <th>雷元素ダメージバフ</th>
+                        <th>雷元素バフ</th>
                         <td>0.0%</td>
                         <td>0.0%</td>
                         <td>0.0%</td>
@@ -184,7 +184,7 @@
                         <td>0.0%</td>
                     </tr>
                     <tr id="anemo_dmg">
-                        <th>風元素ダメージバフ</th>
+                        <th>風元素バフ</th>
                         <td>0.0%</td>
                         <td>0.0%</td>
                         <td>0.0%</td>
@@ -195,7 +195,7 @@
                         <td>0.0%</td>
                     </tr>
                     <tr id="cryo_dmg">
-                        <th>氷元素ダメージバフ</th>
+                        <th>氷元素バフ</th>
                         <td>0.0%</td>
                         <td>0.0%</td>
                         <td>0.0%</td>
@@ -206,7 +206,7 @@
                         <td>0.0%</td>
                     </tr>
                     <tr id="geo_dmg">
-                        <th>岩元素ダメージバフ</th>
+                        <th>岩元素バフ</th>
                         <td>0.0%</td>
                         <td>0.0%</td>
                         <td>0.0%</td>
@@ -217,7 +217,7 @@
                         <td>0.0%</td>
                     </tr>
                     <tr id="phys_dmg">
-                        <th>物理ダメージバフ</th>
+                        <th>物理バフ</th>
                         <td>0.0%</td>
                         <td>0.0%</td>
                         <td>0.0%</td>
@@ -228,7 +228,7 @@
                         <td>0.0%</td>
                     </tr>
                     <tr id="normal_dmg">
-                        <th>通常攻撃ダメージ</th>
+                        <th>通常攻撃ダメ</th>
                         <td>-</td>
                         <td>+0.0%</td>
                         <td>-</td>
@@ -239,7 +239,7 @@
                         <td>+0.0%</td>
                     </tr>
                     <tr id="heavy_dmg">
-                        <th>重撃ダメージ</th>
+                        <th>重撃ダメ</th>
                         <td>-</td>
                         <td>+0.0%</td>
                         <td>-</td>
@@ -261,7 +261,7 @@
                         <td>+0.0%</td>
                     </tr>
                     <tr id="skill_dmg">
-                        <th>元素スキルダメージ</th>
+                        <th>元素スキルダメ</th>
                         <td>-</td>
                         <td>+0.0%</td>
                         <td>-</td>
@@ -272,7 +272,7 @@
                         <td>+0.0%</td>
                     </tr>
                     <tr id="skill_dmg">
-                        <th>元素爆発ダメージ</th>
+                        <th>元素爆発ダメ</th>
                         <td>-</td>
                         <td>+0.0%</td>
                         <td>-</td>
@@ -302,22 +302,20 @@
             <table id="tbl_chara">
                 <thead>
                     <tr>
-                        <th colspan="6"></th>
-                        <th colspan="2">固有ステータス</th>
+                        <th colspan="7"></th>
                         <th colspan="3">天賦レベル</th>
                     </tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="cname">名前</th>
-                        <th id="clevel">Lv.</th>
+                        <th id="chara_name">名前</th>
+                        <th id="chara_level">Lv.</th>
                         <th id="hp">HP</th>
                         <th id="atk">攻撃力</th>
                         <th id="def">防御力</th>
-                        <th id="sptype">タイプ</th>
-                        <th id="spval">値</th>
-                        <th id="talentc">通常攻撃</th>
-                        <th id="talents">元素ｽｷﾙ</th>
-                        <th id="talente">元素爆発</th>
+                        <th id="special">固有ｽﾃｰﾀｽ</th>
+                        <th id="talent_combat">通常攻撃</th>
+                        <th id="talent_skill">元素ｽｷﾙ</th>
+                        <th id="talent_burst">元素爆発</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -329,17 +327,13 @@
         <div class="tab_content">
             <table id="tbl_sword">
                 <thead>
-                    <tr>
-                        <th colspan="4"></th>
-                        <th colspan="2">追加効果</th>
-                    </tr>
+                    <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="wsname">名前</th>
-                        <th id="wrank">錬成</th>
+                        <th id="sword_name">名前</th>
+                        <th id="weapon_rank">錬成</th>
                         <th id="atk">攻撃力</th>
-                        <th id="wssecond">タイプ</th>
-                        <th id="wssecval">値</th>
+                        <th id="sword_second">追加効果</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -351,17 +345,13 @@
         <div class="tab_content">
             <table id="tbl_claymore">
                 <thead>
-                    <tr>
-                        <th colspan="4"></th>
-                        <th colspan="2">追加効果</th>
-                    </tr>
+                    <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="wmname">名前</th>
-                        <th id="wrank">錬成</th>
+                        <th id="claymore_name">名前</th>
+                        <th id="weapon_rank">錬成</th>
                         <th id="atk">攻撃力</th>
-                        <th id="wmsecond">タイプ</th>
-                        <th id="wmsecval">値</th>
+                        <th id="claymore_second">追加効果</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -373,17 +363,13 @@
         <div class="tab_content">
             <table id="tbl_polearm">
                 <thead>
-                    <tr>
-                        <th colspan="4"></th>
-                        <th colspan="2">追加効果</th>
-                    </tr>
+                    <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="wpname">名前</th>
-                        <th id="wrank">錬成</th>
+                        <th id="polearm_name">名前</th>
+                        <th id="weapon_rank">錬成</th>
                         <th id="atk">攻撃力</th>
-                        <th id="wpsecond">タイプ</th>
-                        <th id="wpsecval">値</th>
+                        <th id="polearm_second">追加効果</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -395,17 +381,13 @@
         <div class="tab_content">
             <table id="tbl_bow">
                 <thead>
-                    <tr>
-                        <th colspan="4"></th>
-                        <th colspan="2">追加効果</th>
-                    </tr>
+                    <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="wbname">名前</th>
-                        <th id="wrank">錬成</th>
+                        <th id="bow_name">名前</th>
+                        <th id="weapon_rank">錬成</th>
                         <th id="atk">攻撃力</th>
-                        <th id="wbsecond">タイプ</th>
-                        <th id="wbsecval">値</th>
+                        <th id="bow_second">追加効果</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -417,17 +399,13 @@
         <div class="tab_content">
             <table id="tbl_catalyst">
                 <thead>
-                    <tr>
-                        <th colspan="4"></th>
-                        <th colspan="2">追加効果</th>
-                    </tr>
+                    <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="wcname">名前</th>
-                        <th id="wrank">錬成</th>
+                        <th id="catalyst_name">名前</th>
+                        <th id="weapon_rank">錬成</th>
                         <th id="atk">攻撃力</th>
-                        <th id="wcsecond">タイプ</th>
-                        <th id="wcsecval">値</th>
+                        <th id="catalyst_second">追加効果</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -439,26 +417,17 @@
         <div class="tab_content">
             <table id="tbl_flower">
                 <thead>
-                    <tr>
-                        <th colspan="4"></th>
-                        <th colspan="2">サブ効果1</th>
-                        <th colspan="2">サブ効果2</th>
-                        <th colspan="2">サブ効果3</th>
-                        <th colspan="2">サブ効果4</th>
-                    </tr>
+                    <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="awname">名前</th>
-                        <th id="astar">☆</th>
-                        <th id="alevel">Lv.</th>
-                        <th id="asub1">タイプ</th>
-                        <th id="aval1">値</th>
-                        <th id="asub2">タイプ</th>
-                        <th id="aval2">値</th>
-                        <th id="asub3">タイプ</th>
-                        <th id="aval3">値</th>
-                        <th id="asub4">タイプ</th>
-                        <th id="aval4">値</th>
+                        <th id="flower_name">名前</th>
+                        <th id="art_star">☆</th>
+                        <th id="art_level">Lv.</th>
+                        <th id="flower_main">メイン効果</th>
+                        <th id="art_sub1">サブ効果1</th>
+                        <th id="art_sub2">サブ効果2</th>
+                        <th id="art_sub3">サブ効果3</th>
+                        <th id="art_sub4">サブ効果4</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -470,26 +439,17 @@
         <div class="tab_content">
             <table id="tbl_feather">
                 <thead>
-                    <tr>
-                        <th colspan="4"></th>
-                        <th colspan="2">サブ効果1</th>
-                        <th colspan="2">サブ効果2</th>
-                        <th colspan="2">サブ効果3</th>
-                        <th colspan="2">サブ効果4</th>
-                    </tr>
+                    <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="afname">名前</th>
-                        <th id="astar">☆</th>
-                        <th id="alevel">Lv.</th>
-                        <th id="asub1">タイプ</th>
-                        <th id="aval1">値</th>
-                        <th id="asub2">タイプ</th>
-                        <th id="aval2">値</th>
-                        <th id="asub3">タイプ</th>
-                        <th id="aval3">値</th>
-                        <th id="asub4">タイプ</th>
-                        <th id="aval4">値</th>
+                        <th id="feather_name">名前</th>
+                        <th id="art_star">☆</th>
+                        <th id="art_level">Lv.</th>
+                        <th id="feather_main">メイン効果</th>
+                        <th id="art_sub1">サブ効果1</th>
+                        <th id="art_sub2">サブ効果2</th>
+                        <th id="art_sub3">サブ効果3</th>
+                        <th id="art_sub4">サブ効果4</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -501,27 +461,17 @@
         <div class="tab_content">
             <table id="tbl_sands">
                 <thead>
-                    <tr>
-                        <th colspan="5"></th>
-                        <th colspan="2">サブ効果1</th>
-                        <th colspan="2">サブ効果2</th>
-                        <th colspan="2">サブ効果3</th>
-                        <th colspan="2">サブ効果4</th>
-                    </tr>
+                    <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="asname">名前</th>
-                        <th id="astar">☆</th>
-                        <th id="alevel">Lv.</th>
-                        <th id="asmain">メイン効果</th>
-                        <th id="asub1">タイプ</th>
-                        <th id="aval1">値</th>
-                        <th id="asub2">タイプ</th>
-                        <th id="aval2">値</th>
-                        <th id="asub3">タイプ</th>
-                        <th id="aval3">値</th>
-                        <th id="asub4">タイプ</th>
-                        <th id="aval4">値</th>
+                        <th id="sands_name">名前</th>
+                        <th id="art_star">☆</th>
+                        <th id="art_level">Lv.</th>
+                        <th id="sands_main">メイン効果</th>
+                        <th id="art_sub1">サブ効果1</th>
+                        <th id="art_sub2">サブ効果2</th>
+                        <th id="art_sub3">サブ効果3</th>
+                        <th id="art_sub4">サブ効果4</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -533,27 +483,17 @@
         <div class="tab_content">
             <table id="tbl_goblet">
                 <thead>
-                    <tr>
-                        <th colspan="5"></th>
-                        <th colspan="2">サブ効果1</th>
-                        <th colspan="2">サブ効果2</th>
-                        <th colspan="2">サブ効果3</th>
-                        <th colspan="2">サブ効果4</th>
-                    </tr>
+                    <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="agname">名前</th>
-                        <th id="astar">☆</th>
-                        <th id="alevel">Lv.</th>
-                        <th id="agmain">メイン効果</th>
-                        <th id="asub1">タイプ</th>
-                        <th id="aval1">値</th>
-                        <th id="asub2">タイプ</th>
-                        <th id="aval2">値</th>
-                        <th id="asub3">タイプ</th>
-                        <th id="aval3">値</th>
-                        <th id="asub4">タイプ</th>
-                        <th id="aval4">値</th>
+                        <th id="goblet_name">名前</th>
+                        <th id="art_star">☆</th>
+                        <th id="art_level">Lv.</th>
+                        <th id="goblet_main">メイン効果</th>
+                        <th id="art_sub1">サブ効果1</th>
+                        <th id="art_sub2">サブ効果2</th>
+                        <th id="art_sub3">サブ効果3</th>
+                        <th id="art_sub4">サブ効果4</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -565,27 +505,17 @@
         <div class="tab_content">
             <table id="tbl_circlet">
                 <thead>
-                    <tr>
-                        <th colspan="5"></th>
-                        <th colspan="2">サブ効果1</th>
-                        <th colspan="2">サブ効果2</th>
-                        <th colspan="2">サブ効果3</th>
-                        <th colspan="2">サブ効果4</th>
-                    </tr>
+                    <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="acname">名前</th>
-                        <th id="astar">☆</th>
-                        <th id="alevel">Lv.</th>
-                        <th id="acmain">メイン効果</th>
-                        <th id="asub1">タイプ</th>
-                        <th id="aval1">値</th>
-                        <th id="asub2">タイプ</th>
-                        <th id="aval2">値</th>
-                        <th id="asub3">タイプ</th>
-                        <th id="aval3">値</th>
-                        <th id="asub4">タイプ</th>
-                        <th id="aval4">値</th>
+                        <th id="circlet_name">名前</th>
+                        <th id="art_star">☆</th>
+                        <th id="art_level">Lv.</th>
+                        <th id="circlet_main">メイン効果</th>
+                        <th id="art_sub1">サブ効果1</th>
+                        <th id="art_sub2">サブ効果2</th>
+                        <th id="art_sub3">サブ効果3</th>
+                        <th id="art_sub4">サブ効果4</th>
                     </tr>
                 </thead>
                 <tbody></tbody>

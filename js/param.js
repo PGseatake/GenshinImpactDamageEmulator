@@ -1,42 +1,6 @@
 const CHARA_LV_STEP = [20, 40, 50, 60, 70, 80];
+const CHARA_LV_MAX = 90;
 const TALENT_LV_MAX = 15;
-
-const BONUS_UNIT = {
-    other: { name: "その他", unit: "n" },
-    hp: { name: "HP", unit: "i" },
-    hp_buf: { name: "HP(%)", unit: "f" },
-    atk: { name: "攻撃力", unit: "i" },
-    atk_buf: { name: "攻撃力(%)", unit: "f" },
-    atk_base: { name: "基礎攻撃力", unit: "f" },
-    def: { name: "防御力", unit: "i" },
-    def_buf: { name: "防御力(%)", unit: "f" },
-    elem: { name: "元素熟知", unit: "i" },
-    en_rec: { name: "元素ﾁｬｰｼﾞ率", unit: "f" },
-    cri_rate: { name: "会心率", unit: "f" },
-    cri_dmg: { name: "会心ダメージ", unit: "f" },
-    any_dmg: { name: "ダメージ", unit: "f" },
-    elem_dmg: { name: "元素バフ", unit: "f" },
-    pyro_dmg: { name: "炎元素バフ", unit: "f" },
-    hydro_dmg: { name: "水元素バフ", unit: "f" },
-    elect_dmg: { name: "雷元素バフ", unit: "f" },
-    anemo_dmg: { name: "風元素バフ", unit: "f" },
-    cryo_dmg: { name: "氷元素バフ", unit: "f" },
-    geo_dmg: { name: "岩元素バフ", unit: "f" },
-    phys_dmg: { name: "物理バフ", unit: "f" },
-    normal_dmg: { name: "通常攻撃ダメ", unit: "f" },
-    heavy_dmg: { name: "重撃ダメ", unit: "f" },
-    heavy_cri: { name: "重撃会心率", unit: "f" },
-    skill_dmg: { name: "スキルダメ", unit: "f" },
-    burst_dmg: { name: "元素爆発ダメ", unit: "f" },
-    react_dmg: { name: "元素反応ダメ", unit: "f" },
-};
-
-function getBonusUnit(id) {
-    if (id in BONUS_UNIT) {
-        return BONUS_UNIT[id];
-    }
-    return BONUS_UNIT.other;
-};
 
 class Status {
     constructor() {
@@ -106,6 +70,7 @@ const TEAM_BONUS = {
 };
 
 const CHARACTER = {
+    other: { name: "-", star: 1, element: "", weapon: "sword", special: "other" },
     TravelAnemo: { name: "旅人(風)", star: 5, element: "anemo", weapon: "sword", special: "atk_buf" },
     TravelGeo: { name: "旅人(岩)", star: 5, element: "geo", weapon: "sword", special: "atk_buf" },
     Amber: { name: "アンバー", star: 4, element: "pyro", weapon: "bow", special: "atk_buf" },

@@ -26,57 +26,49 @@ const CellBuilder = {
     elem: new IntCell(),
     index: new IndexCell(),
     // キャラクター
-    cname: new DictCell(CHARACTER, "name", "TravelAnemo", { change: changeCharaCell }),
-    clevel: new CharacterLevelCell(),
-    sptype: new BonusCell("cname", CHARACTER, "special"),
-    spval: new SecondBonusCell("cname", CHARACTER, "special"),
-    talentc: new TalentCell(1, TALENT_LV_MAX),
-    talents: new TalentCell(1, TALENT_LV_MAX),
-    talente: new TalentCell(1, TALENT_LV_MAX),
+    chara_name: new DictCell(CHARACTER, "name", { change: changeCharaCell }),
+    chara_level: new CharacterLevelCell(),
+    special: new DictBonusCell("chara_name", CHARACTER, "special"),
+    talent_combat: new TalentCell(1, TALENT_LV_MAX),
+    talent_skill: new TalentCell(1, TALENT_LV_MAX),
+    talent_burst: new TalentCell(1, TALENT_LV_MAX),
     // 武器
-    wsname: new DictCell(SWORD_LIST, "name", "other", { change: changeWeaponCell }),
-    wmname: new DictCell(CLAYMORE_LIST, "name", "other", { change: changeWeaponCell }),
-    wpname: new DictCell(POLEARM_LIST, "name", "other", { change: changeWeaponCell }),
-    wbname: new DictCell(BOW_LIST, "name", "other", { change: changeWeaponCell }),
-    wcname: new DictCell(CATALYST_LIST, "name", "other", { change: changeWeaponCell }),
-    wssecond: new BonusCell("wsname", SWORD_LIST, "second"),
-    wmsecond: new BonusCell("wmname", CLAYMORE_LIST, "second"),
-    wpsecond: new BonusCell("wpname", POLEARM_LIST, "second"),
-    wbsecond: new BonusCell("wbname", BOW_LIST, "second"),
-    wcsecond: new BonusCell("wcname", CATALYST_LIST, "second"),
-    wssecval: new SecondBonusCell("wsname", SWORD_LIST, "second"),
-    wmsecval: new SecondBonusCell("wmname", CLAYMORE_LIST, "second"),
-    wpsecval: new SecondBonusCell("wpname", POLEARM_LIST, "second"),
-    wbsecval: new SecondBonusCell("wbname", BOW_LIST, "second"),
-    wcsecval: new SecondBonusCell("wcname", CATALYST_LIST, "second"),
-    wrank: new RangeCell(1, WEAPON_RANK_MAX),
+    sword_name: new DictCell(SWORD_LIST, "name", { change: changeWeaponCell }),
+    claymore_name: new DictCell(CLAYMORE_LIST, "name", { change: changeWeaponCell }),
+    polearm_name: new DictCell(POLEARM_LIST, "name", { change: changeWeaponCell }),
+    bow_name: new DictCell(BOW_LIST, "name", { change: changeWeaponCell }),
+    catalyst_name: new DictCell(CATALYST_LIST, "name", { change: changeWeaponCell }),
+    sword_second: new DictBonusCell("sword_name", SWORD_LIST, "second"),
+    claymore_second: new DictBonusCell("claymore_name", CLAYMORE_LIST, "second"),
+    polearm_second: new DictBonusCell("polearm_name", POLEARM_LIST, "second"),
+    bow_second: new DictBonusCell("bow_name", BOW_LIST, "second"),
+    catalyst_second: new DictBonusCell("catalyst_name", CATALYST_LIST, "second"),
+    weapon_rank: new RangeCell(1, WEAPON_RANK_MAX),
     // 聖遺物
-    awname: new MapCell(FLOWER_LIST, "other", { change: changeArtifactCell }),
-    afname: new MapCell(FEATHER_LIST, "other", { change: changeArtifactCell }),
-    asname: new MapCell(SANDS_LIST, "other", { change: changeArtifactCell }),
-    agname: new MapCell(GOBLET_LIST, "other", { change: changeArtifactCell }),
-    acname: new MapCell(CIRCLET_LIST, "other", { change: changeArtifactCell }),
-    astar: new RangeCell(1, ARTIFACT_STAR_MAX, { change: changeArtifactStarCell }),
-    alevel: new ArtifactLevelCell(),
-    asmain: new BonusListCell(ARTIFACT_SANDS),
-    agmain: new BonusListCell(ARTIFACT_GOBLET),
-    acmain: new BonusListCell(ARTIFACT_CIRCLET),
-    asub1: new BonusListCell(ARTIFACT_SUB, { change: changeArtifactSubCell }),
-    asub2: new BonusListCell(ARTIFACT_SUB, { change: changeArtifactSubCell }),
-    asub3: new BonusListCell(ARTIFACT_SUB, { change: changeArtifactSubCell }),
-    asub4: new BonusListCell(ARTIFACT_SUB, { change: changeArtifactSubCell }),
-    aval1: new ArtifactSubCell(),
-    aval2: new ArtifactSubCell(),
-    aval3: new ArtifactSubCell(),
-    aval4: new ArtifactSubCell(),
+    flower_name: new MapCell(FLOWER_LIST, { change: changeArtifactCell }),
+    feather_name: new MapCell(FEATHER_LIST, { change: changeArtifactCell }),
+    sands_name: new MapCell(SANDS_LIST, { change: changeArtifactCell }),
+    goblet_name: new MapCell(GOBLET_LIST, { change: changeArtifactCell }),
+    circlet_name: new MapCell(CIRCLET_LIST, { change: changeArtifactCell }),
+    art_star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: changeArtifactStarCell }),
+    art_level: new ArtifactLevelCell({ change: changeArtifactLevelCell }),
+    flower_main: new SingleBonusCell("hp_buf"),
+    feather_main: new SingleBonusCell("atk_buf"),
+    sands_main: new MultiBonusCell(ARTIFACT_SANDS, { change: changeArtifactMainCell }),
+    goblet_main: new MultiBonusCell(ARTIFACT_GOBLET, { change: changeArtifactMainCell }),
+    circlet_main: new MultiBonusCell(ARTIFACT_CIRCLET, { change: changeArtifactMainCell }),
+    art_sub1: new BonusValueCell(ARTIFACT_SUB),
+    art_sub2: new BonusValueCell(ARTIFACT_SUB),
+    art_sub3: new BonusValueCell(ARTIFACT_SUB),
+    art_sub4: new BonusValueCell(ARTIFACT_SUB),
     // 装備
-    eqchara: new EquipmentCell("tbl_chara", "cname", { change: changeEquipCharaCell }),
+    eqchara: new EquipmentCell("chara", { change: changeEquipCharaCell }),
     eqweapon: new EquipWeaponCell(),
-    eqflower: new EquipmentCell("tbl_flower", "awname"),
-    eqfeather: new EquipmentCell("tbl_feather", "afname"),
-    eqsands: new EquipmentCell("tbl_sands", "asname"),
-    eqgoblet: new EquipmentCell("tbl_goblet", "agname"),
-    eqcirclet: new EquipmentCell("tbl_circlet", "acname")
+    eqflower: new EquipmentCell("flower"),
+    eqfeather: new EquipmentCell("feather"),
+    eqsands: new EquipmentCell("sands"),
+    eqgoblet: new EquipmentCell("goblet"),
+    eqcirclet: new EquipmentCell("circlet")
 }
 
 let g_updated = false;
@@ -275,7 +267,7 @@ function getDefault(cap) {
 // テーブルへ1行追加
 function addRow(tbl, values) {
     let builder = CellBuilder;
-    let rid = getRid(tbl.id);
+    let rid = getRid(tbl.id.replace("tbl_", ""));
     let row = tbl.insertRow();
     row.id = rid;
 
@@ -365,15 +357,12 @@ function changeValue() {
 
 // キャラクターセルの変更
 function changeCharaCell(e) {
-    // e.target == select#cname
+    // e.target == td#chara_name.select
     let key = e.target.value;
     let tr = e.target.parentNode.parentNode;
 
     // 追加効果変更
-    CellBuilder.sptype.update(tr.querySelector("td#sptype"), key);
-
-    // 追加効果の値変更
-    CellBuilder.spval.update(tr.querySelector("td#spval"), key);
+    CellBuilder.special.update(tr.querySelector("td#special"), key);
 
     let charas = Array.from(document.querySelectorAll("table#tbl_equip td#eqchara"));
 
@@ -394,7 +383,7 @@ function changeCharaCell(e) {
         let cells = Array.from(document.querySelectorAll("table#tbl_equip td#eqweapon"));
         for (let i = 0, len = cells.length; i < len; ++i) {
             // 変更したキャラクターを装備しているか
-            if (Cell.getSelectValue(charas[i]) === id) {
+            if (charas[i].children[0].value === id) {
                 builder.update(cells[i], items, weapon);
             }
         }
@@ -403,7 +392,7 @@ function changeCharaCell(e) {
 
 // 武器セルの変更
 function changeWeaponCell(e) {
-    // e.target == select#w?name
+    // e.target == td#*_name.select
     let key = e.target.value;
     let td = e.target.parentNode;
     let tr = td.parentNode;
@@ -412,36 +401,27 @@ function changeWeaponCell(e) {
     let second = td.id.replace("name", "second");
     CellBuilder[second].update(tr.querySelector("td#" + second), key);
 
-    // 追加効果の値変更
-    let secval = td.id.replace("name", "secval");
-    CellBuilder[secval].update(tr.querySelector("td#" + secval), key);
-
     // 装備タブの武器更新（変更した武器種をすべて更新）
-    let weapon = tr.parentNode.parentNode.id.slice(4);
+    let weapon = td.id.replace("_name", "");
     let builder = CellBuilder.eqweapon;
     let items = builder.items(weapon);
     let cells = Array.from(document.querySelectorAll("table#tbl_equip td#eqweapon"));
     for (let i = 0, len = cells.length; i < len; ++i) {
         let cell = cells[i];
-        // 変更した武器種を装備しているか（tr[id]の一部に武器種が含まれているか）
-        if (0 <= Cell.getSelectValue(cell).indexOf(weapon)) {
+        // 変更した武器種を装備しているか
+        if (0 <= cell.children[0].value.indexOf(weapon)) {
             builder.update(cell, items, weapon);
         }
     }
 }
 
-const ARTIFACT_TABLE = {
-    awname: "eqflower",
-    afname: "eqfeather",
-    asname: "eqsands",
-    agname: "eqgoblet",
-    acname: "eqcirclet"
-};
-
 // 聖遺物セルの変更
 function changeArtifactCell(e) {
+    // e.target == td#*_name.select
+    let td = e.target.parentNode;
+    let id = "eq" + td.id.replace("_name", "");
+
     // 装備タブの聖遺物更新
-    let id = ARTIFACT_TABLE[e.target.parentNode.id];
     let builder = CellBuilder[id];
     let items = builder.items;
     let cells = Array.from(document.querySelectorAll("table#tbl_equip td#" + id));
@@ -452,34 +432,54 @@ function changeArtifactCell(e) {
 
 // 聖遺物☆セルの変更
 function changeArtifactStarCell(e) {
-    // e.target == select#astar
-    let key = e.target.value;
+    // e.target == td#art_star.select
+    let star = parseInt(e.target.value);
     let tr = e.target.parentNode.parentNode;
 
     // 聖遺物レベルの変更
-    CellBuilder.alevel.update(tr.querySelector("td#alevel"), key);
+    let cell = tr.querySelector("td#art_level");
+    CellBuilder.art_level.update(cell, star);
+    let level = CellBuilder.art_level.value(cell);
+
+    // 聖遺物メイン効果の変更
+    let main = tr.id.split("_")[0] + "_main";
+    CellBuilder[main].update(tr.querySelector(`td#${main}`), star, level);
 }
 
-// 聖遺物サブ効果の変更
-function changeArtifactSubCell(e) {
-    // e.target == select#asub?
-    let value = e.target.value;
+// 聖遺物レベルセルの変更
+function changeArtifactLevelCell(e) {
+    // e.target == td#art_level.select
+    let level = parseInt(e.target.value);
+    let tr = e.target.parentNode.parentNode;
+
+    let star = CellBuilder.art_star.value(tr.querySelector("td#art_star"));
+
+    // 聖遺物メイン効果の変更
+    let main = tr.id.split("_")[0] + "_main";
+    CellBuilder[main].update(tr.querySelector(`td#${main}`), star, level);
+}
+
+// 聖遺物メイン効果セルの変更
+function changeArtifactMainCell(e) {
+    // e.target == td#*_main.select
     let td = e.target.parentNode;
     let tr = td.parentNode;
 
-    // サブ効果の値変更
-    let avalx = td.id.replace("sub", "val");
-    CellBuilder[avalx].update(tr.querySelector("td#" + avalx), value);
+    let star = CellBuilder.art_star.value(tr.querySelector("td#art_star"));
+    let level = CellBuilder.art_level.value(tr.querySelector("td#art_level"));
+
+    // 聖遺物メイン効果の更新
+    CellBuilder[td.id].update(td, star, level);
 }
 
 // 装備キャラクターの更新
 function changeEquipCharaCell(e) {
-    // e.target == select#eqchara
+    // e.target == td#eqchara.select
     let value = e.target.value;
 
     // 装備タブの武器更新（変更したキャラクターの武器種を変更）
-    let tr = document.querySelector("table#tbl_chara tr#" + value);
-    let weapon = CHARACTER[Cell.getSelectValue(tr.cells[1])].weapon;
+    let td = document.querySelector(`table#tbl_chara tr#${value} td#chara_name`);
+    let weapon = CHARACTER[td.children[0].value].weapon;
     let builder = CellBuilder.eqweapon;
     let items = builder.items(weapon);
     let cell = e.target.parentNode.nextElementSibling;
@@ -540,24 +540,25 @@ function updateTeam() {
 
 // チームメンバーの更新
 function updateTeamMember(id) {
+    let builders = CellBuilder;
     let equips = document.querySelector("table#tbl_equip tr#" + id).cells;
     let status = new Status();
 
     // キャラクターのステータスチェック
     let weapon = (equip => {
-        let value = Cell.getSelectValue(equip); // キャラクターのtr[id]
-        let cells = document.querySelector("table#tbl_chara tr#" + value).cells;
-        let item = CHARACTER[Cell.getSelectValue(cells[1])];
+        let cells = builders.eqchara.value(equip).cells;
+        let item = CHARACTER[cells[1].children[0].value];
 
         status.chara = item;
-        status.lv = Cell.getSelectValue(cells[2]);
-        status.base_hp = parseFloat(Cell.getInputValue(cells[3]));
-        status.base_atk = parseFloat(Cell.getInputValue(cells[4]));
-        status.base_def = parseFloat(Cell.getInputValue(cells[5]));
-        status[item.special] = parseFloat(Cell.getInputValue(cells[7]));
-        status.talent[0] = parseFloat(Cell.getSelectValue(cells[8]));
-        status.talent[1] = parseFloat(Cell.getSelectValue(cells[9]));
-        status.talent[2] = parseFloat(Cell.getSelectValue(cells[10]));
+        status.lv = builders.chara_level.value(cells[2]);
+        status.base_hp = builders.hp.value(cells[3]);
+        status.base_atk = builders.atk.value(cells[4]);
+        status.base_def = builders.def.value(cells[5]);
+        let pair = builders.special.value(cells[6]);
+        status[pair.key] = pair.value;
+        status.talent[0] = builders.talent_combat.value(cells[7]);
+        status.talent[1] = builders.talent_skill.value(cells[8]);
+        status.talent[2] = builders.talent_burst.value(cells[9]);
 
         // TODO: 天賦によるボーナス追加
 
@@ -566,13 +567,13 @@ function updateTeamMember(id) {
 
     // 武器のステータスチェック
     (equip => {
-        let value = Cell.getSelectValue(equip); // 武器のtr[id]
-        let cells = document.querySelector(`table#tbl_${weapon} tr#${value}`).cells;
-        let item = WEAPON_LIST[weapon][Cell.getSelectValue(cells[1])];
+        let cells = builders.eqweapon.value(equip, weapon).cells;
+        let item = WEAPON_LIST[weapon][cells[1].children[0].value];
 
-        let rank = parseInt(Cell.getSelectValue(cells[2]));
-        status.base_atk += parseFloat(Cell.getInputValue(cells[3]));
-        status[item.second] += parseFloat(Cell.getInputValue(cells[5]));
+        let rank = builders.weapon_rank.value(cells[2]);
+        status.base_atk += builders.atk.value(cells[3]);
+        let pair = builders[weapon + "_second"].value(cells[4]);
+        status[pair.key] += pair.value;
 
         // 武器ボーナス追加
         let bonus = item.passive;
@@ -591,47 +592,20 @@ function updateTeamMember(id) {
         }
     })(equips[2]);
 
-    // 聖遺物（花・羽）のステータスチェック
-    let getArtifact2 = (equip, type, main) => {
-        let value = Cell.getSelectValue(equip); // 聖遺物・花のtr[id]
-        let cells = document.querySelector(`table#tbl_${type} tr#${value}`).cells;
-        let item = Cell.getSelectValue(cells[1]);
+    // 聖遺物のステータスチェック
+    let getArtifact = (equip, type) => {
+        let cells = builders["eq" + type].value(equip).cells;
+        let item = cells[1].children[0].value;
 
         // メイン効果追加
-        let star = parseInt(Cell.getSelectValue(cells[2]));
-        let level = parseInt(Cell.getSelectValue(cells[3]));
-        status[main] += getArtifactParam(star, level, main);
+        let pair = builders[type + "_main"].value(cells[4]);
+        status[pair.key] += pair.value;
 
         // サブ効果追加
-        for (let i = 0; i < 4; ++i) {
-            let bonus = Cell.getSelectValue(cells[4 + i * 2]);
-            if (bonus !== "other") {
-                status[bonus] += parseFloat(Cell.getInputValue(cells[4 + i * 2 + 1]));
-            }
-        }
-
-        return item;
-    };
-
-    // 聖遺物（砂・杯・冠）のステータスチェック
-    let getArtifact3 = (equip, type) => {
-        let value = Cell.getSelectValue(equip); // 聖遺物のtr[id]
-        let cells = document.querySelector(`table#tbl_${type} tr#${value}`).cells;
-        let item = Cell.getSelectValue(cells[1]);
-
-        // メイン効果追加
-        let star = parseInt(Cell.getSelectValue(cells[2]));
-        let level = parseInt(Cell.getSelectValue(cells[3]));
-        let main = Cell.getSelectValue(cells[4]);
-        if (main !== "other") {
-            status[main] += getArtifactParam(star, level, main);
-        }
-
-        // サブ効果追加
-        for (let i = 0; i < 4; ++i) {
-            let bonus = Cell.getSelectValue(cells[5 + i * 2]);
-            if (bonus !== "other") {
-                status[bonus] += parseFloat(Cell.getInputValue(cells[5 + i * 2 + 1]));
+        for (let i = 1; i <= 4; ++i) {
+            let pair = builders["art_sub" + i].value(cells[4 + i]);
+            if (pair.key !== "other") {
+                status[pair.key] += pair.value;
             }
         }
 
@@ -639,11 +613,11 @@ function updateTeamMember(id) {
     };
 
     let items = [
-        getArtifact2(equips[3], "flower", "hp"),
-        getArtifact2(equips[4], "feather", "atk_buf"),
-        getArtifact3(equips[5], "sands"),
-        getArtifact3(equips[6], "goblet"),
-        getArtifact3(equips[7], "circlet"),
+        getArtifact(equips[3], "flower"),
+        getArtifact(equips[4], "feather"),
+        getArtifact(equips[5], "sands"),
+        getArtifact(equips[6], "goblet"),
+        getArtifact(equips[7], "circlet"),
     ];
     // let circlet = items[4];
     items.sort();
