@@ -683,6 +683,72 @@ class DictBonusCell extends BonusValueCell {
     }
 };
 
+// 装備詳細
+class EquipmentDetail {
+    static outputLine(cell, row, idx, prefix) {
+        let elem = row.cells[idx];
+        if (!!elem) {
+            cell.appendChild(document.createElement("br"));
+            cell.appendChild(document.createTextNode(prefix + elem.children[0].value));
+        }
+    }
+
+    static outputBonus(cell, item, idx) {
+        let elem = item.cells[idx].firstElementChild;
+        let key = elem.value;
+        if ((key in BonusValue) && (key !== "other")) {
+            let bonus = BonusValue[key];
+            let label = bonus.name.replace("(%)", "");
+            let value = elem.nextElementSibling.value;
+            let suffix = (bonus instanceof RateBonus) ? "%" : "";
+
+            cell.appendChild(document.createElement("br"));
+            cell.appendChild(document.createTextNode(`${label} +${value}${suffix}`));
+        }
+    }
+
+    static outputChara(cell, item) {
+        EquipmentDetail.outputLine(cell, item, 2, "Lv."); // chara_level
+        EquipmentDetail.outputLine(cell, item, 3, "HP:"); // hp
+        EquipmentDetail.outputLine(cell, item, 4, "攻撃力:"); // atk
+        EquipmentDetail.outputLine(cell, item, 5, "防御力:"); // def
+    }
+
+    static outputWeapon(cell, item) {
+        EquipmentDetail.outputLine(cell, item, 2, "錬成:"); // weapon_rank
+        EquipmentDetail.outputLine(cell, item, 3, "攻撃力 +"); // atk
+        EquipmentDetail.outputBonus(cell, item, 4); // *_second
+    }
+
+    static outputArtifact(cell, item) {
+        EquipmentDetail.outputBonus(cell, item, 4); // *_main
+        EquipmentDetail.outputBonus(cell, item, 5); // art_sub1
+        EquipmentDetail.outputBonus(cell, item, 6); // art_sub2
+        EquipmentDetail.outputBonus(cell, item, 7); // art_sub3
+        EquipmentDetail.outputBonus(cell, item, 8); // art_sub4
+    }
+
+    static OutputTable = {
+        chara: EquipmentDetail.outputChara,
+        sword: EquipmentDetail.outputWeapon,
+        claymore: EquipmentDetail.outputWeapon,
+        polearm: EquipmentDetail.outputWeapon,
+        bow: EquipmentDetail.outputWeapon,
+        catalyst: EquipmentDetail.outputWeapon,
+        flower: EquipmentDetail.outputArtifact,
+        feather: EquipmentDetail.outputArtifact,
+        sands: EquipmentDetail.outputArtifact,
+        goblet: EquipmentDetail.outputArtifact,
+        circlet: EquipmentDetail.outputArtifact
+    };
+
+    static output(cell, item, type) {
+        if (type in EquipmentDetail.OutputTable) {
+            EquipmentDetail.OutputTable[type](cell, item);
+        }
+    }
+};
+
 // 装備セル
 class EquipmentCell extends Cell {
     constructor(type, listeners = null) {
@@ -700,6 +766,8 @@ class EquipmentCell extends Cell {
     }
 
     load(cell, id, values) {
+        cell.className = "equip";
+
         // 正規化
         let value = parseInt(values[id]);
         if (Number.isNaN(value)) {
@@ -713,14 +781,34 @@ class EquipmentCell extends Cell {
         let child = document.createElement("select");
         for (let i = 0, len = items.length; i < len; ++i) {
             let item = items[i];
+
+            // 文字が長い場合は短縮表示
+            // TODO: 他言語は要調整
+            let label = Cell.getSelectLabel(item);
+            if (7 < label.length) {
+                label = label.slice(0, 6) + "…";
+            }
+
             let opt = document.createElement("option");
             opt.value = item.parentNode.id; // tr[id] を保持する
-            opt.label = `${i + 1}.${Cell.getSelectLabel(item)}`;
+            opt.label = `${i + 1}.${label}`;
             opt.selected = (index === i);
             child.appendChild(opt);
         }
+        super._listen(cell, child);
 
-        return super._listen(cell, child);
+        // 詳細情報の更新処理を追加
+        child.addEventListener("change", e => {
+            let td = e.target.parentNode;
+            while (td.firstChild != td.lastChild) {
+                td.lastChild.remove();
+            }
+            EquipmentDetail.output(td, this.value(td), this.type);
+        });
+        // 初回の詳細情報を表示
+        EquipmentDetail.output(cell, this.value(cell), this.type);
+
+        return child;
     }
 
     save(cell) {
@@ -729,7 +817,7 @@ class EquipmentCell extends Cell {
     }
 
     update(cell, names) {
-        let row = document.querySelector(`table#tbl_${this.type} tr#${cell.children[0].value}`);
+        let row = this.value(cell);
         let index = !!row ? (row.rowIndex - 2) : 0;
         super._clear(cell);
         this._build(cell, index, names);

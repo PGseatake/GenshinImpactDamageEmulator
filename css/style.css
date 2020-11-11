@@ -26,6 +26,7 @@ th {
     border: 1px solid gray;
     padding: 2px 2px;
     text-align: center;
+    font-size: 0.9em;
 }
 
 th.team {
@@ -36,11 +37,19 @@ td {
     border: 1px solid gray;
     padding: 2px;
     text-align: center;
+    font-size: 0.9em;
 }
 
 td.bonus {
     text-align: left;
     width: 7em;
+}
+
+td.equip {
+    vertical-align: top;
+    text-align: left;
+    font-size: 0.7em;
+    min-width: 11em;
 }
 
 input.import {
