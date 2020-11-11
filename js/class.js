@@ -282,8 +282,8 @@ class ArtifactLevelCell extends RangeCell {
     }
 };
 
-// キャラクターレベルセル
-class CharacterLevelCell extends Cell {
+// 突破レベルセル
+class AscensionLevelCell extends Cell {
     constructor(listeners = null) {
         super(listeners);
     }
@@ -301,7 +301,7 @@ class CharacterLevelCell extends Cell {
 
         let child = document.createElement("select");
         // 連番option追加
-        for (let i = 1; i <= CHARA_LV_MAX; ++i) {
+        for (let i = 1; i <= ASCENSION_LV_MAX; ++i) {
             let lv = String(i);
             let opt = document.createElement("option");
             opt.value = lv;
@@ -310,7 +310,7 @@ class CharacterLevelCell extends Cell {
             child.appendChild(opt);
 
             // 特定のレベルで突破分を追加
-            if (0 <= CHARA_LV_STEP.indexOf(i)) {
+            if (0 <= ASCENSION_LV_STEP.indexOf(i)) {
                 lv += "+";
                 opt = document.createElement("option");
                 opt.value = lv;
@@ -715,9 +715,10 @@ class EquipmentDetail {
     }
 
     static outputWeapon(cell, item) {
-        EquipmentDetail.outputLine(cell, item, 2, "錬成:"); // weapon_rank
-        EquipmentDetail.outputLine(cell, item, 3, "攻撃力 +"); // atk
-        EquipmentDetail.outputBonus(cell, item, 4); // *_second
+        EquipmentDetail.outputLine(cell, item, 2, "Lv."); // weapon_level
+        EquipmentDetail.outputLine(cell, item, 3, "錬成:"); // weapon_rank
+        EquipmentDetail.outputLine(cell, item, 4, "攻撃力 +"); // atk
+        EquipmentDetail.outputBonus(cell, item, 5); // *_second
     }
 
     static outputArtifact(cell, item) {
@@ -943,7 +944,7 @@ class ElemBuffParam extends RateParam {
     }
 };
 
-// ダメージパラメータ向け
+// ダメージパラメータ向け（元素反応もこちらを使用）
 class DamageParam extends RateParam {
     constructor(param) {
         super(param);

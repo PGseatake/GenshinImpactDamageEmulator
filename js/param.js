@@ -1,5 +1,5 @@
-const CHARA_LV_STEP = [20, 40, 50, 60, 70, 80];
-const CHARA_LV_MAX = 90;
+const ASCENSION_LV_STEP = [20, 40, 50, 60, 70, 80];
+const ASCENSION_LV_MAX = 90;
 const TALENT_LV_MAX = 15;
 
 class Status {
@@ -36,6 +36,23 @@ class Status {
         this.heavy_cri = 0.0;
         this.skill_dmg = 0.0;
         this.burst_dmg = 0.0;
+    }
+
+    // https://www.reddit.com/r/Genshin_Impact/comments/j580by/elemental_mastery_damage_increase/
+    get elem_react() {
+        return this.elem * Math.pow(Math.E, -0.000505 * this.elem);
+    }
+
+    // 元素反応・増幅
+    get elem_ampl() {
+        // 0.453633528 * EM * EXP(-0.000505 * EM)
+        return 0.453633528 * this.elem_react;
+    }
+
+    // 元素反応・転化
+    get elem_trans() {
+        // 0.189266831 * EM * EXP(-0.000505 * EM)
+        return 0.189266831 * this.elem_react;
     }
 };
 

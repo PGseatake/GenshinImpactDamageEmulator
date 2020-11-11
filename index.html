@@ -53,13 +53,13 @@
                 <tbody>
                     <tr>
                         <th>装備</th>
-                        <th rowspan="22"></th>
+                        <th rowspan="24"></th>
                         <td id="player1" colspan="2"><select onchange="changeTeamMember(0)"></select></td>
-                        <th rowspan="22"></th>
+                        <th rowspan="24"></th>
                         <td id="player2" colspan="2"><select onchange="changeTeamMember(1)"></select></td>
-                        <th rowspan="22"></th>
+                        <th rowspan="24"></th>
                         <td id="player3" colspan="2"><select onchange="changeTeamMember(2)"></select></td>
-                        <th rowspan="22"></th>
+                        <th rowspan="24"></th>
                         <td id="player4" colspan="2"><select onchange="changeTeamMember(3)"></select></td>
                     </tr>
                     <tr>
@@ -117,6 +117,28 @@
                         <td>0</td>
                         <td>0</td>
                     </tr>
+                    <tr id="elem_ampl">
+                        <th>- 増幅反応<sup>*1</sup></th>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="elem_trans">
+                        <th>- 転化反応<sup>*2</sup></th>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                    </tr>
                     <tr id="cri_rate">
                         <th>会心率</th>
                         <td>5.0%</td>
@@ -140,7 +162,7 @@
                         <td>0.0%</td>
                     </tr>
                     <tr id="en_rec">
-                        <th>元素チャージ効率</th>
+                        <th>元素ﾁｬｰｼﾞ効率</th>
                         <td>100.0%</td>
                         <td>0.0%</td>
                         <td>100.0%</td>
@@ -295,6 +317,8 @@
                     </tr>
                 </tbody>
             </table>
+            <p class="repletion">*1 元素反応の蒸発、融解</p>
+            <p class="repletion">*2 元素反応の過負荷、超伝導、感電、氷砕き、拡散</p>
         </div>
         <input id="tab_chara" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_chara">キャラクター</label>
@@ -331,6 +355,7 @@
                     <tr>
                         <th id="index">No</th>
                         <th id="sword_name">名前</th>
+                        <th id="weapon_level">Lv.</th>
                         <th id="weapon_rank">錬成</th>
                         <th id="atk">攻撃力</th>
                         <th id="sword_second">追加効果</th>
@@ -349,6 +374,7 @@
                     <tr>
                         <th id="index">No</th>
                         <th id="claymore_name">名前</th>
+                        <th id="weapon_level">Lv.</th>
                         <th id="weapon_rank">錬成</th>
                         <th id="atk">攻撃力</th>
                         <th id="claymore_second">追加効果</th>
@@ -367,6 +393,7 @@
                     <tr>
                         <th id="index">No</th>
                         <th id="polearm_name">名前</th>
+                        <th id="weapon_level">Lv.</th>
                         <th id="weapon_rank">錬成</th>
                         <th id="atk">攻撃力</th>
                         <th id="polearm_second">追加効果</th>
@@ -385,6 +412,7 @@
                     <tr>
                         <th id="index">No</th>
                         <th id="bow_name">名前</th>
+                        <th id="weapon_level">Lv.</th>
                         <th id="weapon_rank">錬成</th>
                         <th id="atk">攻撃力</th>
                         <th id="bow_second">追加効果</th>
@@ -403,6 +431,7 @@
                     <tr>
                         <th id="index">No</th>
                         <th id="catalyst_name">名前</th>
+                        <th id="weapon_level">Lv.</th>
                         <th id="weapon_rank">錬成</th>
                         <th id="atk">攻撃力</th>
                         <th id="catalyst_second">追加効果</th>

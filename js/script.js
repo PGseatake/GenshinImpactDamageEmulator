@@ -27,7 +27,7 @@ const CellBuilder = {
     index: new IndexCell(),
     // キャラクター
     chara_name: new DictCell(CHARACTER, "name", { change: changeCharaCell }),
-    chara_level: new CharacterLevelCell(),
+    chara_level: new AscensionLevelCell(),
     special: new DictBonusCell("chara_name", CHARACTER, "special"),
     talent_combat: new TalentCell(1, TALENT_LV_MAX),
     talent_skill: new TalentCell(1, TALENT_LV_MAX),
@@ -43,6 +43,7 @@ const CellBuilder = {
     polearm_second: new DictBonusCell("polearm_name", POLEARM_LIST, "second"),
     bow_second: new DictBonusCell("bow_name", BOW_LIST, "second"),
     catalyst_second: new DictBonusCell("catalyst_name", CATALYST_LIST, "second"),
+    weapon_level: new AscensionLevelCell(),
     weapon_rank: new RangeCell(1, WEAPON_RANK_MAX),
     // 聖遺物
     flower_name: new MapCell(FLOWER_LIST, { change: changeArtifactCell }),
@@ -96,8 +97,17 @@ function loadTableData(name) {
 
         // htmlに展開
         let tbl = document.getElementById(name);
+        let init = getDefault(tbl.rows[1]);
         for (let i = 0, len = data.length; i < len; ++i) {
-            addRow(tbl, data[i]);
+            // データのない項目を初期値で設定
+            let line = data[i];
+            for (let key in init) {
+                if (!(key in line)) {
+                    line[key] = init[key];
+                }
+            }
+
+            addRow(tbl, line);
         }
     }
 }
@@ -652,6 +662,8 @@ const ParamBuilder = {
     atk: new BaseParam("atk"),
     def: new BaseParam("def"),
     elem: new Param("elem"),
+    elem_ampl: new DamageParam("elem_ampl"),
+    elem_trans: new DamageParam("elem_trans"),
     cri_rate: new RateParam("cri_rate"),
     cri_dmg: new RateParam("cri_dmg"),
     en_rec: new RateParam("en_rec"),
