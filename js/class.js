@@ -11,6 +11,8 @@
 // そのまま使用すると空セルになる
 // 各関数の引数 cell は td 要素を指定する
 class Cell {
+    static onChange = null;
+
     static getInputValue(cell) {
         return cell.children[0].value;
     }
@@ -46,6 +48,7 @@ class Cell {
 
     _listen(cell, child) {
         // childに外部リスナーを登録
+        child.addEventListener("change", Cell.onChange);
         if (!!this.listeners) {
             for (let type in this.listeners) {
                 child.addEventListener(type, this.listeners[type]);
@@ -521,13 +524,6 @@ class BonusCell extends Cell {
 
         return child;
     }
-
-    _single(cell) {
-        // select要素以外を削除
-        while (cell.firstChild != cell.lastChild) {
-            cell.lastChild.remove();
-        }
-    }
 };
 
 // ボーナスリストセル
@@ -555,7 +551,10 @@ class BonusListCell extends BonusCell {
     }
 
     update(cell, star, level) {
-        super._single(cell);
+        // select要素以外を削除
+        while (cell.firstChild != cell.lastChild) {
+            cell.lastChild.remove();
+        }
 
         let bonus = cell.children[0].value;
         let builder = BonusValue[bonus].cell(this.listeners);
@@ -645,10 +644,16 @@ class BonusValueCell extends BonusCell {
 
     _change(select) {
         let cell = select.parentNode;
-        super._single(cell);
+
+        // select要素以外を削除
+        while (cell.firstChild != cell.lastChild) {
+            cell.lastChild.remove();
+        }
 
         let bonus = BonusValue[select.value];
         bonus.cell(this.listeners).build(cell, bonus.init);
+
+        Cell.onChange();
     }
 };
 

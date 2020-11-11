@@ -79,6 +79,8 @@ let g_identify = 0;
 window.onload = () => {
     g_def_title = document.title;
 
+    Cell.onChange = changeValue;
+
     loadData();
 };
 
@@ -288,15 +290,9 @@ function addRow(tbl, values) {
         let id = cap[i].id;
         cel.id = id;
 
+        // セル追加
         if (id in builder) {
-            // セル追加
-            let child = builder[id].load(cel, id, values);
-            if (child != null) {
-                child.addEventListener("change", changeValue);
-            }
-        } else {
-            row.remove();
-            break;
+            builder[id].load(cel, id, values);
         }
     }
 
@@ -338,7 +334,6 @@ function removeRow(e) {
     let row = e.target.parentNode.parentNode;
     let yes = confirm(`No.${row.rowIndex - 1}を削除します。よろしいですか？`);
     if (yes) {
-        // TODO: ブラウザによって<tbody>があったりなかったりする？
         let tbl = row.parentNode.parentNode;
 
         // e.target == button
