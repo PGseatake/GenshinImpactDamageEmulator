@@ -2,6 +2,7 @@
 
 const VERSION = "0.01";
 
+// TODO: 多言語対応
 const TABLE_LIST = {
     tbl_chara: "キャラクター",
     tbl_sword: "片手剣",
@@ -154,6 +155,7 @@ function saveTableData(name) {
 }
 
 // データ削除前の確認
+// TODO: 多言語対応
 function clearConfirm(all) {
     if (all) {
         let yes = confirm("すべてのタブの内容が破棄されます。よろしいですか？");
@@ -217,6 +219,7 @@ function exportData() {
 }
 
 // インポート前の確認
+// TODO: 多言語対応
 function importConfirm() {
     let yes = confirm("すべてのタブの内容が上書きされます。よろしいですか？");
     if (yes) {
@@ -317,7 +320,7 @@ function addRow(tbl, values) {
     let btn = document.createElement("button");
     btn.id = rid;
     btn.type = "button";
-    btn.addEventListener("click", removeRow);
+    btn.addEventListener("click", removeConfirm);
     btn.appendChild(document.createTextNode("-"));
     add.appendChild(btn);
 }
@@ -326,34 +329,37 @@ function addRow(tbl, values) {
 function insertRow(name) {
     let tbl = document.getElementById(name);
     addRow(tbl, getDefault(tbl.rows[1])); // caption行は2行目
-    changeValue();
+    changeValue(null);
 }
 
-// 1行削除
-function removeRow(e) {
+// 削除確認
+// TODO: 多言語対応
+function removeConfirm(e) {
     let row = e.target.parentNode.parentNode;
     let yes = confirm(`No.${row.rowIndex - 1}を削除します。よろしいですか？`);
     if (yes) {
-        let tbl = row.parentNode.parentNode;
-
-        // e.target == button
-        document.getElementById(e.target.id).remove();
-
-        // indexの再設定
-        let builder = CellBuilder.index;
-        let rows = tbl.rows;
-        for (let i = 2, len = rows.length; i < len; ++i) {
-            builder.update(rows[i].cells[0]);
-        }
-
-        // TODO: 削除したものを使用している他タブの要素をどうする？
-
-        changeValue();
+        removeRow(row, e.target.id);
     }
 }
 
+// 1行削除
+function removeRow(row, id) {
+    document.getElementById(id).remove();
+
+    // indexの再設定
+    let builder = CellBuilder.index;
+    let rows = row.parentNode.parentNode.rows;
+    for (let i = 2, len = rows.length; i < len; ++i) {
+        builder.update(rows[i].cells[0]);
+    }
+
+    // TODO: 削除したものを使用している他タブの要素をどうする？
+
+    changeValue(null);
+}
+
 // 値変更
-function changeValue() {
+function changeValue(e) {
     if (!g_updated) {
         g_updated = true
         document.title = "* " + g_def_title;
@@ -575,9 +581,10 @@ function updateTeamMember(id) {
         let cells = builders.eqweapon.value(equip, weapon).cells;
         let item = WEAPON_LIST[weapon][cells[1].children[0].value];
 
-        let rank = builders.weapon_rank.value(cells[2]);
-        status.base_atk += builders.atk.value(cells[3]);
-        let pair = builders[weapon + "_second"].value(cells[4]);
+        let level = builders.weapon_level.value(cells[2]);
+        let rank = builders.weapon_rank.value(cells[3]);
+        status.base_atk += builders.atk.value(cells[4]);
+        let pair = builders[weapon + "_second"].value(cells[5]);
         status[pair.key] += pair.value;
 
         // 武器ボーナス追加

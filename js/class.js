@@ -95,6 +95,9 @@ class IntCell extends Cell {
         child.pattern = "[0-9]*";
         child.className = "numeric";
 
+        child.addEventListener("focus", this._focus);
+        child.addEventListener("blur", this._blur);
+
         return super._listen(cell, child);
     }
 
@@ -104,6 +107,20 @@ class IntCell extends Cell {
 
     value(cell) {
         return parseInt(cell.children[0].value);
+    }
+
+    _focus(e) {
+        let input = e.target;
+        if (input.value === "0") {
+            input.value = "";
+        }
+    }
+
+    _blur(e) {
+        let input = e.target;
+        if (input.value === "") {
+            input.value = "0";
+        }
     }
 };
 
@@ -136,6 +153,9 @@ class RateCell extends Cell {
         child.pattern = "[0-9\.]*";
         child.className = "numeric";
 
+        child.addEventListener("focus", this._focus);
+        child.addEventListener("blur", this._blur);
+
         super._listen(cell, child);
         cell.appendChild(document.createTextNode("%"));
 
@@ -148,6 +168,20 @@ class RateCell extends Cell {
 
     value(cell) {
         return parseFloat(cell.children[0].value);
+    }
+
+    _focus(e) {
+        let input = e.target;
+        if (input.value === "0.0") {
+            input.value = "";
+        }
+    }
+
+    _blur(e) {
+        let input = e.target;
+        if (input.value === "") {
+            input.value = "0.0";
+        }
     }
 };
 
@@ -461,6 +495,7 @@ class EmptyBonus {
     }
 };
 
+// TODO: 多言語対応
 const BonusValue = {
     other: new EmptyBonus("その他"),
     hp: new IntBonus("HP"),
@@ -631,7 +666,7 @@ class BonusValueCell extends BonusCell {
 
     _build(cell, key, value) {
         let child = super._select(key);
-        child.addEventListener("change", e => this._change(e.target));
+        child.addEventListener("change", e => this._change(e));
         cell.appendChild(child);
 
         return BonusValue[key].cell(this.listeners).build(cell, value);
@@ -642,7 +677,8 @@ class BonusValueCell extends BonusCell {
         return [children[0].value, children[1].value];
     }
 
-    _change(select) {
+    _change(e) {
+        let select = e.target;
         let cell = select.parentNode;
 
         // select要素以外を削除
@@ -653,7 +689,7 @@ class BonusValueCell extends BonusCell {
         let bonus = BonusValue[select.value];
         bonus.cell(this.listeners).build(cell, bonus.init);
 
-        Cell.onChange();
+        Cell.onChange(e);
     }
 };
 
@@ -712,6 +748,7 @@ class EquipmentDetail {
         }
     }
 
+    // TODO: 多言語対応
     static outputChara(cell, item) {
         EquipmentDetail.outputLine(cell, item, 2, "Lv."); // chara_level
         EquipmentDetail.outputLine(cell, item, 3, "HP:"); // hp
@@ -719,6 +756,7 @@ class EquipmentDetail {
         EquipmentDetail.outputLine(cell, item, 5, "防御力:"); // def
     }
 
+    // TODO: 多言語対応
     static outputWeapon(cell, item) {
         EquipmentDetail.outputLine(cell, item, 2, "Lv."); // weapon_level
         EquipmentDetail.outputLine(cell, item, 3, "錬成:"); // weapon_rank
@@ -822,11 +860,11 @@ class EquipmentCell extends Cell {
         return String(cell.children[0].selectedIndex);
     }
 
-    update(cell, names) {
+    update(cell, items) {
         let row = this.value(cell);
         let index = !!row ? (row.rowIndex - 2) : 0;
         super._clear(cell);
-        this._build(cell, index, names);
+        this._build(cell, index, items);
     }
 
     value(cell) {

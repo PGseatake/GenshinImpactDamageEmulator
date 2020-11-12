@@ -80,12 +80,13 @@ class Bonus {
     }
 };
 
-const TEAM_BONUS = {
-    pyro: new Bonus("atk_buf", 25),
-    cryo: new Bonus("cri_rate", 15, "氷元素付着または凍結状態の敵"),
-    geo: new Bonus("any_dmg", 15, "シールドが存在する時")
-};
+// const TEAM_BONUS = {
+//     pyro: new Bonus("atk_buf", 25),
+//     cryo: new Bonus("cri_rate", 15, "氷元素付着または凍結状態の敵"),
+//     geo: new Bonus("any_dmg", 15, "シールドが存在する時")
+// };
 
+// TODO: 多言語対応
 const CHARACTER = {
     other: { name: "-", star: 1, element: "", weapon: "sword", special: "other" },
     TravelAnemo: { name: "旅人(風)", star: 5, element: "anemo", weapon: "sword", special: "atk_buf" },
