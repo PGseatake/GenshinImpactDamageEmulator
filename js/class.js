@@ -453,7 +453,7 @@ class DictCell extends Cell {
 // 整数ボーナス
 class IntBonus {
     constructor(name) {
-        this.name = name;
+        this.name = PARAM_LIST[name].select;
     }
 
     get init() {
@@ -468,7 +468,7 @@ class IntBonus {
 // 割合ボーナス
 class RateBonus {
     constructor(name) {
-        this.name = name;
+        this.name = PARAM_LIST[name].select;
     }
 
     get init() {
@@ -483,7 +483,7 @@ class RateBonus {
 // 空のボーナス
 class EmptyBonus {
     constructor(name) {
-        this.name = name;
+        this.name = PARAM_LIST[name].select;
     }
 
     get init() {
@@ -495,42 +495,25 @@ class EmptyBonus {
     }
 };
 
-// TODO: 多言語対応
 const BonusValue = {
-    other: new EmptyBonus("その他"),
-    hp: new IntBonus("HP"),
-    hp_buf: new RateBonus("HP(%)"),
-    atk: new IntBonus("攻撃力"),
-    atk_buf: new RateBonus("攻撃力(%)"),
-    atk_base: new RateBonus("基礎攻撃力"),
-    def: new IntBonus("防御力"),
-    def_buf: new RateBonus("防御力(%)"),
-    elem: new IntBonus("元素熟知"),
-    en_rec: new RateBonus("元素ﾁｬｰｼﾞ率"),
-    cri_rate: new RateBonus("会心率"),
-    cri_dmg: new RateBonus("会心ダメージ"),
-    any_dmg: new RateBonus("ダメージ"),
-    elem_dmg: new RateBonus("元素バフ"),
-    pyro_dmg: new RateBonus("炎元素バフ"),
-    hydro_dmg: new RateBonus("水元素バフ"),
-    elect_dmg: new RateBonus("雷元素バフ"),
-    anemo_dmg: new RateBonus("風元素バフ"),
-    cryo_dmg: new RateBonus("氷元素バフ"),
-    geo_dmg: new RateBonus("岩元素バフ"),
-    phys_dmg: new RateBonus("物理バフ"),
-    normal_dmg: new RateBonus("通常攻撃ダメ"),
-    heavy_dmg: new RateBonus("重撃ダメ"),
-    heavy_cri: new RateBonus("重撃会心率"),
-    skill_dmg: new RateBonus("スキルダメ"),
-    burst_dmg: new RateBonus("元素爆発ダメ"),
-    // burning_dmg: new RateBonus("燃焼ダメージ"),
-    vaporize_dmg: new RateBonus("蒸発ダメージ"),
-    melt_dmg: new RateBonus("融化ダメージ"),
-    swirl_dmg: new RateBonus("拡散ダメージ"),
-    echarge_dmg: new RateBonus("感電ダメージ"),
-    shutter_dmg: new RateBonus("氷砕きダメージ"),
-    conduct_dmg: new RateBonus("超電導ダメージ"),
-    ovreload_dmg: new RateBonus("過負荷ダメージ"),
+    other: new EmptyBonus("other"),
+    hp: new IntBonus("hp"),
+    hp_buf: new RateBonus("hp_buf"),
+    atk: new IntBonus("atk"),
+    atk_buf: new RateBonus("atk_buf"),
+    def: new IntBonus("def"),
+    def_buf: new RateBonus("def_buf"),
+    elem: new IntBonus("elem"),
+    en_rec: new RateBonus("en_rec"),
+    cri_rate: new RateBonus("cri_rate"),
+    cri_dmg: new RateBonus("cri_dmg"),
+    pyro_dmg: new RateBonus("pyro_dmg"),
+    hydro_dmg: new RateBonus("hydro_dmg"),
+    elect_dmg: new RateBonus("elect_dmg"),
+    anemo_dmg: new RateBonus("anemo_dmg"),
+    cryo_dmg: new RateBonus("cryo_dmg"),
+    geo_dmg: new RateBonus("geo_dmg"),
+    phys_dmg: new RateBonus("phys_dmg"),
 };
 
 // ボーナスセル

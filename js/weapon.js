@@ -1,4 +1,4 @@
-const WEAPON_RANK_MAX = 5;
+// TODO: 多言語対応（ソース全体）
 
 const SWORD_LIST = {
     other: {
