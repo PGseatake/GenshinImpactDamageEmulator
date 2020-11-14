@@ -53,14 +53,14 @@
                 <tbody>
                     <tr>
                         <th>装備</th>
-                        <th rowspan="24"></th>
-                        <td id="player1" colspan="2"><select onchange="changeTeamMember(0)"></select></td>
-                        <th rowspan="24"></th>
-                        <td id="player2" colspan="2"><select onchange="changeTeamMember(1)"></select></td>
-                        <th rowspan="24"></th>
-                        <td id="player3" colspan="2"><select onchange="changeTeamMember(2)"></select></td>
-                        <th rowspan="24"></th>
-                        <td id="player4" colspan="2"><select onchange="changeTeamMember(3)"></select></td>
+                        <th rowspan="30"></th>
+                        <td id="chara1" colspan="2"><select onchange="changeTeamMember(0)"></select></td>
+                        <th rowspan="30"></th>
+                        <td id="chara2" colspan="2"><select onchange="changeTeamMember(1)"></select></td>
+                        <th rowspan="30"></th>
+                        <td id="chara3" colspan="2"><select onchange="changeTeamMember(2)"></select></td>
+                        <th rowspan="30"></th>
+                        <td id="chara4" colspan="2"><select onchange="changeTeamMember(3)"></select></td>
                     </tr>
                     <tr>
                         <td><button type="button" onclick="updateTeam()">更新</button></td>
@@ -116,28 +116,6 @@
                         <td>0</td>
                         <td>0</td>
                         <td>0</td>
-                    </tr>
-                    <tr id="elem_ampl">
-                        <th>- 増幅反応<sup>*1</sup></th>
-                        <td>-</td>
-                        <td>+0.0%</td>
-                        <td>-</td>
-                        <td>+0.0%</td>
-                        <td>-</td>
-                        <td>+0.0%</td>
-                        <td>-</td>
-                        <td>+0.0%</td>
-                    </tr>
-                    <tr id="elem_trans">
-                        <th>- 転化反応<sup>*2</sup></th>
-                        <td>-</td>
-                        <td>+0.0%</td>
-                        <td>-</td>
-                        <td>+0.0%</td>
-                        <td>-</td>
-                        <td>+0.0%</td>
-                        <td>-</td>
-                        <td>+0.0%</td>
                     </tr>
                     <tr id="cri_rate">
                         <th>会心率</th>
@@ -249,6 +227,90 @@
                         <td>0.0%</td>
                         <td>0.0%</td>
                     </tr>
+                    <tr>
+                        <th></th>
+                        <td colspan="2"></td>
+                        <td colspan="2"></td>
+                        <td colspan="2"></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr id="vaporize_dmg">
+                        <th>蒸発ダメ</th>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="melt_dmg">
+                        <th>融化ダメ</th>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="swirl_dmg">
+                        <th>拡散ダメ</th>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="echarge_dmg">
+                        <th>感電ダメ</th>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="shutter_dmg">
+                        <th>氷砕きダメ</th>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="conduct_dmg">
+                        <th>超電導ダメ</th>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="ovreload_dmg">
+                        <th>過負荷ダメ</th>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                        <td>+0.0%</td>
+                    </tr>
                     <tr id="normal_dmg">
                         <th>通常攻撃ダメ</th>
                         <td>-</td>
@@ -317,8 +379,6 @@
                     </tr>
                 </tbody>
             </table>
-            <p class="repletion">*1 元素反応の蒸発、融解</p>
-            <p class="repletion">*2 元素反応の過負荷、超伝導、感電、氷砕き、拡散</p>
         </div>
         <input id="tab_chara" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_chara">キャラクター</label>

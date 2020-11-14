@@ -523,7 +523,14 @@ const BonusValue = {
     heavy_cri: new RateBonus("重撃会心率"),
     skill_dmg: new RateBonus("スキルダメ"),
     burst_dmg: new RateBonus("元素爆発ダメ"),
-    react_dmg: new RateBonus("元素反応ダメ"),
+    // burning_dmg: new RateBonus("燃焼ダメージ"),
+    vaporize_dmg: new RateBonus("蒸発ダメージ"),
+    melt_dmg: new RateBonus("融化ダメージ"),
+    swirl_dmg: new RateBonus("拡散ダメージ"),
+    echarge_dmg: new RateBonus("感電ダメージ"),
+    shutter_dmg: new RateBonus("氷砕きダメージ"),
+    conduct_dmg: new RateBonus("超電導ダメージ"),
+    ovreload_dmg: new RateBonus("過負荷ダメージ"),
 };
 
 // ボーナスセル
@@ -987,13 +994,35 @@ class ElemBuffParam extends RateParam {
     }
 };
 
-// ダメージパラメータ向け（元素反応もこちらを使用）
+// ダメージパラメータ向け
 class DamageParam extends RateParam {
     constructor(param) {
         super(param);
     }
 
     set(cell, status) {
+        cell.nextElementSibling.textContent = "+" + super._text(status[this.param]);
+    }
+};
+
+// 元素反応パラメータ向け
+class ElemReactParam extends RateParam {
+    constructor(param) {
+        super(param);
+
+        switch (param) {
+            case "melt_dmg":
+            case "vaporize_dmg":
+                this.base = "elem_ampl";
+                break;
+            default:
+                this.base = "elem_trans";
+                break;
+        }
+    }
+
+    set(cell, status) {
+        cell.textContent = "+" + super._text(status[this.base]);
         cell.nextElementSibling.textContent = "+" + super._text(status[this.param]);
     }
 };

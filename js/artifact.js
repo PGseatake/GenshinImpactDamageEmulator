@@ -94,115 +94,120 @@ const ARTIFACT_SET = {
     Adventurer: {
         name: "冒険者",
         set2: new Bonus("hp", 1000), // TODO: hp_buf が係るのか検証
-        set4: null
+        set4: null,
     },
     LuckyDog: {
         name: "幸運",
         set2: new Bonus("def", 100),
-        set4: null
+        set4: null,
     },
     // Doctor: { name: "医者" },
     Instructor: {
         name: "教官",
         set2: new Bonus("elem", 80),
-        set4: new Bonus("elem", 120, "元素反応後、チーム全員", 8)
+        set4: new Bonus("elem", 120, "元素反応後", 8, 0, "all"),
     },
     Berserker: {
         name: "狂戦士",
         set2: new Bonus("cri_rate", 12),
-        set4: new Bonus("cri_rate", 24, "HP70%以下")
+        set4: new Bonus("cri_rate", 24, "HP70%以下"),
     },
     TheExile: {
         name: "亡命者",
         set2: new Bonus("en_rec", 20),
-        set4: null
+        set4: null,
     },
     Sojourner: {
         name: "旅人の心",
         set2: new Bonus("atk_buf", 18),
-        set4: new Bonus("heavy_cri", 30)
+        set4: new Bonus("heavy_cri", 30),
     },
     Artist: {
         name: "武人",
         set2: new Bonus(["normal_dmg", "heavy_dmg"], 15),
-        set4: new Bonus(["normal_dmg", "heavy_dmg"], 25, "元素スキル発動後", 8)
+        set4: new Bonus(["normal_dmg", "heavy_dmg"], 25, "元素スキル発動後", 8),
     },
     Defender: {
         name: "守護の心",
         set2: new Bonus("def_buf", 30),
-        set4: null
+        set4: null,
     },
     // Miracle: { name: "奇跡" },
     BraveHeart: {
         name: "勇士の心",
         set2: new Bonus("atk_buf", 18),
-        set4: new Bonus("any_dmg", 30, "HP50%以上の敵")
+        set4: new Bonus("any_dmg", 30, "HP50%以上の敵"),
     },
     Gambler: {
         name: "博徒",
         set2: new Bonus("skill_dmg", 20),
-        set4: null
+        set4: null,
     },
     Scholar: {
         name: "学者",
         set2: new Bonus("en_rec", 20),
-        set4: null
+        set4: null,
     },
     Gladiator: {
         name: "剣闘士のフィナーレ",
         set2: new Bonus("atk_buf", 18),
-        set4: new Bonus("normal_dmg", 35, "片手剣、両手剣、長柄武器キャラ")
+        set4: new Bonus("normal_dmg", 35, "片手剣、両手剣、長柄武器キャラ"),
     },
     // Maiden: { name: "愛される少女" },
     Noblesse: {
         name: "旧貴族のしつけ",
         set2: new Bonus("burst_dmg", 20),
-        set4: new Bonus("atk_buf", 20, "元素爆発後、チーム全員", 12)
+        set4: new Bonus("atk_buf", 20, "元素爆発後", 12, "all"),
     },
     Chivalry: {
         name: "血染めの騎士道",
         set2: new Bonus("phys_dmg", 25),
-        set4: new Bonus("heavy_dmg", 50, "敵を倒した後", 10)
+        set4: new Bonus("heavy_dmg", 50, "敵を倒した後", 10),
     },
     Troupe: {
         name: "大地を流浪する楽団",
         set2: new Bonus("elem", 80),
-        set4: new Bonus("heavy_dmg", 35, "弓、法器キャラ")
+        set4: new Bonus("heavy_dmg", 35, "弓、法器キャラ"),
     },
     Venerer: {
         name: "翆緑の影",
         set2: new Bonus("anemo_dmg", 15),
-        set4: new Bonus("react_dmg", 60, "拡散反応") // 特殊
+        set4: new Bonus("swirl_dmg", 60), // 耐性-40%付き
     },
     Fury: {
         name: "雷のような怒り",
         set2: new Bonus("elect_dmg", 15),
-        set4: new Bonus("react_dmg", 40, "過負荷、感電、超電導反応")
+        set4: new Bonus(["ovrload_dmg", "echarge_dmg", "conduct_dmg"], 40),
     },
     Thundersoother: {
         name: "雷を鎮める尊者",
         set2: null,
-        set4: new Bonus("any_dmg", 35, "雷元素の影響を受けた敵")
+        set4: new Bonus("any_dmg", 35, "雷元素の影響を受けた敵"),
     },
     CrimsonWitch: {
         name: "燃え盛る炎の魔女",
         set2: new Bonus("pyro_dmg", 15),
-        set4: new Bonus("react_dmg", 25, "過負荷、燃焼反応") // 特殊
+        set4: [
+            new Bonus("overload_dmg", 40),
+            new Bonus(["vaporize_dmg", "melt_dmg"], 15),
+            new Bonus("overload_dmg", 12.5, "元素スキル発動後", 10, 3),
+            new Bonus(["vaporize_dmg", "melt_dmg"], 7.5, "元素スキル発動後", 10, 3),
+        ],
     },
     Lavawalker: {
         name: "烈火を渡る尊者",
         set2: null,
-        set4: new Bonus("any_dmg", 35, "炎元素の影響を受けた敵")
+        set4: new Bonus("any_dmg", 35, "炎元素の影響を受けた敵"),
     },
     Petra: {
         name: "悠久の磐岩",
         set2: new Bonus("geo_dmg", 15),
-        set4: new Bonus("elem_dmg", 35, "結晶反応した元素、チーム全員", 10)
+        set4: new Bonus("elem_dmg", 35, "結晶反応した元素", 10, 0, "all"),
     },
     Bolide: {
         name: "逆飛びの流星",
         set2: null,
-        set4: new Bonus(["normal_dmg", "heavy_dmg"], 40, "シールド状態")
+        set4: new Bonus(["normal_dmg", "heavy_dmg"], 40, "シールド状態"),
     },
 };
 
@@ -354,4 +359,4 @@ const CIRCLET_LIST = {
 const ARTIFACT_SUB = ["other", "hp", "hp_buf", "atk", "atk_buf", "def", "def_buf", "elem", "en_rec", "cri_rate", "cri_dmg"]
 const ARTIFACT_SANDS = ["other", "hp_buf", "atk_buf", "def_buf", "elem", "en_rec"];
 const ARTIFACT_GOBLET = ["other", "hp_buf", "atk_buf", "def_buf", "elem", "phys_dmg", "anemo_dmg", "geo_dmg", "elect_dmg", "hydro_dmg", "pyro_dmg", "cryo_dmg"];
-const ARTIFACT_CIRCLET = ["other", "hp_buf", "atk_buf", "def_buf", "cri_rate", "cri_dmg"]
+const ARTIFACT_CIRCLET = ["other", "hp_buf", "atk_buf", "def_buf", "elem", "cri_rate", "cri_dmg"]

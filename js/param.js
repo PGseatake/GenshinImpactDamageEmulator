@@ -36,6 +36,13 @@ class Status {
         this.heavy_cri = 0.0;
         this.skill_dmg = 0.0;
         this.burst_dmg = 0.0;
+        this.melt_dmg = 0.0;
+        this.swirl_dmg = 0.0;
+        this.echarge_dmg = 0.0;
+        this.shutter_dmg = 0.0;
+        this.conduct_dmg = 0.0;
+        this.vaporize_dmg = 0.0;
+        this.ovreload_dmg = 0.0;
     }
 
     // https://www.reddit.com/r/Genshin_Impact/comments/j580by/elemental_mastery_damage_increase/
@@ -57,22 +64,23 @@ class Status {
 };
 
 class Bonus {
-    constructor(items, value, limit = null, times = 0, stack = 0) {
-        if (Array.isArray(items)) {
-            this.items = items;
-        } else {
-            this.items = [items];
-        }
+    constructor(items, value, limit = null, times = 0, stack = 0, target = "self") {
+        this.items = items;
         this.value = value;
         this.limit = limit;
         this.times = times;
         this.stack = stack;
+        this.target = target;
     }
 
     append(status, limit = null) {
         if (this.limit == limit) {
-            for (let i = 0; i < this.items.length; ++i) {
-                status[this.items[i]] += this.value;
+            if (Array.isArray(this.items)) {
+                for (let i = 0; i < this.items.length; ++i) {
+                    status[this.items[i]] += this.value;
+                }
+            } else {
+                status[this.items] += this.value;
             }
             return true;
         }

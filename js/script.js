@@ -664,8 +664,6 @@ const ParamBuilder = {
     atk: new BaseParam("atk"),
     def: new BaseParam("def"),
     elem: new Param("elem"),
-    elem_ampl: new DamageParam("elem_ampl"),
-    elem_trans: new DamageParam("elem_trans"),
     cri_rate: new RateParam("cri_rate"),
     cri_dmg: new RateParam("cri_dmg"),
     en_rec: new RateParam("en_rec"),
@@ -681,7 +679,14 @@ const ParamBuilder = {
     heavy_cri: new DamageParam("heavy_cri"),
     skill_dmg: new DamageParam("skill_dmg"),
     burst_dmg: new DamageParam("burst_dmg"),
-    any_dmg: new DamageParam("any_dmg")
+    any_dmg: new DamageParam("any_dmg"),
+    melt_dmg: new ElemReactParam("melt_dmg"),
+    swirl_dmg: new ElemReactParam("swirl_dmg"),
+    echarge_dmg: new ElemReactParam("echarge_dmg"),
+    shutter_dmg: new ElemReactParam("shutter_dmg"),
+    conduct_dmg: new ElemReactParam("conduct_dmg"),
+    vaporize_dmg: new ElemReactParam("vaporize_dmg"),
+    ovreload_dmg: new ElemReactParam("ovreload_dmg"),
 };
 
 // チームテーブルの更新
@@ -694,11 +699,14 @@ function updateTeamTable(tbl) {
     let rows = tbl.rows;
     for (let i = 2, len = rows.length; i < len; ++i) {
         let row = rows[i];
+        let param = row.id;
         let cells = row.cells;
-        let builder = builders[row.id];
-        for (let j = 0; j < 4; ++j) {
-            let status = members[j];
-            builder.set(cells[1 + j * 2], status);
+        if (param in builders) {
+            let builder = builders[param];
+            for (let j = 0; j < 4; ++j) {
+                let status = members[j];
+                builder.set(cells[1 + j * 2], status);
+            }
         }
     }
 }
@@ -706,7 +714,7 @@ function updateTeamTable(tbl) {
 // チームメンバーの変更
 function changeTeamMember(no) {
     let tbl = document.getElementById("tbl_team");
-    let cell = tbl.querySelector("td#player" + (no + 1));
+    let cell = tbl.querySelector("td#chara" + (no + 1));
     g_members[no] = null; // メモリ解放しておく
     g_members[no] = updateTeamMember(Cell.getSelectValue(cell));
     updateTeamTable(tbl);
