@@ -498,6 +498,7 @@ function changeEquipCharaCell(e) {
 }
 
 let g_members = [null, null, null, null];
+let g_bonuses = [];
 
 // チームの更新
 function updateTeam() {
@@ -520,6 +521,7 @@ function updateTeam() {
     for (let i = 0; i < 4; ++i) {
         members[i] = null;
     }
+    g_bonuses = [];
 
     // チーム選択のselect更新
     let tbl = document.getElementById("tbl_team");
@@ -546,6 +548,7 @@ function updateTeam() {
         }
     }
 
+    appendTeamBonus();
     updateTeamTable(tbl);
 }
 
@@ -553,7 +556,7 @@ function updateTeam() {
 function updateTeamMember(id) {
     let builders = CellBuilder;
     let equips = document.querySelector("table#tbl_equip tr#" + id).cells;
-    let status = new Status();
+    let status = new Status(getRid("team"));
 
     // キャラクターのステータスチェック
     let weapon = (equip => {
@@ -572,6 +575,7 @@ function updateTeamMember(id) {
         status.talent[2] = builders.talent_burst.value(cells[9]);
 
         // TODO: 天賦によるボーナス追加
+        // TODO: 星座によるボーナス追加
 
         return item.weapon;
     })(equips[1]);
@@ -581,26 +585,20 @@ function updateTeamMember(id) {
         let cells = builders.eqweapon.value(equip, weapon).cells;
         let item = WEAPON_LIST[weapon][cells[1].children[0].value];
 
-        let level = builders.weapon_level.value(cells[2]);
-        let rank = builders.weapon_rank.value(cells[3]);
+        // let level = builders.weapon_level.value(cells[2]);
+        let rank = builders.weapon_rank.value(cells[3]) - 1;
         status.base_atk += builders.atk.value(cells[4]);
         let pair = builders[weapon + "_second"].value(cells[5]);
         status[pair.key] += pair.value;
 
         // 武器ボーナス追加
         let bonus = item.passive;
-        let append = b => {
-            let clone = new Bonus(b.items, b.value[rank - 1], b.limit, b.times, b.stack);
-            if (!clone.append(status)) {
-                status.bonus.push(clone);
-            }
-        };
         if (Array.isArray(bonus)) {
             for (let i = 0; i < bonus.length; ++i) {
-                append(bonus[i]);
+                appendBonus(status, bonus[i].detailRank("武器", rank), bonus[i].target);
             }
         } else if (bonus != null) {
-            append(bonus);
+            appendBonus(status, bonus.detailRank("武器", rank), bonus.target);
         }
     })(equips[2]);
 
@@ -615,7 +613,7 @@ function updateTeamMember(id) {
 
         // サブ効果追加
         for (let i = 1; i <= 4; ++i) {
-            let pair = builders["art_sub" + i].value(cells[4 + i]);
+            pair = builders["art_sub" + i].value(cells[4 + i]);
             if (pair.key !== "other") {
                 status[pair.key] += pair.value;
             }
@@ -623,7 +621,6 @@ function updateTeamMember(id) {
 
         return item;
     };
-
     let items = [
         getArtifact(equips[3], "flower"),
         getArtifact(equips[4], "feather"),
@@ -631,26 +628,21 @@ function updateTeamMember(id) {
         getArtifact(equips[6], "goblet"),
         getArtifact(equips[7], "circlet"),
     ];
-    // let circlet = items[4];
     items.sort();
 
-    // 聖遺物の組み合わせボーナスチェック
+    // 聖遺物の組み合わせボーナス追加
     let first = 0;
     while (first < 5) {
         let item = items[first];
         let last = items.lastIndexOf(item) + 1;
         if (item in ARTIFACT_SET) {
             let same = last - first;
-            let bonus = null;
-            if (4 <= same) {
-                bonus = ARTIFACT_SET[item].set4;
-            } else if (2 <= same) {
-                bonus = ARTIFACT_SET[item].set2;
+            let artifact = ARTIFACT_SET[item];
+            if (2 <= same) {
+                appendBonus(status, artifact.set2.detail("聖遺物"), artifact.set2.target);
             }
-            if (bonus != null) {
-                if (!bonus.append(status)) {
-                    status.bonus.push(bonus);
-                }
+            if (4 <= same) {
+                appendBonus(status, artifact.set4.detail("聖遺物"), artifact.set4.target);
             }
         }
         first = last;
@@ -694,18 +686,15 @@ function updateTeamTable(tbl) {
     let builders = ParamBuilder;
     let members = g_members;
 
-    // TODO: 元素共鳴のボーナス追加
-
     let rows = tbl.rows;
     for (let i = 2, len = rows.length; i < len; ++i) {
         let row = rows[i];
         let param = row.id;
-        let cells = row.cells;
         if (param in builders) {
+            let cells = row.cells;
             let builder = builders[param];
-            for (let j = 0; j < 4; ++j) {
-                let status = members[j];
-                builder.set(cells[1 + j * 2], status);
+            for (let no = 0; no < 4; ++no) {
+                builder.set(cells[1 + no * 2], members[no]);
             }
         }
     }
@@ -715,7 +704,66 @@ function updateTeamTable(tbl) {
 function changeTeamMember(no) {
     let tbl = document.getElementById("tbl_team");
     let cell = tbl.querySelector("td#chara" + (no + 1));
-    g_members[no] = null; // メモリ解放しておく
-    g_members[no] = updateTeamMember(Cell.getSelectValue(cell));
+    let members = g_members;
+    removeTeamBonus(members[no]);
+    members[no] = null; // メモリ解放しておく
+    members[no] = updateTeamMember(Cell.getSelectValue(cell));
+    appendTeamBonus();
     updateTeamTable(tbl);
+}
+
+function appendBonus(status, bonus, target) {
+    let bonuses = g_bonuses;
+    if (target == "all") {
+        bonus.id = status.id;
+        bonuses.push(bonus);
+    } else {
+        status.append(bonus);
+    }
+}
+
+function appendTeamBonus() {
+    // TODO: チームボーナス追加
+}
+
+function removeTeamBonus(status) {
+    if (!status) return;
+
+    // 削除したメンバーのボーナスを全削除
+    let bonuses = g_bonuses.filter(bonus => bonus.id !== status.id);
+
+    // TODO: チームボーナス削除
+    g_bonuses = bonuses.filter(bonus => bonus.id !== "team");
+}
+
+// ボーナス一覧の更新
+function updateBonusTable() {
+    let rows = document.getElementById("tbl_bonus").rows;
+    let members = g_members;
+
+    for (let no = 0; no < 4; ++no) {
+        let status = members[no];
+        let cells = rows[1 + no].cells;
+        if (!status) {
+            cells[0].textContent = "-";
+            cells[1].innerHTML = "";
+        } else {
+            // キャラクター名更新
+            cells[0].textContent = status.chara.name;
+
+            // ボーナス一覧更新
+            let text = ""
+            let bonuses = status.bonus;
+            for (let i = 0, len = bonuses.length; i < len; ++i) {
+                let bonus = bonuses[i];
+                if (bonus.apply) {
+                    text += `<span style="color:silver">${bonus.toString()}</span>`;
+                } else {
+                    text += bonus.toString();
+                }
+                text += "<br>";
+            }
+            cells[1].innerHTML = text;
+        }
+    }
 }

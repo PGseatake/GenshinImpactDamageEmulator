@@ -20,7 +20,7 @@ const ARTIFACT_SET = {
     Berserker: {
         name: "狂戦士",
         set2: new Bonus("cri_rate", 12),
-        set4: new Bonus("cri_rate", 24, "HP70%以下"),
+        set4: new Bonus("cri_rate", 24, "HP70%以下の時"),
     },
     TheExile: {
         name: "亡命者",
@@ -61,7 +61,7 @@ const ARTIFACT_SET = {
     Gladiator: {
         name: "剣闘士のフィナーレ",
         set2: new Bonus("atk_buf", 18),
-        set4: new Bonus("normal_dmg", 35, "片手剣、両手剣、長柄武器キャラ"),
+        set4: new Bonus("normal_dmg", 35, "片手剣、両手剣、長柄武器キャラの時"),
     },
     // Maiden: { name: "愛される少女" },
     Noblesse: {
@@ -77,7 +77,7 @@ const ARTIFACT_SET = {
     Troupe: {
         name: "大地を流浪する楽団",
         set2: new Bonus("elem", 80),
-        set4: new Bonus("heavy_dmg", 35, "弓、法器キャラ"),
+        set4: new Bonus("heavy_dmg", 35, "弓、法器キャラの時"),
     },
     Venerer: {
         name: "翆緑の影",
@@ -117,7 +117,7 @@ const ARTIFACT_SET = {
     Bolide: {
         name: "逆飛びの流星",
         set2: null,
-        set4: new Bonus(["normal_dmg", "heavy_dmg"], 40, "シールド状態"),
+        set4: new Bonus(["normal_dmg", "heavy_dmg"], 40, "シールド状態の時"),
     },
 };
 

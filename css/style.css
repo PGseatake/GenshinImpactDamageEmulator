@@ -57,6 +57,10 @@ td.equip {
     min-width: 11em;
 }
 
+td.left {
+    text-align: left;
+}
+
 input.import {
     display: none;
 }

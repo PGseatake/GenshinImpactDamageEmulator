@@ -4,177 +4,272 @@ const PARAM_LIST = {
         table: null,
         select: "その他",
         detail: null,
+        postfix: "",
     },
     hp: {
         table: "上限HP",
         select: "HP",
         detail: "HP",
+        postfix: "",
     },
     hp_buf: {
         table: null,
         select: "HP(%)",
         detail: "HP",
+        postfix: "%",
     },
     atk: {
         table: "攻撃力",
         select: "攻撃力",
         detail: "攻撃力",
+        postfix: "",
     },
     atk_buf: {
         table: null,
         select: "攻撃力(%)",
         detail: "攻撃力",
+        postfix: "%",
     },
     atk_base: {
         table: null,
         select: null,
         detail: "基礎攻撃力",
+        postfix: "%",
     },
     def: {
         table: "防御力",
         select: "防御力",
         detail: "防御力",
+        postfix: "",
     },
     def_buf: {
         table: null,
         select: "防御力(%)",
         detail: "防御力",
+        postfix: "%",
     },
     elem: {
         table: "元素熟知",
         select: "元素熟知",
         detail: "元素熟知",
+        postfix: "",
     },
     en_rec: {
         table: "元素ﾁｬｰｼﾞ効率",
         select: "元素ﾁｬｰｼﾞ率",
         detail: "元素チャージ効率",
+        postfix: "%",
     },
     cri_rate: {
         table: "会心率",
         select: "会心率",
         detail: "会心率",
+        postfix: "%",
     },
     cri_dmg: {
         table: "会心ダメージ",
         select: "会心ダメ",
         detail: "会心ダメージ",
+        postfix: "%",
     },
     any_dmg: {
         table: "与ダメージ",
         select: null,
         detail: "ダメージ",
+        postfix: "%",
     },
     elem_dmg: {
         table: null,
         select: null,
         detail: "元素ダメージ",
+        postfix: "%",
     },
     pyro_dmg: {
         table: "炎元素バフ",
         select: "炎元素バフ",
         detail: "炎元素ダメージバフ",
+        postfix: "%",
     },
     hydro_dmg: {
         table: "水元素バフ",
         select: "水元素バフ",
         detail: "水元素ダメージバフ",
+        postfix: "%",
     },
     elect_dmg: {
         table: "雷元素バフ",
         select: "雷元素バフ",
         detail: "雷元素ダメージバフ",
+        postfix: "%",
     },
     anemo_dmg: {
         table: "風元素バフ",
         select: "風元素バフ",
         detail: "風元素ダメージバフ",
+        postfix: "%",
     },
     cryo_dmg: {
         table: "氷元素バフ",
         select: "氷元素バフ",
         detail: "氷元素ダメージバフ",
+        postfix: "%",
     },
     geo_dmg: {
         table: "岩元素バフ",
         select: "岩元素バフ",
         detail: "岩元素ダメージバフ",
+        postfix: "%",
     },
     phys_dmg: {
         table: "物理バフ",
         select: "物理バフ",
         detail: "物理ダメージバフ",
+        postfix: "%",
     },
     normal_dmg: {
         table: "通常攻撃ダメ",
         select: null,
         detail: "通常攻撃ダメージ",
+        postfix: "%",
     },
     heavy_dmg: {
         table: "重撃ダメ",
         select: null,
         detail: "重撃ダメージ",
+        postfix: "%",
     },
     heavy_cri: {
         table: "重撃会心率",
         select: null,
         detail: "重撃会心率",
+        postfix: "%",
     },
     skill_dmg: {
         table: "元素スキルダメ",
         select: null,
         detail: "元素スキルダメージ",
+        postfix: "%",
     },
     burst_dmg: {
         table: "元素爆発ダメ",
         select: null,
         detail: "元素爆発ダメージ",
+        postfix: "%",
     },
     // burning_dmg: {
     //     table: "燃焼ダメ",
     //     select: null,
     //     detail: "燃焼ダメージ",
+    // postfix: "%",
     // },
     vaporize_dmg: {
         table: "蒸発ダメ",
         select: null,
         detail: "蒸発ダメージ",
+        postfix: "%",
     },
     melt_dmg: {
         table: "融解ダメ",
         select: null,
         detail: "融解ダメージ",
+        postfix: "%",
     },
     swirl_dmg: {
         table: "拡散ダメ",
         select: null,
         detail: "拡散ダメージ",
+        postfix: "%",
     },
     echarge_dmg: {
         table: "感電ダメ",
         select: null,
         detail: "感電ダメージ",
+        postfix: "%",
     },
     shutter_dmg: {
         table: "氷砕きダメ",
         select: null,
         detail: "氷砕きダメージ",
+        postfix: "%",
     },
     conduct_dmg: {
         table: "超電導きダメ",
         select: null,
         detail: "超電導ダメージ",
+        postfix: "%",
     },
     ovreload_dmg: {
         table: "過負荷ダメ",
         select: null,
         detail: "過負荷ダメージ",
+        postfix: "%",
     },
 };
 
+class Bonus {
+    constructor(items, value, limit = null, times = 0, stack = 0, target = "self") {
+        this.items = items;
+        this.value = value;
+        this.limit = limit;
+        this.times = times;
+        this.stack = stack;
+        this.target = target;
+    }
+
+    detail(chara) {
+        return new BonusDetail(chara, this.items, this.value, this.limit, this.times, this.stack);
+    }
+
+    detailRank(chara, rank) {
+        return new BonusDetail(chara, this.items, this.value[rank], this.limit, this.times, this.stack);
+    }
+};
+
+class BonusDetail {
+    constructor(source, items, value, limit, times, stack) {
+        this.id = null;
+        this.source = source;
+        if (Array.isArray(items)) {
+            this.items = items;
+        } else {
+            this.items = [items];
+        }
+        this.value = value;
+        this.limit = limit;
+        this.times = times;
+        this.stack = stack;
+        this.apply = false;
+    }
+
+    toString() {
+        let str = PARAM_LIST[this.items[0]].detail;
+        if (1 < this.items.length) {
+            for (let i = 1, len = this.items.length; i < len; ++i) {
+                str += "・" + PARAM_LIST[this.items[i]].detail;
+            }
+        }
+
+        str += `+${this.value}${PARAM_LIST[this.items[0]].postfix}`;
+
+        if (!!this.limit) {
+            str = `${this.limit}に${str}`;
+        }
+        if (0 < this.times) {
+            str = `${str}、継続時間${this.times}秒`;
+        }
+        if (0 < this.stack) {
+            str = `${str}、最大${this.stack}重`
+        }
+
+        return `[${this.source}] ${str}`;
+    }
+};
+
 class Status {
-    constructor() {
+    constructor(id) {
+        this.id = id;
         this.chara = null;
+        this.grade = 0;
         this.lv = "0";
         this.bonus = [];
         this.talent = [0, 0, 0];
@@ -231,30 +326,16 @@ class Status {
         // 0.189266831 * EM * EXP(-0.000505 * EM)
         return 0.189266831 * this.elem_react;
     }
-};
 
-class Bonus {
-    constructor(items, value, limit = null, times = 0, stack = 0, target = "self") {
-        this.items = items;
-        this.value = value;
-        this.limit = limit;
-        this.times = times;
-        this.stack = stack;
-        this.target = target;
-    }
-
-    append(status, limit = null) {
-        if (this.limit == limit) {
-            if (Array.isArray(this.items)) {
-                for (let i = 0; i < this.items.length; ++i) {
-                    status[this.items[i]] += this.value;
-                }
-            } else {
-                status[this.items] += this.value;
+    append(bonus) {
+        bonus.id = this.id;
+        this.bonus.push(bonus);
+        if (!bonus.limit) {
+            for (let i = 0, len = bonus.items.length; i < len; ++i) {
+                this[bonus.items[i]] += bonus.value;
             }
-            return true;
+            bonus.apply = true;
         }
-        return false;
     }
 };
 

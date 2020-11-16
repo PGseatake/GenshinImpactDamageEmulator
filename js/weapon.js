@@ -64,7 +64,7 @@ const SWORD_LIST = {
         star: 4,
         second: "phys_dmg",
         // 通常攻撃または重撃が命中すると、攻撃力と防御力+4~8%、継続時間6秒、最大4重まで。0.3秒ごとに1回発動可能。
-        passive: new Bonus(["atk_buf", "def_buf"], [4, 5, 6, 7, 8], "通常攻撃または重撃が命中", 6, 4),
+        passive: new Bonus(["atk_buf", "def_buf"], [4, 5, 6, 7, 8], "通常攻撃または重撃が命中した時", 6, 4),
     },
     IronSting: {
         name: "鉄蜂の刺し",
@@ -94,7 +94,7 @@ const SWORD_LIST = {
         second: "atk_buf",
         // 通常攻撃と重撃が命中時、50%の確率で攻撃力の200%の狭範囲ダメージを与える。10秒毎に1回のみ発動可能。
         // 旅人が降臨の剣を装備するとさらに攻撃力+66。
-        passive: new Bonus("atk", [66], "旅人が装備"),
+        passive: new Bonus("atk", [66], "旅人が装備した時"),
     },
     TravelersSword: {
         name: "旅道の剣",
@@ -115,7 +115,7 @@ const SWORD_LIST = {
         star: 3,
         second: "elem",
         // 過負荷、超電導、感電、または雷元素拡散反応が発生した12秒間、基礎攻撃力+20~40%。
-        passive: new Bonus("atk_rate", [20, 25, 30, 35, 40], "過負荷、超電磁、感電または雷元素拡散が発生", 12),
+        passive: new Bonus("atk_rate", [20, 25, 30, 35, 40], "過負荷、超電磁、感電または雷元素拡散が発生した時", 12),
     },
     CoolSteel: {
         name: "冷刃",
@@ -129,7 +129,7 @@ const SWORD_LIST = {
         star: 3,
         second: "cri_dmg",
         // HPが90%以上の場合、会心率+14~28%。
-        passive: new Bonus("cri_rate", [14, 17.5, 21, 24.5, 28], "HP90%以上"),
+        passive: new Bonus("cri_rate", [14, 17.5, 21, 24.5, 28], "HP90%以上の時"),
     },
     SkyriderSword: {
         name: "飛天御剣",
@@ -155,7 +155,7 @@ const CLAYMORE_LIST = {
             // 攻撃力+20~40%
             new Bonus("atk_buf", [20, 25, 30, 35, 40]),
             // HPが30%以下の敵に命中すると、チーム全員の攻撃力+40~80%、継続時間12秒。30秒に1回のみ発動可能。
-            new Bonus("atk_buf", [40, 50, 60, 70, 80], "HP30%以下の敵に命中", 12, 0, "all"),
+            new Bonus("atk_buf", [40, 50, 60, 70, 80], "HP30%以下の敵に命中した時", 12, 0, "all"),
         ],
     },
     SkywardPride: {
@@ -214,7 +214,7 @@ const CLAYMORE_LIST = {
         star: 4,
         second: "def_buf",
         // 通常攻撃か重撃が命中すると、攻撃力と防御力+6~12%。継続時間6秒、最大4重まで。0.5秒毎に1回のみ発動可能。
-        passive: new Bonus(["atk_buf", "def_buf"], [6, 7.5, 9, 10.5, 12], "通常攻撃か重撃が命中", 6, 4),
+        passive: new Bonus(["atk_buf", "def_buf"], [6, 7.5, 9, 10.5, 12], "通常攻撃か重撃が命中した時", 6, 4),
     },
     BlackcliffSlasher: {
         name: "黒岩の斬刀",
@@ -228,14 +228,14 @@ const CLAYMORE_LIST = {
         star: 4,
         second: "cri_rate",
         // フィールドにいる時、4秒毎に、与えるダメージ+6~10%、被ダメージ+3~1.8%。最大5重まで、退場後もリセットされず、攻撃を受けると効果数-1。
-        passive: new Bonus("any_dmg", [6, 7, 8, 9, 10], "フィールドにいる時、4秒毎", 0, 5),
+        passive: new Bonus("any_dmg", [6, 7, 8, 9, 10], "フィールドにいる時4秒毎", 0, 5),
     },
     SkyriderGreatsword: {
         name: "飛天大御剣",
         star: 3,
         second: "phys_dmg",
         // 通常攻撃と重撃が命中すると、攻撃力+6~10%、継続時間6秒、最大4重まで。0.5秒毎に1回のみ発動可能。
-        passive: new Bonus("atk_buf", [6, 7, 8, 9, 10], "通常攻撃か重撃が命中", 6, 4),
+        passive: new Bonus("atk_buf", [6, 7, 8, 9, 10], "通常攻撃か重撃が命中した時", 6, 4),
     },
     WhiteGreatsword: {
         name: "白鉄の大剣",
@@ -249,7 +249,7 @@ const CLAYMORE_LIST = {
         star: 3,
         second: "hp_buf",
         // HPが70~90%以下になると、重撃は中断されにくくなり、さらに重撃ダメージ+30~50%。
-        passive: new Bonus("heavy_dmg", [30, 35, 40, 45, 50], "HPが一定値以下"),
+        passive: new Bonus("heavy_dmg", [30, 35, 40, 45, 50], "HPが一定値以下の時"),
     },
     BloodtaintedGreatsword: {
         name: "鮮血を浴びた剣",
@@ -280,8 +280,8 @@ const POLEARM_LIST = {
         second: "cri_rate",
         passive: [
             // 敵に命中した時、自身の攻撃力+3.2~6%、継続時間6秒、最大7重まで。0.3秒に最大1回発動でき、7重まで発動するとスキルダメージ+12~24%。
-            new Bonus("atk_buf", [3.2, 3.9, 4.6, 5.3, 6.0], "敵に命中", 6, 7),
-            new Bonus("skill_dmg", [12, 15, 18, 21, 24], "7重まで発動"),
+            new Bonus("atk_buf", [3.2, 3.9, 4.6, 5.3, 6.0], "敵に命中した時", 6, 7),
+            new Bonus("skill_dmg", [12, 15, 18, 21, 24], "7重まで発動した時"),
         ],
     },
     SkywardSpine: {
@@ -384,7 +384,7 @@ const BOW_LIST = {
             // 通常攻撃と狙い撃ちのダメージ+12~24%。
             new Bonus(["normal_dmg", "heavy_dmg"], [12, 15, 18, 21, 24]),
             // 矢を放った後、0.1秒毎にダメージ+8~16%、最大5回まで上昇する。
-            new Bonus(["normal_dmg", "heavy_dmg"], [8, 10, 12, 14, 16], "矢を放った後、0.1秒毎", 0, 5)
+            new Bonus(["normal_dmg", "heavy_dmg"], [8, 10, 12, 14, 16], "矢を放った後0.1秒毎", 0, 5)
         ]
     },
     FavoniusWarbow: {
@@ -430,14 +430,14 @@ const BOW_LIST = {
         star: 4,
         second: "atk_buf",
         // 狙い撃ちが弱点に命中すると、移動速度+10%、攻撃力+36~72%、継続時間10秒。
-        passive: new Bonus("atk_buf", [36, 45, 54, 63, 72], "狙い撃ちが弱点に命中", 10),
+        passive: new Bonus("atk_buf", [36, 45, 54, 63, 72], "狙い撃ちが弱点に命中した時", 10),
     },
     CompoundBow: {
         name: "リングボウ",
         star: 4,
         second: "phys_dmg",
         // 通常攻撃と狙い撃ち射撃が命中すると、攻撃力+4~8％、通常攻撃速度1.2~2.4％、継続時間6秒、最大4重まで、0.3秒に1回のみ発動可能。
-        passive: new Bonus("phys_buf", [4, 5, 6, 7, 8], "通常攻撃と狙い撃ちが命中", 6, 4),
+        passive: new Bonus("phys_buf", [4, 5, 6, 7, 8], "通常攻撃と狙い撃ちが命中した時", 6, 4),
     },
     BlackcliffWarbow: {
         name: "黒岩の戦弓",
@@ -487,7 +487,7 @@ const BOW_LIST = {
         star: 3,
         second: "cri_rate",
         // 通常攻撃又は狙い撃ちの時、矢が発射後0.3秒内に敵に命中すると、ダメージ+36~60%。0.3秒より長い場合、ダメージ-10%。
-        passive: new Bonus(["normal_dmg", "heavy_dmg"], [36, 42, 48, 54, 60], "矢が発射後0.3秒以内に敵に命中"),
+        passive: new Bonus(["normal_dmg", "heavy_dmg"], [36, 42, 48, 54, 60], "矢が発射後0.3秒以内に敵に命中した時"),
     },
 };
 
@@ -512,7 +512,7 @@ const CATALYST_LIST = {
         second: "cri_rate",
         // 移動速度+10%。
         // 出場中は4秒毎に元素ダメージ+8~16%、最大4重まで。キャラが退場または戦闘不能まで有効する。
-        passive: new Bonus("elem_dmg", [8, 10, 12, 14, 16], "出場中に4秒毎", 0, 4),
+        passive: new Bonus("elem_dmg", [8, 10, 12, 14, 16], "出場中は4秒毎", 0, 4),
     },
     FavoniusCodex: {
         name: "西風秘典",
@@ -528,11 +528,11 @@ const CATALYST_LIST = {
         // キャラ登場時、ランダムにテーマ曲を1つ獲得する、継続時間10秒。30秒ごとに1回のみ発動する。
         passive: [
             // 叙唱:攻撃力+60~120%
-            new Bonus("atk_buf", [60, 75, 90, 105, 120], "キャラ登場時、ランダム（叙唱）", 10),
+            new Bonus("atk_buf", [60, 75, 90, 105, 120], "キャラ登場時ランダム（叙唱）", 10),
             // 詠唱:全元素ダメージ+48~96％
-            new Bonus("elem_dmg", [48, 60, 72, 84, 96], "キャラ登場時、ランダム（詠唱）", 10),
+            new Bonus("elem_dmg", [48, 60, 72, 84, 96], "キャラ登場時ランダム（詠唱）", 10),
             // 間奏曲:元素熟知+240~480％
-            new Bonus("elem", [240, 300, 360, 420, 480], "キャラ登場時、ランダム（間奏曲）", 10),
+            new Bonus("elem", [240, 300, 360, 420, 480], "キャラ登場時ランダム（間奏曲）", 10),
         ],
     },
     SacrificialFragments: {
@@ -562,9 +562,9 @@ const CATALYST_LIST = {
         second: "cri_rate",
         passive: [
             // 通常攻撃が命中した後、6秒間元素スキルと元素爆発のダメージ+20~40%。
-            new Bonus(["skill_dmg", "burst_dmg"], [20, 25, 30, 35, 40], "通常攻撃が命中", 6),
+            new Bonus(["skill_dmg", "burst_dmg"], [20, 25, 30, 35, 40], "通常攻撃が命中した時", 6),
             // 元素スキル又は元素爆発が命中した後、6秒間通常攻撃のダメージ+20~40%。
-            new Bonus("normal_dmg", [20, 25, 30, 35, 40], "元素スキルか元素爆発が命中", 6),
+            new Bonus("normal_dmg", [20, 25, 30, 35, 40], "元素スキルか元素爆発が命中した時", 6),
         ],
     },
     PrototypeMalice: {

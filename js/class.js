@@ -927,7 +927,11 @@ class Param {
     }
 
     set(cell, status) {
-        cell.nextElementSibling.textContent = String(status[this.param]);
+        if (!status) {
+            cell.nextElementSibling.textContent = "0";
+        } else {
+            cell.nextElementSibling.textContent = String(status[this.param]);
+        }
     }
 };
 
@@ -938,12 +942,17 @@ class BaseParam extends Param {
     }
 
     set(cell, status) {
-        let base = status["base_" + this.param];
-        cell.textContent = base;
+        if (!status) {
+            cell.textContent = "0";
+            cell.nextElementSibling.textContent = "0";
+        } else {
+            let base = status["base_" + this.param];
+            cell.textContent = base;
 
-        let add = status[this.param];
-        let buf = status[this.param + "_buf"];
-        cell.nextElementSibling.textContent = this._text(base, add, buf);
+            let add = status[this.param];
+            let buf = status[this.param + "_buf"];
+            cell.nextElementSibling.textContent = this._text(base, add, buf);
+        }
     }
 
     _text(base, add, buf) {
@@ -958,7 +967,11 @@ class RateParam extends Param {
     }
 
     set(cell, status) {
-        cell.nextElementSibling.textContent = this._text(status[this.param]);
+        if (!status) {
+            cell.nextElementSibling.textContent = "0.0%";
+        } else {
+            cell.nextElementSibling.textContent = this._text(status[this.param]);
+        }
     }
 
     _text(num) {
@@ -973,7 +986,11 @@ class ElemBuffParam extends RateParam {
     }
 
     set(cell, status) {
-        cell.nextElementSibling.textContent = super._text(status.elem_dmg + status[this.param]);
+        if (!status) {
+            cell.nextElementSibling.textContent = "0.0%";
+        } else {
+            cell.nextElementSibling.textContent = super._text(status.elem_dmg + status[this.param]);
+        }
     }
 };
 
@@ -984,7 +1001,11 @@ class DamageParam extends RateParam {
     }
 
     set(cell, status) {
-        cell.nextElementSibling.textContent = "+" + super._text(status[this.param]);
+        if (!status) {
+            cell.nextElementSibling.textContent = "+0.0%";
+        } else {
+            cell.nextElementSibling.textContent = "+" + super._text(status[this.param]);
+        }
     }
 };
 
@@ -1005,7 +1026,12 @@ class ElemReactParam extends RateParam {
     }
 
     set(cell, status) {
-        cell.textContent = "+" + super._text(status[this.base]);
-        cell.nextElementSibling.textContent = "+" + super._text(status[this.param]);
+        if (!status) {
+            cell.textContent = "+0.0%";
+            cell.nextElementSibling.textContent = "+0.0%";
+        } else {
+            cell.textContent = "+" + super._text(status[this.base]);
+            cell.nextElementSibling.textContent = "+" + super._text(status[this.param]);
+        }
     }
 };
