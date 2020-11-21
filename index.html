@@ -414,6 +414,86 @@
                 </tbody>
             </table>
         </div>
+        <input id="tab_damage" type="radio" name="TAB" class="tab_switch" onclick="updateDamageTable()" />
+        <label class="tab_label" for="tab_damage">ダメージ</label>
+        <div class="tab_content">
+            <table id="tbl_enemy">
+                <caption>敵</caption>
+                <tbody>
+                    <tr>
+                        <th>レベル</th>
+                        <td><input id="enemy_level" type="number" min="0" pattern="[0-9]*" value="0" class="numeric" onchange="changeEnemyLevel(this)"></td>
+                    </tr>
+                    <tr>
+                        <td><select id="enemy_list" onchange="changeEnemyList(this)"></select></td>
+                        <th>耐性</th>
+                        <th>倍率</th>
+                    </tr>
+                    <tr id="resist_pyro">
+                        <th class="pyro">炎元素</th>
+                        <td class="pyro">0%</td>
+                        <td class="pyro">0.0%</td>
+                    </tr>
+                    <tr id="resist_hydro">
+                        <th class="hydro">水元素</th>
+                        <td class="hydro">0%</td>
+                        <td class="hydro">0.0%</td>
+                    </tr>
+                    <tr id="resist_elect">
+                        <th class="elect">雷元素</th>
+                        <td class="elect">0%</td>
+                        <td class="elect">0.0%</td>
+                    </tr>
+                    <tr id="resist_anemo">
+                        <th class="anemo">風元素</th>
+                        <td class="anemo">0%</td>
+                        <td class="anemo">0.0%</td>
+                    </tr>
+                    <tr id="resist_cryo">
+                        <th class="cryo">氷元素</th>
+                        <td class="cryo">0%</td>
+                        <td class="cryo">0.0%</td>
+                    </tr>
+                    <tr id="resist_geo">
+                        <th class="geo">岩元素</th>
+                        <td class="geo">0%</td>
+                        <td class="geo">0.0%</td>
+                    </tr>
+                    <tr id="resist_phys">
+                        <th class="phys">物理</th>
+                        <td class="phys">0%</td>
+                        <td class="phys">0.0%</td>
+                    </tr>
+                    <tr>
+                        <th>防御力</th>
+                        <td>-</td>
+                        <td>0.0%</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr>
+            <table id="tbl_damage">
+                <thead>
+                    <tr>
+                        <th><select id="member_list" onchange="updateDamageTable()"></select>Lv.1</th>
+                        <th>倍率<select id="damage_type" onchange="changeDamageType(this)">
+                                <option value="phys">物理</option>
+                                <option value="elem">元素</option>
+                            </select>
+                        </th>
+                        <th>ダメージ</th>
+                        <th>会心</th>
+                    </tr>
+                    <tr>
+                        <th>攻撃力</th>
+                        <td>-</td>
+                        <td>0</td>
+                        <td>0.0%</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <input id="tab_chara" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_chara">キャラクター</label>
         <div class="tab_content">

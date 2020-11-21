@@ -79,10 +79,9 @@ let g_identify = 0;
 
 window.onload = () => {
     g_def_title = document.title;
-
     Cell.onChange = changeValue;
-
     loadData();
+    loadEnemyList();
 };
 
 // 全データの読み込み
@@ -550,6 +549,7 @@ function updateTeam() {
 
     appendTeamBonus();
     updateTeamTable(tbl);
+    updateDamageList();
 }
 
 // チームメンバーの更新
@@ -570,9 +570,9 @@ function updateTeamMember(id) {
         status.base_def = builders.def.value(cells[5]);
         let pair = builders.special.value(cells[6]);
         status[pair.key] = pair.value;
-        status.talent[0] = builders.talent_combat.value(cells[7]);
-        status.talent[1] = builders.talent_skill.value(cells[8]);
-        status.talent[2] = builders.talent_burst.value(cells[9]);
+        status.talent.combat = builders.talent_combat.value(cells[7]);
+        status.talent.skill = builders.talent_skill.value(cells[8]);
+        status.talent.burst = builders.talent_burst.value(cells[9]);
 
         // TODO: 天賦によるボーナス追加
         // TODO: 星座によるボーナス追加
@@ -710,6 +710,7 @@ function changeTeamMember(no) {
     members[no] = updateTeamMember(Cell.getSelectValue(cell));
     appendTeamBonus();
     updateTeamTable(tbl);
+    updateDamageList();
 }
 
 function appendBonus(status, bonus, target) {
@@ -766,4 +767,267 @@ function updateBonusTable() {
             cells[1].innerHTML = text;
         }
     }
+}
+
+let g_enemy = null;
+
+// ダメージ計算するチームメンバーを取得
+function getMember(tbl) {
+    let no = tbl.querySelector("select#member_list").selectedIndex;
+    if (no !== -1) {
+        return g_members[no];
+    }
+    return null;
+}
+
+// 敵リストの読み込み
+function loadEnemyList() {
+    let elem = document.querySelector("table#tbl_enemy select#enemy_list");
+    for (let key in ENEMY_LIST) {
+        let opt = document.createElement("option");
+        opt.value = key;
+        opt.label = ENEMY_LIST[key].name;
+        elem.appendChild(opt);
+    }
+
+    changeEnemyList(elem);
+}
+
+// 敵リストの変更
+function changeEnemyList(elem) {
+    let enemy = new Enemy(elem.value);
+    g_enemy = enemy;
+
+    // 各元素の耐性更新
+    let row = elem.parentNode.parentNode.nextElementSibling;
+    while (!!row.id) {
+        let type = row.id.replace("resist_", "");
+        let cells = row.cells;
+        let resist = enemy.resist[type];
+        if (resist === Infinity) {
+            cells[1].textContent = "無効";
+        } else {
+            cells[1].textContent = resist + "%";
+        }
+        cells[2].textContent = (enemy.resistance(type) * 100).toFixed(1) + "%";
+
+        row = row.nextElementSibling;
+    }
+
+    changeEnemyLevel(document.querySelector("table#tbl_enemy input#enemy_level"));
+}
+
+// 敵レベルの変更
+function changeEnemyLevel(elem) {
+    g_enemy.level = parseInt(elem.value);
+    let tbl = document.getElementById("tbl_damage");
+    updateEnemyDefence(tbl);
+    calculateDamage(tbl);
+}
+
+// 敵防御力の更新
+function updateEnemyDefence(tbl) {
+    let status = getMember(tbl);
+    if (!!status) {
+        let row = document.querySelector("table#tbl_enemy tbody").lastElementChild;
+        row.cells[2].textContent = (g_enemy.defence(status) * 100).toFixed(1) + "%";
+    }
+}
+
+// ダメージ計算するメンバーリストを更新
+function updateDamageList() {
+    let select = document.querySelector("table#tbl_damage select#member_list");
+    let index = select.selectedIndex;
+    while (!!select.firstChild) {
+        select.firstChild.remove();
+    }
+
+    let members = g_members;
+    for (let i = 0; i < 4; ++i) {
+        if (!!members[i]) {
+            let opt = document.createElement("option");
+            opt.value = i;
+            opt.label = members[i].chara.name;
+            opt.selected = (index === i);
+            select.appendChild(opt);
+        }
+    }
+}
+
+// ダメージ計算の更新
+function updateDamageTable() {
+    let tbl = document.getElementById("tbl_damage");
+    updateEnemyDefence(tbl);
+
+    // キャプション行以外を削除
+    for (let len = tbl.rows.length; 2 < len; --len) {
+        tbl.deleteRow(2);
+    }
+
+    // ダメージタイプ非表示
+    let damageType = tbl.querySelector("select#damage_type");
+    damageType.className = "hide";
+
+    let status = getMember(tbl);
+    if (!status) return;
+
+    // キャラレベル設定
+    let rows = tbl.rows;
+    rows[0].cells[0].lastChild.data = "Lv." + status.level;
+
+    // キャラ攻撃力設定
+    let cells = rows[1].cells;
+    let critical = status.critical();
+    cells[2].textContent = status.attack.toFixed();
+    cells[3].textContent = `${critical.damage.toFixed(1)}%(${critical.rate.toFixed(1)}%)`;
+
+    let prefix = { combat: "通常攻撃・重撃", skill: "元素スキル", burst: "元素爆発" };
+    let buildRow = (type) => {
+        let level = status.talent[type];
+
+        // キャプション行追加
+        let row = tbl.insertRow();
+        let cel = document.createElement("th");
+        cel.colSpan = 4;
+        cel.textContent = `${prefix[type]} : Lv.${level}`;
+        row.appendChild(cel);
+
+        let combat = status.chara[type];
+        for (let i = 0, len = combat.length; i < len; ++i) {
+            let attr = new Attribute(combat[i], level);
+            // ダメージタイプ
+            let className = attr.elem;
+            if (className === "switch") {
+                className = "phys";
+                damageType.className = ""; // ダメージタイプ表示
+            }
+
+            row = tbl.insertRow();
+
+            // 名前セル
+            cel = document.createElement("th");
+            cel.textContent = attr.name;
+            row.appendChild(cel);
+
+            // 倍率セル
+            cel = document.createElement("td");
+            cel.className = className;
+            cel.textContent = attr.toString(value => {
+                if (value < 100) {
+                    return value.toFixed(1) + "%";
+                }
+                return value.toFixed() + "%";
+            });
+            row.appendChild(cel);
+
+            // ダメージセル
+            cel = document.createElement("td");
+            cel.className = className;
+            row.appendChild(cel);
+
+            // 会心セル
+            cel = document.createElement("td");
+            cel.className = className;
+            row.appendChild(cel);
+        }
+    };
+
+    buildRow("combat");
+    buildRow("skill");
+    buildRow("burst");
+
+    // 属性切替が必要
+    if (!damageType.className) {
+        changeDamageType(damageType);
+    } else {
+        calculateDamage(tbl);
+    }
+}
+
+// 攻撃属性の変更
+function changeDamageType(elem) {
+    let tbl = document.getElementById("tbl_damage");
+    let status = getMember(tbl);
+    if (!status) return;
+    let chara = status.chara;
+
+    // ダメージタイプ切替
+    let className = elem.value;
+    if (className === "elem") {
+        className = chara.element;
+    }
+
+    let row = tbl.rows[2];
+    let rebuildRow = (type) => {
+        row = row.nextElementSibling; // キャプション行スキップ
+
+        let combat = chara[type];
+        for (let i = 0, len = combat.length; i < len; ++i) {
+            // 元素付与されるものはセル色変更
+            if (combat[i].elem === "switch") {
+                let cells = row.cells;
+                cells[1].className = className;
+                cells[2].className = className;
+                cells[3].className = className;
+            }
+            row = row.nextElementSibling;
+        }
+    };
+
+    rebuildRow("combat");
+    rebuildRow("skill");
+    rebuildRow("burst");
+
+    calculateDamage(tbl);
+}
+
+// ダメージ計算
+function calculateDamage(tbl) {
+    let status = getMember(tbl);
+    if (!status) return;
+
+    let row = tbl.rows[2];
+    let enemy = g_enemy;
+
+    let attackPower = status.attack;
+    let enemyDefence = enemy.defence(status);
+
+    let calcDamage = (type) => {
+        row = row.nextElementSibling; // キャプション行スキップ
+
+        let level = status.talent[type];
+        let combat = status.chara[type];
+        for (let i = 0, len = combat.length; i < len; ++i) {
+            let cell = row.cells[2];
+            let elem = cell.className;
+            let attr = new Attribute(combat[i], level);
+
+            // 各種倍率
+            let elementBonus = status.elemental(elem);
+            let combatBonus = status.damage(attr.type);
+            let enemyResist = enemy.resistance(elem);
+            let bonusDamage = (100 + elementBonus + combatBonus + status.any_dmg) / 100;
+            let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
+
+            // 最終ダメージ
+            cell.textContent = attr.toString(value => (totalScale * value / 100).toFixed());
+            cell = cell.nextElementSibling;
+
+            // 会心ダメージ
+            let critical = status.critical(attr.type);
+            totalScale *= critical.damage / 100;
+            let text = attr.toString(value => (totalScale * value / 100).toFixed());
+            // 重撃会心率が異なる場合は特別表示
+            if ((attr.type === "heavy") && (0 < status.heavy_cri)) {
+                text = `${text} (${critical.rate}%)`;
+            }
+            cell.textContent = text;
+
+            row = row.nextElementSibling;
+        }
+    };
+
+    calcDamage("combat");
+    calcDamage("skill");
+    calcDamage("burst");
 }

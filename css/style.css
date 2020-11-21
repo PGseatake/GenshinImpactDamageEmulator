@@ -78,6 +78,34 @@ select.bonus {
     display: none;
 }
 
+.pyro {
+    background-color: #fcc;
+}
+
+.elect {
+    background-color: #ddf;
+}
+
+.hydro {
+    background-color: #bdf;
+}
+
+.cryo {
+    background-color: #dff;
+}
+
+.geo {
+    background-color: #fd8;
+}
+
+.anemo {
+    background-color: #dfd;
+}
+
+.phys {
+    background-color: #ddd;
+}
+
 
 /**
  * タブ系のスタイル
