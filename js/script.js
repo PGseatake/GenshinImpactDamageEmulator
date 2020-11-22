@@ -1,6 +1,6 @@
 "use strict"
 
-const VERSION = "0.01";
+const VERSION = "0.02";
 
 // TODO: 多言語対応
 const TABLE_LIST = {
@@ -18,483 +18,674 @@ const TABLE_LIST = {
     tbl_equip: "装備"
 };
 
-// セル生成マップ
-const CellBuilder = {
-    // 汎用
-    hp: new IntCell(),
-    atk: new IntCell(),
-    def: new IntCell(),
-    elem: new IntCell(),
-    index: new IndexCell(),
-    // キャラクター
-    chara_name: new DictCell(CHARACTER, "name", { change: changeCharaCell }),
-    chara_level: new AscensionLevelCell(),
-    special: new DictBonusCell("chara_name", CHARACTER, "special"),
-    talent_combat: new TalentCell(1, TALENT_LV_MAX),
-    talent_skill: new TalentCell(1, TALENT_LV_MAX),
-    talent_burst: new TalentCell(1, TALENT_LV_MAX),
-    // 武器
-    sword_name: new DictCell(SWORD_LIST, "name", { change: changeWeaponCell }),
-    claymore_name: new DictCell(CLAYMORE_LIST, "name", { change: changeWeaponCell }),
-    polearm_name: new DictCell(POLEARM_LIST, "name", { change: changeWeaponCell }),
-    bow_name: new DictCell(BOW_LIST, "name", { change: changeWeaponCell }),
-    catalyst_name: new DictCell(CATALYST_LIST, "name", { change: changeWeaponCell }),
-    sword_second: new DictBonusCell("sword_name", SWORD_LIST, "second"),
-    claymore_second: new DictBonusCell("claymore_name", CLAYMORE_LIST, "second"),
-    polearm_second: new DictBonusCell("polearm_name", POLEARM_LIST, "second"),
-    bow_second: new DictBonusCell("bow_name", BOW_LIST, "second"),
-    catalyst_second: new DictBonusCell("catalyst_name", CATALYST_LIST, "second"),
-    weapon_level: new AscensionLevelCell(),
-    weapon_rank: new RangeCell(1, WEAPON_RANK_MAX),
-    // 聖遺物
-    flower_name: new MapCell(FLOWER_LIST, { change: changeArtifactCell }),
-    feather_name: new MapCell(FEATHER_LIST, { change: changeArtifactCell }),
-    sands_name: new MapCell(SANDS_LIST, { change: changeArtifactCell }),
-    goblet_name: new MapCell(GOBLET_LIST, { change: changeArtifactCell }),
-    circlet_name: new MapCell(CIRCLET_LIST, { change: changeArtifactCell }),
-    art_star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: changeArtifactStarCell }),
-    art_level: new ArtifactLevelCell({ change: changeArtifactLevelCell }),
-    flower_main: new SingleBonusCell("hp"),
-    feather_main: new SingleBonusCell("atk"),
-    sands_main: new MultiBonusCell(ARTIFACT_SANDS, { change: changeArtifactMainCell }),
-    goblet_main: new MultiBonusCell(ARTIFACT_GOBLET, { change: changeArtifactMainCell }),
-    circlet_main: new MultiBonusCell(ARTIFACT_CIRCLET, { change: changeArtifactMainCell }),
-    art_sub1: new BonusValueCell(ARTIFACT_SUB),
-    art_sub2: new BonusValueCell(ARTIFACT_SUB),
-    art_sub3: new BonusValueCell(ARTIFACT_SUB),
-    art_sub4: new BonusValueCell(ARTIFACT_SUB),
-    // 装備
-    eqchara: new EquipmentCell("chara", { change: changeEquipCharaCell }),
-    eqweapon: new EquipWeaponCell(),
-    eqflower: new EquipmentCell("flower"),
-    eqfeather: new EquipmentCell("feather"),
-    eqsands: new EquipmentCell("sands"),
-    eqgoblet: new EquipmentCell("goblet"),
-    eqcirclet: new EquipmentCell("circlet")
-}
+// テーブル管理の基底クラス
+class Table {
+    static List = {};
+    static Title = "";
+    static Updated = false;
 
-let g_updated = false;
-let g_def_title = "";
-let g_identify = 0;
-
-window.onload = () => {
-    g_def_title = document.title;
-    Cell.onChange = changeValue;
-    loadData();
-    loadEnemyList();
-};
-
-// 全データの読み込み
-function loadData() {
-    for (let name in TABLE_LIST) {
-        loadTableData(name);
+    // 全データの読み込み
+    static loadData() {
+        for (let id in Table.List) {
+            Table.List[id]._load();
+        }
     }
-}
 
-// テーブルデータの読み込み
-function loadTableData(name) {
-    let json = localStorage.getItem(name);
-    if (!!json) {
-        let data = JSON.parse(json);
-
-        // htmlに展開
-        let tbl = document.getElementById(name);
-        let init = getDefault(tbl.rows[1]);
-        for (let i = 0, len = data.length; i < len; ++i) {
-            // データのない項目を初期値で設定
-            let line = data[i];
-            for (let key in init) {
-                if (!(key in line)) {
-                    line[key] = init[key];
-                }
+    // 全データの保存
+    static saveData() {
+        if (Table.Updated) {
+            // タブ毎にデータをjsonで保存
+            for (let id in Table.List) {
+                Table.List[id]._save();
             }
 
-            addRow(tbl, line);
-        }
-    }
-}
-
-// 全データの保存
-function saveData() {
-    if (g_updated) {
-        // タブ毎にデータをjsonで保存
-        for (let name in TABLE_LIST) {
-            saveTableData(name);
-        }
-
-        document.title = g_def_title;
-        g_updated = false;
-    }
-}
-
-// テーブルデータの保存
-function saveTableData(name) {
-    let builders = CellBuilder;
-    let data = [];
-
-    // htmlから解析
-    let rows = document.getElementById(name).rows;
-    for (let ridx = 2, rlen = rows.length; ridx < rlen; ++ridx) { // tbl.rows[0,1]は見出し行
-        let map = {};
-        let cells = rows[ridx].cells;
-        for (let cidx = 0, clen = cells.length; cidx < clen; ++cidx) {
-            let cell = cells[cidx];
-            let id = cell.id;
-            if (id in builders) {
-                let value = builders[id].save(cell);
-                if (value != null) {
-                    map[id] = value;
-                }
-            }
-        }
-        data.push(map);
-    }
-
-    localStorage.setItem(name, JSON.stringify(data));
-}
-
-// データ削除前の確認
-// TODO: 多言語対応
-function clearConfirm(all) {
-    if (all) {
-        let yes = confirm("すべてのタブの内容が破棄されます。よろしいですか？");
-        if (yes) {
-            clearData();
-        }
-    } else {
-        let elem = document.querySelector("input[name='TAB']:checked");
-        let name = elem.id.replace("tab", "tbl");
-        let yes = confirm(`${TABLE_LIST[name]}タブの内容が破棄されます。よろしいですか？`);
-        if (yes) {
-            clearTableData(name);
-        }
-    }
-}
-
-// 全データの削除
-function clearData() {
-    for (let name in TABLE_LIST) {
-        clearTableData(name);
-    }
-
-    document.title = g_def_title;
-    g_updated = false;
-}
-
-// テーブルデータの削除
-function clearTableData(name) {
-    let rows = document.getElementById(name).rows;
-    // rows[0,1]（キャプション）以外を削除
-    for (let cnt = rows.length - 2; 0 < cnt; --cnt) {
-        rows[2].remove();
-    }
-
-    localStorage.removeItem(name);
-}
-
-// データのエクスポート
-function exportData() {
-    saveData();
-
-    // バージョン情報を付加してひとまとめにする
-    let data = { ver: VERSION };
-    for (let name in TABLE_LIST) {
-        let json = localStorage.getItem(name);
-        if (!!json) {
-            data[name] = JSON.parse(json);
+            document.title = Table.Title;
+            Table.Updated = false;
         }
     }
 
-    // downloadフォルダに保存
-    let blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-    let link = document.createElement('a');
-    document.body.appendChild(link);
-    let url = URL.createObjectURL(blob);
-    link.href = url;
-    link.download = 'GenshinImpactDamage.json';
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-}
+    // 全データのエクスポート
+    static exportData() {
+        Table.saveData();
 
-// インポート前の確認
-// TODO: 多言語対応
-function importConfirm() {
-    let yes = confirm("すべてのタブの内容が上書きされます。よろしいですか？");
-    if (yes) {
-        document.getElementById("import").click();
-    }
-}
-
-// データのインポート
-function importData() {
-    let elem = document.getElementById("import");
-    let file = elem.files[0];
-    if (!!file) {
-        // jsonファイル読み込み
-        let reader = new FileReader();
-        reader.readAsText(file);
-        reader.onload = () => {
-            let json = reader.result;
+        // バージョン情報を付加してひとまとめにする
+        let data = { ver: VERSION };
+        for (let id in Table.List) {
+            let json = localStorage.getItem(id);
             if (!!json) {
-                let data = JSON.parse(json);
-                // TODO: ここでデータのチェックをする
+                data[id] = JSON.parse(json);
+            }
+        }
 
-                clearData();
+        // downloadフォルダに保存
+        let blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+        let link = document.createElement('a');
+        document.body.appendChild(link);
+        let url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = 'GenshinImpactDamage.json';
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    }
 
-                for (let name in TABLE_LIST) {
-                    if (name in data) {
-                        localStorage.setItem(name, JSON.stringify(data[name]));
+    // インポート前の確認
+    // TODO: 多言語対応
+    static importConfirm() {
+        let yes = confirm("すべてのタブの内容が上書きされます。よろしいですか？");
+        if (yes) {
+            document.getElementById("import").click();
+        }
+    }
+
+    // 全データのインポート
+    static importData() {
+        let elem = document.getElementById("import");
+        let file = elem.files[0];
+        if (!!file) {
+            // jsonファイル読み込み
+            let reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = () => {
+                let json = reader.result;
+                if (!!json) {
+                    let data = JSON.parse(json);
+                    // TODO: ここでデータのチェックをする
+
+                    // データの削除
+                    for (let id in Table.List) {
+                        Table.List[id]._clear();
+                    }
+
+                    // 外部データをlocalStorageに保存
+                    for (let id in Table.List) {
+                        if (id in data) {
+                            localStorage.setItem(id, JSON.stringify(data[id]));
+                            TableList[id]._load();
+                        }
+                    }
+                }
+                elem.value = ""; // 同じファイル名を続けてインポートできるように値をクリア
+            };
+        }
+    }
+
+    // データ削除前の確認
+    // TODO: 多言語対応
+    static clearConfirm(all) {
+        if (all) {
+            let yes = confirm("すべてのタブの内容が破棄されます。よろしいですか？");
+            if (yes) {
+                for (let id in Table.List) {
+                    Table.List[id]._clear();
+                }
+
+                document.title = Table.Title;
+                Table.Updated = false;
+            }
+        } else {
+            let elem = document.querySelector("input[name='TAB']:checked");
+            let tbl = Table.List[elem.id.replace("tab_", "")];
+            let yes = confirm(`${tbl.text}タブの内容が破棄されます。よろしいですか？`);
+            if (yes) {
+                tbl._clear();
+            }
+        }
+    }
+
+    // 1行追加（htmlからの呼び出し版）
+    static insertRow(id) {
+        let tbl = Table.List[id];
+        let html = tbl.html;
+        tbl._insertRow(html, tbl._default(html));
+        Table.changeValue(null);
+    }
+
+    // 削除確認
+    // TODO: 多言語対応
+    static removeConfirm(e) {
+        let row = e.target.parentNode.parentNode;
+        let yes = confirm(`No.${row.rowIndex - 1}を削除します。よろしいですか？`);
+        if (yes) {
+            let html = row.parentNode.parentNode;
+            let tbl = Table.List[html.id.replace("tbl_", "")];
+            tbl._removeRow(html, e.target.id);
+        }
+    }
+
+    // 値変更
+    static changeValue(e) {
+        if (!Table.Updated) {
+            Table.Updated = true
+            document.title = "* " + Table.Title;
+        }
+    }
+
+    // コンストラクタ
+    constructor(id, text) {
+        this.id = id;
+        this.name = "tbl_" + id;
+        this.text = text;
+        this.counter = 0;
+        this.builder = null;
+    }
+
+    // <table>取得
+    get html() {
+        return document.getElementById(this.name);
+    }
+
+    // 識別子取得
+    get identify() {
+        ++this.counter;
+        return `${this.id}_${this.counter}`;
+    }
+
+    // データの削除
+    _clear() {
+        let html = this.html;
+        // rows[0,1]（キャプション）以外を削除
+        for (let count = html.rows.length - 2; 0 < count; --count) {
+            html.removeRow(2);
+        }
+
+        localStorage.removeItem(this.name);
+    }
+
+    // データの保存
+    _save() {
+        let data = [];
+
+        // htmlから解析
+        let rows = this.html.rows;
+        for (let ridx = 2, rlen = rows.length; ridx < rlen; ++ridx) { // tbl.rows[0,1]は見出し行
+            let map = {};
+            let cells = rows[ridx].cells;
+            for (let cidx = 0, clen = cells.length; cidx < clen; ++cidx) {
+                let cell = cells[cidx];
+                let id = cell.id;
+                if (id in this.builder) {
+                    let value = this.builder[id].save(cell);
+                    if (value != null) {
+                        map[id] = value;
+                    }
+                }
+            }
+            data.push(map);
+        }
+
+        localStorage.setItem(this.name, JSON.stringify(data));
+    }
+
+    // データの読込
+    _load() {
+        let json = localStorage.getItem(this.name);
+        if (!!json) {
+            let data = JSON.parse(json);
+
+            // htmlに展開
+            let html = this.html;
+            let init = this._default(html);
+            for (let i = 0, len = data.length; i < len; ++i) {
+                // データのない項目を初期値で設定
+                let line = data[i];
+                for (let key in init) {
+                    if (!(key in line)) {
+                        line[key] = init[key];
                     }
                 }
 
-                loadData();
+                this._insertRow(html, line);
             }
-            elem.value = ""; // 同じファイル名を続けてインポートできるように値をクリア
+        }
+    }
+
+    // 既定値の取得
+    _default(html) {
+        let ret = {};
+        let cells = html.rows[1].cells;
+        for (let i = 0, len = cells.length; i < len; ++i) {
+            let id = cells[i].id;
+            if (id in this.builder) {
+                let val = this.builder[id].initial;
+                if (val != null) {
+                    ret[id] = val;
+                }
+            }
+        }
+        return ret;
+    }
+
+    // 1行追加
+    _insertRow(html, values) {
+        let rid = this.identify;
+        let row = html.insertRow();
+        row.id = rid;
+
+        // 見出し行のidからセルを生成
+        let cap = html.rows[1].cells; // caption行は2行目
+        for (let i = 0, len = cap.length; i < len; ++i) {
+            let cel = row.insertCell();
+            let id = cap[i].id;
+            cel.id = id;
+
+            // セル追加
+            if (id in this.builder) {
+                this.builder[id].load(cel, id, values);
+            }
+        }
+
+        let add = row.insertCell();
+        // 上移動ボタン追加
+        // btn = document.createElement("button");
+        // btn.id = rid;
+        // btn.type = "button";
+        // //btn.addEventListener("click", moveUp);
+        // btn.appendChild(document.createTextNode("˄"));
+        // add.appendChild(btn);
+
+        // 下移動ボタン追加
+        // btn = document.createElement("button");
+        // btn.id = rid;
+        // btn.type = "button";
+        // //btn.addEventListener("click", moveDown);
+        // btn.appendChild(document.createTextNode("˅"));
+        // add.appendChild(btn);
+
+        // 削除ボタン追加
+        let btn = document.createElement("button");
+        btn.id = rid;
+        btn.type = "button";
+        btn.addEventListener("click", Table.removeConfirm);
+        btn.appendChild(document.createTextNode("-"));
+        add.appendChild(btn);
+    }
+
+    // 1行削除
+    _removeRow(html, id) {
+        html.querySelector("tr#" + id).remove();
+
+        // indexの再設定
+        let index = this.builder.index;
+        let rows = html.rows;
+        for (let i = 2, len = rows.length; i < len; ++i) {
+            index.update(rows[i].cells[0]);
+        }
+
+        // TODO: 削除したものを使用している他タブの要素をどうする？
+
+        Table.changeValue(null);
+    }
+};
+
+// キャラクターテーブル
+class CharaTable extends Table {
+    constructor() {
+        super("chara", "キャラクター");
+        super.builder = {
+            index: new IndexCell(),
+            name: new DictCell(CHARACTER, "name", { change: e => this._change(e) }),
+            level: new AscensionLevelCell(),
+            hp: new IntCell(),
+            atk: new IntCell(),
+            def: new IntCell(),
+            special: new DictBonusCell("name", CHARACTER, "special"),
+            combat: new TalentCell(1, TALENT_LV_MAX),
+            skill: new TalentCell(1, TALENT_LV_MAX),
+            burst: new TalentCell(1, TALENT_LV_MAX),
         };
     }
-}
 
-// ランダムIDの生成(簡易)
-function getRid(name) {
-    let id = ++g_identify;
-    return `${name}_${id}`;
-}
+    _change(e) {
+        // e.target == td#name.select
+        let key = e.target.value;
+        let tr = e.target.parentNode.parentNode;
 
-// 既定値の取得
-function getDefault(cap) {
-    let builder = CellBuilder;
-    let ret = {};
-    let cells = cap.cells;
-    for (let i = 0, len = cells.length; i < len; ++i) {
-        let id = cells[i].id;
-        if (id in builder) {
-            let val = builder[id].initial;
-            if (val != null) {
-                ret[id] = val;
-            }
-        }
+        // 追加効果変更
+        this.builder.special.update(tr.querySelector("td#special"), key);
+
+        // 装備タブ更新
+        Table.List.equip.updateChara(key, tr.id);
     }
-    return ret;
-}
+};
 
-// テーブルへ1行追加
-function addRow(tbl, values) {
-    let builder = CellBuilder;
-    let rid = getRid(tbl.id.replace("tbl_", ""));
-    let row = tbl.insertRow();
-    row.id = rid;
-
-    // 見出し行のidからセルを生成
-    let cap = tbl.rows[1].cells;
-    for (let i = 0, len = cap.length; i < len; ++i) {
-        let cel = row.insertCell();
-        let id = cap[i].id;
-        cel.id = id;
-
-        // セル追加
-        if (id in builder) {
-            builder[id].load(cel, id, values);
-        }
+// 武器テーブル基底
+class WeaponTable extends Table {
+    constructor(id, text) {
+        super(id, text);
     }
 
-    let add = row.insertCell();
-    // 上移動ボタン追加
-    // btn = document.createElement("button");
-    // btn.id = rid;
-    // btn.type = "button";
-    // //btn.addEventListener("click", moveUp);
-    // btn.appendChild(document.createTextNode("˄"));
-    // add.appendChild(btn);
+    _change(e) {
+        // e.target == td#name.select
+        let key = e.target.value;
+        let tr = e.target.parentNode.parentNode;
 
-    // 下移動ボタン追加
-    // btn = document.createElement("button");
-    // btn.id = rid;
-    // btn.type = "button";
-    // //btn.addEventListener("click", moveDown);
-    // btn.appendChild(document.createTextNode("˅"));
-    // add.appendChild(btn);
+        // 追加効果変更
+        this.builder.second.update(tr.querySelector("td#second"), key);
 
-    // 削除ボタン追加
-    let btn = document.createElement("button");
-    btn.id = rid;
-    btn.type = "button";
-    btn.addEventListener("click", removeConfirm);
-    btn.appendChild(document.createTextNode("-"));
-    add.appendChild(btn);
-}
-
-// 1行追加（htmlからの呼び出し版）
-function insertRow(name) {
-    let tbl = document.getElementById(name);
-    addRow(tbl, getDefault(tbl.rows[1])); // caption行は2行目
-    changeValue(null);
-}
-
-// 削除確認
-// TODO: 多言語対応
-function removeConfirm(e) {
-    let row = e.target.parentNode.parentNode;
-    let yes = confirm(`No.${row.rowIndex - 1}を削除します。よろしいですか？`);
-    if (yes) {
-        removeRow(row, e.target.id);
+        // 装備タブ更新
+        Table.List.equip.updateWeapon(this.id);
     }
 }
 
-// 1行削除
-function removeRow(row, id) {
-    document.getElementById(id).remove();
+// 片手剣テーブル
+class SwordTable extends WeaponTable {
+    constructor() {
+        super("sword", "片手剣");
+        super.builder = {
+            index: new IndexCell(),
+            name: new DictCell(SWORD_LIST, "name", { change: e => super._change(e) }),
+            level: new AscensionLevelCell(),
+            rank: new RangeCell(1, WEAPON_RANK_MAX),
+            atk: new IntCell(),
+            second: new DictBonusCell("name", SWORD_LIST, "second"),
+        };
+    }
+};
 
-    // indexの再設定
-    let builder = CellBuilder.index;
-    let rows = row.parentNode.parentNode.rows;
-    for (let i = 2, len = rows.length; i < len; ++i) {
-        builder.update(rows[i].cells[0]);
+// 両手剣テーブル
+class ClaymoreTable extends WeaponTable {
+    constructor() {
+        super("claymore", "両手剣");
+        super.builder = {
+            index: new IndexCell(),
+            name: new DictCell(CLAYMORE_LIST, "name", { change: e => super._change(e) }),
+            level: new AscensionLevelCell(),
+            rank: new RangeCell(1, WEAPON_RANK_MAX),
+            atk: new IntCell(),
+            second: new DictBonusCell("name", CLAYMORE_LIST, "second"),
+        };
+    }
+};
+
+// 長柄武器テーブル
+class PolearmTable extends WeaponTable {
+    constructor() {
+        super("polearm", "長柄武器");
+        super.builder = {
+            index: new IndexCell(),
+            name: new DictCell(POLEARM_LIST, "name", { change: e => super._change(e) }),
+            level: new AscensionLevelCell(),
+            rank: new RangeCell(1, WEAPON_RANK_MAX),
+            atk: new IntCell(),
+            second: new DictBonusCell("name", POLEARM_LIST, "second"),
+        };
+    }
+};
+
+// 弓テーブル
+class BowTable extends WeaponTable {
+    constructor() {
+        super("bow", "弓");
+        super.builder = {
+            index: new IndexCell(),
+            name: new DictCell(BOW_LIST, "name", { change: e => super._change(e) }),
+            level: new AscensionLevelCell(),
+            rank: new RangeCell(1, WEAPON_RANK_MAX),
+            atk: new IntCell(),
+            second: new DictBonusCell("name", BOW_LIST, "second"),
+        };
+    }
+};
+
+// 法器テーブル
+class CatalystTable extends WeaponTable {
+    constructor() {
+        super("catalyst", "法器");
+        super.builder = {
+            index: new IndexCell(),
+            name: new DictCell(CATALYST_LIST, "name", { change: e => super._change(e) }),
+            level: new AscensionLevelCell(),
+            rank: new RangeCell(1, WEAPON_RANK_MAX),
+            atk: new IntCell(),
+            second: new DictBonusCell("name", CATALYST_LIST, "second"),
+        };
+    }
+};
+
+// 聖遺物テーブル基底
+class ArtifactTable extends Table {
+    constructor(id, text) {
+        super(id, text);
     }
 
-    // TODO: 削除したものを使用している他タブの要素をどうする？
-
-    changeValue(null);
-}
-
-// 値変更
-function changeValue(e) {
-    if (!g_updated) {
-        g_updated = true
-        document.title = "* " + g_def_title;
+    // 名前の変更
+    _changeName(e) {
+        Table.List.equip.updateArtifact(this.id);
     }
-}
 
-// キャラクターセルの変更
-function changeCharaCell(e) {
-    // e.target == td#chara_name.select
-    let key = e.target.value;
-    let tr = e.target.parentNode.parentNode;
+    // ☆の変更
+    _changeStar(e) {
+        // e.target == td#star.select
+        let star = parseInt(e.target.value);
+        let tr = e.target.parentNode.parentNode;
 
-    // 追加効果変更
-    CellBuilder.special.update(tr.querySelector("td#special"), key);
+        // 聖遺物レベルの変更
+        let cell = tr.querySelector("td#level");
+        this.builder.level.update(cell, star);
+        let level = this.builder.level.value(cell);
 
-    let charas = Array.from(document.querySelectorAll("table#tbl_equip td#eqchara"));
+        // 聖遺物メイン効果の更新
+        this.builder.main.update(tr.querySelector("td#main"), star, level);
+    }
 
-    // 装備タブのキャラクター更新
-    (() => {
-        let builder = CellBuilder.eqchara;
-        let items = builder.items;
-        for (let i = 0, len = charas.length; i < len; ++i) {
-            builder.update(charas[i], items);
-        }
-    })();
+    // レベルの変更
+    _changeLevel(e) {
+        // e.target == td#level.select
+        let level = parseInt(e.target.value);
+        let tr = e.target.parentNode.parentNode;
 
-    // 装備タブの武器更新（変更したキャラクターの武器を更新）
-    (id => {
-        let weapon = CHARACTER[key].weapon;
-        let builder = CellBuilder.eqweapon;
+        let star = this.builder.star.value(tr.querySelector("td#star"));
+
+        // 聖遺物メイン効果の更新
+        this.builder.main.update(tr.querySelector("td#main"), star, level);
+    }
+
+    // メイン効果の変更
+    _changeMain(e) {
+        // e.target == td#main.select
+        let td = e.target.parentNode;
+        let tr = td.parentNode;
+
+        let star = this.builder.star.value(tr.querySelector("td#star"));
+        let level = this.builder.level.value(tr.querySelector("td#level"));
+
+        // 聖遺物メイン効果の更新
+        this.builder.main.update(td, star, level);
+    }
+};
+
+// 生の花テーブル
+class FlowerTable extends ArtifactTable {
+    constructor() {
+        super("flower", "生の花");
+        super.builder = {
+            index: new IndexCell(),
+            name: new MapCell(FLOWER_LIST, { change: e => super._changeName(e) }),
+            star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
+            level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
+            main: new SingleBonusCell("hp"),
+            sub1: new BonusValueCell(ARTIFACT_SUB),
+            sub2: new BonusValueCell(ARTIFACT_SUB),
+            sub3: new BonusValueCell(ARTIFACT_SUB),
+            sub4: new BonusValueCell(ARTIFACT_SUB),
+        };
+    }
+};
+
+// 死の羽テーブル
+class FeatherTable extends ArtifactTable {
+    constructor() {
+        super("feather", "死の羽");
+        super.builder = {
+            index: new IndexCell(),
+            name: new MapCell(FEATHER_LIST, { change: e => super._changeName(e) }),
+            star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
+            level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
+            main: new SingleBonusCell("atk"),
+            sub1: new BonusValueCell(ARTIFACT_SUB),
+            sub2: new BonusValueCell(ARTIFACT_SUB),
+            sub3: new BonusValueCell(ARTIFACT_SUB),
+            sub4: new BonusValueCell(ARTIFACT_SUB),
+        };
+    }
+};
+
+// 時の砂テーブル
+class SandsTable extends ArtifactTable {
+    constructor() {
+        super("sands", "時の砂");
+        super.builder = {
+            index: new IndexCell(),
+            name: new MapCell(SANDS_LIST, { change: e => super._changeName(e) }),
+            star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
+            level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
+            main: new MultiBonusCell(ARTIFACT_SANDS, { change: e => super._changeMain(e) }),
+            sub1: new BonusValueCell(ARTIFACT_SUB),
+            sub2: new BonusValueCell(ARTIFACT_SUB),
+            sub3: new BonusValueCell(ARTIFACT_SUB),
+            sub4: new BonusValueCell(ARTIFACT_SUB),
+        };
+    }
+};
+
+// 空の杯テーブル
+class GobletTable extends ArtifactTable {
+    constructor() {
+        super("goblet", "空の杯");
+        super.builder = {
+            index: new IndexCell(),
+            name: new MapCell(GOBLET_LIST, { change: e => super._changeName(e) }),
+            star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
+            level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
+            main: new MultiBonusCell(ARTIFACT_GOBLET, { change: e => super._changeMain(e) }),
+            sub1: new BonusValueCell(ARTIFACT_SUB),
+            sub2: new BonusValueCell(ARTIFACT_SUB),
+            sub3: new BonusValueCell(ARTIFACT_SUB),
+            sub4: new BonusValueCell(ARTIFACT_SUB),
+        };
+    }
+};
+
+// 理の冠テーブル
+class CircletTable extends ArtifactTable {
+    constructor() {
+        super("circlet", "理の冠");
+        super.builder = {
+            index: new IndexCell(),
+            name: new MapCell(CIRCLET_LIST, { change: e => super._changeName(e) }),
+            star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
+            level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
+            main: new MultiBonusCell(ARTIFACT_CIRCLET, { change: e => super._changeMain(e) }),
+            sub1: new BonusValueCell(ARTIFACT_SUB),
+            sub2: new BonusValueCell(ARTIFACT_SUB),
+            sub3: new BonusValueCell(ARTIFACT_SUB),
+            sub4: new BonusValueCell(ARTIFACT_SUB),
+        };
+    }
+};
+
+// 装備テーブル
+class EquipmentTable extends Table {
+    constructor() {
+        super("equip", "装備");
+        super.builder = {
+            index: new IndexCell(),
+            chara: new EquipmentCell("chara", { change: e => this._change(e) }),
+            weapon: new EquipWeaponCell(),
+            flower: new EquipmentCell("flower"),
+            feather: new EquipmentCell("feather"),
+            sands: new EquipmentCell("sands"),
+            goblet: new EquipmentCell("goblet"),
+            circlet: new EquipmentCell("circlet"),
+        };
+    }
+
+    _change(e) {
+        // e.target == td#chara.select
+        let value = e.target.value;
+
+        // 変更したキャラクターの武器種を変更
+        let td = document.querySelector(`table#tbl_chara tr#${value} td#name`);
+        let weapon = CHARACTER[td.children[0].value].weapon;
+        let builder = this.builder.weapon;
         let items = builder.items(weapon);
-        let cells = Array.from(document.querySelectorAll("table#tbl_equip td#eqweapon"));
+        let cell = e.target.parentNode.nextElementSibling;
+        builder.update(cell, items, weapon);
+    }
+
+    updateChara(key, rid) {
+        let charas = Array.from(document.querySelectorAll("table#tbl_equip td#chara"));
+
+        // キャラクター更新
+        (() => {
+            let builder = this.builder.chara;
+            let items = builder.items;
+            for (let i = 0, len = charas.length; i < len; ++i) {
+                builder.update(charas[i], items);
+            }
+        })();
+
+        // 変更したキャラクターの武器を更新
+        (() => {
+            let weapon = CHARACTER[key].weapon;
+            let builder = this.builder.weapon;
+            let items = builder.items(weapon);
+            let cells = Array.from(document.querySelectorAll("table#tbl_equip td#weapon"));
+            for (let i = 0, len = cells.length; i < len; ++i) {
+                // 変更したキャラクターを装備しているか
+                if (charas[i].children[0].value === rid) {
+                    builder.update(cells[i], items, weapon);
+                }
+            }
+        })();
+    }
+
+    updateWeapon(type) {
+        // 変更した武器種をすべて更新
+        let builder = this.builder.weapon;
+        let items = builder.items(type);
+        let cells = Array.from(document.querySelectorAll("table#tbl_equip td#weapon"));
         for (let i = 0, len = cells.length; i < len; ++i) {
-            // 変更したキャラクターを装備しているか
-            if (charas[i].children[0].value === id) {
-                builder.update(cells[i], items, weapon);
+            let cell = cells[i];
+            // 変更した武器種を装備しているか
+            if (0 <= cell.children[0].value.indexOf(type)) {
+                builder.update(cell, items, type);
             }
         }
-    })(tr.id);
-}
+    }
 
-// 武器セルの変更
-function changeWeaponCell(e) {
-    // e.target == td#*_name.select
-    let key = e.target.value;
-    let td = e.target.parentNode;
-    let tr = td.parentNode;
-
-    // 追加効果変更
-    let second = td.id.replace("name", "second");
-    CellBuilder[second].update(tr.querySelector("td#" + second), key);
-
-    // 装備タブの武器更新（変更した武器種をすべて更新）
-    let weapon = td.id.replace("_name", "");
-    let builder = CellBuilder.eqweapon;
-    let items = builder.items(weapon);
-    let cells = Array.from(document.querySelectorAll("table#tbl_equip td#eqweapon"));
-    for (let i = 0, len = cells.length; i < len; ++i) {
-        let cell = cells[i];
-        // 変更した武器種を装備しているか
-        if (0 <= cell.children[0].value.indexOf(weapon)) {
-            builder.update(cell, items, weapon);
+    updateArtifact(type) {
+        let builder = this.builder[type];
+        let items = builder.items;
+        let cells = Array.from(document.querySelectorAll("table#tbl_equip td#" + type));
+        for (let i = 0, len = cells.length; i < len; ++i) {
+            builder.update(cells[i], items);
         }
     }
-}
+};
 
-// 聖遺物セルの変更
-function changeArtifactCell(e) {
-    // e.target == td#*_name.select
-    let td = e.target.parentNode;
-    let id = "eq" + td.id.replace("_name", "");
+window.onload = () => {
+    Cell.onChange = Table.changeValue;
+    Table.Title = document.title;
+    Table.List = {
+        chara: new CharaTable(),
+        sword: new SwordTable(),
+        claymore: new ClaymoreTable(),
+        polearm: new PolearmTable(),
+        bow: new BowTable(),
+        catalyst: new CatalystTable(),
+        flower: new FlowerTable(),
+        feather: new FeatherTable(),
+        sands: new SandsTable(),
+        goblet: new GobletTable(),
+        circlet: new CircletTable(),
+        equip: new EquipmentTable(),
+    };
+    Table.loadData();
 
-    // 装備タブの聖遺物更新
-    let builder = CellBuilder[id];
-    let items = builder.items;
-    let cells = Array.from(document.querySelectorAll("table#tbl_equip td#" + id));
-    for (let i = 0, len = cells.length; i < len; ++i) {
-        builder.update(cells[i], items);
-    }
-}
-
-// 聖遺物☆セルの変更
-function changeArtifactStarCell(e) {
-    // e.target == td#art_star.select
-    let star = parseInt(e.target.value);
-    let tr = e.target.parentNode.parentNode;
-
-    // 聖遺物レベルの変更
-    let cell = tr.querySelector("td#art_level");
-    CellBuilder.art_level.update(cell, star);
-    let level = CellBuilder.art_level.value(cell);
-
-    // 聖遺物メイン効果の変更
-    let main = tr.id.split("_")[0] + "_main";
-    CellBuilder[main].update(tr.querySelector(`td#${main}`), star, level);
-}
-
-// 聖遺物レベルセルの変更
-function changeArtifactLevelCell(e) {
-    // e.target == td#art_level.select
-    let level = parseInt(e.target.value);
-    let tr = e.target.parentNode.parentNode;
-
-    let star = CellBuilder.art_star.value(tr.querySelector("td#art_star"));
-
-    // 聖遺物メイン効果の変更
-    let main = tr.id.split("_")[0] + "_main";
-    CellBuilder[main].update(tr.querySelector(`td#${main}`), star, level);
-}
-
-// 聖遺物メイン効果セルの変更
-function changeArtifactMainCell(e) {
-    // e.target == td#*_main.select
-    let td = e.target.parentNode;
-    let tr = td.parentNode;
-
-    let star = CellBuilder.art_star.value(tr.querySelector("td#art_star"));
-    let level = CellBuilder.art_level.value(tr.querySelector("td#art_level"));
-
-    // 聖遺物メイン効果の更新
-    CellBuilder[td.id].update(td, star, level);
-}
-
-// 装備キャラクターの更新
-function changeEquipCharaCell(e) {
-    // e.target == td#eqchara.select
-    let value = e.target.value;
-
-    // 装備タブの武器更新（変更したキャラクターの武器種を変更）
-    let td = document.querySelector(`table#tbl_chara tr#${value} td#chara_name`);
-    let weapon = CHARACTER[td.children[0].value].weapon;
-    let builder = CellBuilder.eqweapon;
-    let items = builder.items(weapon);
-    let cell = e.target.parentNode.nextElementSibling;
-    builder.update(cell, items, weapon);
-}
+    loadEnemyList();
+};
 
 let g_members = [null, null, null, null];
 let g_bonuses = [];

@@ -294,7 +294,7 @@ class ArtifactLevelCell extends RangeCell {
     constructor(listeners = null) {
         super(0, 0, listeners);
         // this.min = 0 固定
-        // this.max = td#art_star の値に応じて変更
+        // this.max = td#star の値に応じて変更
     }
 
     _preset(star) {
@@ -302,7 +302,7 @@ class ArtifactLevelCell extends RangeCell {
     }
 
     load(cell, id, values) {
-        let star = parseInt(values.art_star);
+        let star = parseInt(values.star);
         if (Number.isNaN(star)) {
             star = 0;
         }
@@ -596,7 +596,7 @@ class SingleBonusCell extends BonusListCell {
     load(cell, id, values) {
         cell.className = "bonus";
 
-        let child = super._build(cell, values.art_star, values.art_level, this.list[0]);
+        let child = super._build(cell, values.star, values.level, this.list[0]);
         child.disabled = true;
 
         return child;
@@ -622,7 +622,7 @@ class MultiBonusCell extends BonusListCell {
             value = this.list[0];
         }
 
-        return super._build(cell, values.art_star, values.art_level, value);
+        return super._build(cell, values.star, values.level, value);
     }
 
     save(cell) {
@@ -740,7 +740,7 @@ class EquipmentDetail {
 
     // TODO: 多言語対応
     static outputChara(cell, item) {
-        EquipmentDetail.outputLine(cell, item, 2, "Lv."); // chara_level
+        EquipmentDetail.outputLine(cell, item, 2, "Lv."); // level
         EquipmentDetail.outputLine(cell, item, 3, "HP:"); // hp
         EquipmentDetail.outputLine(cell, item, 4, "攻撃力:"); // atk
         EquipmentDetail.outputLine(cell, item, 5, "防御力:"); // def
@@ -748,18 +748,18 @@ class EquipmentDetail {
 
     // TODO: 多言語対応
     static outputWeapon(cell, item) {
-        EquipmentDetail.outputLine(cell, item, 2, "Lv."); // weapon_level
-        EquipmentDetail.outputLine(cell, item, 3, "錬成:"); // weapon_rank
+        EquipmentDetail.outputLine(cell, item, 2, "Lv."); // level
+        EquipmentDetail.outputLine(cell, item, 3, "錬成:"); // rank
         EquipmentDetail.outputLine(cell, item, 4, "攻撃力 +"); // atk
-        EquipmentDetail.outputBonus(cell, item, 5); // *_second
+        EquipmentDetail.outputBonus(cell, item, 5); // second
     }
 
     static outputArtifact(cell, item) {
-        EquipmentDetail.outputBonus(cell, item, 4); // *_main
-        EquipmentDetail.outputBonus(cell, item, 5); // art_sub1
-        EquipmentDetail.outputBonus(cell, item, 6); // art_sub2
-        EquipmentDetail.outputBonus(cell, item, 7); // art_sub3
-        EquipmentDetail.outputBonus(cell, item, 8); // art_sub4
+        EquipmentDetail.outputBonus(cell, item, 4); // main
+        EquipmentDetail.outputBonus(cell, item, 5); // sub1
+        EquipmentDetail.outputBonus(cell, item, 6); // sub2
+        EquipmentDetail.outputBonus(cell, item, 7); // sub3
+        EquipmentDetail.outputBonus(cell, item, 8); // sub4
     }
 
     static OutputTable = {
@@ -796,7 +796,7 @@ class EquipmentCell extends Cell {
 
     get items() {
         // 装備対象をリストアップ
-        return Array.from(document.querySelectorAll(`table#tbl_${this.type} td#${this.type}_name`));
+        return Array.from(document.querySelectorAll(`table#tbl_${this.type} td#name`));
     }
 
     load(cell, id, values) {

@@ -33,13 +33,13 @@
                     </tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="eqchara">キャラクター</th>
-                        <th id="eqweapon">武器</th>
-                        <th id="eqflower">生の花</th>
-                        <th id="eqfeather">死の羽</th>
-                        <th id="eqsands">時の砂</th>
-                        <th id="eqgoblet">空の杯</th>
-                        <th id="eqcirclet">理の冠</th>
+                        <th id="chara">キャラクター</th>
+                        <th id="weapon">武器</th>
+                        <th id="flower">生の花</th>
+                        <th id="feather">死の羽</th>
+                        <th id="sands">時の砂</th>
+                        <th id="goblet">空の杯</th>
+                        <th id="circlet">理の冠</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -505,20 +505,20 @@
                     </tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="chara_name">名前</th>
-                        <th id="chara_level">Lv.</th>
+                        <th id="name">名前</th>
+                        <th id="level">Lv.</th>
                         <th id="hp">HP</th>
                         <th id="atk">攻撃力</th>
                         <th id="def">防御力</th>
                         <th id="special">固有ステータス</th>
-                        <th id="talent_combat">通常攻撃</th>
-                        <th id="talent_skill">元素ｽｷﾙ</th>
-                        <th id="talent_burst">元素爆発</th>
+                        <th id="combat">通常攻撃</th>
+                        <th id="skill">元素ｽｷﾙ</th>
+                        <th id="burst">元素爆発</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_chara')">+</button>
+            <button type="button" onclick="Table.insertRow('chara')">+</button>
         </div>
         <input id="tab_sword" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_sword">片手剣</label>
@@ -528,16 +528,16 @@
                     <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="sword_name">名前</th>
-                        <th id="weapon_level">Lv.</th>
-                        <th id="weapon_rank">錬成</th>
+                        <th id="name">名前</th>
+                        <th id="level">Lv.</th>
+                        <th id="rank">錬成</th>
                         <th id="atk">攻撃力</th>
-                        <th id="sword_second">追加効果</th>
+                        <th id="second">追加効果</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_sword')">+</button>
+            <button type="button" onclick="Table.insertRow('sword')">+</button>
         </div>
         <input id="tab_claymore" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_claymore">両手剣</label>
@@ -547,16 +547,16 @@
                     <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="claymore_name">名前</th>
-                        <th id="weapon_level">Lv.</th>
-                        <th id="weapon_rank">錬成</th>
+                        <th id="name">名前</th>
+                        <th id="level">Lv.</th>
+                        <th id="rank">錬成</th>
                         <th id="atk">攻撃力</th>
-                        <th id="claymore_second">追加効果</th>
+                        <th id="second">追加効果</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_claymore')">+</button>
+            <button type="button" onclick="Table.insertRow('claymore')">+</button>
         </div>
         <input id="tab_polearm" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_polearm">長柄武器</label>
@@ -566,16 +566,16 @@
                     <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="polearm_name">名前</th>
-                        <th id="weapon_level">Lv.</th>
-                        <th id="weapon_rank">錬成</th>
+                        <th id="name">名前</th>
+                        <th id="level">Lv.</th>
+                        <th id="rank">錬成</th>
                         <th id="atk">攻撃力</th>
-                        <th id="polearm_second">追加効果</th>
+                        <th id="second">追加効果</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_polearm')">+</button>
+            <button type="button" onclick="Table.insertRow('polearm')">+</button>
         </div>
         <input id="tab_bow" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_bow">弓</label>
@@ -585,16 +585,16 @@
                     <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="bow_name">名前</th>
-                        <th id="weapon_level">Lv.</th>
-                        <th id="weapon_rank">錬成</th>
+                        <th id="name">名前</th>
+                        <th id="level">Lv.</th>
+                        <th id="rank">錬成</th>
                         <th id="atk">攻撃力</th>
-                        <th id="bow_second">追加効果</th>
+                        <th id="second">追加効果</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_bow')">+</button>
+            <button type="button" onclick="Table.insertRow('bow')">+</button>
         </div>
         <input id="tab_catalyst" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_catalyst">法器</label>
@@ -604,16 +604,16 @@
                     <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="catalyst_name">名前</th>
-                        <th id="weapon_level">Lv.</th>
-                        <th id="weapon_rank">錬成</th>
+                        <th id="name">名前</th>
+                        <th id="level">Lv.</th>
+                        <th id="rank">錬成</th>
                         <th id="atk">攻撃力</th>
-                        <th id="catalyst_second">追加効果</th>
+                        <th id="second">追加効果</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_catalyst')">+</button>
+            <button type="button" onclick="Table.insertRow('catalyst')">+</button>
         </div>
         <input id="tab_flower" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_flower">生の花</label>
@@ -623,19 +623,19 @@
                     <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="flower_name">名前</th>
-                        <th id="art_star">☆</th>
-                        <th id="art_level">Lv.</th>
-                        <th id="flower_main">メイン効果</th>
-                        <th id="art_sub1">サブ効果1</th>
-                        <th id="art_sub2">サブ効果2</th>
-                        <th id="art_sub3">サブ効果3</th>
-                        <th id="art_sub4">サブ効果4</th>
+                        <th id="name">名前</th>
+                        <th id="star">☆</th>
+                        <th id="level">Lv.</th>
+                        <th id="main">メイン効果</th>
+                        <th id="sub1">サブ効果1</th>
+                        <th id="sub2">サブ効果2</th>
+                        <th id="sub3">サブ効果3</th>
+                        <th id="sub4">サブ効果4</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_flower')">+</button>
+            <button type="button" onclick="Table.insertRow('flower')">+</button>
         </div>
         <input id="tab_feather" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_feather">死の羽</label>
@@ -645,19 +645,19 @@
                     <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="feather_name">名前</th>
-                        <th id="art_star">☆</th>
-                        <th id="art_level">Lv.</th>
-                        <th id="feather_main">メイン効果</th>
-                        <th id="art_sub1">サブ効果1</th>
-                        <th id="art_sub2">サブ効果2</th>
-                        <th id="art_sub3">サブ効果3</th>
-                        <th id="art_sub4">サブ効果4</th>
+                        <th id="name">名前</th>
+                        <th id="star">☆</th>
+                        <th id="level">Lv.</th>
+                        <th id="main">メイン効果</th>
+                        <th id="sub1">サブ効果1</th>
+                        <th id="sub2">サブ効果2</th>
+                        <th id="sub3">サブ効果3</th>
+                        <th id="sub4">サブ効果4</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_feather')">+</button>
+            <button type="button" onclick="Table.insertRow('feather')">+</button>
         </div>
         <input id="tab_sands" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_sands">時の砂</label>
@@ -667,19 +667,19 @@
                     <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="sands_name">名前</th>
-                        <th id="art_star">☆</th>
-                        <th id="art_level">Lv.</th>
-                        <th id="sands_main">メイン効果</th>
-                        <th id="art_sub1">サブ効果1</th>
-                        <th id="art_sub2">サブ効果2</th>
-                        <th id="art_sub3">サブ効果3</th>
-                        <th id="art_sub4">サブ効果4</th>
+                        <th id="name">名前</th>
+                        <th id="star">☆</th>
+                        <th id="level">Lv.</th>
+                        <th id="main">メイン効果</th>
+                        <th id="sub1">サブ効果1</th>
+                        <th id="sub2">サブ効果2</th>
+                        <th id="sub3">サブ効果3</th>
+                        <th id="sub4">サブ効果4</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_sands')">+</button>
+            <button type="button" onclick="Table.insertRow('sands')">+</button>
         </div>
         <input id="tab_goblet" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_goblet">空の杯</label>
@@ -689,19 +689,19 @@
                     <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="goblet_name">名前</th>
-                        <th id="art_star">☆</th>
-                        <th id="art_level">Lv.</th>
-                        <th id="goblet_main">メイン効果</th>
-                        <th id="art_sub1">サブ効果1</th>
-                        <th id="art_sub2">サブ効果2</th>
-                        <th id="art_sub3">サブ効果3</th>
-                        <th id="art_sub4">サブ効果4</th>
+                        <th id="name">名前</th>
+                        <th id="star">☆</th>
+                        <th id="level">Lv.</th>
+                        <th id="main">メイン効果</th>
+                        <th id="sub1">サブ効果1</th>
+                        <th id="sub2">サブ効果2</th>
+                        <th id="sub3">サブ効果3</th>
+                        <th id="sub4">サブ効果4</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_goblet')">+</button>
+            <button type="button" onclick="Table.insertRow('goblet')">+</button>
         </div>
         <input id="tab_circlet" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_circlet">理の冠</label>
@@ -711,19 +711,19 @@
                     <tr></tr>
                     <tr>
                         <th id="index">No</th>
-                        <th id="circlet_name">名前</th>
-                        <th id="art_star">☆</th>
-                        <th id="art_level">Lv.</th>
-                        <th id="circlet_main">メイン効果</th>
-                        <th id="art_sub1">サブ効果1</th>
-                        <th id="art_sub2">サブ効果2</th>
-                        <th id="art_sub3">サブ効果3</th>
-                        <th id="art_sub4">サブ効果4</th>
+                        <th id="name">名前</th>
+                        <th id="star">☆</th>
+                        <th id="level">Lv.</th>
+                        <th id="main">メイン効果</th>
+                        <th id="sub1">サブ効果1</th>
+                        <th id="sub2">サブ効果2</th>
+                        <th id="sub3">サブ効果3</th>
+                        <th id="sub4">サブ効果4</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_circlet')">+</button>
+            <button type="button" onclick="Table.insertRow('circlet')">+</button>
         </div>
         <input id="tab_help" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_help">ヘルプ</label>
