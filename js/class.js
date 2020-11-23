@@ -84,10 +84,17 @@ class IntCell extends Cell {
         child.type = "number";
         child.step = "1";
         child.min = "0";
-        child.value = value;
+        if (typeof value === "number") {
+            child.truth = value;
+            child.value = Math.round(value).toFixed();
+        } else {
+            child.value = value;
+            child.truth = parseInt(value);
+        }
         child.pattern = "[0-9]*";
         child.className = "numeric";
 
+        child.addEventListener("change", this._change);
         child.addEventListener("focus", this._focus);
         child.addEventListener("blur", this._blur);
 
@@ -99,7 +106,15 @@ class IntCell extends Cell {
     }
 
     value(cell) {
-        return parseInt(cell.children[0].value);
+        return cell.children[0].truth;
+    }
+
+    _change(e) {
+        if (!e.value) {
+            e.truth = 0.0;
+        } else {
+            e.truth = parseFloat(e.value);
+        }
     }
 
     _focus(e) {
@@ -138,10 +153,17 @@ class RateCell extends Cell {
         child.type = "number";
         child.step = "0.1";
         child.min = 0;
-        child.value = value;
+        if (typeof value === "number") {
+            child.truth = value;
+            child.value = value.toFixed(1);
+        } else {
+            child.value = value;
+            child.truth = parseFloat(value);
+        }
         child.pattern = "[0-9\.]*";
         child.className = "numeric";
 
+        child.addEventListener("change", this._change);
         child.addEventListener("focus", this._focus);
         child.addEventListener("blur", this._blur);
 
@@ -156,7 +178,15 @@ class RateCell extends Cell {
     }
 
     value(cell) {
-        return parseFloat(cell.children[0].value);
+        return cell.children[0].truth;
+    }
+
+    _change(e) {
+        if (!e.value) {
+            e.truth = 0.0;
+        } else {
+            e.truth = parseFloat(e.value);
+        }
     }
 
     _focus(e) {
