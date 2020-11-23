@@ -3,19 +3,19 @@
 const VERSION = "0.02";
 
 // TODO: 多言語対応
-const TABLE_LIST = {
-    tbl_chara: "キャラクター",
-    tbl_sword: "片手剣",
-    tbl_claymore: "両手剣",
-    tbl_polearm: "長柄武器",
-    tbl_bow: "弓",
-    tbl_catalyst: "法器",
-    tbl_flower: "生の花",
-    tbl_feather: "死の羽",
-    tbl_sands: "時の砂",
-    tbl_goblet: "空の杯",
-    tbl_circlet: "理の冠",
-    tbl_equip: "装備"
+const TABLE_TEXT = {
+    chara: "キャラクター",
+    sword: "片手剣",
+    claymore: "両手剣",
+    polearm: "長柄武器",
+    bow: "弓",
+    catalyst: "法器",
+    flower: "生の花",
+    feather: "死の羽",
+    sands: "時の砂",
+    goblet: "空の杯",
+    circlet: "理の冠",
+    equip: "装備"
 };
 
 // テーブル管理の基底クラス
@@ -153,21 +153,28 @@ class Table {
         }
     }
 
-    // 値変更
-    static changeValue(e) {
-        if (!Table.Updated) {
-            Table.Updated = true
-            document.title = "* " + Table.Title;
-        }
+    // コンストラクタ
+    constructor(id) {
+        this.id = id;
+        this.prefix = 0;
+        this.builder = null;
+        this.counter = 0;
     }
 
-    // コンストラクタ
-    constructor(id, text) {
-        this.id = id;
-        this.name = "tbl_" + id;
-        this.text = text;
-        this.counter = 0;
-        this.builder = null;
+    // テーブル名取得
+    get name() {
+        return "tbl_" + this.id;
+    }
+
+    // テーブル表示名取得
+    get text() {
+        return TABLE_TEXT[this.id];
+    }
+
+    // 識別子取得
+    get rid() {
+        ++this.prefix;
+        return `${this.id}_${this.prefix}`;
     }
 
     // <table>取得
@@ -175,10 +182,9 @@ class Table {
         return document.getElementById(this.name);
     }
 
-    // 識別子取得
-    get identify() {
-        ++this.counter;
-        return `${this.id}_${this.counter}`;
+    // 更新があるか
+    updated(counter) {
+        return this.counter != counter;
     }
 
     // データの削除
@@ -258,7 +264,7 @@ class Table {
 
     // 1行追加
     _insertRow(html, values) {
-        let rid = this.identify;
+        let rid = this.rid;
         let row = html.insertRow();
         row.id = rid;
 
@@ -316,27 +322,38 @@ class Table {
 
         Table.changeValue(null);
     }
+
+    // 値変更通知
+    _change(e) {
+        ++this.counter;
+
+        if (!Table.Updated) {
+            Table.Updated = true
+            document.title = "* " + Table.Title;
+        }
+    }
 };
 
 // キャラクターテーブル
 class CharaTable extends Table {
     constructor() {
-        super("chara", "キャラクター");
+        super("chara");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new DictCell(CHARACTER, "name", { change: e => this._change(e) }),
-            level: new AscensionLevelCell(),
-            hp: new IntCell(),
-            atk: new IntCell(),
-            def: new IntCell(),
-            special: new DictBonusCell("name", CHARACTER, "special"),
-            combat: new TalentCell(1, TALENT_LV_MAX),
-            skill: new TalentCell(1, TALENT_LV_MAX),
-            burst: new TalentCell(1, TALENT_LV_MAX),
+            name: new DictCell(CHARACTER, "name", { change: e => this._changeName(e) }),
+            level: new AscensionLevelCell(listeners),
+            hp: new IntCell(listeners),
+            atk: new IntCell(listeners),
+            def: new IntCell(listeners),
+            special: new DictBonusCell("name", CHARACTER, "special", listeners),
+            combat: new TalentCell(1, TALENT_LV_MAX, listeners),
+            skill: new TalentCell(1, TALENT_LV_MAX, listeners),
+            burst: new TalentCell(1, TALENT_LV_MAX, listeners),
         };
     }
 
-    _change(e) {
+    _changeName(e) {
         // e.target == td#name.select
         let key = e.target.value;
         let tr = e.target.parentNode.parentNode;
@@ -346,16 +363,14 @@ class CharaTable extends Table {
 
         // 装備タブ更新
         Table.List.equip.updateChara(key, tr.id);
+
+        super._change(e);
     }
 };
 
 // 武器テーブル基底
 class WeaponTable extends Table {
-    constructor(id, text) {
-        super(id, text);
-    }
-
-    _change(e) {
+    _changeName(e) {
         // e.target == td#name.select
         let key = e.target.value;
         let tr = e.target.parentNode.parentNode;
@@ -365,20 +380,23 @@ class WeaponTable extends Table {
 
         // 装備タブ更新
         Table.List.equip.updateWeapon(this.id);
+
+        super._change(e);
     }
 }
 
 // 片手剣テーブル
 class SwordTable extends WeaponTable {
     constructor() {
-        super("sword", "片手剣");
+        super("sword");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new DictCell(SWORD_LIST, "name", { change: e => super._change(e) }),
-            level: new AscensionLevelCell(),
-            rank: new RangeCell(1, WEAPON_RANK_MAX),
-            atk: new IntCell(),
-            second: new DictBonusCell("name", SWORD_LIST, "second"),
+            name: new DictCell(SWORD_LIST, "name", { change: e => super._changeName(e) }),
+            level: new AscensionLevelCell(listeners),
+            rank: new RangeCell(1, WEAPON_RANK_MAX, listeners),
+            atk: new IntCell(listeners),
+            second: new DictBonusCell("name", SWORD_LIST, "second", listeners),
         };
     }
 };
@@ -386,14 +404,15 @@ class SwordTable extends WeaponTable {
 // 両手剣テーブル
 class ClaymoreTable extends WeaponTable {
     constructor() {
-        super("claymore", "両手剣");
+        super("claymore");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new DictCell(CLAYMORE_LIST, "name", { change: e => super._change(e) }),
-            level: new AscensionLevelCell(),
-            rank: new RangeCell(1, WEAPON_RANK_MAX),
-            atk: new IntCell(),
-            second: new DictBonusCell("name", CLAYMORE_LIST, "second"),
+            name: new DictCell(CLAYMORE_LIST, "name", { change: e => super._changeName(e) }),
+            level: new AscensionLevelCell(listeners),
+            rank: new RangeCell(1, WEAPON_RANK_MAX, listeners),
+            atk: new IntCell(listeners),
+            second: new DictBonusCell("name", CLAYMORE_LIST, "second", listeners),
         };
     }
 };
@@ -401,14 +420,15 @@ class ClaymoreTable extends WeaponTable {
 // 長柄武器テーブル
 class PolearmTable extends WeaponTable {
     constructor() {
-        super("polearm", "長柄武器");
+        super("polearm");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new DictCell(POLEARM_LIST, "name", { change: e => super._change(e) }),
-            level: new AscensionLevelCell(),
-            rank: new RangeCell(1, WEAPON_RANK_MAX),
-            atk: new IntCell(),
-            second: new DictBonusCell("name", POLEARM_LIST, "second"),
+            name: new DictCell(POLEARM_LIST, "name", { change: e => super._changeName(e) }),
+            level: new AscensionLevelCell(listeners),
+            rank: new RangeCell(1, WEAPON_RANK_MAX, listeners),
+            atk: new IntCell(listeners),
+            second: new DictBonusCell("name", POLEARM_LIST, "second", listeners),
         };
     }
 };
@@ -416,14 +436,15 @@ class PolearmTable extends WeaponTable {
 // 弓テーブル
 class BowTable extends WeaponTable {
     constructor() {
-        super("bow", "弓");
+        super("bow");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new DictCell(BOW_LIST, "name", { change: e => super._change(e) }),
-            level: new AscensionLevelCell(),
-            rank: new RangeCell(1, WEAPON_RANK_MAX),
-            atk: new IntCell(),
-            second: new DictBonusCell("name", BOW_LIST, "second"),
+            name: new DictCell(BOW_LIST, "name", { change: e => super._changeName(e) }),
+            level: new AscensionLevelCell(listeners),
+            rank: new RangeCell(1, WEAPON_RANK_MAX, listeners),
+            atk: new IntCell(listeners),
+            second: new DictBonusCell("name", BOW_LIST, "second", listeners),
         };
     }
 };
@@ -431,27 +452,26 @@ class BowTable extends WeaponTable {
 // 法器テーブル
 class CatalystTable extends WeaponTable {
     constructor() {
-        super("catalyst", "法器");
+        super("catalyst");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new DictCell(CATALYST_LIST, "name", { change: e => super._change(e) }),
-            level: new AscensionLevelCell(),
-            rank: new RangeCell(1, WEAPON_RANK_MAX),
-            atk: new IntCell(),
-            second: new DictBonusCell("name", CATALYST_LIST, "second"),
+            name: new DictCell(CATALYST_LIST, "name", { change: e => super._changeName(e) }),
+            level: new AscensionLevelCell(listeners),
+            rank: new RangeCell(1, WEAPON_RANK_MAX, listeners),
+            atk: new IntCell(listeners),
+            second: new DictBonusCell("name", CATALYST_LIST, "second", listeners),
         };
     }
 };
 
 // 聖遺物テーブル基底
 class ArtifactTable extends Table {
-    constructor(id, text) {
-        super(id, text);
-    }
-
     // 名前の変更
     _changeName(e) {
         Table.List.equip.updateArtifact(this.id);
+
+        super._change(e);
     }
 
     // ☆の変更
@@ -467,6 +487,8 @@ class ArtifactTable extends Table {
 
         // 聖遺物メイン効果の更新
         this.builder.main.update(tr.querySelector("td#main"), star, level);
+
+        super._change(e);
     }
 
     // レベルの変更
@@ -479,6 +501,8 @@ class ArtifactTable extends Table {
 
         // 聖遺物メイン効果の更新
         this.builder.main.update(tr.querySelector("td#main"), star, level);
+
+        super._change(e);
     }
 
     // メイン効果の変更
@@ -492,23 +516,26 @@ class ArtifactTable extends Table {
 
         // 聖遺物メイン効果の更新
         this.builder.main.update(td, star, level);
+
+        super._change(e);
     }
 };
 
 // 生の花テーブル
 class FlowerTable extends ArtifactTable {
     constructor() {
-        super("flower", "生の花");
+        super("flower");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
             name: new MapCell(FLOWER_LIST, { change: e => super._changeName(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
-            main: new SingleBonusCell("hp"),
-            sub1: new BonusValueCell(ARTIFACT_SUB),
-            sub2: new BonusValueCell(ARTIFACT_SUB),
-            sub3: new BonusValueCell(ARTIFACT_SUB),
-            sub4: new BonusValueCell(ARTIFACT_SUB),
+            main: new SingleBonusCell("hp", listeners),
+            sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub3: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub4: new BonusValueCell(ARTIFACT_SUB, listeners),
         };
     }
 };
@@ -516,17 +543,18 @@ class FlowerTable extends ArtifactTable {
 // 死の羽テーブル
 class FeatherTable extends ArtifactTable {
     constructor() {
-        super("feather", "死の羽");
+        super("feather");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
             name: new MapCell(FEATHER_LIST, { change: e => super._changeName(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
-            main: new SingleBonusCell("atk"),
-            sub1: new BonusValueCell(ARTIFACT_SUB),
-            sub2: new BonusValueCell(ARTIFACT_SUB),
-            sub3: new BonusValueCell(ARTIFACT_SUB),
-            sub4: new BonusValueCell(ARTIFACT_SUB),
+            main: new SingleBonusCell("atk", listeners),
+            sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub3: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub4: new BonusValueCell(ARTIFACT_SUB, listeners),
         };
     }
 };
@@ -534,17 +562,18 @@ class FeatherTable extends ArtifactTable {
 // 時の砂テーブル
 class SandsTable extends ArtifactTable {
     constructor() {
-        super("sands", "時の砂");
+        super("sands");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
             name: new MapCell(SANDS_LIST, { change: e => super._changeName(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
             main: new MultiBonusCell(ARTIFACT_SANDS, { change: e => super._changeMain(e) }),
-            sub1: new BonusValueCell(ARTIFACT_SUB),
-            sub2: new BonusValueCell(ARTIFACT_SUB),
-            sub3: new BonusValueCell(ARTIFACT_SUB),
-            sub4: new BonusValueCell(ARTIFACT_SUB),
+            sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub3: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub4: new BonusValueCell(ARTIFACT_SUB, listeners),
         };
     }
 };
@@ -552,17 +581,18 @@ class SandsTable extends ArtifactTable {
 // 空の杯テーブル
 class GobletTable extends ArtifactTable {
     constructor() {
-        super("goblet", "空の杯");
+        super("goblet");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
             name: new MapCell(GOBLET_LIST, { change: e => super._changeName(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
             main: new MultiBonusCell(ARTIFACT_GOBLET, { change: e => super._changeMain(e) }),
-            sub1: new BonusValueCell(ARTIFACT_SUB),
-            sub2: new BonusValueCell(ARTIFACT_SUB),
-            sub3: new BonusValueCell(ARTIFACT_SUB),
-            sub4: new BonusValueCell(ARTIFACT_SUB),
+            sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub3: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub4: new BonusValueCell(ARTIFACT_SUB, listeners),
         };
     }
 };
@@ -570,17 +600,18 @@ class GobletTable extends ArtifactTable {
 // 理の冠テーブル
 class CircletTable extends ArtifactTable {
     constructor() {
-        super("circlet", "理の冠");
+        super("circlet");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
             name: new MapCell(CIRCLET_LIST, { change: e => super._changeName(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
             main: new MultiBonusCell(ARTIFACT_CIRCLET, { change: e => super._changeMain(e) }),
-            sub1: new BonusValueCell(ARTIFACT_SUB),
-            sub2: new BonusValueCell(ARTIFACT_SUB),
-            sub3: new BonusValueCell(ARTIFACT_SUB),
-            sub4: new BonusValueCell(ARTIFACT_SUB),
+            sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub3: new BonusValueCell(ARTIFACT_SUB, listeners),
+            sub4: new BonusValueCell(ARTIFACT_SUB, listeners),
         };
     }
 };
@@ -588,20 +619,21 @@ class CircletTable extends ArtifactTable {
 // 装備テーブル
 class EquipmentTable extends Table {
     constructor() {
-        super("equip", "装備");
+        super("equip");
+        let listeners = { change: e => super._change(e) };
         super.builder = {
             index: new IndexCell(),
-            chara: new EquipmentCell("chara", { change: e => this._change(e) }),
-            weapon: new EquipWeaponCell(),
-            flower: new EquipmentCell("flower"),
-            feather: new EquipmentCell("feather"),
-            sands: new EquipmentCell("sands"),
-            goblet: new EquipmentCell("goblet"),
-            circlet: new EquipmentCell("circlet"),
+            chara: new EquipmentCell("chara", { change: e => this._changeChara(e) }),
+            weapon: new EquipWeaponCell(listeners),
+            flower: new EquipmentCell("flower", listeners),
+            feather: new EquipmentCell("feather", listeners),
+            sands: new EquipmentCell("sands", listeners),
+            goblet: new EquipmentCell("goblet", listeners),
+            circlet: new EquipmentCell("circlet", listeners),
         };
     }
 
-    _change(e) {
+    _changeChara(e) {
         // e.target == td#chara.select
         let value = e.target.value;
 
@@ -612,6 +644,8 @@ class EquipmentTable extends Table {
         let items = builder.items(weapon);
         let cell = e.target.parentNode.nextElementSibling;
         builder.update(cell, items, weapon);
+
+        super._change(e);
     }
 
     updateChara(key, rid) {
@@ -666,7 +700,6 @@ class EquipmentTable extends Table {
 };
 
 window.onload = () => {
-    Cell.onChange = Table.changeValue;
     Table.Title = document.title;
     Table.List = {
         chara: new CharaTable(),

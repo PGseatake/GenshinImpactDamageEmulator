@@ -11,8 +11,6 @@
 // そのまま使用すると空セルになる
 // 各関数の引数 cell は td 要素を指定する
 class Cell {
-    static onChange = null;
-
     static getInputValue(cell) {
         return cell.children[0].value;
     }
@@ -48,7 +46,6 @@ class Cell {
 
     _listen(cell, child) {
         // childに外部リスナーを登録
-        child.addEventListener("change", Cell.onChange);
         if (!!this.listeners) {
             for (let type in this.listeners) {
                 child.addEventListener(type, this.listeners[type]);
@@ -68,10 +65,6 @@ class Cell {
 
 // 整数セル
 class IntCell extends Cell {
-    constructor(listeners = null) {
-        super(listeners);
-    }
-
     get initial() {
         return "0";
     }
@@ -126,10 +119,6 @@ class IntCell extends Cell {
 
 // 割合セル
 class RateCell extends Cell {
-    constructor(listeners = null) {
-        super(listeners);
-    }
-
     get initial() {
         return "0.0";
     }
@@ -187,10 +176,6 @@ class RateCell extends Cell {
 
 // 空のセル
 class EmptyCell extends Cell {
-    constructor() {
-        super();
-    }
-
     build(cell, value) {
         // 処理簡略化のため非表示で配置しておく
         let child = document.createElement("input");
@@ -209,10 +194,6 @@ class EmptyCell extends Cell {
 
 // 連番セル
 class IndexCell extends Cell {
-    constructor() {
-        super();
-    }
-
     index(cell) {
         return cell.parentNode.rowIndex - 1;
     }
@@ -278,10 +259,6 @@ class RangeCell extends Cell {
 
 // 天賦セル
 class TalentCell extends RangeCell {
-    constructor(min, max, listeners = null) {
-        super(min, max, listeners);
-    }
-
     load(cell, id, values) {
         let child = super.load(cell, id, values);
         cell.insertBefore(document.createTextNode("Lv."), child);
@@ -321,10 +298,6 @@ class ArtifactLevelCell extends RangeCell {
 
 // 突破レベルセル
 class AscensionLevelCell extends Cell {
-    constructor(listeners = null) {
-        super(listeners);
-    }
-
     get initial() {
         return "1";
     }
@@ -553,10 +526,6 @@ class BonusCell extends Cell {
 
 // ボーナスリストセル
 class BonusListCell extends BonusCell {
-    constructor(list, listeners) {
-        super(list, listeners);
-    }
-
     _build(cell, astar, alevel, bonus) {
         let child = super._listen(cell, super._select(bonus));
 
@@ -605,10 +574,6 @@ class SingleBonusCell extends BonusListCell {
 
 // 複数ボーナスセル
 class MultiBonusCell extends BonusListCell {
-    constructor(list, listeners = null) {
-        super(list, listeners);
-    }
-
     get initial() {
         return this.list[0];
     }
@@ -632,11 +597,6 @@ class MultiBonusCell extends BonusListCell {
 
 // ボーナス値セル
 class BonusValueCell extends BonusCell {
-    constructor(list, listeners = null) {
-        super(listeners);
-        this.list = list;
-    }
-
     get initial() {
         let key = this.list[0];
         return [key, BonusValue[key].init];
@@ -655,9 +615,8 @@ class BonusValueCell extends BonusCell {
     }
 
     _build(cell, key, value) {
-        let child = super._select(key);
+        let child = super._listen(cell, super._select(key));
         child.addEventListener("change", e => this._change(e));
-        cell.appendChild(child);
 
         return BonusValue[key].cell(this.listeners).build(cell, value);
     }
@@ -678,8 +637,6 @@ class BonusValueCell extends BonusCell {
 
         let bonus = BonusValue[select.value];
         bonus.cell(this.listeners).build(cell, bonus.init);
-
-        Cell.onChange(e);
     }
 };
 
@@ -937,10 +894,6 @@ class Param {
 
 // 基礎があるパラメータ向け
 class BaseParam extends Param {
-    constructor(param) {
-        super(param);
-    }
-
     set(cell, status) {
         if (!status) {
             cell.textContent = "0";
@@ -962,10 +915,6 @@ class BaseParam extends Param {
 
 // 割合表記のパラメータ向け
 class RateParam extends Param {
-    constructor(param) {
-        super(param);
-    }
-
     set(cell, status) {
         if (!status) {
             cell.nextElementSibling.textContent = "0.0%";
@@ -981,10 +930,6 @@ class RateParam extends Param {
 
 // 元素ダメージバフパラメータ向け
 class ElemBuffParam extends RateParam {
-    constructor(param) {
-        super(param);
-    }
-
     set(cell, status) {
         if (!status) {
             cell.nextElementSibling.textContent = "0.0%";
@@ -996,10 +941,6 @@ class ElemBuffParam extends RateParam {
 
 // ダメージパラメータ向け
 class DamageParam extends RateParam {
-    constructor(param) {
-        super(param);
-    }
-
     set(cell, status) {
         if (!status) {
             cell.nextElementSibling.textContent = "+0.0%";
