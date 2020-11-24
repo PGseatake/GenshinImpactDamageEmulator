@@ -2,8 +2,8 @@
 
 // テーブルについて
 // 基本的に各要素の name は使用しない
-// table.id = 各テーブルの名前。種別の要素も含む
-// tr.id = 各行を一意に識別する名前。各テーブルの先頭２行はキャプションとして id 未設定
+// table.id = 各テーブルの名前
+// tr.id = 各行を一意に識別する名前
 // th.id = 各セルの用途別の名前。td 要素の id にコピーする
 // td.id = 各セルの用途別の名前
 
@@ -94,9 +94,9 @@ class IntCell extends Cell {
         child.pattern = "[0-9]*";
         child.className = "numeric";
 
-        child.addEventListener("change", this._change);
-        child.addEventListener("focus", this._focus);
-        child.addEventListener("blur", this._blur);
+        child.addEventListener("change", IntCell.onChange);
+        child.addEventListener("focus", IntCell.onFocus);
+        child.addEventListener("blur", IntCell.onBlur);
 
         return super._listen(cell, child);
     }
@@ -109,7 +109,7 @@ class IntCell extends Cell {
         return cell.children[0].truth;
     }
 
-    _change(e) {
+    static onChange(e) {
         if (!e.value) {
             e.truth = 0.0;
         } else {
@@ -117,14 +117,14 @@ class IntCell extends Cell {
         }
     }
 
-    _focus(e) {
+    static onFocus(e) {
         let input = e.target;
         if (input.value === "0") {
             input.value = "";
         }
     }
 
-    _blur(e) {
+    static onBlur(e) {
         let input = e.target;
         if (input.value === "") {
             input.value = "0";
@@ -163,9 +163,9 @@ class RateCell extends Cell {
         child.pattern = "[0-9\.]*";
         child.className = "numeric";
 
-        child.addEventListener("change", this._change);
-        child.addEventListener("focus", this._focus);
-        child.addEventListener("blur", this._blur);
+        child.addEventListener("change", RateCell.onChange);
+        child.addEventListener("focus", RateCell.onFocus);
+        child.addEventListener("blur", RateCell.onBlur);
 
         super._listen(cell, child);
         cell.appendChild(document.createTextNode("%"));
@@ -181,7 +181,7 @@ class RateCell extends Cell {
         return cell.children[0].truth;
     }
 
-    _change(e) {
+    static onChange(e) {
         if (!e.value) {
             e.truth = 0.0;
         } else {
@@ -189,14 +189,14 @@ class RateCell extends Cell {
         }
     }
 
-    _focus(e) {
+    static onFocus(e) {
         let input = e.target;
         if (input.value === "0.0") {
             input.value = "";
         }
     }
 
-    _blur(e) {
+    static onBlur(e) {
         let input = e.target;
         if (input.value === "") {
             input.value = "0.0";
@@ -528,7 +528,7 @@ class BonusCell extends Cell {
 
     value(cell) {
         let children = cell.children;
-        return { key: children[0].value, value: parseFloat(children[1].value) };
+        return { key: children[0].value, value: children[1].truth };
     }
 
     _exists(value) {
@@ -646,7 +646,7 @@ class BonusValueCell extends BonusCell {
 
     _build(cell, key, value) {
         let child = super._listen(cell, super._select(key));
-        child.addEventListener("change", e => this._change(e));
+        child.addEventListener("change", { listeners: this.listeners, handleEvent: BonusValueCell.onChange });
 
         return BonusValue[key].cell(this.listeners).build(cell, value);
     }
@@ -656,7 +656,7 @@ class BonusValueCell extends BonusCell {
         return [children[0].value, children[1].value];
     }
 
-    _change(e) {
+    static onChange(e) {
         let select = e.target;
         let cell = select.parentNode;
 

@@ -101,7 +101,7 @@ class Table {
                     for (let id in Table.List) {
                         if (id in data) {
                             localStorage.setItem(id, JSON.stringify(data[id]));
-                            TableList[id]._load();
+                            Table.List[id]._load();
                         }
                     }
                 }
@@ -137,8 +137,8 @@ class Table {
     static insertRow(id) {
         let tbl = Table.List[id];
         let html = tbl.html;
-        tbl._insertRow(html, tbl._default(html));
-        Table.changeValue(null);
+        tbl._insert(html, tbl._default(html));
+        tbl._change(null);
     }
 
     // 削除確認
@@ -149,21 +149,16 @@ class Table {
         if (yes) {
             let html = row.parentNode.parentNode;
             let tbl = Table.List[html.id.replace("tbl_", "")];
-            tbl._removeRow(html, e.target.id);
+            tbl._remove(html, e.target.id);
         }
     }
 
     // コンストラクタ
     constructor(id) {
         this.id = id;
-        this.prefix = 0;
+        this.postfix = 0;
         this.builder = null;
         this.counter = 0;
-    }
-
-    // テーブル名取得
-    get name() {
-        return "tbl_" + this.id;
     }
 
     // テーブル表示名取得
@@ -173,13 +168,13 @@ class Table {
 
     // 識別子取得
     get rid() {
-        ++this.prefix;
-        return `${this.id}_${this.prefix}`;
+        ++this.postfix;
+        return `${this.id}_${this.postfix}`;
     }
 
     // <table>取得
     get html() {
-        return document.getElementById(this.name);
+        return document.getElementById("tbl_" + this.id);
     }
 
     // 更新があるか
@@ -192,10 +187,10 @@ class Table {
         let html = this.html;
         // rows[0,1]（キャプション）以外を削除
         for (let count = html.rows.length - 2; 0 < count; --count) {
-            html.removeRow(2);
+            html.deleteRow(2);
         }
 
-        localStorage.removeItem(this.name);
+        localStorage.removeItem(this.id);
     }
 
     // データの保存
@@ -220,12 +215,12 @@ class Table {
             data.push(map);
         }
 
-        localStorage.setItem(this.name, JSON.stringify(data));
+        localStorage.setItem(this.id, JSON.stringify(data));
     }
 
     // データの読込
     _load() {
-        let json = localStorage.getItem(this.name);
+        let json = localStorage.getItem(this.id);
         if (!!json) {
             let data = JSON.parse(json);
 
@@ -241,7 +236,7 @@ class Table {
                     }
                 }
 
-                this._insertRow(html, line);
+                this._insert(html, line);
             }
         }
     }
@@ -263,7 +258,7 @@ class Table {
     }
 
     // 1行追加
-    _insertRow(html, values) {
+    _insert(html, values) {
         let rid = this.rid;
         let row = html.insertRow();
         row.id = rid;
@@ -308,7 +303,7 @@ class Table {
     }
 
     // 1行削除
-    _removeRow(html, id) {
+    _remove(html, id) {
         html.querySelector("tr#" + id).remove();
 
         // indexの再設定
@@ -320,7 +315,7 @@ class Table {
 
         // TODO: 削除したものを使用している他タブの要素をどうする？
 
-        Table.changeValue(null);
+        this._change(null);
     }
 
     // 値変更通知
@@ -353,6 +348,7 @@ class CharaTable extends Table {
         };
     }
 
+    // 名前の変更
     _changeName(e) {
         // e.target == td#name.select
         let key = e.target.value;
@@ -370,6 +366,7 @@ class CharaTable extends Table {
 
 // 武器テーブル基底
 class WeaponTable extends Table {
+    // 名前の変更
     _changeName(e) {
         // e.target == td#name.select
         let key = e.target.value;

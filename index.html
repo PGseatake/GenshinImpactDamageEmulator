@@ -15,12 +15,12 @@
 
 <body>
     <div class="caption">
-        <button type="button" onclick="saveData()">保存</button>
-        <button type="button" onclick="clearConfirm(false)">削除</button>
-        <button type="button" onclick="clearConfirm(true)">全削除</button>
-        <button type="button" onclick="exportData()">エクスポート</button>
-        <button type="button" onclick="importConfirm()">インポート</button>
-        <input id="import" class="import" type="file" accept=".json" onchange="importData()">
+        <button type="button" onclick="Table.saveData()">保存</button>
+        <button type="button" onclick="Table.clearConfirm(false)">削除</button>
+        <button type="button" onclick="Table.clearConfirm(true)">全削除</button>
+        <button type="button" onclick="Table.exportData()">エクスポート</button>
+        <button type="button" onclick="Table.importConfirm()">インポート</button>
+        <input id="import" class="import" type="file" accept=".json" onchange="Table.importData()">
     </div>
     <div class="tab_wrap">
         <input id="tab_equip" type="radio" name="TAB" class="tab_switch" checked="checked" />
@@ -44,7 +44,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="insertRow('tbl_equip')">+</button>
+            <button type="button" onclick="Table.insertRow('equip')">+</button>
         </div>
         <input id="tab_team" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_team">チーム</label>
