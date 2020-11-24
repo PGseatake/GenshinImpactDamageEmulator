@@ -424,7 +424,7 @@ class WeaponTable extends Table {
 
         return [WEAPON_LIST[this.id][name], rank - 1];
     }
-}
+};
 
 // 片手剣テーブル
 class SwordTable extends WeaponTable {
