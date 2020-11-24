@@ -1,5 +1,11 @@
 "use strict"
 
+function removeChildren(elem) {
+    while (!!elem.lastChild) {
+        elem.lastChild.remove();
+    }
+}
+
 // テーブルについて
 // 基本的に各要素の name は使用しない
 // table.id = 各テーブルの名前
@@ -54,12 +60,6 @@ class Cell {
 
         cell.appendChild(child);
         return child;
-    }
-
-    _clear(cell) {
-        while (!!cell.lastChild) {
-            cell.lastChild.remove();
-        }
     }
 };
 
@@ -321,7 +321,7 @@ class ArtifactLevelCell extends RangeCell {
     update(cell, star) {
         let value = cell.children[0].selectedIndex;
         this._preset(star);
-        super._clear(cell);
+        removeChildren(cell);
         super._build(cell, value);
     }
 };
@@ -696,7 +696,7 @@ class DictBonusCell extends BonusValueCell {
 
     update(cell, key) {
         this._preset(key);
-        super._clear(cell);
+        removeChildren(cell);
         super._build(cell, ...super.initial);
     }
 };
@@ -840,7 +840,7 @@ class EquipmentCell extends Cell {
     update(cell, items) {
         let row = this.value(cell);
         let index = !!row ? (row.rowIndex - 2) : 0;
-        super._clear(cell);
+        removeChildren(cell);
         this._build(cell, index, items);
     }
 
@@ -872,7 +872,7 @@ class EquipWeaponCell extends Cell {
     }
 
     load(cell, id, values) {
-        let index = parseInt(values.eqchara);
+        let index = parseInt(values.chara);
         if (Number.isNaN(index)) {
             index = 0;
         }

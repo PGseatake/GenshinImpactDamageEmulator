@@ -54,16 +54,16 @@
                     <tr>
                         <th>装備</th>
                         <th rowspan="30"></th>
-                        <td id="chara1" colspan="2"><select onchange="changeTeamMember(0)"></select></td>
+                        <td id="chara1" colspan="2"><select onchange="TeamTable.changeMember(0, this)"></select></td>
                         <th rowspan="30"></th>
-                        <td id="chara2" colspan="2"><select onchange="changeTeamMember(1)"></select></td>
+                        <td id="chara2" colspan="2"><select onchange="TeamTable.changeMember(1, this)"></select></td>
                         <th rowspan="30"></th>
-                        <td id="chara3" colspan="2"><select onchange="changeTeamMember(2)"></select></td>
+                        <td id="chara3" colspan="2"><select onchange="TeamTable.changeMember(2, this)"></select></td>
                         <th rowspan="30"></th>
-                        <td id="chara4" colspan="2"><select onchange="changeTeamMember(3)"></select></td>
+                        <td id="chara4" colspan="2"><select onchange="TeamTable.changeMember(3, this)"></select></td>
                     </tr>
                     <tr>
-                        <td><button type="button" onclick="updateTeam()">更新</button></td>
+                        <td><button type="button" onclick="refreshTable('team')">更新</button></td>
                         <th class="team">基礎</th>
                         <th class="team">追加</th>
                         <th class="team">基礎</th>
@@ -380,7 +380,7 @@
                 </tbody>
             </table>
         </div>
-        <input id="tab_bonus" type="radio" name="TAB" class="tab_switch" onclick="updateBonusTable()" />
+        <input id="tab_bonus" type="radio" name="TAB" class="tab_switch" onclick="refreshTable('bonus')" />
         <label class="tab_label" for="tab_bonus">ボーナス</label>
         <div class="tab_content">
             <table id="tbl_bonus">
@@ -414,7 +414,7 @@
                 </tbody>
             </table>
         </div>
-        <input id="tab_damage" type="radio" name="TAB" class="tab_switch" onclick="updateDamageTable()" />
+        <input id="tab_damage" type="radio" name="TAB" class="tab_switch" onclick="refreshTable('damage')" />
         <label class="tab_label" for="tab_damage">ダメージ</label>
         <div class="tab_content">
             <table id="tbl_enemy">
@@ -422,10 +422,10 @@
                 <tbody>
                     <tr>
                         <th>レベル</th>
-                        <td><input id="enemy_level" type="number" min="0" pattern="[0-9]*" value="0" class="numeric" onchange="changeEnemyLevel(this)"></td>
+                        <td><input id="enemy_level" type="number" min="0" pattern="[0-9]*" value="0" class="numeric" onchange="EnemyTable.changeLevel(this)"></td>
                     </tr>
                     <tr>
-                        <td><select id="enemy_list" onchange="changeEnemyList(this)"></select></td>
+                        <td><select id="enemy_list" onchange="EnemyTable.changeList(this)"></select></td>
                         <th>耐性</th>
                         <th>倍率</th>
                     </tr>
@@ -475,8 +475,8 @@
             <table id="tbl_damage">
                 <thead>
                     <tr>
-                        <th><select id="member_list" onchange="updateDamageTable()"></select>Lv.1</th>
-                        <th>倍率<select id="damage_type" onchange="changeDamageType(this)">
+                        <th><select id="member_list" onchange="refreshTable('damage')"></select>Lv.1</th>
+                        <th>倍率<select id="damage_type" onchange="DamageTable.changeType(this)">
                                 <option value="phys">物理</option>
                                 <option value="elem">元素</option>
                             </select>

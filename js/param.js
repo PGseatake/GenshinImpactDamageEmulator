@@ -417,8 +417,8 @@ class Enemy {
     }
 
     // 防御力（小数）
-    defence(chara) {
-        let charaLevel = chara.level + 100;
+    defence(level) {
+        let charaLevel = level + 100;
         let enemyLevel = this.level + 100;
         let debuffRate = 1.0 - (this.debuff / 100);
         return charaLevel / (debuffRate * enemyLevel + charaLevel);

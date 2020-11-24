@@ -15,7 +15,11 @@ const TABLE_TEXT = {
     sands: "時の砂",
     goblet: "空の杯",
     circlet: "理の冠",
-    equip: "装備"
+    equip: "装備",
+    team: "チーム",
+    bonus: "ボーナス",
+    enemy: "敵",
+    damage: "ダメージ",
 };
 
 // テーブル管理の基底クラス
@@ -126,9 +130,11 @@ class Table {
         } else {
             let elem = document.querySelector("input[name='TAB']:checked");
             let tbl = Table.List[elem.id.replace("tab_", "")];
-            let yes = confirm(`${tbl.text}タブの内容が破棄されます。よろしいですか？`);
-            if (yes) {
-                tbl._clear();
+            if (tbl.clearable) {
+                let yes = confirm(`${tbl.text}タブの内容が破棄されます。よろしいですか？`);
+                if (yes) {
+                    tbl._clear();
+                }
             }
         }
     }
@@ -175,6 +181,11 @@ class Table {
     // <table>取得
     get html() {
         return document.getElementById("tbl_" + this.id);
+    }
+
+    // データ削除可能かどうか
+    get clearable() {
+        return true;
     }
 
     // 更新があるか
@@ -362,6 +373,24 @@ class CharaTable extends Table {
 
         super._change(e);
     }
+
+    // ステータス適用
+    status(tr, status) {
+        let cells = Array.from(tr.cells);
+
+        let name = this.builder.name.value(cells[1]);
+        status.lv = this.builder.level.value(cells[2]);
+        status.base_hp = this.builder.hp.value(cells[3]);
+        status.base_atk = this.builder.atk.value(cells[4]);
+        status.base_def = this.builder.def.value(cells[5]);
+        let pair = this.builder.special.value(cells[6]);
+        status[pair.key] = pair.value;
+        status.talent.combat = this.builder.combat.value(cells[7]);
+        status.talent.skill = this.builder.skill.value(cells[8]);
+        status.talent.burst = this.builder.burst.value(cells[9]);
+
+        return CHARACTER[name];
+    }
 };
 
 // 武器テーブル基底
@@ -379,6 +408,21 @@ class WeaponTable extends Table {
         Table.List.equip.updateWeapon(this.id);
 
         super._change(e);
+    }
+
+    // ステータス適用
+    status(tr, status) {
+        let cells = Array.from(tr.cells);
+
+        let name = this.builder.name.value(cells[1]);
+        let rank = this.builder.rank.value(cells[3]);
+        status.base_atk += this.builder.atk.value(cells[4]);
+        let pair = this.builder.second.value(cells[5]);
+        if (pair.key !== "other") {
+            status[pair.key] += pair.value;
+        }
+
+        return [WEAPON_LIST[this.id][name], rank - 1];
     }
 }
 
@@ -515,6 +559,26 @@ class ArtifactTable extends Table {
         this.builder.main.update(td, star, level);
 
         super._change(e);
+    }
+
+    // ステータス適用
+    status(tr, status) {
+        let cells = Array.from(tr.cells);
+        let name = this.builder.name.value(cells[1]);
+
+        // メイン効果追加
+        let pair = this.builder.main.value(cells[4]);
+        status[pair.key] += pair.value;
+
+        // サブ効果追加
+        for (let i = 1; i <= 4; ++i) {
+            pair = this.builder["sub" + i].value(cells[4 + i]);
+            if (pair.key !== "other") {
+                status[pair.key] += pair.value;
+            }
+        }
+
+        return name;
     }
 };
 
@@ -694,6 +758,659 @@ class EquipmentTable extends Table {
             builder.update(cells[i], items);
         }
     }
+
+    enumerate() {
+        // 装備テーブルから{equip rid, キャラ名}のペアを生成
+        let equips = Array.from(document.querySelectorAll("table#tbl_equip td#chara"));
+        let values = [];
+        for (let i = 0, len = equips.length; i < len; ++i) {
+            let equip = equips[i];
+            let select = equip.children[0];
+            let option = select.options[select.selectedIndex];
+            values[i] = { id: equip.parentNode.id, name: option.label.split(".")[1] };
+        }
+        return values;
+    }
+};
+
+// チームテーブル
+class TeamTable extends Table {
+    // メンバー変更
+    static changeMember(no, elem) {
+        Table.List.team._assign(no, elem);
+    }
+
+    // コンストラクタ
+    constructor() {
+        super("team");
+        super.builder = {
+            hp: new BaseParam("hp"),
+            atk: new BaseParam("atk"),
+            def: new BaseParam("def"),
+            elem: new Param("elem"),
+            cri_rate: new RateParam("cri_rate"),
+            cri_dmg: new RateParam("cri_dmg"),
+            en_rec: new RateParam("en_rec"),
+            pyro_dmg: new ElemBuffParam("pyro_dmg"),
+            hydro_dmg: new ElemBuffParam("hydro_dmg"),
+            elect_dmg: new ElemBuffParam("elect_dmg"),
+            anemo_dmg: new ElemBuffParam("anemo_dmg"),
+            cryo_dmg: new ElemBuffParam("cryo_dmg"),
+            geo_dmg: new ElemBuffParam("geo_dmg"),
+            phys_dmg: new ElemBuffParam("phys_dmg"),
+            normal_dmg: new DamageParam("normal_dmg"),
+            heavy_dmg: new DamageParam("heavy_dmg"),
+            heavy_cri: new DamageParam("heavy_cri"),
+            skill_dmg: new DamageParam("skill_dmg"),
+            burst_dmg: new DamageParam("burst_dmg"),
+            any_dmg: new DamageParam("any_dmg"),
+            melt_dmg: new ElemReactParam("melt_dmg"),
+            swirl_dmg: new ElemReactParam("swirl_dmg"),
+            echarge_dmg: new ElemReactParam("echarge_dmg"),
+            shutter_dmg: new ElemReactParam("shutter_dmg"),
+            conduct_dmg: new ElemReactParam("conduct_dmg"),
+            vaporize_dmg: new ElemReactParam("vaporize_dmg"),
+            ovreload_dmg: new ElemReactParam("ovreload_dmg"),
+        };
+        this.members = [null, null, null, null];
+    }
+
+    // データ削除可能かどうか
+    get clearable() {
+        return false;
+    }
+
+    // データの保存
+    _save() {
+        // 何もしない
+    }
+
+    // データの読込
+    _load() {
+        // 何もしない
+    }
+
+    // データの削除
+    _clear() {
+        this.members = this.members.fill(null);
+
+        let html = this.html;
+        let cells = Array.from(html.rows[0].querySelectorAll("td"));
+        for (let i = 0; i < 4; ++i) {
+            removeChildren(cells[i].children[0]);
+        }
+        this._build(html);
+    }
+
+    // データの再表示
+    refresh() {
+        Table.List.bonus.reset();
+
+        // メモリ解放しておく
+        this.members = this.members.fill(null);
+
+        // 装備テーブルから{tr#id, キャラ名}のペアを生成
+        let list = Table.List.equip.enumerate();
+
+        // チーム選択のselect更新
+        let html = this.html;
+        let cells = Array.from(html.rows[0].querySelectorAll("td"));
+        for (let no = 0; no < 4; ++no) {
+            let select = cells[no].children[0];
+            let selected = select.value;
+
+            // メンバーoptionの更新
+            removeChildren(select);
+            for (let i = 0; i < list.length; ++i) {
+                let item = list[i];
+                let opt = document.createElement("option");
+                opt.value = item.id;
+                opt.label = `${i + 1}.${item.name}`;
+                opt.selected = (selected === item.id);
+                select.appendChild(opt);
+            }
+
+            if (0 <= select.selectedIndex) {
+                this.members[no] = this._member(select.value);
+            }
+        }
+        this._build(html);
+
+        Table.List.bonus.attach(this.members);
+        Table.List.damage.list();
+    }
+
+    // メンバーデータの設定
+    _build(html) {
+        let rows = html.rows;
+        for (let i = 2, len = rows.length; i < len; ++i) {
+            let row = rows[i];
+            let param = row.id;
+            if (param in this.builder) {
+                let cells = row.cells;
+                let builder = this.builder[param];
+                for (let no = 0; no < 4; ++no) {
+                    builder.set(cells[1 + no * 2], this.members[no]);
+                }
+            }
+        }
+    }
+
+    // メンバー取得
+    _member(cid) {
+        let builder = Table.List.equip.builder;
+        let equips = document.querySelector("table#tbl_equip tr#" + cid).cells;
+        let status = new Status(this.rid);
+
+        // キャラクターのステータスチェック
+        let chara = Table.List.chara.status(builder.chara.value(equips[1]), status);
+        status.chara = chara;
+
+        let bonuses = Table.List.bonus;
+        // TODO: 天賦によるボーナス追加
+        // TODO: 星座によるボーナス追加
+
+        // 武器のステータスチェック
+        let weapon = Table.List[chara.weapon].status(builder.weapon.value(equips[2], chara.weapon), status);
+        // 武器ボーナス追加
+        bonuses.weapon(status, ...weapon);
+
+        // 聖遺物のステータスチェック
+        let items = [
+            Table.List.flower.status(builder.flower.value(equips[3]), status),
+            Table.List.feather.status(builder.feather.value(equips[4]), status),
+            Table.List.sands.status(builder.sands.value(equips[5]), status),
+            Table.List.goblet.status(builder.goblet.value(equips[6]), status),
+            Table.List.circlet.status(builder.circlet.value(equips[7]), status),
+        ];
+        // 聖遺物の組み合わせボーナス追加
+        bonuses.artifact(status, items);
+
+        return status;
+    }
+
+    // メンバー登録
+    _assign(no, elem) {
+        Table.List.bonus.detach(this.members[no]);
+
+        this.members[no] = null; // メモリ解放しておく
+        this.members[no] = this._member(elem.value);
+        this._build(this.html);
+
+        Table.List.bonus.attach(this.members);
+        Table.List.damage.list();
+    }
+};
+
+// ボーナステーブル
+class BonusTable extends Table {
+    // コンストラクタ
+    constructor() {
+        super("bonus");
+        this.items = [];
+    }
+
+    // データ削除可能かどうか
+    get clearable() {
+        return false;
+    }
+
+    // データの保存
+    _save() {
+        // 何もしない
+    }
+
+    // データの読込
+    _load() {
+        // 何もしない
+    }
+
+    // データの削除
+    _clear() {
+        this.reset();
+        this.refresh();
+    }
+
+    // データの再表示
+    refresh() {
+        let rows = this.html.rows;
+        let members = Table.List.team.members;
+
+        for (let no = 0; no < 4; ++no) {
+            let status = members[no];
+            let cells = rows[1 + no].cells;
+            if (!status) {
+                cells[0].textContent = "-";
+                cells[1].innerHTML = "";
+            } else {
+                // キャラクター名更新
+                cells[0].textContent = status.chara.name;
+
+                // ボーナス一覧更新
+                let text = ""
+                let bonuses = status.bonus;
+                for (let i = 0, len = bonuses.length; i < len; ++i) {
+                    let bonus = bonuses[i];
+                    if (bonus.apply) {
+                        text += `<span style="color:silver">${bonus.toString()}</span>`;
+                    } else {
+                        text += bonus.toString();
+                    }
+                    text += "<br>";
+                }
+                cells[1].innerHTML = text;
+            }
+        }
+    }
+
+    // ボーナスの全削除
+    reset() {
+        this.items = [];
+    }
+
+    // 武器ボーナス追加
+    weapon(status, item, rank) {
+        let bonus = item.passive;
+        if (Array.isArray(bonus)) {
+            for (let i = 0; i < bonus.length; ++i) {
+                // TODO: 改良
+                this._append(status, bonus[i].detailRank("武器", rank), bonus[i].target);
+            }
+        } else if (bonus != null) {
+            // TODO: 改良
+            this._append(status, bonus.detailRank("武器", rank), bonus.target);
+        }
+    }
+
+    // 聖遺物ボーナス追加
+    artifact(status, items) {
+        items.sort();
+
+        let first = 0;
+        while (first < 5) {
+            let item = items[first];
+            let last = items.lastIndexOf(item) + 1;
+            if (item in ARTIFACT_SET) {
+                let same = last - first;
+                let artifact = ARTIFACT_SET[item];
+                if (2 <= same) {
+                    // TODO: 改良
+                    this._append(status, artifact.set2.detail("聖遺物"), artifact.set2.target);
+                }
+                if (4 <= same) {
+                    // TODO: 改良
+                    this._append(status, artifact.set4.detail("聖遺物"), artifact.set4.target);
+                }
+            }
+            first = last;
+        }
+    }
+
+    // ボーナス追加
+    _append(status, bonus, target) {
+        if (target == "all") {
+            bonus.id = status.id;
+            this.items.push(bonus);
+        } else {
+            status.append(bonus);
+        }
+    }
+
+    // チームボーナス追加
+    attach(members) {
+        // TODO: チームボーナス追加
+    }
+
+    // チームボーナス削除
+    detach(status) {
+        if (!status) return;
+
+        // 削除したメンバーのボーナスを全削除
+        let bonuses = this.items.filter(bonus => bonus.id !== status.id);
+
+        // TODO: チームボーナス削除
+        this.items = bonuses.filter(bonus => bonus.id !== "team");
+    }
+};
+
+// 敵テーブル
+class EnemyTable extends Table {
+    // 敵キャラ変更
+    static changeList(elem) {
+        let tbl = Table.List.enemy;
+        let html = tbl.html;
+        tbl._build(html, elem.value);
+        tbl._level(html, html.querySelector("input#enemy_level"));
+
+        Table.List.damage.calc();
+    }
+
+    // レベル変更
+    static changeLevel(elem) {
+        let tbl = Table.List.enemy;
+        let html = tbl.html;
+        tbl._level(html, elem);
+
+        Table.List.damage.calc();
+    }
+
+    // コンストラクタ
+    constructor() {
+        super("enemy");
+        this.target = null;
+    }
+
+    // データ削除可能かどうか
+    get clearable() {
+        return false;
+    }
+
+    // データの保存
+    _save() {
+        // 何もしない
+    }
+
+    // データの読込
+    _load() {
+        let html = this.html;
+        let select = html.querySelector("select#enemy_list");
+        for (let key in ENEMY_LIST) {
+            let opt = document.createElement("option");
+            opt.value = key;
+            opt.label = ENEMY_LIST[key].name;
+            select.appendChild(opt);
+        }
+
+        this._build(html, select.value);
+    }
+
+    // データの削除
+    _clear() {
+        this._defence(this.html, null);
+    }
+
+    // 敵データの設定
+    _build(html, name) {
+        this.target = new Enemy(name);
+
+        // 各元素の耐性更新
+        let row = html.rows[2];
+        while (!!row.id) {
+            let type = row.id.replace("resist_", "");
+            let cells = row.cells;
+            let resist = this.target.resist[type];
+            if (resist === Infinity) {
+                cells[1].textContent = "無効"; // TODO: 多言語対応
+            } else {
+                cells[1].textContent = resist + "%";
+            }
+            cells[2].textContent = (this.target.resistance(type) * 100).toFixed(1) + "%";
+
+            row = row.nextElementSibling;
+        }
+    }
+
+    // レベル設定
+    _level(html, elem) {
+        this.target.level = parseInt(elem.value);
+        this._defence(html, Table.List.damage.member);
+    }
+
+    // 防御力設定
+    _defence(html, status) {
+        let cell = html.querySelector("tbody").lastElementChild.cells[2];
+        let level = !!status ? status.level : 0;
+        cell.textContent = (this.target.defence(level) * 100).toFixed(1) + "%";
+    }
+
+    // 防御力設定（外部公開向け）
+    defence(status) {
+        this._defence(this.html, status);
+    }
+};
+
+// ダメージテーブル
+class DamageTable extends Table {
+    // ダメージタイプ変更
+    static changeType(elem) {
+        let tbl = Table.List.damage;
+        tbl._type(tbl.html, elem, tbl.member);
+    }
+
+    // コンストラクタ
+    constructor() {
+        super("damage");
+    }
+
+    // データ削除可能かどうか
+    get clearable() {
+        return false;
+    }
+
+    // ダメージキャラ取得
+    get member() {
+        let no = this.html.querySelector("select#member_list").selectedIndex;
+        if (no !== -1) {
+            return Table.List.team.members[no];
+        }
+        return null;
+    }
+
+    // データの保存
+    _save() {
+        // 何もしない
+    }
+
+    // データの読込
+    _load() {
+        // 何もしない
+    }
+
+    // データの削除
+    _clear() {
+        removeChildren(this.html.querySelector("select#member_list"));
+        this.refresh();
+    }
+
+    // メンバーリストの変更
+    list() {
+        let html = this.html;
+        let select = html.querySelector("select#member_list");
+        let index = select.selectedIndex;
+        removeChildren(select);
+
+        let members = Table.List.team.members;
+        for (let i = 0; i < 4; ++i) {
+            if (!!members[i]) {
+                let opt = document.createElement("option");
+                opt.value = i;
+                opt.label = members[i].chara.name;
+                opt.selected = (index === i);
+                select.appendChild(opt);
+            }
+        }
+    }
+
+    // データの再表示
+    refresh() {
+        let status = this.member;
+        Table.List.enemy.defence(status);
+
+        // キャプション行以外を削除
+        let html = this.html;
+        for (let len = html.rows.length; 2 < len; --len) {
+            html.deleteRow(2);
+        }
+
+        // ダメージタイプ非表示
+        let damageType = html.querySelector("select#damage_type");
+        damageType.className = "hide";
+
+        if (!status) return;
+
+        // キャラレベル設定
+        let rows = html.rows;
+        rows[0].cells[0].lastChild.data = "Lv." + status.level;
+
+        // キャラ攻撃力設定
+        let cells = rows[1].cells;
+        let critical = status.critical();
+        cells[2].textContent = status.attack.toFixed();
+        cells[3].textContent = `${critical.damage.toFixed(1)}%(${critical.rate.toFixed(1)}%)`;
+
+        // TODO: 多言語対応
+        let prefix = { combat: "通常攻撃・重撃", skill: "元素スキル", burst: "元素爆発" };
+        let buildRow = (type) => {
+            let level = status.talent[type];
+
+            // キャプション行追加
+            let row = html.insertRow();
+            let cel = document.createElement("th");
+            cel.colSpan = 4;
+            cel.textContent = `${prefix[type]} : Lv.${level}`;
+            row.appendChild(cel);
+
+            let combat = status.chara[type];
+            for (let i = 0, len = combat.length; i < len; ++i) {
+                let attr = new Attribute(combat[i], level);
+                // ダメージタイプ
+                let className = attr.elem;
+                if (className === "switch") {
+                    className = "phys";
+                    damageType.className = ""; // ダメージタイプ表示
+                }
+
+                row = html.insertRow();
+
+                // 名前セル
+                cel = document.createElement("th");
+                cel.textContent = attr.name;
+                row.appendChild(cel);
+
+                // 倍率セル
+                cel = document.createElement("td");
+                cel.className = className;
+                cel.textContent = attr.toString(value => {
+                    if (value < 100) {
+                        return value.toFixed(1) + "%";
+                    }
+                    return value.toFixed() + "%";
+                });
+                row.appendChild(cel);
+
+                // ダメージセル
+                cel = document.createElement("td");
+                cel.className = className;
+                row.appendChild(cel);
+
+                // 会心セル
+                cel = document.createElement("td");
+                cel.className = className;
+                row.appendChild(cel);
+            }
+        };
+
+        buildRow("combat");
+        buildRow("skill");
+        buildRow("burst");
+
+        // 属性切替が必要
+        if (!damageType.className) {
+            this._type(html, damageType, status);
+        } else {
+            this._calc(html, status);
+        }
+    }
+
+    // ダメージタイプ設定
+    _type(html, elem, status) {
+        if (!status) return;
+        let chara = status.chara;
+
+        // ダメージタイプ切替
+        let className = elem.value;
+        if (className === "elem") {
+            className = chara.element;
+        }
+
+        let row = html.rows[2];
+        let rebuildRow = (type) => {
+            row = row.nextElementSibling; // キャプション行スキップ
+
+            let combat = chara[type];
+            for (let i = 0, len = combat.length; i < len; ++i) {
+                // 元素付与されるものはセル色変更
+                if (combat[i].elem === "switch") {
+                    let cells = row.cells;
+                    cells[1].className = className;
+                    cells[2].className = className;
+                    cells[3].className = className;
+                }
+                row = row.nextElementSibling;
+            }
+        };
+
+        rebuildRow("combat");
+        rebuildRow("skill");
+        rebuildRow("burst");
+
+        this._calc(html, status);
+    }
+
+    // ダメージ計算
+    _calc(html, status) {
+        if (!status) return;
+
+        let row = html.rows[2];
+        let enemy = Table.List.enemy.target;
+
+        let attackPower = status.attack;
+        let enemyDefence = enemy.defence(status.level);
+
+        let calcDamage = (type) => {
+            row = row.nextElementSibling; // キャプション行スキップ
+
+            let level = status.talent[type];
+            let combat = status.chara[type];
+            for (let i = 0, len = combat.length; i < len; ++i) {
+                let cell = row.cells[2];
+                let elem = cell.className;
+                let attr = new Attribute(combat[i], level);
+
+                // 各種倍率
+                let elementBonus = status.elemental(elem);
+                let combatBonus = status.damage(attr.type);
+                let enemyResist = enemy.resistance(elem);
+                let bonusDamage = (100 + elementBonus + combatBonus + status.any_dmg) / 100;
+                let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
+
+                // 最終ダメージ
+                cell.textContent = attr.toString(value => (totalScale * value / 100).toFixed());
+                cell = cell.nextElementSibling;
+
+                // 会心ダメージ
+                let critical = status.critical(attr.type);
+                totalScale *= critical.damage / 100;
+                let text = attr.toString(value => (totalScale * value / 100).toFixed());
+                // 重撃会心率が異なる場合は特別表示
+                if ((attr.type === "heavy") && (0 < status.heavy_cri)) {
+                    text = `${text} (${critical.rate}%)`;
+                }
+                cell.textContent = text;
+
+                row = row.nextElementSibling;
+            }
+        };
+
+        calcDamage("combat");
+        calcDamage("skill");
+        calcDamage("burst");
+    }
+
+    // ダメージ計算（外部公開向け）
+    calc() {
+        this._calc(this.html, this.member);
+    }
 };
 
 window.onload = () => {
@@ -711,544 +1428,14 @@ window.onload = () => {
         goblet: new GobletTable(),
         circlet: new CircletTable(),
         equip: new EquipmentTable(),
+        team: new TeamTable(),
+        bonus: new BonusTable(),
+        enemy: new EnemyTable(),
+        damage: new DamageTable(),
     };
     Table.loadData();
-
-    loadEnemyList();
 };
 
-let g_members = [null, null, null, null];
-let g_bonuses = [];
-
-// チームの更新
-function updateTeam() {
-    // 装備テーブルから{tr#id, キャラ名}のペアを生成
-    let list = (() => {
-        let equips = Array.from(document.querySelectorAll("table#tbl_equip td#eqchara"));
-        let length = equips.length;
-        let values = [];
-        for (let i = 0; i < length; ++i) {
-            let equip = equips[i];
-            let select = equip.children[0];
-            let option = select.options[select.selectedIndex];
-            values[i] = { id: equip.parentNode.id, name: option.label.split(".")[1] };
-        }
-        return values;
-    })();
-
-    // メモリ解放しておく
-    let members = g_members;
-    for (let i = 0; i < 4; ++i) {
-        members[i] = null;
-    }
-    g_bonuses = [];
-
-    // チーム選択のselect更新
-    let tbl = document.getElementById("tbl_team");
-    let cells = tbl.rows[0].cells;
-    for (let i = 0; i < 4; ++i) {
-        let select = cells[(i + 1) * 2].children[0];
-        let selected = select.value;
-
-        // メンバーoptionの更新
-        while (!!select.lastChild) {
-            select.lastChild.remove();
-        }
-        for (let j = 0; j < list.length; ++j) {
-            let item = list[j];
-            let opt = document.createElement("option");
-            opt.value = item.id;
-            opt.label = `${j + 1}.${item.name}`;
-            opt.selected = (selected === item.id);
-            select.appendChild(opt);
-        }
-
-        if (0 <= select.selectedIndex) {
-            members[i] = updateTeamMember(select.value);
-        }
-    }
-
-    appendTeamBonus();
-    updateTeamTable(tbl);
-    updateDamageList();
-}
-
-// チームメンバーの更新
-function updateTeamMember(id) {
-    let builders = CellBuilder;
-    let equips = document.querySelector("table#tbl_equip tr#" + id).cells;
-    let status = new Status(getRid("team"));
-
-    // キャラクターのステータスチェック
-    let weapon = (equip => {
-        let cells = builders.eqchara.value(equip).cells;
-        let item = CHARACTER[cells[1].children[0].value];
-
-        status.chara = item;
-        status.lv = builders.chara_level.value(cells[2]);
-        status.base_hp = builders.hp.value(cells[3]);
-        status.base_atk = builders.atk.value(cells[4]);
-        status.base_def = builders.def.value(cells[5]);
-        let pair = builders.special.value(cells[6]);
-        status[pair.key] = pair.value;
-        status.talent.combat = builders.talent_combat.value(cells[7]);
-        status.talent.skill = builders.talent_skill.value(cells[8]);
-        status.talent.burst = builders.talent_burst.value(cells[9]);
-
-        // TODO: 天賦によるボーナス追加
-        // TODO: 星座によるボーナス追加
-
-        return item.weapon;
-    })(equips[1]);
-
-    // 武器のステータスチェック
-    (equip => {
-        let cells = builders.eqweapon.value(equip, weapon).cells;
-        let item = WEAPON_LIST[weapon][cells[1].children[0].value];
-
-        // let level = builders.weapon_level.value(cells[2]);
-        let rank = builders.weapon_rank.value(cells[3]) - 1;
-        status.base_atk += builders.atk.value(cells[4]);
-        let pair = builders[weapon + "_second"].value(cells[5]);
-        status[pair.key] += pair.value;
-
-        // 武器ボーナス追加
-        let bonus = item.passive;
-        if (Array.isArray(bonus)) {
-            for (let i = 0; i < bonus.length; ++i) {
-                appendBonus(status, bonus[i].detailRank("武器", rank), bonus[i].target);
-            }
-        } else if (bonus != null) {
-            appendBonus(status, bonus.detailRank("武器", rank), bonus.target);
-        }
-    })(equips[2]);
-
-    // 聖遺物のステータスチェック
-    let getArtifact = (equip, type) => {
-        let cells = builders["eq" + type].value(equip).cells;
-        let item = cells[1].children[0].value;
-
-        // メイン効果追加
-        let pair = builders[type + "_main"].value(cells[4]);
-        status[pair.key] += pair.value;
-
-        // サブ効果追加
-        for (let i = 1; i <= 4; ++i) {
-            pair = builders["art_sub" + i].value(cells[4 + i]);
-            if (pair.key !== "other") {
-                status[pair.key] += pair.value;
-            }
-        }
-
-        return item;
-    };
-    let items = [
-        getArtifact(equips[3], "flower"),
-        getArtifact(equips[4], "feather"),
-        getArtifact(equips[5], "sands"),
-        getArtifact(equips[6], "goblet"),
-        getArtifact(equips[7], "circlet"),
-    ];
-    items.sort();
-
-    // 聖遺物の組み合わせボーナス追加
-    let first = 0;
-    while (first < 5) {
-        let item = items[first];
-        let last = items.lastIndexOf(item) + 1;
-        if (item in ARTIFACT_SET) {
-            let same = last - first;
-            let artifact = ARTIFACT_SET[item];
-            if (2 <= same) {
-                appendBonus(status, artifact.set2.detail("聖遺物"), artifact.set2.target);
-            }
-            if (4 <= same) {
-                appendBonus(status, artifact.set4.detail("聖遺物"), artifact.set4.target);
-            }
-        }
-        first = last;
-    }
-
-    return status;
-}
-
-const ParamBuilder = {
-    hp: new BaseParam("hp"),
-    atk: new BaseParam("atk"),
-    def: new BaseParam("def"),
-    elem: new Param("elem"),
-    cri_rate: new RateParam("cri_rate"),
-    cri_dmg: new RateParam("cri_dmg"),
-    en_rec: new RateParam("en_rec"),
-    pyro_dmg: new ElemBuffParam("pyro_dmg"),
-    hydro_dmg: new ElemBuffParam("hydro_dmg"),
-    elect_dmg: new ElemBuffParam("elect_dmg"),
-    anemo_dmg: new ElemBuffParam("anemo_dmg"),
-    cryo_dmg: new ElemBuffParam("cryo_dmg"),
-    geo_dmg: new ElemBuffParam("geo_dmg"),
-    phys_dmg: new ElemBuffParam("phys_dmg"),
-    normal_dmg: new DamageParam("normal_dmg"),
-    heavy_dmg: new DamageParam("heavy_dmg"),
-    heavy_cri: new DamageParam("heavy_cri"),
-    skill_dmg: new DamageParam("skill_dmg"),
-    burst_dmg: new DamageParam("burst_dmg"),
-    any_dmg: new DamageParam("any_dmg"),
-    melt_dmg: new ElemReactParam("melt_dmg"),
-    swirl_dmg: new ElemReactParam("swirl_dmg"),
-    echarge_dmg: new ElemReactParam("echarge_dmg"),
-    shutter_dmg: new ElemReactParam("shutter_dmg"),
-    conduct_dmg: new ElemReactParam("conduct_dmg"),
-    vaporize_dmg: new ElemReactParam("vaporize_dmg"),
-    ovreload_dmg: new ElemReactParam("ovreload_dmg"),
-};
-
-// チームテーブルの更新
-function updateTeamTable(tbl) {
-    let builders = ParamBuilder;
-    let members = g_members;
-
-    let rows = tbl.rows;
-    for (let i = 2, len = rows.length; i < len; ++i) {
-        let row = rows[i];
-        let param = row.id;
-        if (param in builders) {
-            let cells = row.cells;
-            let builder = builders[param];
-            for (let no = 0; no < 4; ++no) {
-                builder.set(cells[1 + no * 2], members[no]);
-            }
-        }
-    }
-}
-
-// チームメンバーの変更
-function changeTeamMember(no) {
-    let tbl = document.getElementById("tbl_team");
-    let cell = tbl.querySelector("td#chara" + (no + 1));
-    let members = g_members;
-    removeTeamBonus(members[no]);
-    members[no] = null; // メモリ解放しておく
-    members[no] = updateTeamMember(Cell.getSelectValue(cell));
-    appendTeamBonus();
-    updateTeamTable(tbl);
-    updateDamageList();
-}
-
-function appendBonus(status, bonus, target) {
-    let bonuses = g_bonuses;
-    if (target == "all") {
-        bonus.id = status.id;
-        bonuses.push(bonus);
-    } else {
-        status.append(bonus);
-    }
-}
-
-function appendTeamBonus() {
-    // TODO: チームボーナス追加
-}
-
-function removeTeamBonus(status) {
-    if (!status) return;
-
-    // 削除したメンバーのボーナスを全削除
-    let bonuses = g_bonuses.filter(bonus => bonus.id !== status.id);
-
-    // TODO: チームボーナス削除
-    g_bonuses = bonuses.filter(bonus => bonus.id !== "team");
-}
-
-// ボーナス一覧の更新
-function updateBonusTable() {
-    let rows = document.getElementById("tbl_bonus").rows;
-    let members = g_members;
-
-    for (let no = 0; no < 4; ++no) {
-        let status = members[no];
-        let cells = rows[1 + no].cells;
-        if (!status) {
-            cells[0].textContent = "-";
-            cells[1].innerHTML = "";
-        } else {
-            // キャラクター名更新
-            cells[0].textContent = status.chara.name;
-
-            // ボーナス一覧更新
-            let text = ""
-            let bonuses = status.bonus;
-            for (let i = 0, len = bonuses.length; i < len; ++i) {
-                let bonus = bonuses[i];
-                if (bonus.apply) {
-                    text += `<span style="color:silver">${bonus.toString()}</span>`;
-                } else {
-                    text += bonus.toString();
-                }
-                text += "<br>";
-            }
-            cells[1].innerHTML = text;
-        }
-    }
-}
-
-let g_enemy = null;
-
-// ダメージ計算するチームメンバーを取得
-function getMember(tbl) {
-    let no = tbl.querySelector("select#member_list").selectedIndex;
-    if (no !== -1) {
-        return g_members[no];
-    }
-    return null;
-}
-
-// 敵リストの読み込み
-function loadEnemyList() {
-    let elem = document.querySelector("table#tbl_enemy select#enemy_list");
-    for (let key in ENEMY_LIST) {
-        let opt = document.createElement("option");
-        opt.value = key;
-        opt.label = ENEMY_LIST[key].name;
-        elem.appendChild(opt);
-    }
-
-    changeEnemyList(elem);
-}
-
-// 敵リストの変更
-function changeEnemyList(elem) {
-    let enemy = new Enemy(elem.value);
-    g_enemy = enemy;
-
-    // 各元素の耐性更新
-    let row = elem.parentNode.parentNode.nextElementSibling;
-    while (!!row.id) {
-        let type = row.id.replace("resist_", "");
-        let cells = row.cells;
-        let resist = enemy.resist[type];
-        if (resist === Infinity) {
-            cells[1].textContent = "無効";
-        } else {
-            cells[1].textContent = resist + "%";
-        }
-        cells[2].textContent = (enemy.resistance(type) * 100).toFixed(1) + "%";
-
-        row = row.nextElementSibling;
-    }
-
-    changeEnemyLevel(document.querySelector("table#tbl_enemy input#enemy_level"));
-}
-
-// 敵レベルの変更
-function changeEnemyLevel(elem) {
-    g_enemy.level = parseInt(elem.value);
-    let tbl = document.getElementById("tbl_damage");
-    updateEnemyDefence(tbl);
-    calculateDamage(tbl);
-}
-
-// 敵防御力の更新
-function updateEnemyDefence(tbl) {
-    let status = getMember(tbl);
-    if (!!status) {
-        let row = document.querySelector("table#tbl_enemy tbody").lastElementChild;
-        row.cells[2].textContent = (g_enemy.defence(status) * 100).toFixed(1) + "%";
-    }
-}
-
-// ダメージ計算するメンバーリストを更新
-function updateDamageList() {
-    let select = document.querySelector("table#tbl_damage select#member_list");
-    let index = select.selectedIndex;
-    while (!!select.firstChild) {
-        select.firstChild.remove();
-    }
-
-    let members = g_members;
-    for (let i = 0; i < 4; ++i) {
-        if (!!members[i]) {
-            let opt = document.createElement("option");
-            opt.value = i;
-            opt.label = members[i].chara.name;
-            opt.selected = (index === i);
-            select.appendChild(opt);
-        }
-    }
-}
-
-// ダメージ計算の更新
-function updateDamageTable() {
-    let tbl = document.getElementById("tbl_damage");
-    updateEnemyDefence(tbl);
-
-    // キャプション行以外を削除
-    for (let len = tbl.rows.length; 2 < len; --len) {
-        tbl.deleteRow(2);
-    }
-
-    // ダメージタイプ非表示
-    let damageType = tbl.querySelector("select#damage_type");
-    damageType.className = "hide";
-
-    let status = getMember(tbl);
-    if (!status) return;
-
-    // キャラレベル設定
-    let rows = tbl.rows;
-    rows[0].cells[0].lastChild.data = "Lv." + status.level;
-
-    // キャラ攻撃力設定
-    let cells = rows[1].cells;
-    let critical = status.critical();
-    cells[2].textContent = status.attack.toFixed();
-    cells[3].textContent = `${critical.damage.toFixed(1)}%(${critical.rate.toFixed(1)}%)`;
-
-    let prefix = { combat: "通常攻撃・重撃", skill: "元素スキル", burst: "元素爆発" };
-    let buildRow = (type) => {
-        let level = status.talent[type];
-
-        // キャプション行追加
-        let row = tbl.insertRow();
-        let cel = document.createElement("th");
-        cel.colSpan = 4;
-        cel.textContent = `${prefix[type]} : Lv.${level}`;
-        row.appendChild(cel);
-
-        let combat = status.chara[type];
-        for (let i = 0, len = combat.length; i < len; ++i) {
-            let attr = new Attribute(combat[i], level);
-            // ダメージタイプ
-            let className = attr.elem;
-            if (className === "switch") {
-                className = "phys";
-                damageType.className = ""; // ダメージタイプ表示
-            }
-
-            row = tbl.insertRow();
-
-            // 名前セル
-            cel = document.createElement("th");
-            cel.textContent = attr.name;
-            row.appendChild(cel);
-
-            // 倍率セル
-            cel = document.createElement("td");
-            cel.className = className;
-            cel.textContent = attr.toString(value => {
-                if (value < 100) {
-                    return value.toFixed(1) + "%";
-                }
-                return value.toFixed() + "%";
-            });
-            row.appendChild(cel);
-
-            // ダメージセル
-            cel = document.createElement("td");
-            cel.className = className;
-            row.appendChild(cel);
-
-            // 会心セル
-            cel = document.createElement("td");
-            cel.className = className;
-            row.appendChild(cel);
-        }
-    };
-
-    buildRow("combat");
-    buildRow("skill");
-    buildRow("burst");
-
-    // 属性切替が必要
-    if (!damageType.className) {
-        changeDamageType(damageType);
-    } else {
-        calculateDamage(tbl);
-    }
-}
-
-// 攻撃属性の変更
-function changeDamageType(elem) {
-    let tbl = document.getElementById("tbl_damage");
-    let status = getMember(tbl);
-    if (!status) return;
-    let chara = status.chara;
-
-    // ダメージタイプ切替
-    let className = elem.value;
-    if (className === "elem") {
-        className = chara.element;
-    }
-
-    let row = tbl.rows[2];
-    let rebuildRow = (type) => {
-        row = row.nextElementSibling; // キャプション行スキップ
-
-        let combat = chara[type];
-        for (let i = 0, len = combat.length; i < len; ++i) {
-            // 元素付与されるものはセル色変更
-            if (combat[i].elem === "switch") {
-                let cells = row.cells;
-                cells[1].className = className;
-                cells[2].className = className;
-                cells[3].className = className;
-            }
-            row = row.nextElementSibling;
-        }
-    };
-
-    rebuildRow("combat");
-    rebuildRow("skill");
-    rebuildRow("burst");
-
-    calculateDamage(tbl);
-}
-
-// ダメージ計算
-function calculateDamage(tbl) {
-    let status = getMember(tbl);
-    if (!status) return;
-
-    let row = tbl.rows[2];
-    let enemy = g_enemy;
-
-    let attackPower = status.attack;
-    let enemyDefence = enemy.defence(status);
-
-    let calcDamage = (type) => {
-        row = row.nextElementSibling; // キャプション行スキップ
-
-        let level = status.talent[type];
-        let combat = status.chara[type];
-        for (let i = 0, len = combat.length; i < len; ++i) {
-            let cell = row.cells[2];
-            let elem = cell.className;
-            let attr = new Attribute(combat[i], level);
-
-            // 各種倍率
-            let elementBonus = status.elemental(elem);
-            let combatBonus = status.damage(attr.type);
-            let enemyResist = enemy.resistance(elem);
-            let bonusDamage = (100 + elementBonus + combatBonus + status.any_dmg) / 100;
-            let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
-
-            // 最終ダメージ
-            cell.textContent = attr.toString(value => (totalScale * value / 100).toFixed());
-            cell = cell.nextElementSibling;
-
-            // 会心ダメージ
-            let critical = status.critical(attr.type);
-            totalScale *= critical.damage / 100;
-            let text = attr.toString(value => (totalScale * value / 100).toFixed());
-            // 重撃会心率が異なる場合は特別表示
-            if ((attr.type === "heavy") && (0 < status.heavy_cri)) {
-                text = `${text} (${critical.rate}%)`;
-            }
-            cell.textContent = text;
-
-            row = row.nextElementSibling;
-        }
-    };
-
-    calcDamage("combat");
-    calcDamage("skill");
-    calcDamage("burst");
+function refreshTable(name) {
+    Table.List[name].refresh();
 }
