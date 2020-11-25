@@ -144,7 +144,7 @@ class Table {
         let tbl = Table.List[id];
         let html = tbl.html;
         tbl._insert(html, tbl._default(html));
-        tbl._change(null);
+        tbl._onchange(null);
     }
 
     // 削除確認
@@ -189,9 +189,9 @@ class Table {
     }
 
     // 更新があるか
-    updated(counter) {
-        return this.counter != counter;
-    }
+    // updated(counter) {
+    //     return this.counter != counter;
+    // }
 
     // データの削除
     _clear() {
@@ -326,11 +326,11 @@ class Table {
 
         // TODO: 削除したものを使用している他タブの要素をどうする？
 
-        this._change(null);
+        this._onchange(null);
     }
 
     // 値変更通知
-    _change(e) {
+    _onchange(e) {
         ++this.counter;
 
         if (!Table.Updated) {
@@ -338,13 +338,23 @@ class Table {
             document.title = "* " + Table.Title;
         }
     }
+
+    // セルの更新
+    _update(tr, id, ...args) {
+        this.builder[id].update(tr.querySelector("td#" + id), ...args);
+    }
+
+    // セル値の取得
+    _value(tr, id) {
+        return this.builder[id].value(tr.querySelector("td#" + id));
+    }
 };
 
 // キャラクターテーブル
 class CharaTable extends Table {
     constructor() {
         super("chara");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._onchange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(CHARACTER, "name", { change: e => this._changeName(e) }),
@@ -366,12 +376,12 @@ class CharaTable extends Table {
         let tr = e.target.parentNode.parentNode;
 
         // 追加効果変更
-        this.builder.special.update(tr.querySelector("td#special"), key);
+        super._update(tr, "special", key);
 
         // 装備タブ更新
         Table.List.equip.updateChara(key, tr.id);
 
-        super._change(e);
+        super._onchange(e);
     }
 
     // ステータス適用
@@ -402,12 +412,12 @@ class WeaponTable extends Table {
         let tr = e.target.parentNode.parentNode;
 
         // 追加効果変更
-        this.builder.second.update(tr.querySelector("td#second"), key);
+        super._update(tr, "second", key);
 
         // 装備タブ更新
         Table.List.equip.updateWeapon(this.id);
 
-        super._change(e);
+        super._onchange(e);
     }
 
     // ステータス適用
@@ -430,7 +440,7 @@ class WeaponTable extends Table {
 class SwordTable extends WeaponTable {
     constructor() {
         super("sword");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._onchange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(SWORD_LIST, "name", { change: e => super._changeName(e) }),
@@ -446,7 +456,7 @@ class SwordTable extends WeaponTable {
 class ClaymoreTable extends WeaponTable {
     constructor() {
         super("claymore");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._onchange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(CLAYMORE_LIST, "name", { change: e => super._changeName(e) }),
@@ -462,7 +472,7 @@ class ClaymoreTable extends WeaponTable {
 class PolearmTable extends WeaponTable {
     constructor() {
         super("polearm");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._onchange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(POLEARM_LIST, "name", { change: e => super._changeName(e) }),
@@ -478,7 +488,7 @@ class PolearmTable extends WeaponTable {
 class BowTable extends WeaponTable {
     constructor() {
         super("bow");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._onchange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(BOW_LIST, "name", { change: e => super._changeName(e) }),
@@ -494,7 +504,7 @@ class BowTable extends WeaponTable {
 class CatalystTable extends WeaponTable {
     constructor() {
         super("catalyst");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._onchange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(CATALYST_LIST, "name", { change: e => super._changeName(e) }),
@@ -508,11 +518,22 @@ class CatalystTable extends WeaponTable {
 
 // 聖遺物テーブル基底
 class ArtifactTable extends Table {
+    _load() {
+        super._load();
+
+        let tr = this.html.rows[1];
+        while (true) {
+            tr = tr.nextElementSibling;
+            if (!tr) break;
+            this._updateScore(tr, super._value(tr, "star"), super._value(tr, "level"));
+        }
+    }
+
     // 名前の変更
     _changeName(e) {
         Table.List.equip.updateArtifact(this.id);
 
-        super._change(e);
+        super._onchange(e);
     }
 
     // ☆の変更
@@ -527,9 +548,12 @@ class ArtifactTable extends Table {
         let level = this.builder.level.value(cell);
 
         // 聖遺物メイン効果の更新
-        this.builder.main.update(tr.querySelector("td#main"), star, level);
+        super._update(tr, "main", star, level);
 
-        super._change(e);
+        // 聖遺物スコアの更新
+        this._updateScore(tr, star, level);
+
+        super._onchange(e);
     }
 
     // レベルの変更
@@ -537,13 +561,15 @@ class ArtifactTable extends Table {
         // e.target == td#level.select
         let level = parseInt(e.target.value);
         let tr = e.target.parentNode.parentNode;
-
-        let star = this.builder.star.value(tr.querySelector("td#star"));
+        let star = super._value(tr, "star");
 
         // 聖遺物メイン効果の更新
-        this.builder.main.update(tr.querySelector("td#main"), star, level);
+        super._update(tr, "main", star, level);
 
-        super._change(e);
+        // 聖遺物スコアの更新
+        this._updateScore(tr, star, level);
+
+        super._onchange(e);
     }
 
     // メイン効果の変更
@@ -551,14 +577,61 @@ class ArtifactTable extends Table {
         // e.target == td#main.select
         let td = e.target.parentNode;
         let tr = td.parentNode;
-
-        let star = this.builder.star.value(tr.querySelector("td#star"));
-        let level = this.builder.level.value(tr.querySelector("td#level"));
+        let star = super._value(tr, "star");
+        let level = super._value(tr, "level");
 
         // 聖遺物メイン効果の更新
         this.builder.main.update(td, star, level);
 
-        super._change(e);
+        super._onchange(e);
+    }
+
+    // サブ効果の変更
+    _changeSub(e) {
+        // e.target == td#main.[select|input]
+        let tr = e.target.parentNode.parentNode;
+
+        // 聖遺物スコアの更新
+        this._updateScore(tr, super._value(tr, "star"), super._value(tr, "level"));
+
+        super._onchange(e);
+    }
+
+    // スコアの更新
+    _updateScore(tr, star, level) {
+        let cell = tr.querySelector("td#name");
+        cell.className = "score"; // TODO: とりあえずここで設定
+
+        // select要素以外を削除
+        while (cell.firstChild != cell.lastChild) {
+            cell.lastChild.remove();
+        }
+
+        // ☆3以下はスコア表示しない
+        if (star < 4) return;
+
+        let sub = [
+            super._value(tr, "sub1"),
+            super._value(tr, "sub2"),
+            super._value(tr, "sub3"),
+            super._value(tr, "sub4"),
+        ];
+        let score = [0, 0, 0, 0];
+        let total = 0;
+        let limit = 10 + Math.floor(level / 4) * 10;
+
+        for (let i = 0; i < 4; ++i) {
+            let param = getArtifactParam(star, level, sub[i].key);
+            if (!!param) {
+                let value = Math.round(sub[i].value / param.substep);
+                score[i] = value;
+                total += value;
+            }
+        }
+        let denom = limit + ((star === 4) ? 20 : 30);
+
+        cell.appendChild(document.createElement("br"));
+        cell.appendChild(document.createTextNode(`${total}/${denom} (${score.join(",")})`));
     }
 
     // ステータス適用
@@ -586,13 +659,13 @@ class ArtifactTable extends Table {
 class FlowerTable extends ArtifactTable {
     constructor() {
         super("flower");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._changeSub(e) };
         super.builder = {
             index: new IndexCell(),
             name: new MapCell(FLOWER_LIST, { change: e => super._changeName(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
-            main: new SingleBonusCell("hp", listeners),
+            main: new SingleBonusCell("hp", { change: e => super._onchange(e) }),
             sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
             sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
             sub3: new BonusValueCell(ARTIFACT_SUB, listeners),
@@ -605,13 +678,13 @@ class FlowerTable extends ArtifactTable {
 class FeatherTable extends ArtifactTable {
     constructor() {
         super("feather");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._changeSub(e) };
         super.builder = {
             index: new IndexCell(),
             name: new MapCell(FEATHER_LIST, { change: e => super._changeName(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
-            main: new SingleBonusCell("atk", listeners),
+            main: new SingleBonusCell("atk", { change: e => super._onchange(e) }),
             sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
             sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
             sub3: new BonusValueCell(ARTIFACT_SUB, listeners),
@@ -624,7 +697,7 @@ class FeatherTable extends ArtifactTable {
 class SandsTable extends ArtifactTable {
     constructor() {
         super("sands");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._changeSub(e) };
         super.builder = {
             index: new IndexCell(),
             name: new MapCell(SANDS_LIST, { change: e => super._changeName(e) }),
@@ -643,7 +716,7 @@ class SandsTable extends ArtifactTable {
 class GobletTable extends ArtifactTable {
     constructor() {
         super("goblet");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._changeSub(e) };
         super.builder = {
             index: new IndexCell(),
             name: new MapCell(GOBLET_LIST, { change: e => super._changeName(e) }),
@@ -662,7 +735,7 @@ class GobletTable extends ArtifactTable {
 class CircletTable extends ArtifactTable {
     constructor() {
         super("circlet");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._changeSub(e) };
         super.builder = {
             index: new IndexCell(),
             name: new MapCell(CIRCLET_LIST, { change: e => super._changeName(e) }),
@@ -681,7 +754,7 @@ class CircletTable extends ArtifactTable {
 class EquipmentTable extends Table {
     constructor() {
         super("equip");
-        let listeners = { change: e => super._change(e) };
+        let listeners = { change: e => super._onchange(e) };
         super.builder = {
             index: new IndexCell(),
             chara: new EquipmentCell("chara", { change: e => this._changeChara(e) }),
@@ -706,7 +779,7 @@ class EquipmentTable extends Table {
         let cell = e.target.parentNode.nextElementSibling;
         builder.update(cell, items, weapon);
 
-        super._change(e);
+        super._onchange(e);
     }
 
     updateChara(key, rid) {

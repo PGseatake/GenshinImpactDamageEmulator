@@ -206,15 +206,12 @@ class RateCell extends Cell {
 
 // 空のセル
 class EmptyCell extends Cell {
-    value(cell) {
-        return "";
-    }
-
     build(cell, value) {
         // 処理簡略化のため非表示で配置しておく
         let child = document.createElement("input");
         child.type = "text";
         child.value = "";
+        child.truth = 0;
         child.className = "hide";
 
         cell.appendChild(child);
@@ -586,38 +583,9 @@ class BonusListCell extends BonusCell {
     }
 
     _param(star, level, bonus) {
-        // ☆を正規化
-        if (star < 3 || 5 < star) {
-            return 0;
-        }
-        // levelを正規化
-        if (level < 0 || ARTIFACT_LEVEL[star] < level) {
-            return 0;
-        }
-        let linefn = null;
-        // 一次関数取得
-        let param = ARTIFACT_PARAM[star - 3];
-        if (bonus in param) {
-            linefn = param[bonus];
-        } else {
-            switch (bonus) {
-                case "hp_buf":
-                case "anemo_dmg":
-                case "geo_dmg":
-                case "elect_dmg":
-                case "hydro_dmg":
-                case "pyro_dmg":
-                case "cryo_dmg":
-                    linefn = param.atk_buf;
-                    break;
-
-                case "phys_dmg":
-                    linefn = param.def_buf;
-                    break;
-            }
-        }
-        if (!!linefn) {
-            return linefn.intercept + level * linefn.slope;
+        let param = getArtifactParam(star, level, bonus);
+        if (!!param) {
+            return param.intercept + level * param.slope;
         }
         return 0;
     }
@@ -700,8 +668,10 @@ class BonusValueCell extends BonusCell {
     }
 
     _build(cell, key, value) {
-        let child = super._listen(cell, super._select(key));
+        let child = super._select(key);
+        // onChangeを先に実行させる
         child.addEventListener("change", { listeners: this.listeners, handleEvent: BonusValueCell.onChange });
+        super._listen(cell, child);
 
         return BonusValue[key].cell(this.listeners).build(cell, value);
     }

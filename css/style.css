@@ -61,6 +61,11 @@ td.left {
     text-align: left;
 }
 
+td.score {
+    text-align: left;
+    font-size: 0.7em;
+}
+
 input.import {
     display: none;
 }
