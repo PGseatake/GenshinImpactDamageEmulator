@@ -1,6 +1,19 @@
 "use strict"
 
 // TODO: 多言語対応
+const LABEL_TEXT = {
+    invalid: "無効",
+    weapon: "武器",
+    artifact: "聖遺物",
+    combat: "通常攻撃・重撃",
+    skill: "元素スキル",
+    burst: "元素爆発",
+    atk: "攻撃力",
+    def: "防御力",
+    rank: "錬成",
+};
+
+// TODO: 多言語対応
 const PARAM_LIST = {
     other: {
         table: null,
@@ -208,41 +221,27 @@ const PARAM_LIST = {
     },
 };
 
-class Bonus {
-    constructor(items, value, limit = null, times = 0, stack = 0, target = "self") {
-        this.items = items;
-        this.value = value;
-        this.limit = limit;
-        this.times = times;
-        this.stack = stack;
-        this.target = target;
-    }
-
-    detail(chara) {
-        return new BonusDetail(chara, this.items, this.value, this.limit, this.times, this.stack);
-    }
-
-    detailRank(chara, rank) {
-        return new BonusDetail(chara, this.items, this.value[rank], this.limit, this.times, this.stack);
-    }
+// TODO: 多言語対応
+const TEAM_BONUS = {
+    pyro: { items: "atk_buf", value: 25 },
+    cryo: { items: "cri_rate", value: 15, limit: "氷元素付着または凍結状態の敵" },
+    geo: { items: "any_dmg", value: 15, limit: "シールドが存在する時" }
 };
 
-class BonusDetail {
-    constructor(source, items, value, limit, times, stack) {
+// ステータスボーナス
+class Bonus {
+    constructor(items, value, others, source) {
         this.id = null;
-        this.source = source;
-        if (Array.isArray(items)) {
-            this.items = items;
-        } else {
-            this.items = [items];
-        }
-        this.value = value;
-        this.limit = limit;
-        this.times = times;
-        this.stack = stack;
         this.apply = false;
+        this.items = Array.isArray(items) ? items : [items];
+        this.value = value;
+        this.limit = ("limit" in others) ? others.limit : null;
+        this.times = ("times" in others) ? others.times : 0;
+        this.stack = ("stack" in others) ? others.stack : 0;
+        this.source = source;
     }
 
+    // TODO:多言語対応
     toString() {
         let str = PARAM_LIST[this.items[0]].detail;
         if (1 < this.items.length) {
@@ -253,7 +252,6 @@ class BonusDetail {
 
         str += `+${this.value}${PARAM_LIST[this.items[0]].postfix}`;
 
-        // TODO:多言語対応
         if (!!this.limit) {
             str = `${this.limit}に${str}`;
         }
@@ -268,6 +266,7 @@ class BonusDetail {
     }
 };
 
+// キャラステータス
 class Status {
     constructor(id) {
         this.id = id;
@@ -377,6 +376,7 @@ class Status {
         return { rate: rate, damage: 150 + this.cri_dmg };
     }
 
+    // ボーナス追加
     append(bonus) {
         bonus.id = this.id;
         this.bonus.push(bonus);
@@ -389,6 +389,7 @@ class Status {
     }
 };
 
+// 敵ステータス
 class Enemy {
     constructor(id) {
         let info = ENEMY_LIST[id];
@@ -443,21 +444,12 @@ class Enemy {
     }
 };
 
-// const TEAM_BONUS = {
-//     pyro: new Bonus("atk_buf", 25),
-//     cryo: new Bonus("cri_rate", 15, "氷元素付着または凍結状態の敵"),
-//     geo: new Bonus("any_dmg", 15, "シールドが存在する時")
-// };
-
-const ASCENSION_LV_STEP = [20, 40, 50, 60, 70, 80];
-const ASCENSION_LV_MAX = 90;
-const TALENT_LV_MAX = 15;
-
 const DAMAGE_SCALE = {
     phys: [100.0, 108.1, 115.9, 128.2, 136.0, 144.9, 158.3, 170.6, 183.7, 197.3, ],
     elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0, ]
 };
 
+// 天賦の各種倍率
 class Attribute {
     constructor(info, level) {
         let scale = DAMAGE_SCALE[info.scale];
@@ -494,6 +486,10 @@ class Attribute {
         return str;
     }
 };
+
+const ASCENSION_LV_STEP = [20, 40, 50, 60, 70, 80];
+const ASCENSION_LV_MAX = 90;
+const TALENT_LV_MAX = 15;
 
 const ARTIFACT_STAR_MAX = 5;
 const ARTIFACT_LEVEL = [0, 0, 0, 12, 16, 20];
@@ -533,43 +529,6 @@ const ARTIFACT_PARAM = [
         cri_dmg: { intercept: 9.3, slope: 2.644805195 },
     }
 ];
-
-function getArtifactParam(star, level, bonus) {
-    // ☆を正規化
-    if (star < 3 || 5 < star) {
-        return 0;
-    }
-    // levelを正規化
-    if (level < 0 || ARTIFACT_LEVEL[star] < level) {
-        return 0;
-    }
-    let linefn = null;
-    // 一次関数取得
-    let param = ARTIFACT_PARAM[star - 3];
-    if (bonus in param) {
-        linefn = param[bonus];
-    } else {
-        switch (bonus) {
-            case "hp_buf":
-            case "anemo_dmg":
-            case "geo_dmg":
-            case "elect_dmg":
-            case "hydro_dmg":
-            case "pyro_dmg":
-            case "cryo_dmg":
-                linefn = param.atk_buf;
-                break;
-
-            case "phys_dmg":
-                linefn = param.def_buf;
-                break;
-        }
-    }
-    if (!!linefn) {
-        return linefn.intercept + level * linefn.slope;
-    }
-    return 0;
-};
 
 const ARTIFACT_SUB = ["other", "hp", "hp_buf", "atk", "atk_buf", "def", "def_buf", "elem", "en_rec", "cri_rate", "cri_dmg"];
 const ARTIFACT_SANDS = ["other", "hp_buf", "atk_buf", "def_buf", "elem", "en_rec"];

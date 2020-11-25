@@ -569,7 +569,7 @@ class BonusListCell extends BonusCell {
         }
 
         let builder = BonusValue[bonus].cell(this.listeners);
-        builder.build(cell, getArtifactParam(star, level, bonus)).disabled = true;
+        builder.build(cell, this._param(star, level, bonus)).disabled = true;
 
         return child;
     }
@@ -582,7 +582,44 @@ class BonusListCell extends BonusCell {
 
         let bonus = cell.children[0].value;
         let builder = BonusValue[bonus].cell(this.listeners);
-        builder.build(cell, getArtifactParam(star, level, bonus)).disabled = true;
+        builder.build(cell, this._param(star, level, bonus)).disabled = true;
+    }
+
+    _param(star, level, bonus) {
+        // ☆を正規化
+        if (star < 3 || 5 < star) {
+            return 0;
+        }
+        // levelを正規化
+        if (level < 0 || ARTIFACT_LEVEL[star] < level) {
+            return 0;
+        }
+        let linefn = null;
+        // 一次関数取得
+        let param = ARTIFACT_PARAM[star - 3];
+        if (bonus in param) {
+            linefn = param[bonus];
+        } else {
+            switch (bonus) {
+                case "hp_buf":
+                case "anemo_dmg":
+                case "geo_dmg":
+                case "elect_dmg":
+                case "hydro_dmg":
+                case "pyro_dmg":
+                case "cryo_dmg":
+                    linefn = param.atk_buf;
+                    break;
+
+                case "phys_dmg":
+                    linefn = param.def_buf;
+                    break;
+            }
+        }
+        if (!!linefn) {
+            return linefn.intercept + level * linefn.slope;
+        }
+        return 0;
     }
 };
 

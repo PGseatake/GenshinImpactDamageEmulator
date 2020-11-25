@@ -422,7 +422,7 @@ class WeaponTable extends Table {
             status[pair.key] += pair.value;
         }
 
-        return [WEAPON_LIST[this.id][name], rank - 1];
+        return { item: WEAPON_LIST[this.id][name], rank: rank - 1 };
     }
 };
 
@@ -913,7 +913,9 @@ class TeamTable extends Table {
         // 武器のステータスチェック
         let weapon = Table.List[chara.weapon].status(builder.weapon.value(equips[2], chara.weapon), status);
         // 武器ボーナス追加
-        bonuses.weapon(status, ...weapon);
+        if ("passive" in weapon.item) {
+            bonuses.weapon(status, weapon.item.passive, weapon.rank);
+        }
 
         // 聖遺物のステータスチェック
         let items = [
@@ -1009,16 +1011,14 @@ class BonusTable extends Table {
     }
 
     // 武器ボーナス追加
-    weapon(status, item, rank) {
-        let bonus = item.passive;
-        if (Array.isArray(bonus)) {
-            for (let i = 0; i < bonus.length; ++i) {
-                // TODO: 改良
-                this._append(status, bonus[i].detailRank("武器", rank), bonus[i].target);
+    weapon(status, bonuses, rank) {
+        if (Array.isArray(bonuses)) {
+            for (let i = 0; i < bonuses.length; ++i) {
+                let bonus = bonuses[i];
+                this._append(status, bonus.value[rank], bonus, LABEL_TEXT.weapon);
             }
-        } else if (bonus != null) {
-            // TODO: 改良
-            this._append(status, bonus.detailRank("武器", rank), bonus.target);
+        } else {
+            this._append(status, bonuses.value[rank], bonuses, LABEL_TEXT.weapon);
         }
     }
 
@@ -1033,13 +1033,22 @@ class BonusTable extends Table {
             if (item in ARTIFACT_SET) {
                 let same = last - first;
                 let artifact = ARTIFACT_SET[item];
-                if (2 <= same) {
-                    // TODO: 改良
-                    this._append(status, artifact.set2.detail("聖遺物"), artifact.set2.target);
+                // 2セットの効果追加
+                if ((2 <= same) && ("set2" in artifact)) {
+                    let bonus = artifact.set2;
+                    this._append(status, bonus.value, bonus, LABEL_TEXT.artifact);
                 }
-                if (4 <= same) {
-                    // TODO: 改良
-                    this._append(status, artifact.set4.detail("聖遺物"), artifact.set4.target);
+                // 4セットの効果追加
+                if ((4 <= same) && ("set4" in artifact)) {
+                    let bonuses = artifact.set4;
+                    if (Array.isArray(bonuses)) {
+                        for (let i = 0; i < bonuses.length; ++i) {
+                            let bonus = bonuses[i];
+                            this._append(status, bonus.value, bonus, LABEL_TEXT.artifact);
+                        }
+                    } else {
+                        this._append(status, bonuses.value, bonuses, LABEL_TEXT.artifact);
+                    }
                 }
             }
             first = last;
@@ -1047,12 +1056,14 @@ class BonusTable extends Table {
     }
 
     // ボーナス追加
-    _append(status, bonus, target) {
-        if (target == "all") {
+    _append(status, value, others, source) {
+        if (("target" in others) && (others.target !== "self")) {
+            // TODO: target="next" の対応は保留
+            let bonus = new Bonus(others.items, value, others, source);
             bonus.id = status.id;
             this.items.push(bonus);
         } else {
-            status.append(bonus);
+            status.append(new Bonus(others.items, value, others, source));
         }
     }
 
@@ -1140,7 +1151,7 @@ class EnemyTable extends Table {
             let cells = row.cells;
             let resist = this.target.resist[type];
             if (resist === Infinity) {
-                cells[1].textContent = "無効"; // TODO: 多言語対応
+                cells[1].textContent = LABEL_TEXT.invalid;
             } else {
                 cells[1].textContent = resist + "%";
             }
@@ -1258,8 +1269,6 @@ class DamageTable extends Table {
         cells[2].textContent = status.attack.toFixed();
         cells[3].textContent = `${critical.damage.toFixed(1)}%(${critical.rate.toFixed(1)}%)`;
 
-        // TODO: 多言語対応
-        let prefix = { combat: "通常攻撃・重撃", skill: "元素スキル", burst: "元素爆発" };
         let buildRow = (type) => {
             let level = status.talent[type];
 
@@ -1267,7 +1276,7 @@ class DamageTable extends Table {
             let row = html.insertRow();
             let cel = document.createElement("th");
             cel.colSpan = 4;
-            cel.textContent = `${prefix[type]} : Lv.${level}`;
+            cel.textContent = `${LABEL_TEXT[type]} : Lv.${level}`;
             row.appendChild(cel);
 
             let combat = status.chara[type];
