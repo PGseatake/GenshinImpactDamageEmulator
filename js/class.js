@@ -38,7 +38,7 @@ class Cell {
         return null;
     }
 
-    load(cell, id, values) {
+    value(cell) {
         return null;
     }
 
@@ -46,7 +46,7 @@ class Cell {
         return null;
     }
 
-    value(cell) {
+    load(cell, id, values) {
         return null;
     }
 
@@ -65,8 +65,38 @@ class Cell {
 
 // 整数セル
 class IntCell extends Cell {
+    static onChange(e) {
+        if (!e.value) {
+            e.truth = 0.0;
+        } else {
+            e.truth = parseFloat(e.value);
+        }
+    }
+
+    static onFocus(e) {
+        let input = e.target;
+        if (input.value === "0") {
+            input.value = "";
+        }
+    }
+
+    static onBlur(e) {
+        let input = e.target;
+        if (input.value === "") {
+            input.value = "0";
+        }
+    }
+
     get initial() {
         return "0";
+    }
+
+    value(cell) {
+        return cell.children[0].truth;
+    }
+
+    save(cell) {
+        return cell.children[0].value;
     }
 
     load(cell, id, values) {
@@ -100,15 +130,10 @@ class IntCell extends Cell {
 
         return super._listen(cell, child);
     }
+};
 
-    save(cell) {
-        return cell.children[0].value;
-    }
-
-    value(cell) {
-        return cell.children[0].truth;
-    }
-
+// 割合セル
+class RateCell extends Cell {
     static onChange(e) {
         if (!e.value) {
             e.truth = 0.0;
@@ -119,7 +144,7 @@ class IntCell extends Cell {
 
     static onFocus(e) {
         let input = e.target;
-        if (input.value === "0") {
+        if (input.value === "0.0") {
             input.value = "";
         }
     }
@@ -127,15 +152,20 @@ class IntCell extends Cell {
     static onBlur(e) {
         let input = e.target;
         if (input.value === "") {
-            input.value = "0";
+            input.value = "0.0";
         }
     }
-};
 
-// 割合セル
-class RateCell extends Cell {
     get initial() {
         return "0.0";
+    }
+
+    value(cell) {
+        return cell.children[0].truth;
+    }
+
+    save(cell) {
+        return cell.children[0].value;
     }
 
     load(cell, id, values) {
@@ -172,40 +202,14 @@ class RateCell extends Cell {
 
         return child;
     }
-
-    save(cell) {
-        return cell.children[0].value;
-    }
-
-    value(cell) {
-        return cell.children[0].truth;
-    }
-
-    static onChange(e) {
-        if (!e.value) {
-            e.truth = 0.0;
-        } else {
-            e.truth = parseFloat(e.value);
-        }
-    }
-
-    static onFocus(e) {
-        let input = e.target;
-        if (input.value === "0.0") {
-            input.value = "";
-        }
-    }
-
-    static onBlur(e) {
-        let input = e.target;
-        if (input.value === "") {
-            input.value = "0.0";
-        }
-    }
 };
 
 // 空のセル
 class EmptyCell extends Cell {
+    value(cell) {
+        return "";
+    }
+
     build(cell, value) {
         // 処理簡略化のため非表示で配置しておく
         let child = document.createElement("input");
@@ -216,25 +220,21 @@ class EmptyCell extends Cell {
         cell.appendChild(child);
         return child;
     }
-
-    value(cell) {
-        return "";
-    }
 };
 
 // 連番セル
 class IndexCell extends Cell {
-    index(cell) {
+    _index(cell) {
         return cell.parentNode.rowIndex - 1;
     }
 
     load(cell, id, values) {
-        cell.appendChild(document.createTextNode(this.index(cell)));
+        cell.appendChild(document.createTextNode(this._index(cell)));
         return null;
     }
 
     update(cell) {
-        cell.childNodes[0].textContent = this.index(cell);
+        cell.childNodes[0].textContent = this._index(cell);
     }
 };
 
@@ -248,6 +248,14 @@ class RangeCell extends Cell {
 
     get initial() {
         return String(this.min);
+    }
+
+    value(cell) {
+        return parseInt(cell.children[0].value);
+    }
+
+    save(cell) {
+        return cell.children[0].value;
     }
 
     load(cell, id, values) {
@@ -276,14 +284,6 @@ class RangeCell extends Cell {
         }
 
         return super._listen(cell, child);
-    }
-
-    save(cell) {
-        return cell.children[0].value;
-    }
-
-    value(cell) {
-        return parseInt(cell.children[0].value);
     }
 };
 
@@ -332,6 +332,14 @@ class AscensionLevelCell extends Cell {
         return "1";
     }
 
+    value(cell) {
+        return cell.children[0].value;
+    }
+
+    save(cell) {
+        return cell.children[0].value;
+    }
+
     load(cell, id, values) {
         // 正規化
         let value = values[id];
@@ -362,14 +370,6 @@ class AscensionLevelCell extends Cell {
 
         return super._listen(cell, child);
     }
-
-    save(cell) {
-        return cell.children[0].value;
-    }
-
-    value(cell) {
-        return cell.children[0].value;
-    }
 };
 
 // マップセル
@@ -382,6 +382,14 @@ class MapCell extends Cell {
 
     get initial() {
         return "other";
+    }
+
+    value(cell) {
+        return cell.children[0].value;
+    }
+
+    save(cell) {
+        return cell.children[0].value;
     }
 
     load(cell, id, values) {
@@ -402,14 +410,6 @@ class MapCell extends Cell {
 
         return super._listen(cell, child);
     }
-
-    save(cell) {
-        return cell.children[0].value;
-    }
-
-    value(cell) {
-        return cell.children[0].value;
-    }
 };
 
 // 辞書セル
@@ -423,6 +423,14 @@ class DictCell extends Cell {
 
     get initial() {
         return "other";
+    }
+
+    value(cell) {
+        return cell.children[0].value;
+    }
+
+    save(cell) {
+        return cell.children[0].value;
     }
 
     load(cell, id, values) {
@@ -442,14 +450,6 @@ class DictCell extends Cell {
         }
 
         return super._listen(cell, child);
-    }
-
-    save(cell) {
-        return cell.children[0].value;
-    }
-
-    value(cell) {
-        return cell.children[0].value;
     }
 };
 
@@ -645,6 +645,10 @@ class MultiBonusCell extends BonusListCell {
         return this.list[0];
     }
 
+    save(cell) {
+        return cell.children[0].value;
+    }
+
     load(cell, id, values) {
         cell.className = "bonus";
 
@@ -656,17 +660,31 @@ class MultiBonusCell extends BonusListCell {
 
         return super._build(cell, values.star, values.level, value);
     }
-
-    save(cell) {
-        return cell.children[0].value;
-    }
 };
 
 // ボーナス値セル
 class BonusValueCell extends BonusCell {
+    static onChange(e) {
+        let select = e.target;
+        let cell = select.parentNode;
+
+        // select要素以外を削除
+        while (cell.firstChild != cell.lastChild) {
+            cell.lastChild.remove();
+        }
+
+        let bonus = BonusValue[select.value];
+        bonus.cell(this.listeners).build(cell, bonus.init);
+    }
+
     get initial() {
         let key = this.list[0];
         return [key, BonusValue[key].init];
+    }
+
+    save(cell) {
+        let children = cell.children;
+        return [children[0].value, children[1].value];
     }
 
     load(cell, id, values) {
@@ -686,24 +704,6 @@ class BonusValueCell extends BonusCell {
         child.addEventListener("change", { listeners: this.listeners, handleEvent: BonusValueCell.onChange });
 
         return BonusValue[key].cell(this.listeners).build(cell, value);
-    }
-
-    save(cell) {
-        let children = cell.children;
-        return [children[0].value, children[1].value];
-    }
-
-    static onChange(e) {
-        let select = e.target;
-        let cell = select.parentNode;
-
-        // select要素以外を削除
-        while (cell.firstChild != cell.lastChild) {
-            cell.lastChild.remove();
-        }
-
-        let bonus = BonusValue[select.value];
-        bonus.cell(this.listeners).build(cell, bonus.init);
     }
 };
 
@@ -738,9 +738,9 @@ class DictBonusCell extends BonusValueCell {
     }
 };
 
-// 装備詳細
-class EquipmentDetail {
-    static outputLine(cell, row, idx, prefix) {
+// 装備セル
+class EquipmentCell extends Cell {
+    static detailLine(cell, row, idx, prefix) {
         let elem = row.cells[idx];
         if (!!elem) {
             cell.appendChild(document.createElement("br"));
@@ -748,7 +748,7 @@ class EquipmentDetail {
         }
     }
 
-    static outputBonus(cell, item, idx) {
+    static detailBonus(cell, item, idx) {
         let elem = item.cells[idx].firstElementChild;
         let key = elem.value;
         if ((key in BonusValue) && (key !== "other")) {
@@ -762,53 +762,54 @@ class EquipmentDetail {
         }
     }
 
-    // TODO: 多言語対応
-    static outputChara(cell, item) {
-        EquipmentDetail.outputLine(cell, item, 2, "Lv."); // level
-        EquipmentDetail.outputLine(cell, item, 3, "HP:"); // hp
-        EquipmentDetail.outputLine(cell, item, 4, "攻撃力:"); // atk
-        EquipmentDetail.outputLine(cell, item, 5, "防御力:"); // def
+    static detailChara(cell, item) {
+        EquipmentCell.detailLine(cell, item, 2, "Lv."); // level
+        EquipmentCell.detailLine(cell, item, 3, "HP:"); // hp
+        EquipmentCell.detailLine(cell, item, 4, LABEL_TEXT.atk + ":"); // atk
+        EquipmentCell.detailLine(cell, item, 5, LABEL_TEXT.def + ":"); // def
     }
 
-    // TODO: 多言語対応
-    static outputWeapon(cell, item) {
-        EquipmentDetail.outputLine(cell, item, 2, "Lv."); // level
-        EquipmentDetail.outputLine(cell, item, 3, "錬成:"); // rank
-        EquipmentDetail.outputLine(cell, item, 4, "攻撃力 +"); // atk
-        EquipmentDetail.outputBonus(cell, item, 5); // second
+    static detailWeapon(cell, item) {
+        EquipmentCell.detailLine(cell, item, 2, "Lv."); // level
+        EquipmentCell.detailLine(cell, item, 3, LABEL_TEXT.rank + ":"); // rank
+        EquipmentCell.detailLine(cell, item, 4, LABEL_TEXT.atk + " +"); // atk
+        EquipmentCell.detailBonus(cell, item, 5); // second
     }
 
-    static outputArtifact(cell, item) {
-        EquipmentDetail.outputBonus(cell, item, 4); // main
-        EquipmentDetail.outputBonus(cell, item, 5); // sub1
-        EquipmentDetail.outputBonus(cell, item, 6); // sub2
-        EquipmentDetail.outputBonus(cell, item, 7); // sub3
-        EquipmentDetail.outputBonus(cell, item, 8); // sub4
+    static detailArtifact(cell, item) {
+        EquipmentCell.detailBonus(cell, item, 4); // main
+        EquipmentCell.detailBonus(cell, item, 5); // sub1
+        EquipmentCell.detailBonus(cell, item, 6); // sub2
+        EquipmentCell.detailBonus(cell, item, 7); // sub3
+        EquipmentCell.detailBonus(cell, item, 8); // sub4
     }
 
-    static OutputTable = {
-        chara: EquipmentDetail.outputChara,
-        sword: EquipmentDetail.outputWeapon,
-        claymore: EquipmentDetail.outputWeapon,
-        polearm: EquipmentDetail.outputWeapon,
-        bow: EquipmentDetail.outputWeapon,
-        catalyst: EquipmentDetail.outputWeapon,
-        flower: EquipmentDetail.outputArtifact,
-        feather: EquipmentDetail.outputArtifact,
-        sands: EquipmentDetail.outputArtifact,
-        goblet: EquipmentDetail.outputArtifact,
-        circlet: EquipmentDetail.outputArtifact
+    static DetailTable = {
+        chara: EquipmentCell.detailChara,
+        sword: EquipmentCell.detailWeapon,
+        claymore: EquipmentCell.detailWeapon,
+        polearm: EquipmentCell.detailWeapon,
+        bow: EquipmentCell.detailWeapon,
+        catalyst: EquipmentCell.detailWeapon,
+        flower: EquipmentCell.detailArtifact,
+        feather: EquipmentCell.detailArtifact,
+        sands: EquipmentCell.detailArtifact,
+        goblet: EquipmentCell.detailArtifact,
+        circlet: EquipmentCell.detailArtifact
     };
 
-    static output(cell, item, type) {
-        if (type in EquipmentDetail.OutputTable) {
-            EquipmentDetail.OutputTable[type](cell, item);
+    static onChange(e) {
+        let cell = e.target.parentNode;
+        // select要素以外を削除
+        while (cell.firstChild != cell.lastChild) {
+            cell.lastChild.remove();
+        }
+        if (this.type in EquipmentCell.DetailTable) {
+            let item = document.querySelector(`table#tbl_${this.type} tr#${cell.children[0].value}`);
+            EquipmentCell.DetailTable[this.type](cell, item);
         }
     }
-};
 
-// 装備セル
-class EquipmentCell extends Cell {
     constructor(type, listeners = null) {
         super(listeners);
         this.type = type;
@@ -821,6 +822,15 @@ class EquipmentCell extends Cell {
     get items() {
         // 装備対象をリストアップ
         return Array.from(document.querySelectorAll(`table#tbl_${this.type} td#name`));
+    }
+
+    value(cell) {
+        return document.querySelector(`table#tbl_${this.type} tr#${cell.children[0].value}`);
+    }
+
+    save(cell) {
+        // 保存するのは id ではなく index
+        return String(cell.children[0].selectedIndex);
     }
 
     load(cell, id, values) {
@@ -856,22 +866,13 @@ class EquipmentCell extends Cell {
         super._listen(cell, child);
 
         // 詳細情報の更新処理を追加
-        child.addEventListener("change", e => {
-            let td = e.target.parentNode;
-            while (td.firstChild != td.lastChild) {
-                td.lastChild.remove();
-            }
-            EquipmentDetail.output(td, this.value(td), this.type);
-        });
+        child.addEventListener("change", { type: this.type, handleEvent: EquipmentCell.onChange });
         // 初回の詳細情報を表示
-        EquipmentDetail.output(cell, this.value(cell), this.type);
+        if (this.type in EquipmentCell.DetailTable) {
+            EquipmentCell.DetailTable[this.type](cell, this.value(cell));
+        }
 
         return child;
-    }
-
-    save(cell) {
-        // 保存するのは id ではなく index
-        return String(cell.children[0].selectedIndex);
     }
 
     update(cell, items) {
@@ -879,10 +880,6 @@ class EquipmentCell extends Cell {
         let index = !!row ? (row.rowIndex - 2) : 0;
         removeChildren(cell);
         this._build(cell, index, items);
-    }
-
-    value(cell) {
-        return document.querySelector(`table#tbl_${this.type} tr#${cell.children[0].value}`);
     }
 };
 
@@ -908,6 +905,15 @@ class EquipWeaponCell extends Cell {
         return this.builder[weapon].items;
     }
 
+    value(cell, weapon) {
+        return this.builder[weapon].value(cell);
+    }
+
+    save(cell) {
+        // 保存するのは id ではなく index
+        return String(cell.children[0].selectedIndex);
+    }
+
     load(cell, id, values) {
         let index = parseInt(values.chara);
         if (Number.isNaN(index)) {
@@ -929,17 +935,8 @@ class EquipWeaponCell extends Cell {
         return this.builder[weapon].load(cell, id, values);
     }
 
-    save(cell) {
-        // 保存するのは id ではなく index
-        return String(cell.children[0].selectedIndex);
-    }
-
     update(cell, items, weapon) {
         this.builder[weapon].update(cell, items);
-    }
-
-    value(cell, weapon) {
-        return this.builder[weapon].value(cell);
     }
 };
 
