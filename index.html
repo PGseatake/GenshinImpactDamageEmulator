@@ -45,7 +45,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('equip')">+</button>
+            <button type="button" onclick="EquipmentTable.checkInsert()">+</button>
         </div>
         <input id="tab_team" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_team">チーム</label>
@@ -476,7 +476,7 @@
             <table id="tbl_damage">
                 <thead>
                     <tr>
-                        <th><select id="member_list" onchange="refreshTable('damage')"></select>Lv.1</th>
+                        <th><select id="member_list" onchange="refreshTable('damage')"></select>Lv.0</th>
                         <th>倍率<select id="damage_type" onchange="DamageTable.changeType(this)">
                                 <option value="phys">物理</option>
                                 <option value="elem">元素</option>

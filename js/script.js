@@ -98,7 +98,7 @@ class Table {
 
                     // データの削除
                     for (let id in Table.List) {
-                        Table.List[id]._clear();
+                        Table.List[id].clear();
                     }
 
                     // 外部データをlocalStorageに保存
@@ -121,7 +121,7 @@ class Table {
             let yes = confirm("すべてのタブの内容が破棄されます。よろしいですか？");
             if (yes) {
                 for (let id in Table.List) {
-                    Table.List[id]._clear();
+                    Table.List[id].clear();
                 }
 
                 document.title = Table.Title;
@@ -133,7 +133,7 @@ class Table {
             if (tbl.clearable) {
                 let yes = confirm(`${tbl.text}タブの内容が破棄されます。よろしいですか？`);
                 if (yes) {
-                    tbl._clear();
+                    tbl.clear();
                 }
             }
         }
@@ -151,11 +151,17 @@ class Table {
     // TODO: 多言語対応
     static removeConfirm(e) {
         let row = e.target.parentNode.parentNode;
-        let yes = confirm(`No.${row.rowIndex - 1}を削除します。よろしいですか？`);
-        if (yes) {
-            let html = row.parentNode.parentNode;
-            let tbl = Table.List[html.id.replace("tbl_", "")];
-            tbl._remove(html, e.target.id);
+        let html = row.parentNode.parentNode;
+        let tbl = Table.List[html.id.replace("tbl_", "")];
+        let id = e.target.id;
+        let no = row.rowIndex - 1;
+        if (tbl.removable(id)) {
+            let yes = confirm(`No.${no}を削除します。よろしいですか？`);
+            if (yes) {
+                tbl._remove(html, id);
+            }
+        } else {
+            window.alert(`No.${no}は装備中のため削除できません。`);
         }
     }
 
@@ -183,9 +189,14 @@ class Table {
         return document.getElementById("tbl_" + this.id);
     }
 
-    // データ削除可能かどうか
+    // データ消去可能かどうか
     get clearable() {
         return true;
+    }
+
+    // データ削除可能かどうか
+    removable(id) {
+        return !Table.List.equip.exists(id);
     }
 
     // 更新があるか
@@ -194,7 +205,7 @@ class Table {
     // }
 
     // データの削除
-    _clear() {
+    clear() {
         let html = this.html;
         // rows[0,1]（キャプション）以外を削除
         for (let count = html.rows.length - 2; 0 < count; --count) {
@@ -315,6 +326,7 @@ class Table {
 
     // 1行削除
     _remove(html, id) {
+        // データ削除
         html.querySelector("tr#" + id).remove();
 
         // indexの再設定
@@ -323,8 +335,6 @@ class Table {
         for (let i = 2, len = rows.length; i < len; ++i) {
             index.update(rows[i].cells[0]);
         }
-
-        // TODO: 削除したものを使用している他タブの要素をどうする？
 
         this._onchange(null);
     }
@@ -521,6 +531,7 @@ class ArtifactTable extends Table {
     _load() {
         super._load();
 
+        // 読み込み時のスコア表示
         let tr = this.html.rows[1];
         while (true) {
             tr = tr.nextElementSibling;
@@ -577,11 +588,9 @@ class ArtifactTable extends Table {
         // e.target == td#main.select
         let td = e.target.parentNode;
         let tr = td.parentNode;
-        let star = super._value(tr, "star");
-        let level = super._value(tr, "level");
 
         // 聖遺物メイン効果の更新
-        this.builder.main.update(td, star, level);
+        this.builder.main.update(td, super._value(tr, "star"), super._value(tr, "level"));
 
         super._onchange(e);
     }
@@ -628,10 +637,10 @@ class ArtifactTable extends Table {
                 total += value;
             }
         }
-        let denom = limit + ((star === 4) ? 20 : 30);
+        limit += ((star === 4) ? 20 : 30);
 
         cell.appendChild(document.createElement("br"));
-        cell.appendChild(document.createTextNode(`${total}/${denom} (${score.join(",")})`));
+        cell.appendChild(document.createTextNode(`${total}/${limit} (${score.join(",")})`));
     }
 
     // ステータス適用
@@ -752,6 +761,16 @@ class CircletTable extends ArtifactTable {
 
 // 装備テーブル
 class EquipmentTable extends Table {
+    // TODO: 多言語対応
+    static checkInsert() {
+        let require = Table.List.equip._requireItem();
+        if (0 < require.length) {
+            window.alert("以下の装備を整えてください。\n・" + require.join("\n・"));
+        } else {
+            Table.insertRow("equip");
+        }
+    }
+
     constructor() {
         super("equip");
         let listeners = { change: e => super._onchange(e) };
@@ -767,21 +786,45 @@ class EquipmentTable extends Table {
         };
     }
 
-    _changeChara(e) {
-        // e.target == td#chara.select
-        let value = e.target.value;
-
-        // 変更したキャラクターの武器種を変更
-        let td = document.querySelector(`table#tbl_chara tr#${value} td#name`);
-        let weapon = CHARACTER[td.children[0].value].weapon;
-        let builder = this.builder.weapon;
-        let items = builder.items(weapon);
-        let cell = e.target.parentNode.nextElementSibling;
-        builder.update(cell, items, weapon);
-
-        super._onchange(e);
+    // データ削除可能かどうか
+    removable(id) {
+        return true;
     }
 
+    // 指定したアイテムが使用されているかどうか
+    exists(id) {
+        const weapon = ["sword", "claymore", "polearm", "bow", "catalyst"];
+        let type = id.split("_")[0];
+        let html = this.html;
+        let items = null;
+        if (0 <= weapon.indexOf(type)) {
+            items = Array.from(html.querySelectorAll(`td#weapon select`));
+        } else {
+            items = Array.from(html.querySelectorAll(`td#${type} select`));
+        }
+        for (let i = 0; i < items.length; ++i) {
+            if (items[i].value === id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // キャラクターの列挙
+    enumerate() {
+        // 装備テーブルから{equip rid, キャラ名}のペアを生成
+        let equips = Array.from(document.querySelectorAll("table#tbl_equip td#chara"));
+        let values = [];
+        for (let i = 0, len = equips.length; i < len; ++i) {
+            let equip = equips[i];
+            let select = equip.children[0];
+            let option = select.options[select.selectedIndex];
+            values[i] = { id: equip.parentNode.id, name: option.label.split(".")[1] };
+        }
+        return values;
+    }
+
+    // キャラクターの更新
     updateChara(key, rid) {
         let charas = Array.from(document.querySelectorAll("table#tbl_equip td#chara"));
 
@@ -809,6 +852,7 @@ class EquipmentTable extends Table {
         })();
     }
 
+    // 武器の更新
     updateWeapon(type) {
         // 変更した武器種をすべて更新
         let builder = this.builder.weapon;
@@ -823,6 +867,7 @@ class EquipmentTable extends Table {
         }
     }
 
+    // 聖遺物の更新
     updateArtifact(type) {
         let builder = this.builder[type];
         let items = builder.items;
@@ -832,17 +877,32 @@ class EquipmentTable extends Table {
         }
     }
 
-    enumerate() {
-        // 装備テーブルから{equip rid, キャラ名}のペアを生成
-        let equips = Array.from(document.querySelectorAll("table#tbl_equip td#chara"));
-        let values = [];
-        for (let i = 0, len = equips.length; i < len; ++i) {
-            let equip = equips[i];
-            let select = equip.children[0];
-            let option = select.options[select.selectedIndex];
-            values[i] = { id: equip.parentNode.id, name: option.label.split(".")[1] };
+    // 必要なアイテムの確認
+    _requireItem() {
+        const types = ["chara", "sword", "claymore", "polearm", "bow", "catalyst", "flower", "feather", "sands", "goblet", "circlet"];
+        let require = [];
+        for (let i = 0; i < types.length; ++i) {
+            if (!document.querySelector(`table#tbl_${types[i]} td#name`)) {
+                require.push(TABLE_TEXT[types[i]]);
+            }
         }
-        return values;
+        return require;
+    }
+
+    // キャラの変更
+    _changeChara(e) {
+        // e.target == td#chara.select
+        let value = e.target.value;
+
+        // 変更したキャラクターの武器種を変更
+        let td = document.querySelector(`table#tbl_chara tr#${value} td#name`);
+        let weapon = CHARACTER[td.children[0].value].weapon;
+        let builder = this.builder.weapon;
+        let items = builder.items(weapon);
+        let cell = e.target.parentNode.nextElementSibling;
+        builder.update(cell, items, weapon);
+
+        super._onchange(e);
     }
 };
 
@@ -888,7 +948,7 @@ class TeamTable extends Table {
         this.members = [null, null, null, null];
     }
 
-    // データ削除可能かどうか
+    // データ消去可能かどうか
     get clearable() {
         return false;
     }
@@ -904,7 +964,7 @@ class TeamTable extends Table {
     }
 
     // データの削除
-    _clear() {
+    clear() {
         this.members = this.members.fill(null);
 
         let html = this.html;
@@ -1025,7 +1085,7 @@ class BonusTable extends Table {
         this.items = [];
     }
 
-    // データ削除可能かどうか
+    // データ消去可能かどうか
     get clearable() {
         return false;
     }
@@ -1041,7 +1101,7 @@ class BonusTable extends Table {
     }
 
     // データの削除
-    _clear() {
+    clear() {
         this.reset();
         this.refresh();
     }
@@ -1184,7 +1244,7 @@ class EnemyTable extends Table {
         this.target = null;
     }
 
-    // データ削除可能かどうか
+    // データ消去可能かどうか
     get clearable() {
         return false;
     }
@@ -1209,7 +1269,7 @@ class EnemyTable extends Table {
     }
 
     // データの削除
-    _clear() {
+    clear() {
         this._defence(this.html, null);
     }
 
@@ -1266,7 +1326,7 @@ class DamageTable extends Table {
         super("damage");
     }
 
-    // データ削除可能かどうか
+    // データ消去可能かどうか
     get clearable() {
         return false;
     }
@@ -1291,7 +1351,7 @@ class DamageTable extends Table {
     }
 
     // データの削除
-    _clear() {
+    clear() {
         removeChildren(this.html.querySelector("select#member_list"));
         this.refresh();
     }
@@ -1330,7 +1390,15 @@ class DamageTable extends Table {
         let damageType = html.querySelector("select#damage_type");
         damageType.className = "hide";
 
-        if (!status) return;
+        if (!status) {
+            // キャラレベルと攻撃力を0クリア
+            let row = html.rows[0];
+            row.cells[0].lastChild.data = "Lv.0";
+            let cell = row.nextElementSibling.cells[2];
+            cell.textContent = "0";
+            cell.nextElementSibling.textContent = "0.0%";
+            return;
+        }
 
         // キャラレベル設定
         let rows = html.rows;
