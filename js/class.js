@@ -66,10 +66,11 @@ class Cell {
 // 整数セル
 class IntCell extends Cell {
     static onChange(e) {
-        if (!e.value) {
-            e.truth = 0.0;
+        let input = e.target;
+        if (!input.value) {
+            input.truth = 0.0;
         } else {
-            e.truth = parseFloat(e.value);
+            input.truth = parseInt(input.value);
         }
     }
 
@@ -84,6 +85,7 @@ class IntCell extends Cell {
         let input = e.target;
         if (input.value === "") {
             input.value = "0";
+            input.truth = 0;
         }
     }
 
@@ -135,10 +137,11 @@ class IntCell extends Cell {
 // 割合セル
 class RateCell extends Cell {
     static onChange(e) {
-        if (!e.value) {
-            e.truth = 0.0;
+        let input = e.target;
+        if (!input.value) {
+            input.truth = 0.0;
         } else {
-            e.truth = parseFloat(e.value);
+            input.truth = parseFloat(input.value);
         }
     }
 
@@ -153,6 +156,7 @@ class RateCell extends Cell {
         let input = e.target;
         if (input.value === "") {
             input.value = "0.0";
+            input.truth = 0.0;
         }
     }
 
