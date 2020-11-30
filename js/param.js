@@ -488,6 +488,7 @@ class Attribute {
 };
 
 const ASCENSION_LV_STEP = [20, 40, 50, 60, 70, 80];
+const ASCENSION_LV_MIN = 1;
 const ASCENSION_LV_MAX = 90;
 const TALENT_LV_MAX = 15;
 

@@ -98,7 +98,7 @@ class IntCell extends Cell {
     }
 
     save(cell) {
-        return cell.children[0].value;
+        return cell.children[0].truth;
     }
 
     load(cell, id, values) {
@@ -169,7 +169,7 @@ class RateCell extends Cell {
     }
 
     save(cell) {
-        return cell.children[0].value;
+        return cell.children[0].truth;
     }
 
     load(cell, id, values) {
@@ -236,6 +236,32 @@ class IndexCell extends Cell {
 
     update(cell) {
         cell.childNodes[0].textContent = this._index(cell);
+    }
+};
+
+// キャラクター基礎パラメータセル
+class BaseParamCell extends IntCell {
+    update(cell, name, level) {
+        let chara = CHARACTER[name];
+        let param = chara[cell.id];
+        if (!!param) {
+            let bound = [ASCENSION_LV_MIN].concat(ASCENSION_LV_STEP, ASCENSION_LV_MAX);
+            let step = AscensionLevelCell.step(level);
+            let min = bound[step.index];
+            let max = bound[step.index + 1];
+            let lower = param[step.index * 2];
+            let upper = param[step.index * 2 + 1];
+            let value = 0;
+            if (step.level === min) {
+                value = lower;
+            } else if (step.level === max) {
+                value = upper;
+            } else {
+                value = Math.ceil((upper - lower) / (max - min) * (step.level - min) + lower);
+            }
+            cell.children[0].value = value.toFixed();
+            cell.children[0].truth = value;
+        }
     }
 };
 
@@ -329,6 +355,21 @@ class ArtifactLevelCell extends RangeCell {
 
 // 突破レベルセル
 class AscensionLevelCell extends Cell {
+    static step(level) {
+        if (0 < level.indexOf("+")) {
+            let lv = parseInt(level.replace("+", ""));
+            return { level: lv, index: ASCENSION_LV_STEP.indexOf(lv) + 1 };
+        } else {
+            let lv = parseInt(level);
+            for (let i = 0; i < ASCENSION_LV_STEP.length; ++i) {
+                if (lv <= ASCENSION_LV_STEP[i]) {
+                    return { level: lv, index: i };
+                }
+            }
+            return { level: lv, index: ASCENSION_LV_STEP.length };
+        }
+    }
+
     get initial() {
         return "1";
     }
@@ -464,7 +505,7 @@ class IntBonus {
         return "0";
     }
 
-    cell(listeners) {
+    cell(listeners = null) {
         return new IntCell(listeners);
     }
 };
@@ -479,7 +520,7 @@ class RateBonus {
         return "0.0";
     }
 
-    cell(listeners) {
+    cell(listeners = null) {
         return new RateCell(listeners);
     }
 };
@@ -494,7 +535,7 @@ class EmptyBonus {
         return "";
     }
 
-    cell(listeners) {
+    cell(listeners = null) {
         return new EmptyCell();
     }
 };
@@ -552,6 +593,40 @@ class BonusCell extends Cell {
         }
 
         return child;
+    }
+};
+
+// キャラクター追加効果セル
+class SpecialCell extends BonusCell {
+    constructor() {
+        super([]);
+    }
+
+    load(cell, id, values) {
+        cell.className = "bonus";
+        this._build(cell, values.name, values.level);
+        return null;
+    }
+
+    _build(cell, name, level) {
+        let chara = CHARACTER[name];
+
+        let bonus = chara.special;
+        this.list = [bonus];
+        cell.appendChild(this._select(bonus));
+
+        let value = 0;
+        if (bonus !== "other") {
+            value = chara.spvalue[AscensionLevelCell.step(level).index];
+        }
+
+        let builder = BonusValue[bonus].cell();
+        builder.build(cell, value).disabled = true;
+    }
+
+    update(cell, name, level) {
+        removeChildren(cell);
+        this._build(cell, name, level);
     }
 };
 

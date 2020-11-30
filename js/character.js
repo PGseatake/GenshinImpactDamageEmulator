@@ -6,17 +6,53 @@ const CHARACTER = {
         star: 1,
         element: "",
         weapon: "sword",
+        // Lv[1, 20, 20+, 40, 40+, 50, 50+, 60, 60+, 70, 70+, 80, 80+, 90]
+        hp: null,
+        // Lv[1, 20, 20+, 40, 40+, 50, 50+, 60, 60+, 70, 70+, 80, 80+, 90]
+        atk: null,
+        // Lv[1, 20, 20+, 40, 40+, 50, 50+, 60, 60+, 70, 70+, 80, 80+, 90]
+        def: null,
         special: "other",
-        combat: [],
-        skill: [],
-        burst: []
+        // Lv[1, 20+, 40+, 50+, 60+, 70+, 80+]
+        spvalue: null,
+        combat: null,
+        skill: null,
+        burst: null
     },
     TravelAnemo: {
         name: "旅人(風)",
         star: 5,
         element: "anemo",
         weapon: "sword",
+        hp: [
+            912, 2342,
+            3024, 4529,
+            5013, 5766,
+            6411, 7164,
+            7648, 8401,
+            8885, 9638,
+            10122, 10875
+        ],
+        atk: [
+            18, 46,
+            60, 88,
+            98, 112,
+            126, 140,
+            149, 164,
+            174, 188,
+            198, 213
+        ],
+        def: [
+            57, 147,
+            190, 284,
+            315, 362,
+            405, 450,
+            480, 527,
+            558, 605,
+            635, 682
+        ],
         special: "atk_buf",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 44.5 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 43.4 },
@@ -44,7 +80,35 @@ const CHARACTER = {
         star: 5,
         element: "geo",
         weapon: "sword",
+        hp: [
+            912, 2342,
+            3024, 4529,
+            5013, 5766,
+            6411, 7164,
+            7648, 8401,
+            8885, 9638,
+            10122, 10875
+        ],
+        atk: [
+            18, 46,
+            60, 88,
+            98, 112,
+            126, 140,
+            149, 164,
+            174, 188,
+            198, 213
+        ],
+        def: [
+            57, 147,
+            190, 284,
+            315, 362,
+            405, 450,
+            480, 527,
+            558, 605,
+            635, 682
+        ],
         special: "atk_buf",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 44.5 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 43.4 },
@@ -68,7 +132,35 @@ const CHARACTER = {
         star: 4,
         element: "pyro",
         weapon: "bow",
+        hp: [
+            793, 2038,
+            2630, 3940,
+            4361, 5016,
+            5578, 6233,
+            6654, 7309,
+            7730, 8385,
+            8806, 9461
+        ],
+        atk: [
+            19, 48,
+            62, 93,
+            103, 118,
+            132, 147,
+            157, 172,
+            182, 198,
+            208, 223
+        ],
+        def: [
+            50, 129,
+            167, 250,
+            277, 318,
+            354, 396,
+            422, 464,
+            491, 532,
+            559, 601
+        ],
         special: "atk_buf",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 36.1 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 36.1 },
@@ -94,7 +186,35 @@ const CHARACTER = {
         star: 4,
         element: "hydro",
         weapon: "catalyst",
+        hp: [
+            821, 2108,
+            2721, 4076,
+            4512, 5189,
+            5770, 6448,
+            6884, 7561,
+            7996, 8674,
+            9110, 9787
+        ],
+        atk: [
+            14, 34,
+            44, 67,
+            74, 84,
+            94, 105,
+            112, 123,
+            130, 141,
+            149, 159
+        ],
+        def: [
+            56, 144,
+            186, 279,
+            308, 355,
+            394, 441,
+            470, 517,
+            546, 593,
+            623, 669
+        ],
         special: "hp_buf",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "hydro", scale: "elem", value: 37.8 },
             { name: "2段ダメージ", type: "normal", elem: "hydro", scale: "elem", value: 35.5 },
@@ -115,7 +235,35 @@ const CHARACTER = {
         star: 4,
         element: "elect",
         weapon: "claymore",
+        hp: [
+            1094, 2811,
+            3628, 5435,
+            6015, 6919,
+            7694, 8597,
+            9178, 10081,
+            10662, 11565,
+            12146, 13050
+        ],
+        atk: [
+            19, 49,
+            63, 94,
+            104, 120,
+            133, 148,
+            158, 174,
+            184, 199,
+            210, 225
+        ],
+        def: [
+            54, 140,
+            180, 270,
+            299, 344,
+            382, 427,
+            456, 501,
+            530, 575,
+            603, 648
+        ],
         special: "elect_dmg",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 71.1 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 70.9 },
@@ -143,7 +291,35 @@ const CHARACTER = {
         star: 4,
         element: "pyro",
         weapon: "sword",
+        hp: [
+            1039, 2670,
+            3447, 5163,
+            5715, 6573,
+            7309, 8168,
+            8719, 9577,
+            10129, 10987,
+            11539, 12397
+        ],
+        atk: [
+            16, 41,
+            53, 80,
+            88, 102,
+            113, 126,
+            135, 148,
+            156, 169,
+            178, 191
+        ],
+        def: [
+            65, 166,
+            214, 321,
+            356, 409,
+            455, 508,
+            542, 596,
+            630, 684,
+            718, 771
+        ],
         special: "en_rec",
+        spvalue: [0.0, 0.0, 6.6666666666, 13.3333333333, 13.3333333333, 20.0, 26.6666666666],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 44.5 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 42.7 },
@@ -170,7 +346,35 @@ const CHARACTER = {
         star: 4,
         element: "cryo",
         weapon: "claymore",
+        hp: [
+            1003, 2366,
+            3054, 4574,
+            5063, 5824,
+            6475, 7236,
+            7725, 8485,
+            8974, 9734,
+            10223, 10984
+        ],
+        atk: [
+            19, 48,
+            62, 93,
+            103, 119,
+            132, 147,
+            158, 172,
+            182, 198,
+            208, 223
+        ],
+        def: [
+            54, 140,
+            180, 270,
+            299, 344,
+            382, 427,
+            456, 501,
+            530, 575,
+            603, 648
+        ],
         special: "atk_buf",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "switch", scale: "phys", value: 70.0 },
             { name: "2段ダメージ", type: "normal", elem: "switch", scale: "phys", value: 63.1 },
@@ -194,7 +398,35 @@ const CHARACTER = {
         star: 5,
         element: "pyro",
         weapon: "claymore",
+        hp: [
+            1011, 2621,
+            3488, 5219,
+            5834, 6712,
+            7533, 8421,
+            9036, 9932,
+            10547, 11453,
+            12068, 12981
+        ],
+        atk: [
+            26, 68,
+            90, 135,
+            151, 173,
+            195, 217,
+            233, 256,
+            272, 296,
+            312, 335
+        ],
+        def: [
+            61, 158,
+            211, 315,
+            352, 405,
+            455, 509,
+            546, 600,
+            637, 692,
+            729, 784
+        ],
         special: "cri_rate",
+        spvalue: [5.0, 5.0, 9.8, 14.6, 14.6, 19.4, 24.2],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "switch", scale: "phys", value: 89.7 },
             { name: "2段ダメージ", type: "normal", elem: "switch", scale: "phys", value: 87.6 },
@@ -222,7 +454,35 @@ const CHARACTER = {
         star: 4,
         element: "cryo",
         weapon: "bow",
-        special: "other",
+        hp: [
+            802, 2061,
+            2661, 3985,
+            4411, 5074,
+            5642, 6305,
+            6731, 7393,
+            7818, 8481,
+            8907, 9570
+        ],
+        atk: [
+            18, 46,
+            59, 89,
+            98, 113,
+            125, 140,
+            149, 164,
+            173, 188,
+            198, 213
+        ],
+        def: [
+            50, 129,
+            167, 250,
+            277, 319,
+            354, 396,
+            422, 464,
+            491, 532,
+            559, 601
+        ],
+        special: "cryo_dmg",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 36.1 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 33.5 },
@@ -248,7 +508,35 @@ const CHARACTER = {
         star: 4,
         element: "elect",
         weapon: "bow",
+        hp: [
+            770, 1979,
+            2555, 3827,
+            4236, 4872,
+            5418, 6054,
+            6463, 7099,
+            7508, 8144,
+            8553, 9189
+        ],
+        atk: [
+            21, 53,
+            68, 102,
+            113, 130,
+            144, 161,
+            172, 189,
+            200, 216,
+            227, 245
+        ],
+        def: [
+            50, 128,
+            165, 247,
+            274, 315,
+            350, 391,
+            418, 459,
+            485, 526,
+            553, 594
+        ],
         special: "atk_buf",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 44.1 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 46.8 },
@@ -274,7 +562,35 @@ const CHARACTER = {
         star: 5,
         element: "anemo",
         weapon: "sword",
+        hp: [
+            1144, 2967,
+            3948, 5908,
+            6605, 7599,
+            8528, 9533,
+            10230, 11243,
+            11940, 12965,
+            13662, 14695
+        ],
+        atk: [
+            19, 49,
+            65, 96,
+            108, 124,
+            139, 155,
+            166, 183,
+            195, 211,
+            222, 239
+        ],
+        def: [
+            60, 155,
+            206, 309,
+            345, 397,
+            446, 499,
+            535, 588,
+            624, 678,
+            715, 769
+        ],
         special: "other",
+        spvalue: null,
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 48.3 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 45.6 },
@@ -299,7 +615,35 @@ const CHARACTER = {
         star: 4,
         element: "cryo",
         weapon: "sword",
+        hp: [
+            976, 2506,
+            3235, 4846,
+            5364, 6170,
+            6860, 7666,
+            8184, 8990,
+            9508, 10312,
+            10830, 11636
+        ],
+        atk: [
+            19, 48,
+            62, 93,
+            103, 118,
+            131, 147,
+            156, 172,
+            181, 196,
+            205, 220
+        ],
+        def: [
+            66, 171,
+            220, 330,
+            365, 420,
+            467, 522,
+            557, 612,
+            647, 702,
+            737, 792
+        ],
         special: "en_rec",
+        spvalue: [0.0, 0.0, 6.6666666666, 13.3333333333, 13.3333333333, 20.0, 26.6666666666],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 53.8 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 51.7 },
@@ -323,7 +667,35 @@ const CHARACTER = {
         star: 5,
         element: "elect",
         weapon: "sword",
+        hp: [
+            983, 2634,
+            3512, 5268,
+            5889, 6776,
+            7604, 8500,
+            9121, 10025,
+            10647, 11561,
+            12182, 13105
+        ],
+        atk: [
+            26, 66,
+            88, 130,
+            145, 167,
+            188, 209,
+            225, 247,
+            262, 285,
+            300, 323
+        ],
+        def: [
+            63, 162,
+            215, 321,
+            359, 413,
+            464, 519,
+            556, 612,
+            649, 705,
+            743, 800
+        ],
         special: "cri_dmg",
+        spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "switch", scale: "phys", value: 41.0 },
             { name: "2段ダメージ", type: "normal", elem: "switch", scale: "phys", value: 41.0 },
@@ -351,7 +723,35 @@ const CHARACTER = {
         star: 5,
         element: "pyro",
         weapon: "catalyst",
+        hp: [
+            801, 2077,
+            2764, 4136,
+            4623, 5319,
+            5970, 6673,
+            7161, 7870,
+            8358, 9076,
+            9563, 10287
+        ],
+        atk: [
+            24, 63,
+            84, 125,
+            140, 161,
+            181, 202,
+            217, 238,
+            253, 274,
+            289, 311
+        ],
+        def: [
+            48, 124,
+            165, 247,
+            276, 318,
+            357, 399,
+            428, 470,
+            500, 542,
+            572, 615
+        ],
         special: "pyro_dmg",
+        spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "pyro", scale: "elem", value: 72.2 },
             { name: "2段ダメージ", type: "normal", elem: "pyro", scale: "elem", value: 62.4 },
@@ -374,7 +774,35 @@ const CHARACTER = {
         star: 4,
         element: "elect",
         weapon: "catalyst",
+        hp: [
+            802, 2061,
+            2661, 3985,
+            4411, 5074,
+            5642, 6305,
+            6730, 7393,
+            7818, 8481,
+            8906, 9569
+        ],
+        atk: [
+            20, 50,
+            65, 96,
+            107, 123,
+            137, 153,
+            164, 180,
+            191, 207,
+            218, 234
+        ],
+        def: [
+            48, 123,
+            159, 239,
+            264, 304,
+            338, 378,
+            403, 443,
+            468, 508,
+            533, 573
+        ],
         special: "elem",
+        spvalue: [0, 0, 24, 48, 48, 72, 96],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "elect", scale: "elem", value: 39.6 },
             { name: "2段ダメージ", type: "normal", elem: "elect", scale: "elem", value: 35.9 },
@@ -401,7 +829,35 @@ const CHARACTER = {
         star: 5,
         element: "hydro",
         weapon: "catalyst",
+        hp: [
+            810, 2102,
+            2797, 4185,
+            4678, 5383,
+            6041, 6752,
+            7246, 7964,
+            8458, 9184,
+            9677, 10409
+        ],
+        atk: [
+            24, 58,
+            77, 116,
+            129, 149,
+            167, 186,
+            199, 219,
+            233, 253,
+            266, 286
+        ],
+        def: [
+            51, 132,
+            176, 263,
+            294, 338,
+            379, 424,
+            455, 500,
+            531, 576,
+            607, 653
+        ],
         special: "en_rec",
+        spvalue: [0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "hydro", scale: "elem", value: 37.6 },
             { name: "2段ダメージ", type: "normal", elem: "hydro", scale: "elem", value: 36.0 },
@@ -425,7 +881,35 @@ const CHARACTER = {
         star: 4,
         element: "geo",
         weapon: "catalyst",
+        hp: [
+            821, 2108,
+            2721, 4076,
+            4512, 5189,
+            5770, 6448,
+            6884, 7561,
+            7996, 8674,
+            9110, 9787
+        ],
+        atk: [
+            18, 46,
+            59, 89,
+            98, 112,
+            125, 140,
+            150, 164,
+            173, 188,
+            198, 212
+        ],
+        def: [
+            48, 123,
+            159, 239,
+            264, 304,
+            338, 378,
+            403, 443,
+            468, 508,
+            533, 573
+        ],
         special: "geo_dmg",
+        spvalue: [0, 0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "通常攻撃ダメージ", type: "normal", elem: "geo", scale: "elem", value: 28.0 },
             { name: "重激ダメージ", type: "heavy", elem: "geo", scale: "elem", value: 174 },
@@ -446,7 +930,35 @@ const CHARACTER = {
         star: 4,
         element: "geo",
         weapon: "claymore",
+        hp: [
+            1012, 2600,
+            3356, 5027,
+            5564, 6400,
+            7117, 7953,
+            8490, 9325,
+            9862, 10698,
+            11235, 12071
+        ],
+        atk: [
+            16, 41,
+            53, 80,
+            88, 102,
+            113, 126,
+            135, 148,
+            156, 170,
+            178, 191
+        ],
+        def: [
+            67, 172,
+            222, 333,
+            368, 423,
+            471, 526,
+            562, 617,
+            652, 708,
+            743, 799
+        ],
         special: "def_buf",
+        spvalue: [0, 0, 7.5, 15.0, 15.0, 22.5, 30.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "switch", scale: "phys", value: 79.1 },
             { name: "2段ダメージ", type: "normal", elem: "switch", scale: "phys", value: 73.4 },
@@ -471,7 +983,35 @@ const CHARACTER = {
         star: 5,
         element: "cryo",
         weapon: "sword",
+        hp: [
+            963, 2498,
+            3323, 4973,
+            5559, 6396,
+            7178, 8023,
+            8610, 9463,
+            10050, 10912,
+            11499, 12368
+        ],
+        atk: [
+            23, 58,
+            77, 115,
+            129, 149,
+            167, 186,
+            200, 219,
+            233, 253,
+            266, 297
+        ],
+        def: [
+            72, 186,
+            248, 371,
+            415, 477,
+            535, 598,
+            642, 706,
+            749, 814,
+            857, 992
+        ],
         special: "other",
+        spvalue: null,
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 37.8 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 38.9 },
@@ -497,7 +1037,35 @@ const CHARACTER = {
         star: 4,
         element: "elect",
         weapon: "claymore",
+        hp: [
+            1003, 2577,
+            3326, 4982,
+            5514, 6343,
+            7052, 7881,
+            8413, 9241,
+            9773, 10602,
+            11134, 11962
+        ],
+        atk: [
+            20, 51,
+            65, 97,
+            108, 124,
+            138, 154,
+            164, 180,
+            191, 207,
+            217, 234
+        ],
+        def: [
+            63, 162,
+            209, 313,
+            346, 398,
+            443, 495,
+            528, 580,
+            613, 665,
+            699, 751
+        ],
         special: "phys_dmg",
+        spvalue: [0, 0, 7.5, 15.0, 15.0, 22.5, 30.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 95.9 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 82.6 },
@@ -522,7 +1090,35 @@ const CHARACTER = {
         star: 4,
         element: "anemo",
         weapon: "catalyst",
+        hp: [
+            775, 1991,
+            2570, 3850,
+            4261, 4901,
+            5450, 6090,
+            6501, 7141,
+            7552, 8192,
+            8603, 9243
+        ],
+        atk: [
+            14, 37,
+            47, 71,
+            79, 90,
+            100, 112,
+            120, 132,
+            139, 151,
+            159, 170
+        ],
+        def: [
+            59, 151,
+            195, 293,
+            324, 373,
+            414, 463,
+            494, 543,
+            574, 623,
+            654, 703
+        ],
         special: "anemo_dmg",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "anemo", scale: "elem", value: 33.5 },
             { name: "2段ダメージ", type: "normal", elem: "anemo", scale: "elem", value: 30.6 },
@@ -546,7 +1142,35 @@ const CHARACTER = {
         star: 5,
         element: "hydro",
         weapon: "bow",
+        hp: [
+            1020, 2646,
+            3521, 5268,
+            5889, 6776,
+            7604, 8500,
+            9121, 10025,
+            10647, 11561,
+            12182, 13103
+        ],
+        atk: [
+            24, 61,
+            81, 121,
+            136, 156,
+            175, 196,
+            210, 231,
+            245, 266,
+            280, 301
+        ],
+        def: [
+            63, 165,
+            219, 328,
+            366, 421,
+            473, 528,
+            567, 623,
+            662, 719,
+            757, 815
+        ],
         special: "hydro_dmg",
+        spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 41.3 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 46.3 },
@@ -584,7 +1208,35 @@ const CHARACTER = {
         star: 5,
         element: "anemo",
         weapon: "bow",
+        hp: [
+            820, 2127,
+            2830, 4234,
+            4734, 5446,
+            6112, 6832,
+            7331, 8058,
+            8557, 9291,
+            9790, 10531
+        ],
+        atk: [
+            21, 53,
+            71, 106,
+            118, 136,
+            153, 170,
+            183, 202,
+            214, 233,
+            245, 265
+        ],
+        def: [
+            52, 135,
+            180, 269,
+            301, 346,
+            388, 434,
+            465, 512,
+            543, 591,
+            622, 670
+        ],
         special: "en_rec",
+        spvalue: [0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 20.4, value2: 20.4 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 44.4 },
@@ -612,7 +1264,35 @@ const CHARACTER = {
         star: 4,
         element: "pyro",
         weapon: "polearm",
+        hp: [
+            912, 2342,
+            3024, 4529,
+            5013, 5766,
+            6411, 7164,
+            7648, 8401,
+            8885, 9638,
+            10112, 10875
+        ],
+        atk: [
+            19, 49,
+            63, 94,
+            104, 119,
+            133, 149,
+            159, 174,
+            184, 200,
+            210, 225
+        ],
+        def: [
+            56, 144,
+            186, 279,
+            308, 355,
+            394, 441,
+            470, 517,
+            546, 593,
+            623, 669
+        ],
         special: "elem",
+        spvalue: [0, 0, 24, 48, 48, 72, 96],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 42.1 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 42.1 },
@@ -640,7 +1320,35 @@ const CHARACTER = {
         star: 4,
         element: "hydro",
         weapon: "sword",
+        hp: [
+            857, 2202,
+            2842, 4257,
+            4712, 5420,
+            6027, 6735,
+            7190, 7897,
+            8352, 9060,
+            9515, 10223
+        ],
+        atk: [
+            17, 44,
+            56, 84,
+            93, 107,
+            119, 133,
+            142, 156,
+            165, 179,
+            188, 202
+        ],
+        def: [
+            64, 163,
+            211, 316,
+            349, 402,
+            447, 499,
+            533, 585,
+            619, 672,
+            706, 759
+        ],
         special: "atk_buf",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         combat: [
             { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 46.6 },
             { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 47.6 },

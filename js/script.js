@@ -229,7 +229,7 @@ class Table {
                 let id = cell.id;
                 if (id in this.builder) {
                     let value = this.builder[id].save(cell);
-                    if (value != null) {
+                    if (value !== null) {
                         map[id] = value;
                     }
                 }
@@ -368,11 +368,11 @@ class CharaTable extends Table {
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(CHARACTER, "name", { change: e => this._changeName(e) }),
-            level: new AscensionLevelCell(listeners),
-            hp: new IntCell(listeners),
-            atk: new IntCell(listeners),
-            def: new IntCell(listeners),
-            special: new DictBonusCell("name", CHARACTER, "special", listeners),
+            level: new AscensionLevelCell({ change: e => this._changeLevel(e) }),
+            hp: new BaseParamCell(listeners),
+            atk: new BaseParamCell(listeners),
+            def: new BaseParamCell(listeners),
+            special: new SpecialCell(),
             combat: new TalentCell(1, TALENT_LV_MAX, listeners),
             skill: new TalentCell(1, TALENT_LV_MAX, listeners),
             burst: new TalentCell(1, TALENT_LV_MAX, listeners),
@@ -382,14 +382,38 @@ class CharaTable extends Table {
     // 名前の変更
     _changeName(e) {
         // e.target == td#name.select
-        let key = e.target.value;
+        let name = e.target.value;
         let tr = e.target.parentNode.parentNode;
+        let level = super._value(tr, "level");
 
-        // 追加効果変更
-        super._update(tr, "special", key);
+        // 基礎値の更新
+        super._update(tr, "hp", name, level);
+        super._update(tr, "atk", name, level);
+        super._update(tr, "def", name, level);
+
+        // 追加効果更新
+        super._update(tr, "special", name, level);
 
         // 装備タブ更新
-        Table.List.equip.updateChara(key, tr.id);
+        Table.List.equip.updateChara(name, tr.id);
+
+        super._onchange(e);
+    }
+
+    // レベルの変更
+    _changeLevel(e) {
+        // e.target == td#level.select
+        let level = e.target.value;
+        let tr = e.target.parentNode.parentNode;
+        let name = super._value(tr, "name");
+
+        // 基礎値の更新
+        super._update(tr, "hp", name, level);
+        super._update(tr, "atk", name, level);
+        super._update(tr, "def", name, level);
+
+        // 追加効果更新
+        super._update(tr, "special", name, level);
 
         super._onchange(e);
     }
