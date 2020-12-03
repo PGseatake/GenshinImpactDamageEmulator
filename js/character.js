@@ -284,7 +284,7 @@ const CHARACTER = {
         burst: [
             { name: "スキルダメージ", type: "burst", elem: "elect", scale: "elem", value: 122 },
             { name: "落雷ダメージ", type: "burst", elem: "elect", scale: "elem", value: 96 },
-        ],
+        ]
     },
     Bennett: {
         name: "ベネット",
@@ -339,7 +339,7 @@ const CHARACTER = {
         ],
         burst: [
             { name: "スキルダメージ", type: "burst", elem: "pyro", scale: "elem", value: 233 },
-        ],
+        ]
     },
     Chongyun: {
         name: "重雲",
@@ -391,7 +391,7 @@ const CHARACTER = {
         ],
         burst: [
             { name: "スキルダメージ", type: "burst", elem: "cryo", scale: "elem", value: 142 },
-        ],
+        ]
     },
     Diluc: {
         name: "ディルック",
@@ -447,7 +447,7 @@ const CHARACTER = {
             { name: "斬撃ダメージ", type: "burst", elem: "pyro", scale: "elem", value: 204 },
             { name: "継続ダメージ", type: "burst", elem: "pyro", scale: "elem", value: 60.0 },
             { name: "爆発ダメージ", type: "burst", elem: "pyro", scale: "elem", value: 204 }
-        ],
+        ]
     },
     Diona: {
         name: "ディオナ",
@@ -501,7 +501,7 @@ const CHARACTER = {
         burst: [
             { name: "スキルダメージ", type: "burst", elem: "cryo", scale: "elem", value: 80 },
             { name: "エリアの継続ダメージ", type: "burst", elem: "cryo", scale: "elem", value: 52.6 },
-        ],
+        ]
     },
     Fischl: {
         name: "フィッシュル",
@@ -555,7 +555,7 @@ const CHARACTER = {
         ],
         burst: [
             { name: "落雷ダメージ", type: "burst", elem: "elect", scale: "elem", value: 208 }
-        ],
+        ]
     },
     Jean: {
         name: "ジン",
@@ -767,7 +767,7 @@ const CHARACTER = {
         ],
         burst: [
             { name: "ドッカン花火ダメージ", type: "burst", elem: "pyro", scale: "elem", value: 42.6 },
-        ],
+        ]
     },
     Lisa: {
         name: "リサ",
@@ -822,7 +822,7 @@ const CHARACTER = {
         ],
         burst: [
             { name: "放電ダメージ", type: "burst", elem: "elect", scale: "elem", value: 36.6 }
-        ],
+        ]
     },
     Mona: {
         name: "モナ",
@@ -923,7 +923,7 @@ const CHARACTER = {
         ],
         burst: [
             { name: "宝石ダメージ", type: "burst", elem: "geo", scale: "elem", value: 87.0 },
-        ],
+        ]
     },
     Noelle: {
         name: "ノエル",
@@ -976,7 +976,7 @@ const CHARACTER = {
         burst: [
             { name: "爆発ダメージ", type: "burst", elem: "geo", scale: "elem", value: 67.2 },
             { name: "スキルダメージ", type: "burst", elem: "geo", scale: "elem", value: 92.8 },
-        ],
+        ]
     },
     Qiqi: {
         name: "七七",
@@ -1029,7 +1029,6 @@ const CHARACTER = {
         ],
         burst: [
             { name: "スキルダメージ", type: "burst", elem: "cryo", scale: "elem", value: 285 },
-
         ]
     },
     Razor: {
@@ -1083,7 +1082,7 @@ const CHARACTER = {
         ],
         burst: [
             { name: "爆発ダメージ", type: "burst", elem: "elect", scale: "elem", value: 160 },
-        ],
+        ]
     },
     Sucrose: {
         name: "スクロース",
@@ -1135,7 +1134,7 @@ const CHARACTER = {
         burst: [
             { name: "継続ダメージ", type: "burst", elem: "anemo", scale: "elem", value: 148 },
             { name: "付加元素ダメージ", type: "burst", elem: "addem", scale: "elem", value: 44 },
-        ],
+        ]
     },
     Tartaglia: {
         name: "タルタリヤ",
@@ -1367,8 +1366,115 @@ const CHARACTER = {
             { name: "剣雨のダメージ", type: "burst", elem: "hydro", scale: "elem", value: 54.3 },
         ]
     },
-    // Xinyan: { name: "辛炎", star: 4, element: "pyro", weapon: "claymore", special: "other", },
-    // Zhongli: { name: "鍾離", star: 5, element: "geo", weapon: "polearm", special: "other", },
+    Xinyan: {
+        name: "辛炎",
+        star: 4,
+        element: "pyro",
+        weapon: "claymore",
+        hp: [
+            939, 2413,
+            3114, 4665,
+            5163, 5939,
+            6604, 7379,
+            7878, 8653,
+            9151, 9927,
+            10425, 11201
+        ],
+        atk: [
+            21, 54,
+            69, 103,
+            115, 132,
+            147, 164,
+            175, 192,
+            203, 220,
+            231, 249
+        ],
+        def: [
+            67, 172,
+            222, 333,
+            368, 423,
+            471, 526,
+            562, 617,
+            652, 708,
+            743, 799
+        ],
+        special: "atk_buf",
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        combat: [
+            { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 76.5 },
+            { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 74.0 },
+            { name: "3段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 95.5 },
+            { name: "4段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 115.8 },
+            { name: "連続重撃ダメージ", type: "heavy", elem: "phys", scale: "phys", value: 62.5 },
+            { name: "重撃終了ダメージ", type: "heavy", elem: "phys", scale: "phys", value: 113 },
+            { name: "落下期間のダメージ", type: "normal", elem: "phys", scale: "phys", value: 74.6 },
+            { name: "低空落下攻撃ダメージ", type: "normal", elem: "phys", scale: "phys", value: 149 },
+            { name: "高空落下攻撃ダメージ", type: "normal", elem: "phys", scale: "phys", value: 186 }
+        ],
+        skill: [
+            { name: "振り回しダメージ", type: "skill", elem: "phys", scale: "elem", value: 170 },
+            { name: "継続ダメージ	", type: "skill", elem: "pyro", scale: "elem", value: 33.6 }
+        ],
+        burst: [
+            { name: "スキルダメージ	", type: "burst", elem: "phys", scale: "elem", value: 341 },
+            { name: "継続炎ダメージ	", type: "burst", elem: "pyro", scale: "elem", value: 40.0 }
+        ]
+    },
+    Zhongli: {
+        name: "鍾離",
+        star: 5,
+        element: "geo",
+        weapon: "polearm",
+        hp: [
+            1144, 2967,
+            3948, 5908,
+            6605, 7599,
+            8528, 9533,
+            10230, 11243,
+            11940, 12965,
+            13662, 14695
+        ],
+        atk: [
+            20, 51,
+            67, 101,
+            113, 130,
+            146, 163,
+            175, 192,
+            204, 222,
+            233, 251
+        ],
+        def: [
+            57, 149,
+            196, 297,
+            332, 382,
+            428, 479,
+            514, 564,
+            599, 651,
+            686, 738
+        ],
+        special: "geo_dmg",
+        spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
+        combat: [
+            { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 30.8 },
+            { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 31.2 },
+            { name: "3段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 38.6 },
+            { name: "4段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 42.9 },
+            { name: "5段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 10.8, multi: 4 },
+            { name: "6段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 54.5 },
+            { name: "重撃ダメージ", type: "heavy", elem: "phys", scale: "phys", value: 111 },
+            { name: "落下期間のダメージ", type: "normal", elem: "phys", scale: "phys", value: 63.9 },
+            { name: "低空落下攻撃ダメージ", type: "normal", elem: "phys", scale: "phys", value: 128 },
+            { name: "高空落下攻撃ダメージ", type: "normal", elem: "phys", scale: "phys", value: 160 },
+        ],
+        skill: [
+            { name: "岩柱ダメージ", type: "skill", elem: "geo", scale: "elem", value: 16.0 },
+            { name: "共鳴ダメージ", type: "skill", elem: "geo", scale: "phys", value: 32.0 },
+            { name: "長押しダメージ", type: "skill", elem: "geo", scale: "elem", value: 80.0 },
+        ],
+        burst: [
+            { name: "スキルダメージ	", type: "burst", elem: "geo", scale: "etc1", value: 401.4 },
+        ]
+    },
 };
 
 // https://bbs.mihoyo.com/ys/article/2160993
