@@ -156,6 +156,15 @@ const CLAYMORE_LIST = {
             { items: "atk_buf", value: [40, 50, 60, 70, 80], limit: "HP30%以下の敵に命中した時", times: 12, target: "all" },
         ],
     },
+    TheUnforged: {
+        name: "無工の剣",
+        star: 5,
+        second: "atk_buf",
+        // シールド強化20~40%。
+        // 攻撃が命中した8秒間、攻撃力+4~8%。この効果は最大5重まで、0.3秒毎に一回のみ発動可能。
+        passive: { items: "atk_buf", value: [4, 5, 6, 7, 8], limit: "攻撃が命中した時", times: 8, stack: 5 },
+        // また、シールド状態の時、攻撃力アップの効果量は2倍になる。
+    },
     SkywardPride: {
         name: "天空の傲",
         star: 5,
@@ -288,6 +297,15 @@ const POLEARM_LIST = {
         // 会心率+8~16%、通常攻撃速度+12%。
         passive: { items: "cri_rate", value: [8, 10, 12, 14, 16] },
         // 通常攻撃と重撃が命中時、50%の確率で真空刃を発動し、攻撃力の40~100%の狭範囲ダメージを与える。2秒毎に1回のみ発動可能。
+    },
+    VortexVanquisher: {
+        name: "破天の槍",
+        star: 5,
+        second: "atk_buf",
+        // シールド強化+20~40%。
+        // 攻撃が命中した8秒間、攻撃力+4~8%。この効果は最大5重まで、0.3秒毎に一回のみ発動可能。
+        passive: { items: "atk_buf", value: [4, 5, 6, 7, 8], limit: "攻撃が命中した時", times: 8, stack: 5 },
+        // また、シールド状態の時、攻撃力アップの効果量は2倍になる。
     },
     DragonsBane: {
         name: "匣中滅龍",
@@ -508,6 +526,15 @@ const CATALYST_LIST = {
         // 移動速度+10%。
         // 出場中は4秒毎に元素ダメージ+8~16%、最大4重まで。キャラが退場または戦闘不能まで有効する。
         passive: { items: "elem_dmg", value: [8, 10, 12, 14, 16], limit: "出場中は4秒毎", stack: 4 },
+    },
+    MemoryDust: {
+        name: "浮世の錠",
+        star: 5,
+        second: "atk_buf",
+        // シールド強化+20~40%。
+        // 攻撃が命中した8秒間、攻撃力+4~8%。この効果は最大5重まで、0.3秒毎に一回のみ発動可能。
+        passive: { items: "atk_buf", value: [4, 5, 6, 7, 8], limit: "攻撃が命中した時", times: 8, stack: 5 },
+        // また、シールド状態の時、攻撃力アップの効果量は2倍になる。
     },
     FavoniusCodex: {
         name: "西風秘典",
