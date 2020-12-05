@@ -100,8 +100,8 @@ const ARTIFACT_SET = {
         set4: [
             { items: "overload_dmg", value: 25 },
             { items: ["vaporize_dmg", "melt_dmg"], value: 15 },
-            { items: "overload_dmg", value: 12.5, limit: "元素スキル発動後", times: 10, multi: 3 },
-            { items: ["vaporize_dmg", "melt_dmg"], value: 7.5, limit: "元素スキル発動後", times: 10, multi: 3 },
+            { items: "overload_dmg", value: 12.5, limit: "元素スキル発動後", times: 10, stack: 3 },
+            { items: ["vaporize_dmg", "melt_dmg"], value: 7.5, limit: "元素スキル発動後", times: 10, stack: 3 },
         ],
     },
     Lavawalker: {

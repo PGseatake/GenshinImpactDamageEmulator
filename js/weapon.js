@@ -56,28 +56,28 @@ const SWORD_LIST = {
         star: 4,
         second: "atk_buf",
         // 攻撃が敵にダメージを与えた時、会心率+8~16%、最大5重まで。攻撃会心発生時、効果をクリアにする。
-        passive: { items: "cri_rate", value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", multi: 5 },
+        passive: { items: "cri_rate", value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 5 },
     },
     PrototypeRancour: {
         name: "斬岩・試作",
         star: 4,
         second: "phys_dmg",
         // 通常攻撃または重撃が命中すると、攻撃力と防御力+4~8%、継続時間6秒、最大4重まで。0.3秒ごとに1回発動可能。
-        passive: { items: ["atk_buf", "def_buf"], value: [4, 5, 6, 7, 8], limit: "通常攻撃または重撃が命中した時", times: 6, multi: 4 },
+        passive: { items: ["atk_buf", "def_buf"], value: [4, 5, 6, 7, 8], limit: "通常攻撃または重撃が命中した時", times: 6, stack: 4 },
     },
     IronSting: {
         name: "鉄蜂の刺し",
         star: 4,
         second: "elem",
         // 元素ダメージを与えた6秒間、キャラの与えるダメージ+6~12%、最大2重まで、1秒毎に1回のみ発動する。
-        passive: { items: "any_dmg", value: [6, 7.5, 9, 10.5, 12], limit: "元素ダメージを与えた後", times: 6, multi: 2 },
+        passive: { items: "any_dmg", value: [6, 7.5, 9, 10.5, 12], limit: "元素ダメージを与えた後", times: 6, stack: 2 },
     },
     BlackcliffLongsword: {
         name: "黒岩の長剣",
         star: 4,
         second: "cri_dmg",
         // 敵を倒したあと、攻撃力+12~24%、継続時間30秒、最大3重まで、継続時間は加算されず、重ごとに別カウントされる。
-        passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, multi: 3 },
+        passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     BlackSword: {
         name: "黒剣",
@@ -198,7 +198,7 @@ const CLAYMORE_LIST = {
         star: 4,
         second: "atk_buf",
         // 攻撃が敵にダメージを与えた時、会心率+8%、最大5重まで。攻撃会心発生時、効果をクリアにする。
-        passive: { items: "cri_rate", value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", multi: 5 },
+        passive: { items: "cri_rate", value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 5 },
     },
     PrototypeAminus: {
         name: "古華・試作",
@@ -212,28 +212,28 @@ const CLAYMORE_LIST = {
         star: 4,
         second: "def_buf",
         // 通常攻撃か重撃が命中すると、攻撃力と防御力+6~12%。継続時間6秒、最大4重まで。0.5秒毎に1回のみ発動可能。
-        passive: { items: ["atk_buf", "def_buf"], value: [6, 7.5, 9, 10.5, 12], limit: "通常攻撃か重撃が命中した時", times: 6, multi: 4 },
+        passive: { items: ["atk_buf", "def_buf"], value: [6, 7.5, 9, 10.5, 12], limit: "通常攻撃か重撃が命中した時", times: 6, stack: 4 },
     },
     BlackcliffSlasher: {
         name: "黒岩の斬刀",
         star: 4,
         second: "cri_dmg",
         // 敵を倒したあと、攻撃力+12~24%、継続時間30秒、最大3重まで、継続時間は加算されず、重ごとに別カウントされる
-        passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, multi: 3 },
+        passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     SerpentSpine: {
         name: "螭龍の剣",
         star: 4,
         second: "cri_rate",
         // フィールドにいる時、4秒毎に、与えるダメージ+6~10%、被ダメージ+3~1.8%。最大5重まで、退場後もリセットされず、攻撃を受けると効果数-1。
-        passive: { items: "any_dmg", value: [6, 7, 8, 9, 10], limit: "フィールドにいる時4秒毎", multi: 5 },
+        passive: { items: "any_dmg", value: [6, 7, 8, 9, 10], limit: "フィールドにいる時4秒毎", stack: 5 },
     },
     SkyriderGreatsword: {
         name: "飛天大御剣",
         star: 3,
         second: "phys_dmg",
         // 通常攻撃と重撃が命中すると、攻撃力+6~10%、継続時間6秒、最大4重まで。0.5秒毎に1回のみ発動可能。
-        passive: { items: "atk_buf", value: [6, 7, 8, 9, 10], limit: "通常攻撃か重撃が命中した時", times: 6, multi: 4 },
+        passive: { items: "atk_buf", value: [6, 7, 8, 9, 10], limit: "通常攻撃か重撃が命中した時", times: 6, stack: 4 },
     },
     WhiteGreatsword: {
         name: "白鉄の大剣",
@@ -277,7 +277,7 @@ const POLEARM_LIST = {
         second: "cri_rate",
         passive: [
             // 敵に命中した時、自身の攻撃力+3.2~6%、継続時間6秒、最大7重まで。0.3秒に最大1回発動でき、7重まで発動するとスキルダメージ+12~24%。
-            { items: "atk_buf", value: [3.2, 3.9, 4.6, 5.3, 6.0], limit: "敵に命中した時", times: 6, multi: 7 },
+            { items: "atk_buf", value: [3.2, 3.9, 4.6, 5.3, 6.0], limit: "敵に命中した時", times: 6, stack: 7 },
             { items: "skill_dmg", value: [12, 15, 18, 21, 24], limit: "7重まで発動した時" },
         ],
     },
@@ -308,7 +308,7 @@ const POLEARM_LIST = {
         star: 4,
         second: "en_rec",
         // 元素スキルを発動した後、通常攻撃と重撃ダメージ+8~16%、継続時間12秒、最大2重まで。
-        passive: { items: ["normal_dmg", "heavy_dmg"], value: [8, 10, 12, 14, 16], limit: "元素スキル発動後", times: 12, multi: 2 },
+        passive: { items: ["normal_dmg", "heavy_dmg"], value: [8, 10, 12, 14, 16], limit: "元素スキル発動後", times: 12, stack: 2 },
     },
     CrescentPike: {
         name: "流月の針",
@@ -322,7 +322,7 @@ const POLEARM_LIST = {
         star: 4,
         second: "cri_dmg",
         // 敵を倒したあと、攻撃力+12~24%、継続時間30秒、最大3重まで、継続時間は加算されず、重ごとに別カウントされる。
-        passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, multi: 3 },
+        passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     Deathmatch: {
         name: "死闘の槍",
@@ -380,7 +380,7 @@ const BOW_LIST = {
             // 通常攻撃と狙い撃ちのダメージ+12~24%。
             { items: ["normal_dmg", "heavy_dmg"], value: [12, 15, 18, 21, 24] },
             // 矢を放った後、0.1秒毎にダメージ+8~16%、最大5回まで上昇する。
-            { items: ["normal_dmg", "heavy_dmg"], value: [8, 10, 12, 14, 16], limit: "矢を放った後0.1秒毎", multi: 5 },
+            { items: ["normal_dmg", "heavy_dmg"], value: [8, 10, 12, 14, 16], limit: "矢を放った後0.1秒毎", stack: 5 },
         ]
     },
     FavoniusWarbow: {
@@ -419,7 +419,7 @@ const BOW_LIST = {
         star: 4,
         second: "atk_buf",
         // 攻撃が敵にダメージを与えた時、会心率+8~16%、最大5重まで、攻撃会心発生時、効果をクリアにする。
-        passive: { items: "cri_rate", value: [8, 10, 12, 14, 16], limit: "敵にダメージを与えた時", multi: 5 },
+        passive: { items: "cri_rate", value: [8, 10, 12, 14, 16], limit: "敵にダメージを与えた時", stack: 5 },
     },
     PrototypeCrescent: {
         name: "澹月・試作",
@@ -433,14 +433,14 @@ const BOW_LIST = {
         star: 4,
         second: "phys_dmg",
         // 通常攻撃と狙い撃ち射撃が命中すると、攻撃力+4~8％、通常攻撃速度1.2~2.4％、継続時間6秒、最大4重まで、0.3秒に1回のみ発動可能。
-        passive: { items: "phys_buf", value: [4, 5, 6, 7, 8], limit: "通常攻撃と狙い撃ちが命中した時", times: 6, multi: 4 },
+        passive: { items: "phys_buf", value: [4, 5, 6, 7, 8], limit: "通常攻撃と狙い撃ちが命中した時", times: 6, stack: 4 },
     },
     BlackcliffWarbow: {
         name: "黒岩の戦弓",
         star: 4,
         second: "cri_dmg",
         // 敵を倒した後、攻撃力+12~24％、継続時間30秒。最大3重まで、継続時間は加算されず、重ごとに別カウントされる。
-        passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, multi: 3 },
+        passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     ViridescentHunt: {
         name: "蒼翠の狩猟弓",
@@ -507,7 +507,7 @@ const CATALYST_LIST = {
         second: "cri_rate",
         // 移動速度+10%。
         // 出場中は4秒毎に元素ダメージ+8~16%、最大4重まで。キャラが退場または戦闘不能まで有効する。
-        passive: { items: "elem_dmg", value: [8, 10, 12, 14, 16], limit: "出場中は4秒毎", multi: 4 },
+        passive: { items: "elem_dmg", value: [8, 10, 12, 14, 16], limit: "出場中は4秒毎", stack: 4 },
     },
     FavoniusCodex: {
         name: "西風秘典",
@@ -549,7 +549,7 @@ const CATALYST_LIST = {
         star: 4,
         second: "atk_buf",
         // 攻撃が敵にダメージを与えた時、会心率+8~16%、最大5重まで。攻撃会心発生時、効果をクリアにする。
-        passive: { items: "cri_rate", value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", multi: 6 },
+        passive: { items: "cri_rate", value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 6 },
     },
     SolarPearl: {
         name: "匣中日月",
@@ -574,14 +574,14 @@ const CATALYST_LIST = {
         star: 4,
         second: "elem",
         // 元素反応を起こした後、元素ダメージ+8~16%、継続時間10秒、最大2重まで。
-        passive: { items: "elem_dmg", value: [8, 10, 12, 14, 16], limit: "元素反応を起こした後", times: 10, multi: 2 },
+        passive: { items: "elem_dmg", value: [8, 10, 12, 14, 16], limit: "元素反応を起こした後", times: 10, stack: 2 },
     },
     BlackcliffAmulet: {
         name: "黒岩の緋玉",
         star: 4,
         second: "cri_dmg",
         // 敵を倒したあと、攻撃力+12~24%、継続時間30秒、最大3重まで、継続時間は加算されず、重ごとに別カウントされる
-        passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, multi: 3 },
+        passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     TwinNephrite: {
         name: "特級の宝玉",

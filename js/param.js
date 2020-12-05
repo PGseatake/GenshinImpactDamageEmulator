@@ -473,16 +473,16 @@ class Attribute {
         if ("value2" in info) {
             this.value.push(info.value2 * scale[index] / 100);
         }
-        this.multi = null;
-        if ("multi" in info) {
-            this.multi = info.multi;
+        this.stack = null;
+        if ("stack" in info) {
+            this.stack = info.stack;
         }
     }
 
     toString(func) {
         let str = this.value.map(func).join("+");
-        if (!!this.multi) {
-            return `${str}x${this.multi}`;
+        if (!!this.stack) {
+            return `${str}x${this.stack}`;
         }
         return str;
     }
