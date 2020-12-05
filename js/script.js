@@ -368,6 +368,7 @@ class CharaTable extends Table {
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(CHARACTER, "name", { change: e => this._changeName(e) }),
+            conste: new RangeCell(0, 6, listeners),
             level: new AscensionLevelCell({ change: e => this._changeLevel(e) }),
             hp: new BaseParamCell(listeners),
             atk: new BaseParamCell(listeners),
@@ -423,15 +424,16 @@ class CharaTable extends Table {
         let cells = Array.from(tr.cells);
 
         let name = this.builder.name.value(cells[1]);
-        status.lv = this.builder.level.value(cells[2]);
-        status.base_hp = this.builder.hp.value(cells[3]);
-        status.base_atk = this.builder.atk.value(cells[4]);
-        status.base_def = this.builder.def.value(cells[5]);
-        let pair = this.builder.special.value(cells[6]);
+        // status.conste = this.builder.conste.value(cells[2]);
+        status.lv = this.builder.level.value(cells[3]);
+        status.base_hp = this.builder.hp.value(cells[4]);
+        status.base_atk = this.builder.atk.value(cells[5]);
+        status.base_def = this.builder.def.value(cells[6]);
+        let pair = this.builder.special.value(cells[7]);
         status[pair.key] = pair.value;
-        status.talent.combat = this.builder.combat.value(cells[7]);
-        status.talent.skill = this.builder.skill.value(cells[8]);
-        status.talent.burst = this.builder.burst.value(cells[9]);
+        status.talent.combat = this.builder.combat.value(cells[8]);
+        status.talent.skill = this.builder.skill.value(cells[9]);
+        status.talent.burst = this.builder.burst.value(cells[10]);
 
         return CHARACTER[name];
     }
