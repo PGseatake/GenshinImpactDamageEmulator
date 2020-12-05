@@ -24,7 +24,7 @@
         <input id="import" class="import" type="file" accept=".json" onchange="Table.importData()">
     </div>
     <div class="tab_wrap">
-        <input id="tab_equip" type="radio" name="TAB" class="tab_switch" checked="checked" />
+        <input id="tab_equip" type="radio" name="TAB" class="tab_switch" checked="checked" onclick="refreshTable('equip')" />
         <label class="tab_label" for="tab_equip">装備</label>
         <div class="tab_content">
             <table id="tbl_equip">
@@ -47,7 +47,7 @@
             </table>
             <button type="button" onclick="EquipmentTable.checkInsert()">+</button>
         </div>
-        <input id="tab_team" type="radio" name="TAB" class="tab_switch" />
+        <input id="tab_team" type="radio" name="TAB" class="tab_switch" onclick="refreshTable('team')" />
         <label class="tab_label" for="tab_team">チーム</label>
         <div class="tab_content">
             <table id="tbl_team">
@@ -64,7 +64,7 @@
                         <td id="chara4" colspan="2"><select onchange="TeamTable.changeMember(3, this)"></select></td>
                     </tr>
                     <tr>
-                        <td><button type="button" onclick="refreshTable('team')">更新</button></td>
+                        <td></td>
                         <th class="team">基礎</th>
                         <th class="team">追加</th>
                         <th class="team">基礎</th>
@@ -476,7 +476,7 @@
             <table id="tbl_damage">
                 <thead>
                     <tr>
-                        <th><select id="member_list" onchange="refreshTable('damage')"></select>Lv.0</th>
+                        <th><select id="member_list" onchange="DamageTable.changeMember()"></select>Lv.0</th>
                         <th>倍率<select id="damage_type" onchange="DamageTable.changeType(this)">
                                 <option value="phys">物理</option>
                                 <option value="elem">元素</option>
@@ -734,10 +734,6 @@
             <ol>
                 <li>[キャラクター]～[理の冠]タブで各種値を設定します。</li>
                 <li>[装備]タブでキャラクターの装備を選択します。</li>
-                <li>[チーム]タブの「更新」ボタンを押してください。</li>
-                <ul>
-                    <li>[装備]、[キャラクター]～[理の冠]タブの内容を変更した場合は、「更新」ボタンを押してください。<br>[チーム]～[ダメージ]タブへは自動で反映されません。</li>
-                </ul>
                 <li>[チーム]タブでチームメンバー選びます。</li>
                 <li>[ダメージ]タブで敵キャラ/レベル・メンバーを選んで、ダメージを算出します。</li>
             </ol>

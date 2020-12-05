@@ -101,12 +101,13 @@ class Table {
                         Table.List[id].clear();
                     }
 
-                    // 外部データをlocalStorageに保存
                     for (let id in Table.List) {
+                        // 外部データをlocalStorageに保存
                         if (id in data) {
                             localStorage.setItem(id, JSON.stringify(data[id]));
-                            Table.List[id]._load();
                         }
+
+                        Table.List[id]._load();
                     }
                 }
                 elem.value = ""; // 同じファイル名を続けてインポートできるように値をクリア
@@ -144,7 +145,7 @@ class Table {
         let tbl = Table.List[id];
         let html = tbl.html;
         tbl._insert(html, tbl._default(html));
-        tbl._onchange(null);
+        tbl.onChange();
     }
 
     // 削除確認
@@ -199,10 +200,10 @@ class Table {
         return !Table.List.equip.exists(id);
     }
 
-    // 更新があるか
-    // updated(counter) {
-    //     return this.counter != counter;
-    // }
+    // データの再表示
+    refresh() {
+        return 0;
+    }
 
     // データの削除
     clear() {
@@ -336,11 +337,11 @@ class Table {
             index.update(rows[i].cells[0]);
         }
 
-        this._onchange(null);
+        this.onChange();
     }
 
     // 値変更通知
-    _onchange(e) {
+    onChange(e = null) {
         ++this.counter;
 
         if (!Table.Updated) {
@@ -364,7 +365,7 @@ class Table {
 class CharaTable extends Table {
     constructor() {
         super("chara");
-        let listeners = { change: e => super._onchange(e) };
+        let listeners = { change: e => super.onChange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(CHARACTER, "name", { change: e => this._changeName(e) }),
@@ -395,10 +396,7 @@ class CharaTable extends Table {
         // 追加効果更新
         super._update(tr, "special", name, level);
 
-        // 装備タブ更新
-        Table.List.equip.updateChara(name, tr.id);
-
-        super._onchange(e);
+        super.onChange(e);
     }
 
     // レベルの変更
@@ -416,7 +414,7 @@ class CharaTable extends Table {
         // 追加効果更新
         super._update(tr, "special", name, level);
 
-        super._onchange(e);
+        super.onChange(e);
     }
 
     // ステータス適用
@@ -450,10 +448,7 @@ class WeaponTable extends Table {
         // 追加効果変更
         super._update(tr, "second", key);
 
-        // 装備タブ更新
-        Table.List.equip.updateWeapon(this.id);
-
-        super._onchange(e);
+        super.onChange(e);
     }
 
     // ステータス適用
@@ -476,7 +471,7 @@ class WeaponTable extends Table {
 class SwordTable extends WeaponTable {
     constructor() {
         super("sword");
-        let listeners = { change: e => super._onchange(e) };
+        let listeners = { change: e => super.onChange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(SWORD_LIST, "name", { change: e => super._changeName(e) }),
@@ -492,7 +487,7 @@ class SwordTable extends WeaponTable {
 class ClaymoreTable extends WeaponTable {
     constructor() {
         super("claymore");
-        let listeners = { change: e => super._onchange(e) };
+        let listeners = { change: e => super.onChange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(CLAYMORE_LIST, "name", { change: e => super._changeName(e) }),
@@ -508,7 +503,7 @@ class ClaymoreTable extends WeaponTable {
 class PolearmTable extends WeaponTable {
     constructor() {
         super("polearm");
-        let listeners = { change: e => super._onchange(e) };
+        let listeners = { change: e => super.onChange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(POLEARM_LIST, "name", { change: e => super._changeName(e) }),
@@ -524,7 +519,7 @@ class PolearmTable extends WeaponTable {
 class BowTable extends WeaponTable {
     constructor() {
         super("bow");
-        let listeners = { change: e => super._onchange(e) };
+        let listeners = { change: e => super.onChange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(BOW_LIST, "name", { change: e => super._changeName(e) }),
@@ -540,7 +535,7 @@ class BowTable extends WeaponTable {
 class CatalystTable extends WeaponTable {
     constructor() {
         super("catalyst");
-        let listeners = { change: e => super._onchange(e) };
+        let listeners = { change: e => super.onChange(e) };
         super.builder = {
             index: new IndexCell(),
             name: new DictCell(CATALYST_LIST, "name", { change: e => super._changeName(e) }),
@@ -554,6 +549,7 @@ class CatalystTable extends WeaponTable {
 
 // 聖遺物テーブル基底
 class ArtifactTable extends Table {
+    // データの読込
     _load() {
         super._load();
 
@@ -564,13 +560,6 @@ class ArtifactTable extends Table {
             if (!tr) break;
             this._updateScore(tr, super._value(tr, "star"), super._value(tr, "level"));
         }
-    }
-
-    // 名前の変更
-    _changeName(e) {
-        Table.List.equip.updateArtifact(this.id);
-
-        super._onchange(e);
     }
 
     // ☆の変更
@@ -590,7 +579,7 @@ class ArtifactTable extends Table {
         // 聖遺物スコアの更新
         this._updateScore(tr, star, level);
 
-        super._onchange(e);
+        super.onChange(e);
     }
 
     // レベルの変更
@@ -606,7 +595,7 @@ class ArtifactTable extends Table {
         // 聖遺物スコアの更新
         this._updateScore(tr, star, level);
 
-        super._onchange(e);
+        super.onChange(e);
     }
 
     // メイン効果の変更
@@ -618,7 +607,7 @@ class ArtifactTable extends Table {
         // 聖遺物メイン効果の更新
         this.builder.main.update(td, super._value(tr, "star"), super._value(tr, "level"));
 
-        super._onchange(e);
+        super.onChange(e);
     }
 
     // サブ効果の変更
@@ -629,7 +618,7 @@ class ArtifactTable extends Table {
         // 聖遺物スコアの更新
         this._updateScore(tr, super._value(tr, "star"), super._value(tr, "level"));
 
-        super._onchange(e);
+        super.onChange(e);
     }
 
     // スコアの更新
@@ -697,10 +686,10 @@ class FlowerTable extends ArtifactTable {
         let listeners = { change: e => super._changeSub(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new MapCell(FLOWER_LIST, { change: e => super._changeName(e) }),
+            name: new MapCell(FLOWER_LIST, { change: e => super.onChange(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
-            main: new SingleBonusCell("hp", { change: e => super._onchange(e) }),
+            main: new SingleBonusCell("hp", { change: e => super.onChange(e) }),
             sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
             sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
             sub3: new BonusValueCell(ARTIFACT_SUB, listeners),
@@ -719,7 +708,7 @@ class FeatherTable extends ArtifactTable {
             name: new MapCell(FEATHER_LIST, { change: e => super._changeName(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
-            main: new SingleBonusCell("atk", { change: e => super._onchange(e) }),
+            main: new SingleBonusCell("atk", { change: e => super.onChange(e) }),
             sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
             sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
             sub3: new BonusValueCell(ARTIFACT_SUB, listeners),
@@ -787,6 +776,9 @@ class CircletTable extends ArtifactTable {
 
 // 装備テーブル
 class EquipmentTable extends Table {
+    static Items = ["chara", "sword", "claymore", "polearm", "bow", "catalyst", "flower", "feather", "sands", "goblet", "circlet"];
+    static Weapons = ["sword", "claymore", "polearm", "bow", "catalyst"];
+
     // TODO: 多言語対応
     static checkInsert() {
         let require = Table.List.equip._requireItem();
@@ -797,9 +789,13 @@ class EquipmentTable extends Table {
         }
     }
 
+    static IsWeapon(item) {
+        return 0 <= EquipmentTable.Weapons.indexOf(item);
+    }
+
     constructor() {
         super("equip");
-        let listeners = { change: e => super._onchange(e) };
+        let listeners = { change: e => super.onChange(e) };
         super.builder = {
             index: new IndexCell(),
             chara: new EquipmentCell("chara", { change: e => this._changeChara(e) }),
@@ -810,6 +806,10 @@ class EquipmentTable extends Table {
             goblet: new EquipmentCell("goblet", listeners),
             circlet: new EquipmentCell("circlet", listeners),
         };
+        this.previous = {};
+        for (let i = 0; i < EquipmentTable.Items.length; ++i) {
+            this.previous[EquipmentTable.Items[i]] = 0;
+        }
     }
 
     // データ削除可能かどうか
@@ -817,13 +817,78 @@ class EquipmentTable extends Table {
         return true;
     }
 
+    // データの再表示
+    refresh() {
+        // 更新情報の取得
+        let updated = false;
+        let tables = {};
+        for (let i = 0; i < EquipmentTable.Items.length; ++i) {
+            let item = EquipmentTable.Items[i];
+            let info = (Table.List[item].counter !== this.previous[item]);
+            updated = (updated || info);
+            tables[item] = { updated: info };
+        }
+
+        if (updated) {
+            // アイテムリストを取得
+            for (let item in tables) {
+                let info = tables[item];
+                if (info.updated) {
+                    if (EquipmentTable.IsWeapon(item)) {
+                        info["items"] = this.builder.weapon.items(item);
+                    } else {
+                        info["items"] = this.builder[item].items;
+                    }
+                }
+            }
+
+            // データ再表示
+            let rows = Array.from(this.html.rows);
+            for (let ridx = 2, rlen = rows.length; ridx < rlen; ++ridx) {
+                let cells = Array.from(rows[ridx].cells);
+                for (let cidx = 1, clen = cells.length; cidx < clen; ++cidx) {
+                    let cell = cells[cidx];
+                    let id = cell.id;
+                    if (id === "weapon") {
+                        let weapon = cell.children[0].value.split("_")[0];
+                        if (tables[weapon].updated) {
+                            this.builder.weapon.update(cell, tables[weapon].items, weapon);
+                        }
+                    } else if (!!id) {
+                        if (tables[id].updated) {
+                            this.builder[id].update(cell, tables[id].items);
+                        }
+                    }
+                }
+            }
+
+            // 前回値の更新
+            for (let item in tables) {
+                this.previous[item] = tables[item].counter;
+            }
+            this.onChange();
+        }
+
+        return this.counter;
+    }
+
+    // データの削除
+    clear() {
+        super.clear();
+
+        // カウンターのリセット
+        for (let i = 0; i < EquipmentTable.Items.length; ++i) {
+            let item = EquipmentTable.Items[i];
+            this.previous[item] = Table.List[item].counter;
+        }
+    }
+
     // 指定したアイテムが使用されているかどうか
     exists(id) {
-        const weapon = ["sword", "claymore", "polearm", "bow", "catalyst"];
         let type = id.split("_")[0];
         let html = this.html;
         let items = null;
-        if (0 <= weapon.indexOf(type)) {
+        if (EquipmentTable.IsWeapon(type)) {
             items = Array.from(html.querySelectorAll(`td#weapon select`));
         } else {
             items = Array.from(html.querySelectorAll(`td#${type} select`));
@@ -850,66 +915,13 @@ class EquipmentTable extends Table {
         return values;
     }
 
-    // キャラクターの更新
-    updateChara(key, rid) {
-        let charas = Array.from(document.querySelectorAll("table#tbl_equip td#chara"));
-
-        // キャラクター更新
-        (() => {
-            let builder = this.builder.chara;
-            let items = builder.items;
-            for (let i = 0, len = charas.length; i < len; ++i) {
-                builder.update(charas[i], items);
-            }
-        })();
-
-        // 変更したキャラクターの武器を更新
-        (() => {
-            let weapon = CHARACTER[key].weapon;
-            let builder = this.builder.weapon;
-            let items = builder.items(weapon);
-            let cells = Array.from(document.querySelectorAll("table#tbl_equip td#weapon"));
-            for (let i = 0, len = cells.length; i < len; ++i) {
-                // 変更したキャラクターを装備しているか
-                if (charas[i].children[0].value === rid) {
-                    builder.update(cells[i], items, weapon);
-                }
-            }
-        })();
-    }
-
-    // 武器の更新
-    updateWeapon(type) {
-        // 変更した武器種をすべて更新
-        let builder = this.builder.weapon;
-        let items = builder.items(type);
-        let cells = Array.from(document.querySelectorAll("table#tbl_equip td#weapon"));
-        for (let i = 0, len = cells.length; i < len; ++i) {
-            let cell = cells[i];
-            // 変更した武器種を装備しているか
-            if (0 <= cell.children[0].value.indexOf(type)) {
-                builder.update(cell, items, type);
-            }
-        }
-    }
-
-    // 聖遺物の更新
-    updateArtifact(type) {
-        let builder = this.builder[type];
-        let items = builder.items;
-        let cells = Array.from(document.querySelectorAll("table#tbl_equip td#" + type));
-        for (let i = 0, len = cells.length; i < len; ++i) {
-            builder.update(cells[i], items);
-        }
-    }
-
     // 必要なアイテムの確認
     _requireItem() {
-        const types = ["chara", "sword", "claymore", "polearm", "bow", "catalyst", "flower", "feather", "sands", "goblet", "circlet"];
+        const items = EquipmentTable.Items;
         let require = [];
-        for (let i = 0; i < types.length; ++i) {
-            if (!document.querySelector(`table#tbl_${types[i]} td#name`)) {
-                require.push(TABLE_TEXT[types[i]]);
+        for (let i = 0; i < items.length; ++i) {
+            if (!document.querySelector(`table#tbl_${items[i]} td#name`)) {
+                require.push(TABLE_TEXT[items[i]]);
             }
         }
         return require;
@@ -928,7 +940,29 @@ class EquipmentTable extends Table {
         let cell = e.target.parentNode.nextElementSibling;
         builder.update(cell, items, weapon);
 
-        super._onchange(e);
+        super.onChange(e);
+    }
+};
+
+// テーブル更新の橋渡し
+class TableBridge {
+    constructor(parent) {
+        this.counter = 0;
+        this.parent = parent;
+    }
+
+    reset() {
+        this.counter = this.parent.counter;
+    }
+
+    refresh(owner) {
+        let counter = this.parent.refresh();
+        if (this.counter !== counter) {
+            this.counter = counter;
+            owner.onRefresh();
+            owner.onChange();
+        }
+        return owner.counter;
     }
 };
 
@@ -971,6 +1005,7 @@ class TeamTable extends Table {
             vaporize_dmg: new ElemReactParam("vaporize_dmg"),
             ovreload_dmg: new ElemReactParam("ovreload_dmg"),
         };
+        this.bridge = new TableBridge(Table.List.equip);
         this.members = [null, null, null, null];
     }
 
@@ -986,11 +1021,12 @@ class TeamTable extends Table {
 
     // データの読込
     _load() {
-        // 何もしない
+        this.onRefresh();
     }
 
     // データの削除
     clear() {
+        this.bridge.reset();
         this.members = this.members.fill(null);
 
         let html = this.html;
@@ -1003,6 +1039,11 @@ class TeamTable extends Table {
 
     // データの再表示
     refresh() {
+        return this.bridge.refresh(this);
+    }
+
+    // データの再表示
+    onRefresh() {
         Table.List.bonus.reset();
 
         // メモリ解放しておく
@@ -1100,6 +1141,8 @@ class TeamTable extends Table {
 
         Table.List.bonus.attach(this.members);
         Table.List.damage.list();
+
+        super.onChange();
     }
 };
 
@@ -1108,6 +1151,7 @@ class BonusTable extends Table {
     // コンストラクタ
     constructor() {
         super("bonus");
+        this.bridge = new TableBridge(Table.List.team);
         this.items = [];
     }
 
@@ -1123,17 +1167,23 @@ class BonusTable extends Table {
 
     // データの読込
     _load() {
-        // 何もしない
+        this.onRefresh();
     }
 
     // データの削除
     clear() {
+        this.bridge.reset();
         this.reset();
-        this.refresh();
+        this.onRefresh();
     }
 
     // データの再表示
     refresh() {
+        return this.bridge.refresh(this);
+    }
+
+    // データの再表示
+    onRefresh() {
         let rows = this.html.rows;
         let members = Table.List.team.members;
 
@@ -1250,17 +1300,14 @@ class EnemyTable extends Table {
         let tbl = Table.List.enemy;
         let html = tbl.html;
         tbl._build(html, elem.value);
-        tbl._level(html, html.querySelector("input#enemy_level"));
+        tbl._level(html.querySelector("input#enemy_level"));
 
         Table.List.damage.calc();
     }
 
     // レベル変更
     static changeLevel(elem) {
-        let tbl = Table.List.enemy;
-        let html = tbl.html;
-        tbl._level(html, elem);
-
+        Table.List.enemy._level(elem);
         Table.List.damage.calc();
     }
 
@@ -1296,7 +1343,7 @@ class EnemyTable extends Table {
 
     // データの削除
     clear() {
-        this._defence(this.html, null);
+        this.defence(null);
     }
 
     // 敵データの設定
@@ -1321,21 +1368,16 @@ class EnemyTable extends Table {
     }
 
     // レベル設定
-    _level(html, elem) {
+    _level(elem) {
         this.target.level = parseInt(elem.value);
-        this._defence(html, Table.List.damage.member);
+        this.defence(Table.List.damage.member);
     }
 
     // 防御力設定
-    _defence(html, status) {
-        let cell = html.querySelector("tbody").lastElementChild.cells[2];
+    defence(status) {
+        let cell = this.html.querySelector("tbody").lastElementChild.cells[2];
         let level = !!status ? status.level : 0;
         cell.textContent = (this.target.defence(level) * 100).toFixed(1) + "%";
-    }
-
-    // 防御力設定（外部公開向け）
-    defence(status) {
-        this._defence(this.html, status);
     }
 };
 
@@ -1347,9 +1389,15 @@ class DamageTable extends Table {
         tbl._type(tbl.html, elem, tbl.member);
     }
 
+    // メンバー変更
+    static changeMember() {
+        Table.List.damage.onRefresh();
+    }
+
     // コンストラクタ
     constructor() {
         super("damage");
+        this.bridge = new TableBridge(Table.List.team);
     }
 
     // データ消去可能かどうか
@@ -1373,13 +1421,14 @@ class DamageTable extends Table {
 
     // データの読込
     _load() {
-        // 何もしない
+        this.onRefresh();
     }
 
     // データの削除
     clear() {
-        removeChildren(this.html.querySelector("select#member_list"));
-        this.refresh();
+        this.bridge.reset();
+        this.list();
+        this.onRefresh();
     }
 
     // メンバーリストの変更
@@ -1403,6 +1452,11 @@ class DamageTable extends Table {
 
     // データの再表示
     refresh() {
+        return this.bridge.refresh(this);
+    }
+
+    // データの再表示
+    onRefresh() {
         let status = this.member;
         Table.List.enemy.defence(status);
 
@@ -1591,24 +1645,22 @@ class DamageTable extends Table {
 
 window.onload = () => {
     Table.Title = document.title;
-    Table.List = {
-        chara: new CharaTable(),
-        sword: new SwordTable(),
-        claymore: new ClaymoreTable(),
-        polearm: new PolearmTable(),
-        bow: new BowTable(),
-        catalyst: new CatalystTable(),
-        flower: new FlowerTable(),
-        feather: new FeatherTable(),
-        sands: new SandsTable(),
-        goblet: new GobletTable(),
-        circlet: new CircletTable(),
-        equip: new EquipmentTable(),
-        team: new TeamTable(),
-        bonus: new BonusTable(),
-        enemy: new EnemyTable(),
-        damage: new DamageTable(),
-    };
+    Table.List["chara"] = new CharaTable();
+    Table.List["sword"] = new SwordTable();
+    Table.List["claymore"] = new ClaymoreTable();
+    Table.List["polearm"] = new PolearmTable();
+    Table.List["bow"] = new BowTable();
+    Table.List["catalyst"] = new CatalystTable();
+    Table.List["flower"] = new FlowerTable();
+    Table.List["feather"] = new FeatherTable();
+    Table.List["sands"] = new SandsTable();
+    Table.List["goblet"] = new GobletTable();
+    Table.List["circlet"] = new CircletTable();
+    Table.List["equip"] = new EquipmentTable();
+    Table.List["team"] = new TeamTable();
+    Table.List["bonus"] = new BonusTable();
+    Table.List["enemy"] = new EnemyTable();
+    Table.List["damage"] = new DamageTable();
     Table.loadData();
 };
 
