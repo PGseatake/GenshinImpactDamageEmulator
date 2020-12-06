@@ -812,10 +812,10 @@ class EquipmentCell extends Cell {
     }
 
     static detailChara(cell, item) {
-        EquipmentCell.detailLine(cell, item, 2, "Lv."); // level
-        EquipmentCell.detailLine(cell, item, 3, "HP:"); // hp
-        EquipmentCell.detailLine(cell, item, 4, LABEL_TEXT.atk + ":"); // atk
-        EquipmentCell.detailLine(cell, item, 5, LABEL_TEXT.def + ":"); // def
+        EquipmentCell.detailLine(cell, item, 3, "Lv."); // level
+        EquipmentCell.detailLine(cell, item, 4, "HP:"); // hp
+        EquipmentCell.detailLine(cell, item, 5, LABEL_TEXT.atk + ":"); // atk
+        EquipmentCell.detailLine(cell, item, 6, LABEL_TEXT.def + ":"); // def
     }
 
     static detailWeapon(cell, item) {
