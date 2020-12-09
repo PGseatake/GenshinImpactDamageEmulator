@@ -373,7 +373,7 @@ class Status {
         if (type === "heavy") {
             rate += this.heavy_cri;
         }
-        return { rate: rate, damage: 150 + this.cri_dmg };
+        return { rate: rate, damage: 50 + this.cri_dmg }; // 基礎50%追加
     }
 
     // ボーナス追加

@@ -1488,7 +1488,7 @@ class DamageTable extends Table {
         let cells = rows[1].cells;
         let critical = status.critical();
         cells[2].textContent = status.attack.toFixed();
-        cells[3].textContent = `${critical.damage.toFixed(1)}%(${critical.rate.toFixed(1)}%)`;
+        cells[3].textContent = `+${critical.damage.toFixed(1)}%(${critical.rate.toFixed(1)}%)`;
 
         let buildRow = (type) => {
             let level = status.talent[type];
@@ -1620,7 +1620,7 @@ class DamageTable extends Table {
 
                 // 会心ダメージ
                 let critical = status.critical(attr.type);
-                totalScale *= critical.damage / 100;
+                totalScale *= (critical.damage + 100) / 100;
                 let text = attr.toString(value => (totalScale * value / 100).toFixed());
                 // 重撃会心率が異なる場合は特別表示
                 if ((attr.type === "heavy") && (0 < status.heavy_cri)) {
