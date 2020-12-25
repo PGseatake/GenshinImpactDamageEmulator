@@ -213,7 +213,7 @@ const PARAM_LIST = {
         detail: "超電導ダメージ",
         postfix: "%",
     },
-    ovreload_dmg: {
+    overload_dmg: {
         table: "過負荷ダメ",
         select: null,
         detail: "過負荷ダメージ",
@@ -309,7 +309,7 @@ class Status {
         this.shutter_dmg = 0.0;
         this.conduct_dmg = 0.0;
         this.vaporize_dmg = 0.0;
-        this.ovreload_dmg = 0.0;
+        this.overload_dmg = 0.0;
     }
 
     get level() {
@@ -473,16 +473,16 @@ class Attribute {
         if ("value2" in info) {
             this.value.push(info.value2 * scale[index] / 100);
         }
-        this.stack = null;
-        if ("stack" in info) {
-            this.stack = info.stack;
+        this.multi = null;
+        if ("multi" in info) {
+            this.multi = info.multi;
         }
     }
 
     toString(func) {
         let str = this.value.map(func).join("+");
-        if (!!this.stack) {
-            return `${str}x${this.stack}`;
+        if (!!this.multi) {
+            return `${str}x${this.multi}`;
         }
         return str;
     }

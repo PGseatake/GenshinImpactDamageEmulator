@@ -705,7 +705,7 @@ class FeatherTable extends ArtifactTable {
         let listeners = { change: e => super._changeSub(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new MapCell(FEATHER_LIST, { change: e => super._changeName(e) }),
+            name: new MapCell(FEATHER_LIST, { change: e => super.onChange(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
             main: new SingleBonusCell("atk", { change: e => super.onChange(e) }),
@@ -724,7 +724,7 @@ class SandsTable extends ArtifactTable {
         let listeners = { change: e => super._changeSub(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new MapCell(SANDS_LIST, { change: e => super._changeName(e) }),
+            name: new MapCell(SANDS_LIST, { change: e => super.onChange(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
             main: new MultiBonusCell(ARTIFACT_SANDS, { change: e => super._changeMain(e) }),
@@ -743,7 +743,7 @@ class GobletTable extends ArtifactTable {
         let listeners = { change: e => super._changeSub(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new MapCell(GOBLET_LIST, { change: e => super._changeName(e) }),
+            name: new MapCell(GOBLET_LIST, { change: e => super.onChange(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
             main: new MultiBonusCell(ARTIFACT_GOBLET, { change: e => super._changeMain(e) }),
@@ -762,7 +762,7 @@ class CircletTable extends ArtifactTable {
         let listeners = { change: e => super._changeSub(e) };
         super.builder = {
             index: new IndexCell(),
-            name: new MapCell(CIRCLET_LIST, { change: e => super._changeName(e) }),
+            name: new MapCell(CIRCLET_LIST, { change: e => super.onChange(e) }),
             star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => super._changeStar(e) }),
             level: new ArtifactLevelCell({ change: e => super._changeLevel(e) }),
             main: new MultiBonusCell(ARTIFACT_CIRCLET, { change: e => super._changeMain(e) }),
@@ -1003,7 +1003,7 @@ class TeamTable extends Table {
             shutter_dmg: new ElemReactParam("shutter_dmg"),
             conduct_dmg: new ElemReactParam("conduct_dmg"),
             vaporize_dmg: new ElemReactParam("vaporize_dmg"),
-            ovreload_dmg: new ElemReactParam("ovreload_dmg"),
+            overload_dmg: new ElemReactParam("overload_dmg"),
         };
         this.bridge = new TableBridge(Table.List.equip);
         this.members = [null, null, null, null];
