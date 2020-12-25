@@ -119,6 +119,19 @@ const ARTIFACT_SET = {
         // set2: null,
         set4: { items: ["normal_dmg", "heavy_dmg"], value: 40, limit: "シールド状態の時" },
     },
+    Icebreaker: {
+        name: "氷風を彷徨う勇士",
+        set2: { items: "cryo_dmg", value: 15 },
+        set4: [
+            { items: "cri_rate", value: 20, limit: "氷元素の影響を受けた敵" },
+            { items: "cri_rate", value: 40, limit: "凍結状態の敵" }
+        ]
+    },
+    OceanConqueror: {
+        name: "沈淪の心",
+        set2: { items: "hydro_dmg", value: 15 },
+        set4: { items: ["normal_dmg", "heavy_dmg"], value: 30, limit: "元素スキルを発動後", times: 15 }
+    },
 };
 
 const FLOWER_LIST = {
@@ -148,6 +161,8 @@ const FLOWER_LIST = {
     Lavawalker: "火渡りの堅実",
     Petra: "盤石芽生の花",
     Bolide: "夏祭りの花",
+    Icebreaker: "吹雪の中の思い",
+    OceanConqueror: "金メッキのコサージュ",
 };
 
 const FEATHER_LIST = {
@@ -177,6 +192,8 @@ const FEATHER_LIST = {
     Lavawalker: "火渡りの解放",
     Petra: "嵯峨連山の翼",
     Bolide: "夏祭りの終わり",
+    Icebreaker: "氷を砕く執念",
+    OceanConqueror: "追憶の風",
 };
 
 const SANDS_LIST = {
@@ -206,6 +223,8 @@ const SANDS_LIST = {
     Lavawalker: "火渡りの苦しみ",
     Petra: "星羅圭玉の日時計",
     Bolide: "夏祭りの刻",
+    Icebreaker: "雪覆う故郷の最後",
+    OceanConqueror: "堅い銅のコンパス",
 };
 
 const GOBLET_LIST = {
@@ -235,6 +254,8 @@ const GOBLET_LIST = {
     Lavawalker: "火渡りの悟り",
     Petra: "危岩盤石の杯",
     Bolide: "夏祭りの水風船",
+    Icebreaker: "霜を纏った気骨",
+    OceanConqueror: "浮沈の杯",
 };
 
 const CIRCLET_LIST = {
@@ -264,4 +285,6 @@ const CIRCLET_LIST = {
     Lavawalker: "火渡りの知恵",
     Petra: "不動玄石の相",
     Bolide: "夏祭りの仮面",
+    Icebreaker: "霜を纏った気骨",
+    OceanConqueror: "酒に漬けた帽子",
 };

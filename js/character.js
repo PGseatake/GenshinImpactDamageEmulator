@@ -127,6 +127,60 @@ const CHARACTER = {
             { name: "地震波1回のダメージ", type: "burst", elem: "geo", scale: "elem", value: 148 },
         ]
     },
+    Albedo: {
+        name: "アルベド",
+        star: 5,
+        element: "geo",
+        weapon: "sword",
+        hp: [
+            1030, 2671,
+            3554, 5317,
+            5944, 6839,
+            7675, 8579,
+            9207, 10119,
+            10746, 11669,
+            12296, 13226
+        ],
+        atk: [
+            20, 51,
+            68, 101,
+            113, 130,
+            146, 163,
+            175, 192,
+            204, 222,
+            234, 251
+        ],
+        def: [
+            68, 177,
+            235, 352,
+            394, 453,
+            508, 568,
+            610, 670,
+            712, 773,
+            815, 876
+        ],
+        special: "geo_dmg",
+        spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
+        combat: [
+            { name: "1段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 36.7 },
+            { name: "2段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 36.7 },
+            { name: "3段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 47.5 },
+            { name: "4段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 49.8 },
+            { name: "5段ダメージ", type: "normal", elem: "phys", scale: "phys", value: 62.1 },
+            { name: "重撃ダメージ", type: "heavy", elem: "phys", scale: "phys", value: 47.3, value2: 60.2 },
+            { name: "落下期間のダメージ", type: "normal", elem: "phys", scale: "phys", value: 63.9 },
+            { name: "低空落下攻撃ダメージ", type: "normal", elem: "phys", scale: "phys", value: 128 },
+            { name: "高空落下攻撃ダメージ", type: "normal", elem: "phys", scale: "phys", value: 160 },
+        ],
+        skill: [
+            { name: "スキルダメージ", type: "skill", elem: "geo", scale: "phys", value: 130 },
+            //{ name: "刹那の花ダメージ", type: "skill", elem: "geo", scale: "phys", value: 134 },
+        ],
+        burst: [
+            { name: "爆発ダメージ", type: "burst", elem: "geo", scale: "elem", value: 367 },
+            { name: "生滅の花ダメージ", type: "burst", elem: "geo", scale: "elem", value: 72 },
+        ]
+    },
     Amber: {
         name: "アンバー",
         star: 4,

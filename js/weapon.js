@@ -22,6 +22,15 @@ const SWORD_LIST = {
         passive: { items: "atk_buf", value: [20, 25, 30, 35, 40] },
         // ダメージを受けると発動:抗争の旗を高く掲げる西風の鷹の魂が蘇り、攻撃力の100~160%分のHPを回復し、周りの敵に攻撃力の200~320%のダメージを与える。15秒ごとに1回発動可能。
     },
+    SummitShaper: {
+        name: "斬山の刃",
+        star: 5,
+        second: "atk_buf",
+        // シールド強化20~40%。
+        // 攻撃が命中した8秒間、攻撃力+4~8%。この効果は最大5重まで、0.3秒毎に一回のみ発動可能。
+        passive: { items: "atk_buf", value: [4, 5, 6, 7, 8], limit: "攻撃が命中した時", times: 8, stack: 5 },
+        // また、シールド状態の時、攻撃力アップの効果量は2倍になる。
+    },
     FavoniusSword: {
         name: "西風剣",
         star: 4,
@@ -95,6 +104,17 @@ const SWORD_LIST = {
         // 旅人が降臨の剣を装備するとさらに攻撃力+66。
         passive: { items: "atk", value: [66, 66, 66, 66, 66], limit: "旅人が装備した時" },
     },
+    FesteringDesire: {
+        name: "腐植の剣",
+        star: 4,
+        second: "en_rec",
+        passive: [
+            // 元素スキルのダメージ+16%
+            { items: "skill_dmg", value: [16, 20, 24, 28, 32] },
+            // 元素スキルの会心率+6%
+            { items: "skill_dmg", value: [6, 7.5, 9, 10.5, 12] },
+        ]
+    },
     TravelersSword: {
         name: "旅道の剣",
         star: 3,
@@ -114,7 +134,7 @@ const SWORD_LIST = {
         star: 3,
         second: "elem",
         // 過負荷、超電導、感電、または雷元素拡散反応が発生した12秒間、基礎攻撃力+20~40%。
-        passive: { items: "atk_rate", value: [20, 25, 30, 35, 40], limit: "過負荷、超電磁、感電または雷元素拡散が発生した時", times: 12 },
+        passive: { items: "atk_buf", value: [20, 25, 30, 35, 40], limit: "過負荷、超電磁、感電または雷元素拡散が発生した時", times: 12 },
     },
     CoolSteel: {
         name: "冷刃",
@@ -237,6 +257,14 @@ const CLAYMORE_LIST = {
         // フィールドにいる時、4秒毎に、与えるダメージ+6~10%、被ダメージ+3~1.8%。最大5重まで、退場後もリセットされず、攻撃を受けると効果数-1。
         passive: { items: "any_dmg", value: [6, 7, 8, 9, 10], limit: "フィールドにいる時4秒毎", stack: 5 },
     },
+    SnowTombedStarsilver: {
+        name: "雪葬の星銀",
+        star: 4,
+        second: "phys_dmg",
+        // 通常攻撃と重撃が敵に命中した時、60%の確率で敵の上に恒氷晶核が作られ落下し、攻撃力の80%の範囲ダメージを与える。
+        // 敵が氷元素の影響を受けている場合、攻撃力の200%のダメージを受ける。この効果は10秒毎に1回のみ発動可能。
+        // passive: null
+    },
     SkyriderGreatsword: {
         name: "飛天大御剣",
         star: 3,
@@ -352,6 +380,14 @@ const POLEARM_LIST = {
             // 近くにいる敵が2人未満の時、攻撃力24~48%。
             { items: "atk_buf", value: [24, 30, 36, 42, 48], limit: "近くに敵が2人未満の時" },
         ],
+    },
+    DragonspineSpear: {
+        name: "ドラゴンスピア",
+        star: 4,
+        second: "phys_dmg",
+        // 通常攻撃と重撃が敵に命中した時、60%の確率で敵の上に恒氷晶核が作られ落下し、攻撃力の80%の範囲ダメージを与える。
+        // 敵が氷元素の影響を受けている場合、攻撃力の200%のダメージを受ける。この効果は10秒毎に1回のみ発動可能。
+        // passive: null
     },
     Halberd: {
         name: "鉾槍",
@@ -609,6 +645,14 @@ const CATALYST_LIST = {
         second: "cri_dmg",
         // 敵を倒したあと、攻撃力+12~24%、継続時間30秒、最大3重まで、継続時間は加算されず、重ごとに別カウントされる
         passive: { items: "atk_buf", value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
+    },
+    Frostbearer: {
+        name: "冬忍びの実",
+        star: 4,
+        second: "atk_buf",
+        // 通常攻撃と重撃が敵に命中した時、60%の確率で敵の上に恒氷晶核が作られ落下し、攻撃力の80%の範囲ダメージを与える。
+        // 敵が氷元素の影響を受けている場合、攻撃力の200%のダメージを受ける。この効果は10秒毎に1回のみ発動可能。
+        // passive: null
     },
     TwinNephrite: {
         name: "特級の宝玉",
