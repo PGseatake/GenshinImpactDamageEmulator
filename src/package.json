@@ -1,0 +1,14 @@
+{
+    "name": "tsc",
+    "version": "1.0.0",
+    "description": "",
+    "main": "",
+    "scripts": {
+        "tsc": "tsc"
+    },
+    "author": "",
+    "license": "",
+    "devDependencies": {
+        "typescript": "^4.1.3"
+    }
+}
