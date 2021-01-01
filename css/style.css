@@ -18,11 +18,6 @@ body {
     text-align: center;
 }
 
-p.repletion {
-    margin: 3px 0 0 0;
-    font-size: 0.8em;
-}
-
 table {
     border-collapse: collapse;
 }
@@ -66,7 +61,7 @@ td.score {
     font-size: 0.7em;
 }
 
-input.import {
+input#import {
     display: none;
 }
 
@@ -117,7 +112,7 @@ select.bonus {
  */
 
 .tab_wrap {
-    height: 100%;
+    height: calc(100% - 40px);
     min-height: 300px;
     display: flex;
     flex-wrap: wrap;
@@ -125,7 +120,7 @@ select.bonus {
 }
 
 .tab_label {
-    width: 150px;
+    width: 130px;
     color: White;
     background: LightGray;
     font-weight: bold;
@@ -156,7 +151,7 @@ select.bonus {
 }
 
 .tab_switch:checked+.tab_label+.tab_content {
-    width: calc(100% - 150px);
+    width: calc(100% - 130px);
     height: 100%;
     padding: 15px;
     border-left: 1px solid Gray;

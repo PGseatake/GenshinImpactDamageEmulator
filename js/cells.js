@@ -9,15 +9,6 @@ function removeWithoutFirstChild(elem) {
         elem.lastChild.remove();
     }
 }
-// テーブルについて
-// 基本的に各要素の name は使用しない
-// table.id = 各テーブルの名前
-// tr.id = 各行を一意に識別する名前
-// th.id = 各セルの用途別の名前。td 要素の id にコピーする
-// td.id = 各セルの用途別の名前
-// セルの基底クラス
-// そのまま使用すると空セルになる
-// 各関数の引数 cell は td 要素を指定する
 class Cell {
     constructor(listeners = null) {
         this.listeners = listeners;
@@ -41,7 +32,6 @@ class Cell {
     update(cell, ...args) {
     }
     listen(cell, child) {
-        // childに外部リスナーを登録
         if (!!this.listeners) {
             for (const type in this.listeners) {
                 child.addEventListener(type, this.listeners[type]);
@@ -51,7 +41,6 @@ class Cell {
         return child;
     }
 }
-// 整数セル
 class IntCell extends Cell {
     static onChange(e) {
         let input = e.target;
@@ -85,7 +74,6 @@ class IntCell extends Cell {
         return cell.firstElementChild.truth.toString();
     }
     load(cell, id, values) {
-        // 正規化
         let value = values[id];
         if (isNaN(parseInt(value))) {
             value = "0";
@@ -113,7 +101,6 @@ class IntCell extends Cell {
         return this.listen(cell, child);
     }
 }
-// 割合セル
 class RateCell extends Cell {
     static onChange(e) {
         let input = e.target;
@@ -143,7 +130,6 @@ class RateCell extends Cell {
                 input.truth = 0.0;
             }
             else if (value === Math.floor(value)) {
-                // 整数に小数点を追加
                 input.value = value.toString() + ".0";
             }
         }
@@ -158,7 +144,6 @@ class RateCell extends Cell {
         return cell.firstElementChild.truth.toString();
     }
     load(cell, id, values) {
-        // 正規化
         let value = values[id];
         if (isNaN(parseFloat(value))) {
             value = "0.0";
@@ -188,10 +173,8 @@ class RateCell extends Cell {
         return child;
     }
 }
-// 空のセル
 class EmptyCell extends Cell {
     build(cell, value) {
-        // 処理簡略化のため非表示で配置しておく
         let child = document.createElement("input");
         child.type = "text";
         child.value = "";
@@ -201,11 +184,10 @@ class EmptyCell extends Cell {
         return child;
     }
 }
-// 連番セル
 class IndexCell extends Cell {
     index(cell) {
         let row = cell.parentElement;
-        return (row.rowIndex - 1).toString(); // 0,1はキャプション行
+        return (row.rowIndex - 1).toString();
     }
     load(cell, id, values) {
         cell.appendChild(document.createTextNode(this.index(cell)));
@@ -215,8 +197,7 @@ class IndexCell extends Cell {
         cell.childNodes[0].textContent = this.index(cell);
     }
 }
-// キャラクター基礎ステータスセル
-class BaseParamCell extends IntCell {
+class CharaStatusCell extends IntCell {
     update(cell, name, level) {
         const status = CHARACTER[name].status;
         if (!!status) {
@@ -238,88 +219,11 @@ class BaseParamCell extends IntCell {
                 value = Math.ceil((upper - lower) / (max - min) * (step.level - min) + lower);
             }
             let input = cell.firstElementChild;
-            input.value = value.toFixed(); // TODO: 切り捨て・四捨五入など要検証
+            input.value = value.toFixed();
             input.truth = value;
         }
     }
 }
-// 整数範囲セル
-class RangeCell extends Cell {
-    constructor(min, max, listeners = null) {
-        super(listeners);
-        this.min = min;
-        this.max = max;
-    }
-    get initial() {
-        return this.min.toString();
-    }
-    value(cell) {
-        let select = cell.firstElementChild;
-        return parseInt(select.value);
-    }
-    save(cell) {
-        let select = cell.firstElementChild;
-        return select.value;
-    }
-    load(cell, id, values) {
-        // 正規化
-        let value = parseInt(values[id]);
-        if (isNaN(value)) {
-            value = this.min;
-        }
-        else if (value < this.min) {
-            value = this.min;
-        }
-        else if (this.max < value) {
-            value = this.max;
-        }
-        return this.build(cell, value);
-    }
-    build(cell, value) {
-        let child = document.createElement("select");
-        // 連番option追加
-        for (let i = this.min; i <= this.max; ++i) {
-            let opt = document.createElement("option");
-            const str = i.toString();
-            opt.value = str;
-            opt.label = str;
-            opt.selected = (value === i);
-            child.appendChild(opt);
-        }
-        return this.listen(cell, child);
-    }
-}
-// 天賦セル
-class TalentCell extends RangeCell {
-    load(cell, id, values) {
-        let child = super.load(cell, id, values);
-        cell.insertBefore(document.createTextNode("Lv."), child);
-        return child;
-    }
-}
-// 聖遺物レベルセル
-class ArtifactLevelCell extends RangeCell {
-    constructor(listeners = null) {
-        super(0, 0, listeners);
-        // this.min = 0 固定
-        // this.max = td#star の値に応じて変更
-    }
-    load(cell, id, values) {
-        let star = parseInt(values.star);
-        if (isNaN(star)) {
-            star = 0;
-        }
-        this.max = ARTIFACT_LEVEL[star];
-        return super.load(cell, id, values);
-    }
-    update(cell, star) {
-        const value = cell.firstElementChild.selectedIndex;
-        removeChildren(cell);
-        this.max = ARTIFACT_LEVEL[star];
-        this.build(cell, value);
-    }
-}
-// 突破レベルセル
 class AscensionLevelCell extends Cell {
     static step(level) {
         if (0 < level.indexOf("+")) {
@@ -348,13 +252,11 @@ class AscensionLevelCell extends Cell {
         return select.value;
     }
     load(cell, id, values) {
-        // 正規化
         let value = values[id];
         if (isNaN(parseInt(value.replace("+", "")))) {
             value = "1";
         }
         let child = document.createElement("select");
-        // 連番option追加
         for (let i = 1; i <= ASCENSION_LV_MAX; ++i) {
             let lv = i.toString();
             let opt = document.createElement("option");
@@ -362,8 +264,7 @@ class AscensionLevelCell extends Cell {
             opt.label = lv;
             opt.selected = (value === lv);
             child.appendChild(opt);
-            // 特定のレベルで突破分を追加
-            if (0 <= ASCENSION_LV_STEP.indexOf(i)) {
+            if (ASCENSION_LV_STEP.contains(i)) {
                 lv += "+";
                 opt = document.createElement("option");
                 opt.value = lv;
@@ -375,9 +276,76 @@ class AscensionLevelCell extends Cell {
         return this.listen(cell, child);
     }
 }
-// マップセル
-// key:value の配列を処理する
-class MapCell extends Cell {
+class RangeCell extends Cell {
+    constructor(min, max, listeners = null) {
+        super(listeners);
+        this.min = min;
+        this.max = max;
+    }
+    get initial() {
+        return this.min.toString();
+    }
+    value(cell) {
+        let select = cell.firstElementChild;
+        return parseInt(select.value);
+    }
+    save(cell) {
+        let select = cell.firstElementChild;
+        return select.value;
+    }
+    load(cell, id, values) {
+        let value = parseInt(values[id]);
+        if (isNaN(value)) {
+            value = this.min;
+        }
+        else if (value < this.min) {
+            value = this.min;
+        }
+        else if (this.max < value) {
+            value = this.max;
+        }
+        return this.build(cell, value);
+    }
+    build(cell, value) {
+        let child = document.createElement("select");
+        for (let i = this.min; i <= this.max; ++i) {
+            let opt = document.createElement("option");
+            const str = i.toString();
+            opt.value = str;
+            opt.label = str;
+            opt.selected = (value === i);
+            child.appendChild(opt);
+        }
+        return this.listen(cell, child);
+    }
+}
+class TalentCell extends RangeCell {
+    load(cell, id, values) {
+        let child = super.load(cell, id, values);
+        cell.insertBefore(document.createTextNode("Lv."), child);
+        return child;
+    }
+}
+class ArtifactLevelCell extends RangeCell {
+    constructor(listeners = null) {
+        super(0, 0, listeners);
+    }
+    load(cell, id, values) {
+        let star = parseInt(values.star);
+        if (isNaN(star)) {
+            star = 0;
+        }
+        this.max = ARTIFACT_LEVEL[star];
+        return super.load(cell, id, values);
+    }
+    update(cell, star) {
+        const value = cell.firstElementChild.selectedIndex;
+        removeChildren(cell);
+        this.max = ARTIFACT_LEVEL[star];
+        this.build(cell, value);
+    }
+}
+class ArtifactCell extends Cell {
     constructor(map, listeners = null) {
         super(listeners);
         this.map = map;
@@ -394,7 +362,6 @@ class MapCell extends Cell {
         return select.value;
     }
     load(cell, id, values) {
-        // 正規化
         let value = values[id];
         if (!(value in this.map)) {
             value = "other";
@@ -410,9 +377,7 @@ class MapCell extends Cell {
         return this.listen(cell, child);
     }
 }
-// 辞書セル
-// key:{"name":value} の配列を処理する
-class DictCell extends Cell {
+class NameCell extends Cell {
     constructor(dict, listeners = null) {
         super(listeners);
         this.dict = dict;
@@ -429,7 +394,6 @@ class DictCell extends Cell {
         return select.value;
     }
     load(cell, id, values) {
-        // 正規化
         let value = values[id];
         if (!(value in this.dict)) {
             value = "other";
@@ -445,8 +409,7 @@ class DictCell extends Cell {
         return this.listen(cell, child);
     }
 }
-// 整数ボーナス
-class IntBonus {
+class NumberBonus {
     constructor(type) {
         this.name = BONUS_LABEL[type].select;
     }
@@ -454,14 +417,15 @@ class IntBonus {
         return "0";
     }
     cell(listeners) {
+        return new EmptyCell();
+    }
+}
+class IntBonus extends NumberBonus {
+    cell(listeners) {
         return new IntCell(listeners);
     }
 }
-// 割合ボーナス
-class RateBonus {
-    constructor(type) {
-        this.name = BONUS_LABEL[type].select;
-    }
+class RateBonus extends NumberBonus {
     get init() {
         return "0.0";
     }
@@ -469,20 +433,8 @@ class RateBonus {
         return new RateCell(listeners);
     }
 }
-// 空のボーナス
-class EmptyBonus {
-    constructor(type) {
-        this.name = BONUS_LABEL[type].select;
-    }
-    get init() {
-        return "0.0";
-    }
-    cell(listeners) {
-        return new EmptyCell();
-    }
-}
 const BonusValueList = {
-    other: new EmptyBonus(StatusBonus.Other),
+    other: new NumberBonus(StatusBonus.Other),
     hp: new IntBonus(StatusBonus.Hp),
     hp_buf: new RateBonus(StatusBonus.HpBuf),
     atk: new IntBonus(StatusBonus.Atk),
@@ -491,8 +443,8 @@ const BonusValueList = {
     def_buf: new RateBonus(StatusBonus.DefBuf),
     elem: new IntBonus(StatusBonus.Elem),
     en_rec: new RateBonus(StatusBonus.EnRec),
-    cri_rate: new RateBonus(StatusBonus.CriRate),
-    cri_dmg: new RateBonus(StatusBonus.CriDmg),
+    cri_rate: new RateBonus(CriticalBonus.Rate),
+    cri_dmg: new RateBonus(CriticalBonus.Damage),
     pyro_dmg: new RateBonus(ElementBonus.Pyro),
     hydro_dmg: new RateBonus(ElementBonus.Hydro),
     elect_dmg: new RateBonus(ElementBonus.Elect),
@@ -501,7 +453,6 @@ const BonusValueList = {
     geo_dmg: new RateBonus(ElementBonus.Geo),
     phys_dmg: new RateBonus(ElementBonus.Phys),
 };
-// ボーナスセル
 class BonusCell extends Cell {
     constructor(list, listeners = null) {
         super(listeners);
@@ -510,10 +461,7 @@ class BonusCell extends Cell {
     value(cell) {
         let child1 = cell.firstElementChild;
         let child2 = child1.nextElementSibling;
-        return { bonus: child1.value, value: child2.truth };
-    }
-    exists(value) {
-        return 0 <= this.list.indexOf(value);
+        return { type: child1.value, value: child2.truth };
     }
     select(value) {
         const count = this.list.length;
@@ -532,8 +480,7 @@ class BonusCell extends Cell {
         return child;
     }
 }
-// キャラクター追加効果セル
-class SpecialCell extends BonusCell {
+class CharaSpecialCell extends BonusCell {
     constructor() {
         super([]);
     }
@@ -541,6 +488,10 @@ class SpecialCell extends BonusCell {
         cell.className = "bonus";
         this.build(cell, values.name, values.level);
         return null;
+    }
+    update(cell, name, level) {
+        removeChildren(cell);
+        this.build(cell, name, level);
     }
     build(cell, name, level) {
         const chara = CHARACTER[name];
@@ -554,13 +505,15 @@ class SpecialCell extends BonusCell {
         let builder = BonusValueList[bonus].cell(null);
         builder.build(cell, value).disabled = true;
     }
-    update(cell, name, level) {
-        removeChildren(cell);
-        this.build(cell, name, level);
-    }
 }
-// ボーナスリストセル
 class BonusListCell extends BonusCell {
+    update(cell, star, level) {
+        removeWithoutFirstChild(cell);
+        let select = cell.firstElementChild;
+        let bonus = select.value;
+        let builder = BonusValueList[bonus].cell(this.listeners);
+        builder.build(cell, this.param(star, level, bonus)).disabled = true;
+    }
     build(cell, astar, alevel, bonus) {
         let child = this.listen(cell, this.select(bonus));
         let star = parseInt(astar);
@@ -575,13 +528,6 @@ class BonusListCell extends BonusCell {
         builder.build(cell, this.param(star, level, bonus)).disabled = true;
         return child;
     }
-    update(cell, star, level) {
-        removeWithoutFirstChild(cell);
-        let select = cell.firstElementChild;
-        let bonus = select.value;
-        let builder = BonusValueList[bonus].cell(this.listeners);
-        builder.build(cell, this.param(star, level, bonus)).disabled = true;
-    }
     param(star, level, bonus) {
         let param = getArtifactParam(star, level, bonus);
         if (!!param) {
@@ -590,7 +536,6 @@ class BonusListCell extends BonusCell {
         return 0.0;
     }
 }
-// 聖遺物単体ボーナスセル
 class SingleBonusCell extends BonusListCell {
     constructor(bonus, listeners = null) {
         super([bonus], listeners);
@@ -602,7 +547,6 @@ class SingleBonusCell extends BonusListCell {
         return child;
     }
 }
-// 聖遺物複数ボーナスセル
 class MultiBonusCell extends BonusListCell {
     get initial() {
         return this.list[0];
@@ -613,15 +557,13 @@ class MultiBonusCell extends BonusListCell {
     }
     load(cell, id, values) {
         cell.className = "bonus";
-        // 正規化
         let value = values[id];
-        if (!this.exists(value)) {
+        if (!this.list.contains(value)) {
             value = this.list[0];
         }
         return this.build(cell, values.star, values.level, value);
     }
 }
-// ボーナス値セル
 class BonusValueCell extends BonusCell {
     constructor(list, listeners = null) {
         super(list, listeners);
@@ -647,29 +589,25 @@ class BonusValueCell extends BonusCell {
     }
     load(cell, id, values) {
         cell.className = "bonus";
-        // 正規化
         let pair = values[id];
-        if (!Array.isArray(pair) || !this.exists(pair[0])) {
+        if (!Array.isArray(pair) || !this.list.contains(pair[0])) {
             pair = this.initial;
         }
         return this.build(cell, pair[0], pair[1]);
     }
     build(cell, type, value) {
         let child = this.select(type);
-        // onChangeを先に実行させる
         child.addEventListener("change", this.onChange);
         this.listen(cell, child);
         return BonusValueList[type].cell(this.listeners).build(cell, value);
     }
 }
-// 武器追加ボーナスセル
 class SecondBonusCell extends BonusValueCell {
     constructor(items, listeners = null) {
         super([items.other.second], listeners);
         this.items = items;
     }
     load(cell, id, values) {
-        // 正規化
         let name = values.name;
         if (!(name in this.items)) {
             name = "other";
@@ -684,7 +622,6 @@ class SecondBonusCell extends BonusValueCell {
         this.build(cell, initial[0], initial[1]);
     }
 }
-// 装備セル
 class EquipmentCell extends Cell {
     constructor(type, listeners = null) {
         super(listeners);
@@ -748,7 +685,6 @@ class EquipmentCell extends Cell {
         return "0";
     }
     get items() {
-        // 装備対象をリストアップ
         return document.querySelectorAll(`table#tbl_${this.type} td#name`);
     }
     value(cell) {
@@ -756,38 +692,39 @@ class EquipmentCell extends Cell {
         return document.querySelector(`table#tbl_${this.type} tr#${select.value}`);
     }
     save(cell) {
-        // 保存するのは id ではなく index
         let select = cell.firstElementChild;
         return select.selectedIndex.toString();
     }
     load(cell, id, values) {
         cell.className = "equip";
-        // 正規化
         let value = parseInt(values[id]);
         if (isNaN(value)) {
             value = 0;
         }
         return this.build(cell, value, this.items);
     }
+    update(cell, items) {
+        let row = this.value(cell);
+        const index = !!row ? (row.rowIndex - 2) : 0;
+        removeChildren(cell);
+        this.build(cell, index, items);
+    }
     build(cell, index, items) {
         let child = document.createElement("select");
         for (let i = 0, len = items.length; i < len; ++i) {
             let item = items[i];
-            // 文字が長い場合は短縮表示
             let label = Cell.getSelectLabel(item);
-            if (7 < label.length) { // TODO: 他言語は要調整
+            if (7 < label.length) {
                 label = label.slice(0, 6) + "…";
             }
             let opt = document.createElement("option");
-            opt.value = item.parentElement.id; // tr[id] を保持する
+            opt.value = item.parentElement.id;
             opt.label = `${i + 1}.${label}`;
             opt.selected = (index === i);
             child.appendChild(opt);
         }
         this.listen(cell, child);
-        // 詳細情報の更新処理を追加
         child.addEventListener("change", this.onChange);
-        // 初回の詳細情報を表示
         if (this.type in EquipmentCell.DetailTable) {
             let row = this.value(cell);
             if (!!row) {
@@ -795,12 +732,6 @@ class EquipmentCell extends Cell {
             }
         }
         return child;
-    }
-    update(cell, items) {
-        let row = this.value(cell);
-        const index = !!row ? (row.rowIndex - 2) : 0;
-        removeChildren(cell);
-        this.build(cell, index, items);
     }
 }
 EquipmentCell.DetailTable = {
@@ -816,7 +747,6 @@ EquipmentCell.DetailTable = {
     goblet: EquipmentCell.detailArtifact,
     circlet: EquipmentCell.detailArtifact
 };
-// 装備武器セル
 class EquipWeaponCell extends Cell {
     constructor(listeners = null) {
         super();
@@ -833,7 +763,6 @@ class EquipWeaponCell extends Cell {
     }
     save(cell) {
         let select = cell.firstElementChild;
-        // 保存するのは id ではなく index
         return select.selectedIndex.toString();
     }
     load(cell, id, values) {
@@ -843,13 +772,12 @@ class EquipWeaponCell extends Cell {
         }
         let rows = document.getElementById("tbl_chara").rows;
         let length = rows.length;
-        if (length <= 2) { // キャプション以外はない
+        if (length <= 2) {
             return null;
         }
-        if (length < 2 + index) { // アイテム範囲外
+        if (length < 2 + index) {
             index = 0;
         }
-        // 装備キャラクターから装備する武器種を取得
         let chara = rows[2 + index].cells[1];
         const name = chara.firstElementChild.value;
         const weapon = CHARACTER[name].weapon;
@@ -859,8 +787,6 @@ class EquipWeaponCell extends Cell {
         return this.builders[type];
     }
 }
-// チームパラメータ基底クラス
-// 追加値をそのまま表示
 class Param {
     constructor(type) {
         this.type = type;
@@ -874,7 +800,6 @@ class Param {
         }
     }
 }
-// 基礎があるパラメータ向け
 class BaseParam extends Param {
     set(cell, status) {
         if (!status) {
@@ -882,10 +807,11 @@ class BaseParam extends Param {
             cell.nextElementSibling.textContent = "0";
         }
         else {
-            const base = status.base[this.type];
+            const type = this.type;
+            const base = status.base[type];
             cell.textContent = base.toString();
-            const add = status.param[this.type];
-            const buf = status.param[this.type + "_buf"];
+            const add = status.param[type];
+            const buf = status.param[TypeToBonus.buffer(type)];
             cell.nextElementSibling.textContent = this.text(base, add, buf);
         }
     }
@@ -893,7 +819,6 @@ class BaseParam extends Param {
         return Math.floor((base * (buf * 10) / 1000) + add).toFixed();
     }
 }
-// 割合表記のパラメータ向け
 class RateParam extends Param {
     set(cell, status) {
         if (!status) {
@@ -907,7 +832,6 @@ class RateParam extends Param {
         return num.toFixed(1) + "%";
     }
 }
-// 元素ダメージバフパラメータ向け
 class ElemBuffParam extends RateParam {
     set(cell, status) {
         if (!status) {
@@ -918,7 +842,6 @@ class ElemBuffParam extends RateParam {
         }
     }
 }
-// ダメージパラメータ向け
 class DamageParam extends RateParam {
     set(cell, status) {
         if (!status) {
@@ -929,17 +852,16 @@ class DamageParam extends RateParam {
         }
     }
 }
-// 元素反応パラメータ向け
 class ElemReactParam extends RateParam {
     constructor(param) {
         super(param);
         switch (param) {
             case ReactionBonus.Melt:
             case ReactionBonus.Vaporize:
-                this.base = ReactionType.Amplify;
+                this.base = ReactionBase.Amplify;
                 break;
             default:
-                this.base = ReactionType.Transform;
+                this.base = ReactionBase.Transform;
                 break;
         }
     }

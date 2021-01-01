@@ -1,5 +1,4 @@
 "use strict";
-// TODO: 多言語対応
 const LABEL_TEXT = {
     invalid: "無効",
     weapon: "武器",
@@ -11,7 +10,6 @@ const LABEL_TEXT = {
     def: "防御力",
     rank: "錬成",
 };
-// TODO: 多言語対応
 const BONUS_LABEL = {
     other: {
         table: null,
@@ -43,12 +41,6 @@ const BONUS_LABEL = {
         detail: "攻撃力",
         suffix: "%"
     },
-    // atk_base: {
-    //     table: null,
-    //     select: "",
-    //     detail: "基礎攻撃力",
-    //     suffix: "%"
-    // },
     def: {
         table: "防御力",
         select: "防御力",
@@ -163,18 +155,18 @@ const BONUS_LABEL = {
         detail: "元素スキルダメージ",
         suffix: "%"
     },
+    skill_cri: {
+        table: "スキル会心率",
+        select: "",
+        detail: "元素スキル会心率",
+        suffix: "%"
+    },
     burst_dmg: {
         table: "元素爆発ダメ",
         select: "",
         detail: "元素爆発ダメージ",
         suffix: "%"
     },
-    // burning_dmg: {
-    //     table: "燃焼ダメ",
-    //     select: null,
-    //     detail: "燃焼ダメージ",
-    //     postfix: "%"
-    // },
     vaporize_dmg: {
         table: "蒸発ダメ",
         select: "",
@@ -216,15 +208,13 @@ const BONUS_LABEL = {
         select: "",
         detail: "過負荷ダメージ",
         suffix: "%"
-    }
+    },
 };
-// TODO: 多言語対応
 const TEAM_BONUS = {
     pyro: { items: StatusBonus.AtkBuf, value: 25 },
-    cryo: { items: StatusBonus.CriRate, value: 15, limit: "氷元素付着または凍結状態の敵" },
-    geo: { items: StatusBonus.AnyDmg, value: 15, limit: "シールドが存在する時" }
+    cryo: { items: CriticalBonus.Rate, value: 15, limit: "氷元素付着または凍結状態の敵" },
+    geo: { items: StatusBonus.AnyDmg, value: 15, limit: "シールドが存在する時" },
 };
-// ステータスボーナス
 class Bonus {
     constructor(items, value, others, source) {
         var _a, _b, _c;
@@ -245,7 +235,6 @@ class Bonus {
             str += "・" + labels[items[i]].detail;
         }
         str += `+${this.value}${labels[items[0]].suffix}`;
-        // TODO:多言語対応
         if (this.limit) {
             str = `${this.limit}に${str}`;
         }
@@ -258,12 +247,11 @@ class Bonus {
         return `[${this.source}] ${str}`;
     }
 }
-// キャラステータス
 class Status {
     constructor(id) {
         this.id = id;
-        this.chara = null;
-        this.grade = 0;
+        this.chara = CHARACTER.other;
+        this.conste = 0;
         this.lv = "0";
         this.bonus = [];
         this.talent = { combat: 0, skill: 0, burst: 0 };
@@ -292,6 +280,7 @@ class Status {
             heavy_dmg: 0.0,
             heavy_cri: 0.0,
             skill_dmg: 0.0,
+            skill_cri: 0.0,
             burst_dmg: 0.0,
             melt_dmg: 0.0,
             swirl_dmg: 0.0,
@@ -305,95 +294,78 @@ class Status {
     get level() {
         return parseInt(this.lv.replace("+", ""));
     }
-    // https://www.reddit.com/r/Genshin_Impact/comments/j580by/elemental_mastery_damage_increase/
-    // get elem_react() {
-    //     return this.elem * Math.pow(Math.E, -0.000505 * this.elem);
-    // }
-    // get elem_ampl() {
-    //     // 0.453633528 * EM * EXP(-0.000505 * EM)
-    //     return 0.453633528 * this.elem_react;
-    // }
-    // get elem_trans() {
-    //     // 0.189266831 * EM * EXP(-0.000505 * EM)
-    //     return 0.189266831 * this.elem_react;
-    // }
     get elem_react() {
         return (this.param.elem * 25) / (9 * (this.param.elem + 1400)) * 100;
     }
-    // 元素反応・増幅（％）
     get elem_ampl() {
         return this.elem_react;
     }
-    // 元素反応・転化（％）
     get elem_trans() {
         return 2.4 * this.elem_react;
     }
-    // 攻撃力（実数）
     get attack() {
         return this.base.atk + (this.base.atk * this.param.atk_buf / 100) + this.param.atk;
     }
-    // 防御力（実数）
     get defence() {
         return this.base.def + (this.base.def * this.param.def_buf / 100) + this.param.def;
     }
-    // 攻撃タイプダメージ値（％）
     combat(type) {
-        return this.param[type + "_dmg"];
+        return this.param[TypeToBonus.combat(type)];
     }
-    // 元素ダメージ値（％）
     elemental(type) {
-        let rate = this.param[type + "_dmg"];
+        let rate = this.param[TypeToBonus.element(type)];
         if (type !== ElementType.Phys) {
             rate += this.param.elem_dmg;
         }
         return rate;
     }
-    // 元素反応ダメージ値（％）
     reaction(type) {
-        if (type === ReactionType.Transform) {
+        if (type === ReactionBase.Transform) {
             return this.elem_trans;
         }
         else {
             return this.elem_react;
         }
     }
-    // 会心値（％）
     critical(type = CombatType.Normal) {
-        let rate = 5 + this.param.cri_rate; // 基礎5%追加
-        if (type === CombatType.Heavy) {
-            rate += this.param.heavy_cri;
+        let combat = 0;
+        switch (type) {
+            case CombatType.Heavy:
+                combat = this.param.heavy_cri;
+                break;
+            case CombatType.Skill:
+                combat = this.param.skill_cri;
+                break;
         }
-        return { rate: rate, damage: 50 + this.param.cri_dmg }; // 基礎50%追加
+        return {
+            rate: 5 + this.param.cri_rate + combat,
+            damage: 50 + this.param.cri_dmg,
+            combat: combat !== 0,
+        };
     }
-    // ボーナス追加
     append(bonus) {
         bonus.id = this.id;
         this.bonus.push(bonus);
         if (!bonus.limit) {
             for (const item of bonus.items) {
-                this.addValue({ bonus: item, value: bonus.value });
+                this.addValue({ type: item, value: bonus.value });
             }
             bonus.apply = true;
         }
     }
-    // ボーナス値加算
-    addValue(value) {
-        if (!!value.bonus && value.bonus !== StatusBonus.Other) {
-            this.param[value.bonus] += value.value;
+    addValue(bonus) {
+        if (bonus.type !== StatusBonus.Other) {
+            this.param[bonus.type] += bonus.value;
         }
     }
 }
-// 敵ステータス
 class Enemy {
     constructor(id) {
         const info = ENEMY_LIST[id];
         this.name = info.name;
         this.level = 0;
-        // デバフ（％）
         this.debuff = 0;
-        // 耐性（％）
         this.resist = info.resist;
-        // 耐性減衰（％）
         this.reduct = {
             pyro: 0,
             hydro: 0,
@@ -404,26 +376,21 @@ class Enemy {
             phys: 0,
         };
     }
-    // 防御力（小数）
     defence(level) {
         const charaLevel = level + 100;
         const enemyLevel = this.level + 100;
         const debuffRate = 1.0 - (this.debuff / 100);
         return charaLevel / (debuffRate * enemyLevel + charaLevel);
     }
-    // 耐性（小数）
     resistance(type) {
         const value = this.resist[type] - this.reduct[type];
         if (value < 0) {
-            // 1 - (RES ÷ 2)
             return (100 - (value / 2)) / 100;
         }
         else if (75 <= value) {
-            // 1 ÷ (4 × RES + 1)
             return 100 / (value * 4 + 100);
         }
         else {
-            // 1 - RES
             return (100 - value) / 100;
         }
     }
@@ -433,7 +400,6 @@ const DAMAGE_SCALE = {
     elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0,],
     etc1: [100.0, 110.5, 121.5, 135.0, 147.0, 159.5, 175.5, 192.0, 208.0, 224.0, 240.5, 256.5, 270.0, 283.5, 297.0],
 };
-// 天賦の各種倍率
 class Attribute {
     constructor(info, level) {
         const scale = DAMAGE_SCALE[info.scale];
@@ -450,7 +416,7 @@ class Attribute {
         this.type = info.type;
         this.elem = info.elem;
         if (this.elem === CombatElementType.AddElem) {
-            this.elem = ElementType.Anemo; // TODO: とりあえず風属性にしておく
+            this.elem = ElementType.Anemo;
         }
         this.value = [info.value * scale[index] / 100];
         if (!!info.value2) {
@@ -476,7 +442,6 @@ const TALENT_LV_MAX = 15;
 const ARTIFACT_STAR_MAX = 5;
 const ARTIFACT_LEVEL = [0, 0, 0, 12, 16, 20];
 const ARTIFACT_PARAM = [
-    // ☆☆☆
     {
         hp: { intercept: 430, slope: 121.8846154 },
         atk: { intercept: 28, slope: 7.89010989 },
@@ -487,7 +452,6 @@ const ARTIFACT_PARAM = [
         cri_rate: { intercept: 3.5, slope: 0.989010989 },
         cri_dmg: { intercept: 7.0, slope: 1.980769231 },
     },
-    // ☆☆☆☆
     {
         hp: { intercept: 645, slope: 182.8529412, substep: 23.9 },
         atk: { intercept: 42, slope: 11.8995098, substep: 1.6 },
@@ -498,7 +462,6 @@ const ARTIFACT_PARAM = [
         cri_rate: { intercept: 4.2, slope: 1.1875, substep: 0.31 },
         cri_dmg: { intercept: 8.4, slope: 2.377696078, substep: 0.62 },
     },
-    // ☆☆☆☆☆
     {
         hp: { intercept: 717, slope: 203.1597403, substep: 29.9 },
         atk: { intercept: 47, slope: 13.22597403, substep: 1.9 },
@@ -511,19 +474,23 @@ const ARTIFACT_PARAM = [
     }
 ];
 function getArtifactParam(star, level, bonus) {
-    // ☆を正規化
     if (star < 3 || 5 < star) {
         return null;
     }
-    // levelを正規化
     if (level < 0 || ARTIFACT_LEVEL[star] < level) {
         return null;
     }
     let param = ARTIFACT_PARAM[star - 3];
-    if (bonus in param) {
-        return param[bonus];
-    }
     switch (bonus) {
+        case StatusBonus.Hp:
+        case StatusBonus.Atk:
+        case StatusBonus.Def:
+        case StatusBonus.AtkBuf:
+        case StatusBonus.DefBuf:
+        case StatusBonus.EnRec:
+        case CriticalBonus.Rate:
+        case CriticalBonus.Damage:
+            return param[bonus];
         case StatusBonus.Elem:
             return param.def;
         case StatusBonus.HpBuf:
@@ -549,8 +516,8 @@ const ARTIFACT_SUB = [
     StatusBonus.DefBuf,
     StatusBonus.Elem,
     StatusBonus.EnRec,
-    StatusBonus.CriRate,
-    StatusBonus.CriDmg
+    CriticalBonus.Rate,
+    CriticalBonus.Damage
 ];
 const ARTIFACT_SANDS = [
     StatusBonus.Other,
@@ -580,7 +547,7 @@ const ARTIFACT_CIRCLET = [
     StatusBonus.AtkBuf,
     StatusBonus.DefBuf,
     StatusBonus.Elem,
-    StatusBonus.CriRate,
-    StatusBonus.CriDmg
+    CriticalBonus.Rate,
+    CriticalBonus.Damage
 ];
 const WEAPON_RANK_MAX = 5;

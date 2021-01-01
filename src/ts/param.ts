@@ -17,10 +17,9 @@ interface IBonusLabel {
     detail: string;
     suffix: string;
 }
-interface IBonusLabelList extends IMap<IBonusLabel>, Record<AnyBonusType, IBonusLabel> { }
 
 // TODO: 多言語対応
-const BONUS_LABEL: DeepReadonly<IBonusLabelList> = {
+const BONUS_LABEL: DeepReadonly<Record<AnyBonusType, IBonusLabel>> = {
     other: {
         table: null,
         select: "その他",
@@ -171,6 +170,12 @@ const BONUS_LABEL: DeepReadonly<IBonusLabelList> = {
         detail: "元素スキルダメージ",
         suffix: "%"
     },
+    skill_cri: {
+        table: "スキル会心率",
+        select: "",
+        detail: "元素スキル会心率",
+        suffix: "%"
+    },
     burst_dmg: {
         table: "元素爆発ダメ",
         select: "",
@@ -224,19 +229,19 @@ const BONUS_LABEL: DeepReadonly<IBonusLabelList> = {
         select: "",
         detail: "過負荷ダメージ",
         suffix: "%"
-    }
+    },
 } as const;
 
 // TODO: 多言語対応
-const TEAM_BONUS: DeepReadonly<Partial<Record<ElementType, IBonus>>> = {
+const TEAM_BONUS: DeepReadonly<Partial<Record<ElementType, IBasicBonus>>> = {
     pyro: { items: StatusBonus.AtkBuf, value: 25 },
-    cryo: { items: StatusBonus.CriRate, value: 15, limit: "氷元素付着または凍結状態の敵" },
-    geo: { items: StatusBonus.AnyDmg, value: 15, limit: "シールドが存在する時" }
+    cryo: { items: CriticalBonus.Rate, value: 15, limit: "氷元素付着または凍結状態の敵" },
+    geo: { items: StatusBonus.AnyDmg, value: 15, limit: "シールドが存在する時" },
 } as const;
 
 // ステータスボーナス
 class Bonus {
-    public id: Nullable<string>;
+    public id: string;
     public apply: boolean;
     public items: ReadonlyArray<BonusType>;
     public value: number;
@@ -248,7 +253,7 @@ class Bonus {
     constructor(items: DeepReadonly<Arrayable<BonusType>>, value: number, others: DeepReadonly<IBonus>, source: string) {
         this.id = null;
         this.apply = false;
-        this.items = Array.isArray(items) ? items as ReadonlyArray<BonusType> : [items as BonusType];
+        this.items = Array.isArray(items) ? items : [items];
         this.value = value;
         this.limit = others.limit ?? null;
         this.times = others.times ?? 0;
@@ -274,7 +279,7 @@ class Bonus {
             str = `${str}、継続時間${this.times}秒`;
         }
         if (0 < this.stack) {
-            str = `${str}、最大${this.stack}重`
+            str = `${str}、最大${this.stack}重`;
         }
 
         return `[${this.source}] ${str}`;
@@ -284,18 +289,18 @@ class Bonus {
 // キャラステータス
 class Status {
     public id: string;
-    public chara: Nullable<DeepReadonly<ICharacter>>;
-    public grade: number;
+    public chara: DeepReadonly<ICharacter>;
+    public conste: number;
     public lv: string;
     public bonus: Bonus[];
-    public talent: IStatusTalent;
-    public base: IStatusBase;
-    public param: IStatusParam;
+    public talent: StatusTalent;
+    public base: StatusBase;
+    public param: StatusParam;
 
     constructor(id: string) {
         this.id = id;
-        this.chara = null;
-        this.grade = 0;
+        this.chara = CHARACTER.other;
+        this.conste = 0;
         this.lv = "0";
         this.bonus = [];
         this.talent = { combat: 0, skill: 0, burst: 0 };
@@ -324,6 +329,7 @@ class Status {
             heavy_dmg: 0.0,
             heavy_cri: 0.0,
             skill_dmg: 0.0,
+            skill_cri: 0.0,
             burst_dmg: 0.0,
             melt_dmg: 0.0,
             swirl_dmg: 0.0,
@@ -338,19 +344,6 @@ class Status {
     get level(): number {
         return parseInt(this.lv.replace("+", ""));
     }
-
-    // https://www.reddit.com/r/Genshin_Impact/comments/j580by/elemental_mastery_damage_increase/
-    // get elem_react() {
-    //     return this.elem * Math.pow(Math.E, -0.000505 * this.elem);
-    // }
-    // get elem_ampl() {
-    //     // 0.453633528 * EM * EXP(-0.000505 * EM)
-    //     return 0.453633528 * this.elem_react;
-    // }
-    // get elem_trans() {
-    //     // 0.189266831 * EM * EXP(-0.000505 * EM)
-    //     return 0.189266831 * this.elem_react;
-    // }
 
     private get elem_react(): number {
         return (this.param.elem * 25) / (9 * (this.param.elem + 1400)) * 100;
@@ -378,12 +371,12 @@ class Status {
 
     // 攻撃タイプダメージ値（％）
     combat(type: CombatType): number {
-        return this.param[type + "_dmg"];
+        return this.param[TypeToBonus.combat(type)];
     }
 
     // 元素ダメージ値（％）
     elemental(type: ElementType): number {
-        let rate = this.param[type + "_dmg"];
+        let rate = this.param[TypeToBonus.element(type)];
         if (type !== ElementType.Phys) {
             rate += this.param.elem_dmg;
         }
@@ -391,8 +384,8 @@ class Status {
     }
 
     // 元素反応ダメージ値（％）
-    reaction(type: ReactionType): number {
-        if (type === ReactionType.Transform) {
+    reaction(type: ReactionBase): number {
+        if (type === ReactionBase.Transform) {
             return this.elem_trans;
         } else {
             return this.elem_react;
@@ -400,12 +393,21 @@ class Status {
     }
 
     // 会心値（％）
-    critical(type: CombatType = CombatType.Normal): IMap<number> {
-        let rate = 5 + this.param.cri_rate; // 基礎5%追加
-        if (type === CombatType.Heavy) {
-            rate += this.param.heavy_cri;
+    critical(type: CombatType = CombatType.Normal): ICriticalValue {
+        let combat = 0;
+        switch (type) {
+            case CombatType.Heavy:
+                combat = this.param.heavy_cri;
+                break;
+            case CombatType.Skill:
+                combat = this.param.skill_cri;
+                break;
         }
-        return { rate: rate, damage: 50 + this.param.cri_dmg }; // 基礎50%追加
+        return {
+            rate: 5 + this.param.cri_rate + combat, // 基礎5%追加
+            damage: 50 + this.param.cri_dmg, // 基礎50%追加
+            combat: combat !== 0,
+        };
     }
 
     // ボーナス追加
@@ -414,16 +416,16 @@ class Status {
         this.bonus.push(bonus);
         if (!bonus.limit) {
             for (const item of bonus.items) {
-                this.addValue({ bonus: item, value: bonus.value })
+                this.addValue({ type: item, value: bonus.value });
             }
             bonus.apply = true;
         }
     }
 
     // ボーナス値加算
-    addValue(value: IBonusValue) {
-        if (!!value.bonus && value.bonus !== StatusBonus.Other) {
-            this.param[value.bonus] += value.value;
+    addValue(bonus: IAnyBonusValue) {
+        if (bonus.type !== StatusBonus.Other) {
+            this.param[bonus.type] += bonus.value;
         }
     }
 }
@@ -433,8 +435,8 @@ class Enemy {
     public name: string;
     public level: number;
     public debuff: number;
-    public resist: DeepReadonly<IResist>;
-    public reduct: IResist;
+    public resist: DeepReadonly<Resist>;
+    public reduct: Resist;
 
     constructor(id: string) {
         const info = ENEMY_LIST[id];
@@ -445,7 +447,7 @@ class Enemy {
         // 耐性（％）
         this.resist = info.resist;
         // 耐性減衰（％）
-        this.reduct = { // TODO: ループで処理したい
+        this.reduct = {
             pyro: 0,
             hydro: 0,
             elect: 0,
@@ -475,14 +477,12 @@ class Enemy {
             return 100 / (value * 4 + 100);
         } else {
             // 1 - RES
-            return (100 - value) / 100
+            return (100 - value) / 100;
         }
     }
 }
 
-interface IDamageScaleList extends Record<DamageScale, number[]> { }
-
-const DAMAGE_SCALE: DeepReadonly<IDamageScaleList> = {
+const DAMAGE_SCALE: DeepReadonly<Record<DamageScale, number[]>> = {
     phys: [100.0, 108.0, 116.0, 127.5, 135.0, 145.0, 157.5, 170.0, 182.5, 197.5, 212.5,],
     elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0,],
     etc1: [100.0, 110.5, 121.5, 135.0, 147.0, 159.5, 175.5, 192.0, 208.0, 224.0, 240.5, 256.5, 270.0, 283.5, 297.0],
@@ -540,7 +540,7 @@ const TALENT_LV_MAX = 15;
 const ARTIFACT_STAR_MAX = 5;
 const ARTIFACT_LEVEL = [0, 0, 0, 12, 16, 20];
 
-const ARTIFACT_PARAM: DeepReadonly<IArtifactParam[]> = [
+const ARTIFACT_PARAM: DeepReadonly<ArtifactParam[]> = [
     // ☆☆☆
     {
         hp: { intercept: 430, slope: 121.8846154 }, // HP
@@ -587,11 +587,17 @@ function getArtifactParam(star: number, level: number, bonus: AnyBonusType): Nul
     }
 
     let param = ARTIFACT_PARAM[star - 3];
-    if (bonus in param) {
-        return param[bonus];
-    }
-
     switch (bonus) {
+        case StatusBonus.Hp:
+        case StatusBonus.Atk:
+        case StatusBonus.Def:
+        case StatusBonus.AtkBuf:
+        case StatusBonus.DefBuf:
+        case StatusBonus.EnRec:
+        case CriticalBonus.Rate:
+        case CriticalBonus.Damage:
+            return param[bonus];
+
         case StatusBonus.Elem:
             return param.def;
 
@@ -620,8 +626,8 @@ const ARTIFACT_SUB = [
     StatusBonus.DefBuf,
     StatusBonus.Elem,
     StatusBonus.EnRec,
-    StatusBonus.CriRate,
-    StatusBonus.CriDmg
+    CriticalBonus.Rate,
+    CriticalBonus.Damage
 ] as const;
 
 const ARTIFACT_SANDS = [
@@ -654,8 +660,8 @@ const ARTIFACT_CIRCLET = [
     StatusBonus.AtkBuf,
     StatusBonus.DefBuf,
     StatusBonus.Elem,
-    StatusBonus.CriRate,
-    StatusBonus.CriDmg
+    CriticalBonus.Rate,
+    CriticalBonus.Damage
 ] as const;
 
 const WEAPON_RANK_MAX = 5;

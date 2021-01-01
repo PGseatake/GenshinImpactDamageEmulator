@@ -11,7 +11,7 @@ const SWORD_LIST: DeepReadonly<IMap<IWeapon>> = {
         star: 5,
         second: StatusBonus.EnRec,
         // 会心率+4~8%
-        passive: { items: StatusBonus.CriRate, value: [4, 5, 6, 7, 8] },
+        passive: { items: CriticalBonus.Rate, value: [4, 5, 6, 7, 8] },
         // 元素爆発を使用すると衝天の勢いを獲得する:移動速度+10%、攻撃速度+10%、通常攻撃と重撃が命中する際に、攻撃力の20~40%の追加ダメージを与える、継続時間12秒。
     },
     AquilaFavonia: {
@@ -68,7 +68,7 @@ const SWORD_LIST: DeepReadonly<IMap<IWeapon>> = {
         star: 4,
         second: StatusBonus.AtkBuf,
         // 攻撃が敵にダメージを与えた時、会心率+8~16%、最大5重まで。攻撃会心発生時、効果をクリアにする。
-        passive: { items: StatusBonus.CriRate, value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 5 },
+        passive: { items: CriticalBonus.Rate, value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 5 },
     },
     PrototypeRancour: {
         name: "斬岩・試作",
@@ -87,14 +87,14 @@ const SWORD_LIST: DeepReadonly<IMap<IWeapon>> = {
     BlackcliffLongsword: {
         name: "黒岩の長剣",
         star: 4,
-        second: StatusBonus.CriDmg,
+        second: CriticalBonus.Damage,
         // 敵を倒したあと、攻撃力+12~24%、継続時間30秒、最大3重まで、継続時間は加算されず、重ごとに別カウントされる。
         passive: { items: StatusBonus.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     BlackSword: {
         name: "黒剣",
         star: 4,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         // 通常攻撃と重撃ダメージ+20~40%
         passive: { items: [CombatBonus.Normal, CombatBonus.Heavy], value: [20, 25, 30, 35, 40] },
         // さらに通常攻撃と重撃が会心時、攻撃力の60~100%分のHPを回復する。5秒に1回のみ発動可能。
@@ -115,7 +115,7 @@ const SWORD_LIST: DeepReadonly<IMap<IWeapon>> = {
             // 元素スキルのダメージ+16~32%
             { items: CombatBonus.Skill, value: [16, 20, 24, 28, 32] },
             // 元素スキルの会心率+6~12%
-            // { items: StatusBonus.SkillCri, value: [6, 7.5, 9, 10.5, 12] },
+            { items: CriticalBonus.Skill, value: [6, 7.5, 9, 10.5, 12] },
         ]
     },
     TravelersSword: {
@@ -149,9 +149,9 @@ const SWORD_LIST: DeepReadonly<IMap<IWeapon>> = {
     HarbingerDawn: {
         name: "黎明の神剣",
         star: 3,
-        second: StatusBonus.CriDmg,
+        second: CriticalBonus.Damage,
         // HPが90%以上の場合、会心率+14~28%。
-        passive: { items: StatusBonus.CriRate, value: [14, 17.5, 21, 24.5, 28], limit: "HP90%以上の時" },
+        passive: { items: CriticalBonus.Rate, value: [14, 17.5, 21, 24.5, 28], limit: "HP90%以上の時" },
     },
     SkyriderSword: {
         name: "飛天御剣",
@@ -233,7 +233,7 @@ const CLAYMORE_LIST: DeepReadonly<IMap<IWeapon>> = {
         star: 4,
         second: StatusBonus.AtkBuf,
         // 攻撃が敵にダメージを与えた時、会心率+8%、最大5重まで。攻撃会心発生時、効果をクリアにする。
-        passive: { items: StatusBonus.CriRate, value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 5 },
+        passive: { items: CriticalBonus.Rate, value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 5 },
     },
     PrototypeAminus: {
         name: "古華・試作",
@@ -252,14 +252,14 @@ const CLAYMORE_LIST: DeepReadonly<IMap<IWeapon>> = {
     BlackcliffSlasher: {
         name: "黒岩の斬刀",
         star: 4,
-        second: StatusBonus.CriDmg,
+        second: CriticalBonus.Damage,
         // 敵を倒したあと、攻撃力+12~24%、継続時間30秒、最大3重まで、継続時間は加算されず、重ごとに別カウントされる
         passive: { items: StatusBonus.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     SerpentSpine: {
         name: "螭龍の剣",
         star: 4,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         // フィールドにいる時、4秒毎に、与えるダメージ+6~10%、被ダメージ+3~1.8%。最大5重まで、退場後もリセットされず、攻撃を受けると効果数-1。
         passive: { items: StatusBonus.AnyDmg, value: [6, 7, 8, 9, 10], limit: "フィールドにいる時4秒毎", stack: 5 },
     },
@@ -317,7 +317,7 @@ const POLEARM_LIST: DeepReadonly<IMap<IWeapon>> = {
     PrimordialSpear: {
         name: "和璞鳶",
         star: 5,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         passive: [
             // 敵に命中した時、自身の攻撃力+3.2~6%、継続時間6秒、最大7重まで。0.3秒に最大1回発動でき、7重まで発動するとスキルダメージ+12~24%。
             { items: StatusBonus.AtkBuf, value: [3.2, 3.9, 4.6, 5.3, 6.0], limit: "敵に命中した時", times: 6, stack: 7 },
@@ -329,7 +329,7 @@ const POLEARM_LIST: DeepReadonly<IMap<IWeapon>> = {
         star: 5,
         second: StatusBonus.EnRec,
         // 会心率+8~16%、通常攻撃速度+12%。
-        passive: { items: StatusBonus.CriRate, value: [8, 10, 12, 14, 16] },
+        passive: { items: CriticalBonus.Rate, value: [8, 10, 12, 14, 16] },
         // 通常攻撃と重撃が命中時、50%の確率で真空刃を発動し、攻撃力の40~100%の狭範囲ダメージを与える。2秒毎に1回のみ発動可能。
     },
     VortexVanquisher: {
@@ -375,14 +375,14 @@ const POLEARM_LIST: DeepReadonly<IMap<IWeapon>> = {
     BlackcliffPole: {
         name: "黒岩の突槍",
         star: 4,
-        second: StatusBonus.CriDmg,
+        second: CriticalBonus.Damage,
         // 敵を倒したあと、攻撃力+12~24%、継続時間30秒、最大3重まで、継続時間は加算されず、重ごとに別カウントされる。
         passive: { items: StatusBonus.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     Deathmatch: {
         name: "死闘の槍",
         star: 4,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         passive: [
             // 近くに敵が2人以上いる時、攻撃力+16~32%、防御力+16~32%。
             { items: [StatusBonus.AtkBuf, StatusBonus.DefBuf], value: [16, 20, 24, 28, 32], limit: "近くに敵が2人以上いる時" },
@@ -408,7 +408,7 @@ const POLEARM_LIST: DeepReadonly<IMap<IWeapon>> = {
     WhiteTassel: {
         name: "白纓槍",
         star: 3,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         // 通常攻撃のダメージ+24~48%。
         passive: { items: CombatBonus.Normal, value: [24, 30, 36, 42, 48] },
     },
@@ -430,9 +430,9 @@ const BOW_LIST: DeepReadonly<IMap<IWeapon>> = {
     SkywardHarp: {
         name: "天空の翼",
         star: 5,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         // 会心ダメージ+20~40%。
-        passive: { items: StatusBonus.CriDmg, value: [20, 25, 30, 35, 40] },
+        passive: { items: CriticalBonus.Damage, value: [20, 25, 30, 35, 40] },
         // 攻撃が命中した時、60~100%の確率で狭範囲内の敵に攻撃力の125%の物理ダメージを与える。4~2秒毎に1回のみ発動可能。
     },
     AmosBow: {
@@ -482,7 +482,7 @@ const BOW_LIST: DeepReadonly<IMap<IWeapon>> = {
         star: 4,
         second: StatusBonus.AtkBuf,
         // 攻撃が敵にダメージを与えた時、会心率+8~16%、最大5重まで、攻撃会心発生時、効果をクリアにする。
-        passive: { items: StatusBonus.CriRate, value: [8, 10, 12, 14, 16], limit: "敵にダメージを与えた時", stack: 5 },
+        passive: { items: CriticalBonus.Rate, value: [8, 10, 12, 14, 16], limit: "敵にダメージを与えた時", stack: 5 },
     },
     PrototypeCrescent: {
         name: "澹月・試作",
@@ -501,14 +501,14 @@ const BOW_LIST: DeepReadonly<IMap<IWeapon>> = {
     BlackcliffWarbow: {
         name: "黒岩の戦弓",
         star: 4,
-        second: StatusBonus.CriDmg,
+        second: CriticalBonus.Damage,
         // 敵を倒した後、攻撃力+12~24％、継続時間30秒。最大3重まで、継続時間は加算されず、重ごとに別カウントされる。
         passive: { items: StatusBonus.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     ViridescentHunt: {
         name: "蒼翠の狩猟弓",
         star: 4,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         // 通常攻撃と重撃が命中時、50％の確率で風の目を生成し、近くの敵を吸い寄せる。
         // 0.5秒毎に攻撃力の40~80％のダメージを与える。継続時間4秒、14~10秒毎に1回のみ発動可能。
         // passive: null,
@@ -516,7 +516,7 @@ const BOW_LIST: DeepReadonly<IMap<IWeapon>> = {
     Messenger: {
         name: "文使い",
         star: 3,
-        second: StatusBonus.CriDmg,
+        second: CriticalBonus.Damage,
         // 狙い撃ち時、弱点に命中すると、追加で攻撃力の100~200%のダメージを与え、必ず会心ダメージになる。10秒毎に1回のみ発動可能。
         // passive: null,
     },
@@ -537,14 +537,14 @@ const BOW_LIST: DeepReadonly<IMap<IWeapon>> = {
     SharpshootersOath: {
         name: "シャープシューターの誓い",
         star: 3,
-        second: StatusBonus.CriDmg,
+        second: CriticalBonus.Damage,
         // 弱点に対するダメージ+24~48%。
         passive: { items: StatusBonus.AnyDmg, value: [24, 30, 36, 42, 48], limit: "弱点" },
     },
     Slingshot: {
         name: "弾弓",
         star: 3,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         // 通常攻撃又は狙い撃ちの時、矢が発射後0.3秒内に敵に命中すると、ダメージ+36~60%。0.3秒より長い場合、ダメージ-10%。
         passive: [
             // 通常攻撃又は狙い撃ちの時、矢が発射後0.3秒内に敵に命中すると、ダメージ+36~60%。
@@ -572,7 +572,7 @@ const CATALYST_LIST: DeepReadonly<IMap<IWeapon>> = {
     LostSacredWinds: {
         name: "四風原典",
         star: 5,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         // 移動速度+10%。
         // 出場中は4秒毎に元素ダメージ+8~16%、最大4重まで。キャラが退場または戦闘不能まで有効する。
         passive: { items: ElementBonus.Any, value: [8, 10, 12, 14, 16], limit: "出場中は4秒毎", stack: 4 },
@@ -599,7 +599,7 @@ const CATALYST_LIST: DeepReadonly<IMap<IWeapon>> = {
     TheWidsith: {
         name: "流浪楽章",
         star: 4,
-        second: StatusBonus.CriDmg,
+        second: CriticalBonus.Damage,
         // キャラ登場時、ランダムにテーマ曲を1つ獲得する、継続時間10秒。30秒ごとに1回のみ発動する。
         passive: [
             // 叙唱:攻撃力+60~120%
@@ -629,12 +629,12 @@ const CATALYST_LIST: DeepReadonly<IMap<IWeapon>> = {
         star: 4,
         second: StatusBonus.AtkBuf,
         // 攻撃が敵にダメージを与えた時、会心率+8~16%、最大5重まで。攻撃会心発生時、効果をクリアにする。
-        passive: { items: StatusBonus.CriRate, value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 6 },
+        passive: { items: CriticalBonus.Rate, value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 6 },
     },
     SolarPearl: {
         name: "匣中日月",
         star: 4,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         passive: [
             // 通常攻撃が命中した後、6秒間元素スキルと元素爆発のダメージ+20~40%。
             { items: [CombatBonus.Skill, CombatBonus.Burst], value: [20, 25, 30, 35, 40], limit: "通常攻撃が命中した時", times: 6 },
@@ -659,7 +659,7 @@ const CATALYST_LIST: DeepReadonly<IMap<IWeapon>> = {
     BlackcliffAmulet: {
         name: "黒岩の緋玉",
         star: 4,
-        second: StatusBonus.CriDmg,
+        second: CriticalBonus.Damage,
         // 敵を倒したあと、攻撃力+12~24%、継続時間30秒、最大3重まで、継続時間は加算されず、重ごとに別カウントされる
         passive: { items: StatusBonus.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
@@ -674,7 +674,7 @@ const CATALYST_LIST: DeepReadonly<IMap<IWeapon>> = {
     TwinNephrite: {
         name: "特級の宝玉",
         star: 3,
-        second: StatusBonus.CriRate,
+        second: CriticalBonus.Rate,
         // 敵を倒した後15秒間、移動速度と攻撃力+12~20%。
         passive: { items: StatusBonus.AtkBuf, value: [12, 14, 16, 18, 20], limit: "敵を倒した後", times: 15 },
     },
@@ -708,7 +708,7 @@ const CATALYST_LIST: DeepReadonly<IMap<IWeapon>> = {
     },
 } as const;
 
-interface IWeaponList extends IMap<IMap<IWeapon>>, Record<WeaponType, IMap<IWeapon>> { }
+interface IWeaponList extends Record<WeaponType, IMap<IWeapon>> { }
 
 const WEAPON_LIST: DeepReadonly<IWeaponList> = {
     sword: SWORD_LIST,

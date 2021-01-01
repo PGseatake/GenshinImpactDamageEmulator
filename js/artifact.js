@@ -1,5 +1,4 @@
 "use strict";
-// TODO: 多言語対応（ソース全体）
 const ARTIFACT_SET = {
     Adventurer: {
         name: "冒険者",
@@ -9,7 +8,6 @@ const ARTIFACT_SET = {
         name: "幸運",
         set2: { items: StatusBonus.Def, value: 100 },
     },
-    // Doctor: { name: "医者" },
     Instructor: {
         name: "教官",
         set2: { items: StatusBonus.Elem, value: 80 },
@@ -17,8 +15,8 @@ const ARTIFACT_SET = {
     },
     Berserker: {
         name: "狂戦士",
-        set2: { items: StatusBonus.CriRate, value: 12 },
-        set4: { items: StatusBonus.CriRate, value: 24, limit: "HP70%以下の時" },
+        set2: { items: CriticalBonus.Rate, value: 12 },
+        set4: { items: CriticalBonus.Rate, value: 24, limit: "HP70%以下の時" },
     },
     TheExile: {
         name: "亡命者",
@@ -27,7 +25,7 @@ const ARTIFACT_SET = {
     Sojourner: {
         name: "旅人の心",
         set2: { items: StatusBonus.AtkBuf, value: 18 },
-        set4: { items: StatusBonus.HeavyCri, value: 30 },
+        set4: { items: CriticalBonus.Heavy, value: 30 },
     },
     Artist: {
         name: "武人",
@@ -38,7 +36,6 @@ const ARTIFACT_SET = {
         name: "守護の心",
         set2: { items: StatusBonus.DefBuf, value: 30 },
     },
-    // Miracle: { name: "奇跡" },
     BraveHeart: {
         name: "勇士の心",
         set2: { items: StatusBonus.AtkBuf, value: 18 },
@@ -57,7 +54,6 @@ const ARTIFACT_SET = {
         set2: { items: StatusBonus.AtkBuf, value: 18 },
         set4: { items: CombatBonus.Normal, value: 35, limit: "片手剣、両手剣、長柄武器キャラの時" },
     },
-    // Maiden: { name: "愛される少女" },
     Noblesse: {
         name: "旧貴族のしつけ",
         set2: { items: CombatBonus.Burst, value: 20 },
@@ -85,7 +81,6 @@ const ARTIFACT_SET = {
     },
     Thundersoother: {
         name: "雷を鎮める尊者",
-        // set2: null,
         set4: { items: StatusBonus.AnyDmg, value: 35, limit: "雷元素の影響を受けた敵" },
     },
     CrimsonWitch: {
@@ -100,7 +95,6 @@ const ARTIFACT_SET = {
     },
     Lavawalker: {
         name: "烈火を渡る尊者",
-        // set2: null,
         set4: { items: StatusBonus.AnyDmg, value: 35, limit: "炎元素の影響を受けた敵" },
     },
     Petra: {
@@ -110,15 +104,14 @@ const ARTIFACT_SET = {
     },
     Bolide: {
         name: "逆飛びの流星",
-        // set2: null,
         set4: { items: [CombatBonus.Normal, CombatBonus.Heavy], value: 40, limit: "シールド状態の時" },
     },
     Icebreaker: {
         name: "氷風を彷徨う勇士",
         set2: { items: ElementBonus.Cryo, value: 15 },
         set4: [
-            { items: StatusBonus.CriRate, value: 20, limit: "氷元素の影響を受けた敵" },
-            { items: StatusBonus.CriRate, value: 20, limit: "凍結状態の敵" }
+            { items: CriticalBonus.Rate, value: 20, limit: "氷元素の影響を受けた敵" },
+            { items: CriticalBonus.Rate, value: 20, limit: "凍結状態の敵" }
         ]
     },
     OceanConqueror: {

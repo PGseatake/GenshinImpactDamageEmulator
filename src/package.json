@@ -1,5 +1,5 @@
 {
-    "name": "tsc",
+    "name": "gide",
     "version": "1.0.0",
     "description": "",
     "main": "",
@@ -7,7 +7,7 @@
         "tsc": "tsc"
     },
     "author": "",
-    "license": "",
+    "license": "ISC",
     "devDependencies": {
         "typescript": "^4.1.3"
     }

@@ -19,8 +19,8 @@ const ARTIFACT_SET: DeepReadonly<IMap<IArtifactSet>> = {
     },
     Berserker: {
         name: "狂戦士",
-        set2: { items: StatusBonus.CriRate, value: 12 },
-        set4: { items: StatusBonus.CriRate, value: 24, limit: "HP70%以下の時" },
+        set2: { items: CriticalBonus.Rate, value: 12 },
+        set4: { items: CriticalBonus.Rate, value: 24, limit: "HP70%以下の時" },
     },
     TheExile: {
         name: "亡命者",
@@ -30,7 +30,7 @@ const ARTIFACT_SET: DeepReadonly<IMap<IArtifactSet>> = {
     Sojourner: {
         name: "旅人の心",
         set2: { items: StatusBonus.AtkBuf, value: 18 },
-        set4: { items: StatusBonus.HeavyCri, value: 30 },
+        set4: { items: CriticalBonus.Heavy, value: 30 },
     },
     Artist: {
         name: "武人",
@@ -123,8 +123,8 @@ const ARTIFACT_SET: DeepReadonly<IMap<IArtifactSet>> = {
         name: "氷風を彷徨う勇士",
         set2: { items: ElementBonus.Cryo, value: 15 },
         set4: [
-            { items: StatusBonus.CriRate, value: 20, limit: "氷元素の影響を受けた敵" },
-            { items: StatusBonus.CriRate, value: 20, limit: "凍結状態の敵" }
+            { items: CriticalBonus.Rate, value: 20, limit: "氷元素の影響を受けた敵" },
+            { items: CriticalBonus.Rate, value: 20, limit: "凍結状態の敵" }
         ]
     },
     OceanConqueror: {

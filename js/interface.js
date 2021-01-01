@@ -16,11 +16,11 @@ const WeaponType = {
     Catalyst: "catalyst"
 };
 const WeaponTypes = [
-    "sword",
-    "claymore",
-    "polearm",
-    "bow",
-    "catalyst"
+    WeaponType.Sword,
+    WeaponType.Claymore,
+    WeaponType.Polearm,
+    WeaponType.Bow,
+    WeaponType.Catalyst
 ];
 const ArtifactType = {
     Flower: "flower",
@@ -30,62 +30,46 @@ const ArtifactType = {
     Circlet: "circlet"
 };
 const ArtifactTypes = [
-    "flower",
-    "feather",
-    "sands",
-    "goblet",
-    "circlet"
-];
-const ItemTypes = [
-    "sword",
-    "claymore",
-    "polearm",
-    "bow",
-    "catalyst",
-    "flower",
-    "feather",
-    "sands",
-    "goblet",
-    "circlet"
+    ArtifactType.Flower,
+    ArtifactType.Feather,
+    ArtifactType.Sands,
+    ArtifactType.Goblet,
+    ArtifactType.Circlet
 ];
 const EquipmentType = {
     Chara: "chara"
 };
 const EquipmentTypes = [
-    "chara",
-    "sword",
-    "claymore",
-    "polearm",
-    "bow",
-    "catalyst",
-    "flower",
-    "feather",
-    "sands",
-    "goblet",
-    "circlet"
+    EquipmentType.Chara,
+    WeaponType.Sword,
+    WeaponType.Claymore,
+    WeaponType.Polearm,
+    WeaponType.Bow,
+    WeaponType.Catalyst,
+    ArtifactType.Flower,
+    ArtifactType.Feather,
+    ArtifactType.Sands,
+    ArtifactType.Goblet,
+    ArtifactType.Circlet
 ];
+const CriticalBonus = {
+    Damage: "cri_dmg",
+    Rate: "cri_rate",
+    Heavy: "heavy_cri",
+    Skill: "skill_cri",
+};
 const StatusBonus = {
     Other: "other",
     Hp: "hp",
     HpBuf: "hp_buf",
     Atk: "atk",
     AtkBuf: "atk_buf",
-    // AtkBase: "atk_base",
     Def: "def",
     DefBuf: "def_buf",
     Elem: "elem",
     EnRec: "en_rec",
-    CriRate: "cri_rate",
-    CriDmg: "cri_dmg",
-    HeavyCri: "heavy_cri",
     AnyDmg: "any_dmg",
 };
-// const CriticalBonus = {
-//     Damage: "cri_dmg",
-//     Rate: "cri_rate",
-//     Heavy: "heavy_cri",
-//     Skill: "skill_cri",
-// } as const;
 const CombatBonus = {
     Normal: "normal_dmg",
     Heavy: "heavy_dmg",
@@ -103,7 +87,6 @@ const ElementBonus = {
     Any: "elem_dmg"
 };
 const ReactionBonus = {
-    // Burning: "burning_dmg",
     Vaporize: "vaporize_dmg",
     Melt: "melt_dmg",
     Swirl: "swirl_dmg",
@@ -112,10 +95,11 @@ const ReactionBonus = {
     Conduct: "conduct_dmg",
     Overload: "overload_dmg"
 };
-const ReactionType = {
+const ReactionBase = {
     Amplify: "ampl",
     Transform: "trans",
-    // Burning: "burning",
+};
+const ReactionType = {
     Vaporize: "vaporize",
     Melt: "melt",
     Swirl: "swirl",
@@ -128,7 +112,7 @@ const CombatType = {
     Normal: "normal",
     Heavy: "heavy",
     Skill: "skill",
-    Burst: "burst"
+    Burst: "burst",
 };
 const DamageScale = {
     Phys: "phys",
@@ -149,6 +133,17 @@ const CombatElementType = {
     Switch: "switch",
     AddElem: "addem"
 };
-function contains(list, value) {
-    return 0 <= list.indexOf(value);
-}
+const TypeToBonus = {
+    element(type) {
+        return type + "_dmg";
+    },
+    combat(type) {
+        return type + "_dmg";
+    },
+    reaction(type) {
+        return type + "_dmg";
+    },
+    buffer(type) {
+        return type + "_buf";
+    },
+};

@@ -507,7 +507,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 729, 784
             ]
         },
-        special: StatusBonus.CriRate,
+        special: CriticalBonus.Rate,
         spvalue: [0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
         talent: {
             combat: [
@@ -796,7 +796,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 743, 800
             ]
         },
-        special: StatusBonus.CriDmg,
+        special: CriticalBonus.Damage,
         spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
         talent: {
             combat: [

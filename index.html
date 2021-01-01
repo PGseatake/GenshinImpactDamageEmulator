@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>G.I.D.E.</title>
     <link rel="stylesheet" href="./css/style.css">
+    <script type="text/javascript" src="./js/extensions.js"></script>
     <script type="text/javascript" src="./js/interface.js"></script>
     <script type="text/javascript" src="./js/param.js"></script>
     <script type="text/javascript" src="./js/character.js"></script>
@@ -21,7 +22,7 @@
         <button type="button" onclick="Table.clearConfirm(true)">全削除</button>
         <button type="button" onclick="Table.exportData()">エクスポート</button>
         <button type="button" onclick="Table.importConfirm()">インポート</button>
-        <input id="import" class="import" type="file" accept=".json" onchange="Table.importData()">
+        <input id="import" type="file" accept=".json" onchange="Table.importData()">
     </div>
     <div class="tab_wrap">
         <input id="tab_equip" type="radio" name="TAB" class="tab_switch" checked="checked" onclick="refreshTable('equip')" />
@@ -54,13 +55,13 @@
                 <tbody>
                     <tr>
                         <th>装備</th>
-                        <th rowspan="30"></th>
+                        <th rowspan="31"></th>
                         <td id="chara1" colspan="2"><select onchange="TeamTable.changeMember(0, this)"></select></td>
-                        <th rowspan="30"></th>
+                        <th rowspan="31"></th>
                         <td id="chara2" colspan="2"><select onchange="TeamTable.changeMember(1, this)"></select></td>
-                        <th rowspan="30"></th>
+                        <th rowspan="31"></th>
                         <td id="chara3" colspan="2"><select onchange="TeamTable.changeMember(2, this)"></select></td>
-                        <th rowspan="30"></th>
+                        <th rowspan="31"></th>
                         <td id="chara4" colspan="2"><select onchange="TeamTable.changeMember(3, this)"></select></td>
                     </tr>
                     <tr>
@@ -356,7 +357,18 @@
                         <td>-</td>
                         <td>+0.0%</td>
                     </tr>
-                    <tr id="skill_dmg">
+                    <tr id="skill_cri">
+                        <th>スキル会心率</th>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                        <td>-</td>
+                        <td>+0.0%</td>
+                    </tr>
+                    <tr id="burst_dmg">
                         <th>元素爆発ダメ</th>
                         <td>-</td>
                         <td>+0.0%</td>

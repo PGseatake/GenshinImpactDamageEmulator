@@ -13,7 +13,7 @@ function removeWithoutFirstChild(elem: HTMLElement) {
 type EventListenerList = Nullable<Partial<Record<keyof HTMLElementEventMap, EventListener>>>;
 type HTMLCellElement = HTMLTableDataCellElement;
 type HTMLRowElement = HTMLTableRowElement;
-type HTMLElementList = NodeListOf<HTMLElement>
+type HTMLElementList = NodeListOf<HTMLElement>;
 
 interface IValueProp {
     value: string;
@@ -26,6 +26,10 @@ interface ITruthProp {
 interface HTMLTruthElement extends HTMLInputElement, ITruthProp { }
 
 type CellData = Arrayable<string>;
+
+interface INumberCell {
+    build(cell: HTMLCellElement, value: string | number): HTMLTruthElement;
+}
 
 // テーブルについて
 // 基本的に各要素の name は使用しない
@@ -53,7 +57,7 @@ class Cell {
         return null;
     }
 
-    value(cell: HTMLCellElement): any {
+    value(cell: HTMLCellElement): unknown {
         return null;
     }
 
@@ -65,7 +69,7 @@ class Cell {
         return null;
     }
 
-    update(cell: HTMLCellElement, ...args: any[]) {
+    update(cell: HTMLCellElement, ...args: unknown[]) {
     }
 
     protected listen<T extends HTMLElement>(cell: HTMLCellElement, child: T): T {
@@ -79,10 +83,6 @@ class Cell {
         cell.appendChild(child);
         return child;
     }
-}
-
-interface INumberCell {
-    build(cell: HTMLCellElement, value: string | number): HTMLTruthElement;
 }
 
 // 整数セル
@@ -272,7 +272,7 @@ class IndexCell extends Cell {
 }
 
 // キャラクター基礎ステータスセル
-class BaseParamCell extends IntCell {
+class CharaStatusCell extends IntCell {
     update(cell: HTMLCellElement, name: string, level: string) {
         const status = CHARACTER[name].status;
         if (!!status) {
@@ -297,6 +297,69 @@ class BaseParamCell extends IntCell {
             input.value = value.toFixed(); // TODO: 切り捨て・四捨五入など要検証
             input.truth = value;
         }
+    }
+}
+
+// 突破レベルセル
+class AscensionLevelCell extends Cell {
+    static step(level: string): IAscensionLevel {
+        if (0 < level.indexOf("+")) {
+            const lv = parseInt(level.replace("+", ""));
+            return { level: lv, index: ASCENSION_LV_STEP.indexOf(lv) + 1 };
+        } else {
+            const lv = parseInt(level);
+            for (let i = 0; i < ASCENSION_LV_STEP.length; ++i) {
+                if (lv <= ASCENSION_LV_STEP[i]) {
+                    return { level: lv, index: i };
+                }
+            }
+            return { level: lv, index: ASCENSION_LV_STEP.length };
+        }
+    }
+
+    get initial(): string {
+        return "1";
+    }
+
+    value(cell: HTMLCellElement): string {
+        let select = cell.firstElementChild as HTMLSelectElement;
+        return select.value;
+    }
+
+    save(cell: HTMLCellElement): string {
+        let select = cell.firstElementChild as HTMLSelectElement;
+        return select.value;
+    }
+
+    load(cell: HTMLCellElement, id: string, values: IMap<string>): HTMLSelectElement {
+        // 正規化
+        let value = values[id];
+        if (isNaN(parseInt(value.replace("+", "")))) {
+            value = "1";
+        }
+
+        let child = document.createElement("select");
+        // 連番option追加
+        for (let i = 1; i <= ASCENSION_LV_MAX; ++i) {
+            let lv = i.toString();
+            let opt = document.createElement("option");
+            opt.value = lv;
+            opt.label = lv;
+            opt.selected = (value === lv);
+            child.appendChild(opt);
+
+            // 特定のレベルで突破分を追加
+            if (ASCENSION_LV_STEP.contains(i)) {
+                lv += "+";
+                opt = document.createElement("option");
+                opt.value = lv;
+                opt.label = lv;
+                opt.selected = (value === lv);
+                child.appendChild(opt);
+            }
+        }
+
+        return this.listen(cell, child);
     }
 }
 
@@ -391,77 +454,8 @@ class ArtifactLevelCell extends RangeCell {
     }
 }
 
-interface IAscensionLevel {
-    level: number;
-    index: number;
-}
-
-// 突破レベルセル
-class AscensionLevelCell extends Cell {
-    static step(level: string): IAscensionLevel {
-        if (0 < level.indexOf("+")) {
-            const lv = parseInt(level.replace("+", ""));
-            return { level: lv, index: ASCENSION_LV_STEP.indexOf(lv) + 1 }
-        } else {
-            const lv = parseInt(level);
-            for (let i = 0; i < ASCENSION_LV_STEP.length; ++i) {
-                if (lv <= ASCENSION_LV_STEP[i]) {
-                    return { level: lv, index: i }
-                }
-            }
-            return { level: lv, index: ASCENSION_LV_STEP.length }
-        }
-    }
-
-    get initial(): string {
-        return "1";
-    }
-
-    value(cell: HTMLCellElement): string {
-        let select = cell.firstElementChild as HTMLSelectElement;
-        return select.value;
-    }
-
-    save(cell: HTMLCellElement): string {
-        let select = cell.firstElementChild as HTMLSelectElement;
-        return select.value;
-    }
-
-    load(cell: HTMLCellElement, id: string, values: IMap<string>): HTMLSelectElement {
-        // 正規化
-        let value = values[id];
-        if (isNaN(parseInt(value.replace("+", "")))) {
-            value = "1";
-        }
-
-        let child = document.createElement("select");
-        // 連番option追加
-        for (let i = 1; i <= ASCENSION_LV_MAX; ++i) {
-            let lv = i.toString();
-            let opt = document.createElement("option");
-            opt.value = lv;
-            opt.label = lv;
-            opt.selected = (value === lv);
-            child.appendChild(opt);
-
-            // 特定のレベルで突破分を追加
-            if (0 <= ASCENSION_LV_STEP.indexOf(i)) {
-                lv += "+";
-                opt = document.createElement("option");
-                opt.value = lv;
-                opt.label = lv;
-                opt.selected = (value === lv);
-                child.appendChild(opt);
-            }
-        }
-
-        return this.listen(cell, child);
-    }
-}
-
-// マップセル
-// key:value の配列を処理する
-class MapCell extends Cell {
+// 聖遺物名セル
+class ArtifactCell extends Cell {
     private map: DeepReadonly<IMap<string>>;
 
     constructor(map: DeepReadonly<IMap<string>>, listeners: EventListenerList = null) {
@@ -503,9 +497,8 @@ class MapCell extends Cell {
     }
 }
 
-// 辞書セル
-// key:{"name":value} の配列を処理する
-class DictCell extends Cell {
+// 名前セル
+class NameCell extends Cell {
     private dict: DeepReadonly<IMap<INameable>>;
 
     constructor(dict: DeepReadonly<IMap<INameable>>, listeners: EventListenerList = null) {
@@ -547,14 +540,10 @@ class DictCell extends Cell {
     }
 }
 
-interface INumberBonus {
-    readonly name: string;
-    readonly init: string;
-    cell(listeners: EventListenerList): INumberCell;
-}
+type NumberCell = IntCell | RateCell | EmptyCell;
 
-// 整数ボーナス
-class IntBonus implements INumberBonus {
+// 数値ボーナス
+class NumberBonus {
     public name: string;
 
     constructor(type: AnyBonusType) {
@@ -565,19 +554,20 @@ class IntBonus implements INumberBonus {
         return "0";
     }
 
+    cell(listeners: EventListenerList): NumberCell {
+        return new EmptyCell();
+    }
+}
+
+// 整数ボーナス
+class IntBonus extends NumberBonus {
     cell(listeners: EventListenerList): IntCell {
         return new IntCell(listeners);
     }
 }
 
 // 割合ボーナス
-class RateBonus implements INumberBonus {
-    public name: string;
-
-    constructor(type: AnyBonusType) {
-        this.name = BONUS_LABEL[type].select;
-    }
-
+class RateBonus extends NumberBonus {
     get init(): string {
         return "0.0";
     }
@@ -587,28 +577,8 @@ class RateBonus implements INumberBonus {
     }
 }
 
-// 空のボーナス
-class EmptyBonus implements INumberBonus {
-    public name: string;
-
-    constructor(type: AnyBonusType) {
-        this.name = BONUS_LABEL[type].select;
-    }
-
-    get init(): string {
-        return "0.0";
-    }
-
-    cell(listeners: EventListenerList): EmptyCell {
-        return new EmptyCell();
-    }
-}
-
-type BonusValueType = Exclude<StatusBonus | ElementBonus, "any_dmg" | "heavy_cri" | "elem_dmg">;
-interface IBonusValueList extends IMap<INumberBonus>, Record<BonusValueType, INumberBonus> { }
-
-const BonusValueList: Readonly<IBonusValueList> = {
-    other: new EmptyBonus(StatusBonus.Other),
+const BonusValueList: Readonly<Record<BonusValueType, NumberBonus>> = {
+    other: new NumberBonus(StatusBonus.Other),
     hp: new IntBonus(StatusBonus.Hp),
     hp_buf: new RateBonus(StatusBonus.HpBuf),
     atk: new IntBonus(StatusBonus.Atk),
@@ -617,8 +587,8 @@ const BonusValueList: Readonly<IBonusValueList> = {
     def_buf: new RateBonus(StatusBonus.DefBuf),
     elem: new IntBonus(StatusBonus.Elem),
     en_rec: new RateBonus(StatusBonus.EnRec),
-    cri_rate: new RateBonus(StatusBonus.CriRate),
-    cri_dmg: new RateBonus(StatusBonus.CriDmg),
+    cri_rate: new RateBonus(CriticalBonus.Rate),
+    cri_dmg: new RateBonus(CriticalBonus.Damage),
     pyro_dmg: new RateBonus(ElementBonus.Pyro),
     hydro_dmg: new RateBonus(ElementBonus.Hydro),
     elect_dmg: new RateBonus(ElementBonus.Elect),
@@ -628,16 +598,11 @@ const BonusValueList: Readonly<IBonusValueList> = {
     phys_dmg: new RateBonus(ElementBonus.Phys),
 } as const;
 
-interface IBonusValue {
-    bonus: AnyBonusType;
-    value: number;
-}
-
 // ボーナスセル
 class BonusCell extends Cell {
-    protected list: ReadonlyArray<AnyBonusType>;
+    protected list: ReadonlyArray<BonusValueType>;
 
-    constructor(list: ReadonlyArray<AnyBonusType>, listeners: EventListenerList = null) {
+    constructor(list: ReadonlyArray<BonusValueType>, listeners: EventListenerList = null) {
         super(listeners);
         this.list = list;
     }
@@ -645,14 +610,10 @@ class BonusCell extends Cell {
     value(cell: HTMLCellElement): IBonusValue {
         let child1 = cell.firstElementChild as HTMLSelectElement;
         let child2 = child1.nextElementSibling as HTMLTruthElement;
-        return { bonus: child1.value as AnyBonusType, value: child2.truth }
+        return { type: child1.value as BonusValueType, value: child2.truth };
     }
 
-    protected exists(value: AnyBonusType): boolean {
-        return 0 <= this.list.indexOf(value);
-    }
-
-    protected select(value: AnyBonusType): HTMLSelectElement {
+    protected select(value: BonusValueType): HTMLSelectElement {
         const count = this.list.length;
         let child = document.createElement("select");
         child.disabled = (count === 1);
@@ -673,7 +634,7 @@ class BonusCell extends Cell {
 }
 
 // キャラクター追加効果セル
-class SpecialCell extends BonusCell {
+class CharaSpecialCell extends BonusCell {
     constructor() {
         super([]);
     }
@@ -682,6 +643,11 @@ class SpecialCell extends BonusCell {
         cell.className = "bonus";
         this.build(cell, values.name, values.level);
         return null;
+    }
+
+    update(cell: HTMLCellElement, name: string, level: string) {
+        removeChildren(cell);
+        this.build(cell, name, level);
     }
 
     private build(cell: HTMLCellElement, name: string, level: string) {
@@ -698,16 +664,20 @@ class SpecialCell extends BonusCell {
         let builder = BonusValueList[bonus].cell(null);
         builder.build(cell, value).disabled = true;
     }
-
-    update(cell: HTMLCellElement, name: string, level: string) {
-        removeChildren(cell);
-        this.build(cell, name, level);
-    }
 }
 
 // ボーナスリストセル
 class BonusListCell extends BonusCell {
-    protected build(cell: HTMLCellElement, astar: string, alevel: string, bonus: AnyBonusType): HTMLSelectElement {
+    update(cell: HTMLCellElement, star: number, level: number) {
+        removeWithoutFirstChild(cell);
+
+        let select = cell.firstElementChild as HTMLSelectElement;
+        let bonus = select.value as BonusValueType;
+        let builder = BonusValueList[bonus].cell(this.listeners);
+        builder.build(cell, this.param(star, level, bonus)).disabled = true;
+    }
+
+    protected build(cell: HTMLCellElement, astar: string, alevel: string, bonus: BonusValueType): HTMLSelectElement {
         let child = this.listen(cell, this.select(bonus));
 
         let star = parseInt(astar);
@@ -725,15 +695,6 @@ class BonusListCell extends BonusCell {
         return child;
     }
 
-    update(cell: HTMLCellElement, star: number, level: number) {
-        removeWithoutFirstChild(cell);
-
-        let select = cell.firstElementChild as HTMLSelectElement;
-        let bonus = select.value as AnyBonusType;
-        let builder = BonusValueList[bonus].cell(this.listeners);
-        builder.build(cell, this.param(star, level, bonus)).disabled = true;
-    }
-
     protected param(star: number, level: number, bonus: AnyBonusType): number {
         let param = getArtifactParam(star, level, bonus);
         if (!!param) {
@@ -745,7 +706,7 @@ class BonusListCell extends BonusCell {
 
 // 聖遺物単体ボーナスセル
 class SingleBonusCell extends BonusListCell {
-    constructor(bonus: AnyBonusType, listeners: EventListenerList = null) {
+    constructor(bonus: BonusValueType, listeners: EventListenerList = null) {
         super([bonus], listeners);
     }
 
@@ -774,8 +735,8 @@ class MultiBonusCell extends BonusListCell {
         cell.className = "bonus";
 
         // 正規化
-        let value = values[id] as AnyBonusType;
-        if (!this.exists(value)) {
+        let value = values[id] as BonusValueType;
+        if (!this.list.contains(value)) {
             value = this.list[0];
         }
 
@@ -783,17 +744,17 @@ class MultiBonusCell extends BonusListCell {
     }
 }
 
-type BonusValueTuple = [AnyBonusType, string];
+type BonusValueTuple = [BonusValueType, string];
 
 interface IBonusValueEventListener extends EventListenerObject {
-    listeners: EventListenerList
+    listeners: EventListenerList;
 }
 
 // ボーナス値セル
 class BonusValueCell extends BonusCell {
     private onChange: IBonusValueEventListener;
 
-    constructor(list: ReadonlyArray<AnyBonusType>, listeners: EventListenerList = null) {
+    constructor(list: ReadonlyArray<BonusValueType>, listeners: EventListenerList = null) {
         super(list, listeners);
         this.onChange = {
             listeners: listeners,
@@ -802,13 +763,13 @@ class BonusValueCell extends BonusCell {
                 let cell = select.parentElement as HTMLCellElement;
                 removeWithoutFirstChild(cell);
 
-                let bonus = BonusValueList[select.value];
+                let bonus = BonusValueList[select.value as BonusValueType];
                 bonus.cell(this.listeners).build(cell, bonus.init);
             }
-        }
+        };
     }
 
-    get initial(): string[] {
+    get initial(): BonusValueTuple {
         const type = this.list[0];
         return [type, BonusValueList[type].init];
     }
@@ -824,14 +785,14 @@ class BonusValueCell extends BonusCell {
 
         // 正規化
         let pair = values[id] as BonusValueTuple;
-        if (!Array.isArray(pair) || !this.exists(pair[0])) {
-            pair = this.initial as BonusValueTuple;
+        if (!Array.isArray(pair) || !this.list.contains(pair[0])) {
+            pair = this.initial;
         }
 
         return this.build(cell, pair[0], pair[1]);
     }
 
-    protected build(cell: HTMLCellElement, type: AnyBonusType, value: string): HTMLTruthElement {
+    protected build(cell: HTMLCellElement, type: BonusValueType, value: string): HTMLTruthElement {
         let child = this.select(type);
         // onChangeを先に実行させる
         child.addEventListener("change", this.onChange);
@@ -872,7 +833,7 @@ class SecondBonusCell extends BonusValueCell {
 type ItoDetail = (cell: HTMLCellElement, row: HTMLRowElement) => void;
 
 interface IEquipmentEventListener extends EventListenerObject {
-    type: EquipmentType
+    type: EquipmentType;
 }
 
 // 装備セル
@@ -890,7 +851,7 @@ class EquipmentCell extends Cell {
         let elem = row.querySelector("td#" + id);
         if (!!elem) {
             let child = elem.firstElementChild as HTMLValueElement;
-            let type = child.value;
+            let type = child.value as BonusValueType;
             if ((type in BonusValueList) && (type !== StatusBonus.Other)) {
                 const bonus = BonusValueList[type];
                 const label = bonus.name.replace("(%)", "");
@@ -948,7 +909,7 @@ class EquipmentCell extends Cell {
         this.onChange = {
             type: type,
             handleEvent(e: Event) {
-                let select = e.target as HTMLSelectElement
+                let select = e.target as HTMLSelectElement;
                 let cell = select.parentElement as HTMLCellElement;
                 removeWithoutFirstChild(cell);
 
@@ -957,7 +918,7 @@ class EquipmentCell extends Cell {
                     EquipmentCell.DetailTable[this.type](cell, item as HTMLRowElement);
                 }
             }
-        }
+        };
     }
 
     get initial(): string {
@@ -992,6 +953,13 @@ class EquipmentCell extends Cell {
         return this.build(cell, value, this.items);
     }
 
+    update(cell: HTMLCellElement, items: HTMLElementList) {
+        let row = this.value(cell);
+        const index = !!row ? (row.rowIndex - 2) : 0;
+        removeChildren(cell);
+        this.build(cell, index, items);
+    }
+
     private build(cell: HTMLCellElement, index: number, items: HTMLElementList): HTMLSelectElement {
         let child = document.createElement("select");
         for (let i = 0, len = items.length; i < len; ++i) {
@@ -1023,13 +991,6 @@ class EquipmentCell extends Cell {
 
         return child;
     }
-
-    update(cell: HTMLCellElement, items: HTMLElementList) {
-        let row = this.value(cell);
-        const index = !!row ? (row.rowIndex - 2) : 0;
-        removeChildren(cell);
-        this.build(cell, index, items);
-    }
 }
 
 // 装備武器セル
@@ -1045,7 +1006,7 @@ class EquipWeaponCell extends Cell {
             polearm: new EquipmentCell(WeaponType.Polearm, listeners),
             bow: new EquipmentCell(WeaponType.Bow, listeners),
             catalyst: new EquipmentCell(WeaponType.Catalyst, listeners)
-        }
+        };
     }
 
     get initial(): string {
@@ -1111,11 +1072,12 @@ class BaseParam extends Param {
             cell.textContent = "0";
             (cell.nextElementSibling as HTMLCellElement).textContent = "0";
         } else {
-            const base = status.base[this.type];
+            const type = this.type as CharaStatusType;
+            const base = status.base[type];
             cell.textContent = base.toString();
 
-            const add = status.param[this.type];
-            const buf = status.param[this.type + "_buf"];
+            const add = status.param[type];
+            const buf = status.param[TypeToBonus.buffer(type)];
             (cell.nextElementSibling as HTMLCellElement).textContent = this.text(base, add, buf);
         }
     }
@@ -1164,7 +1126,7 @@ class DamageParam extends RateParam {
 
 // 元素反応パラメータ向け
 class ElemReactParam extends RateParam {
-    private base: ReactionType;
+    private base: ReactionBase;
 
     constructor(param: BonusType) {
         super(param);
@@ -1172,10 +1134,10 @@ class ElemReactParam extends RateParam {
         switch (param) {
             case ReactionBonus.Melt:
             case ReactionBonus.Vaporize:
-                this.base = ReactionType.Amplify;
+                this.base = ReactionBase.Amplify;
                 break;
             default:
-                this.base = ReactionType.Transform;
+                this.base = ReactionBase.Transform;
                 break;
         }
     }

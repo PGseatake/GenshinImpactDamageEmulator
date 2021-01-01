@@ -1,15 +1,12 @@
 "use strict";
-// TODO: 多言語対応（ソース全体）
 const CHARACTER = {
     other: {
         name: "-",
         star: 1,
         element: ElementType.Anemo,
         weapon: WeaponType.Sword,
-        // Lv[1, 20, 20+, 40, 40+, 50, 50+, 60, 60+, 70, 70+, 80, 80+, 90]
         status: null,
         special: StatusBonus.Other,
-        // Lv[1, 20+, 40+, 50+, 60+, 70+, 80+]
         spvalue: null,
         talent: null
     },
@@ -506,7 +503,7 @@ const CHARACTER = {
                 729, 784
             ]
         },
-        special: StatusBonus.CriRate,
+        special: CriticalBonus.Rate,
         spvalue: [0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
         talent: {
             combat: [
@@ -795,7 +792,7 @@ const CHARACTER = {
                 743, 800
             ]
         },
-        special: StatusBonus.CriDmg,
+        special: CriticalBonus.Damage,
         spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
         talent: {
             combat: [
@@ -1460,16 +1457,6 @@ const CHARACTER = {
             ]
         }
     },
-    // Xiao: {
-    //     name: "魈",
-    //     star: 5,
-    //     element: ElementType.Anemo,
-    //     weapon: WeaponType.Polearm,
-    //     status: null,
-    //     special: StatusBonus.Other,
-    //     spvalue: null,
-    //     talent: null
-    // },
     Xingqiu: {
         name: "行秋",
         star: 4,
@@ -1644,7 +1631,6 @@ const CHARACTER = {
         }
     },
 };
-// https://bbs.mihoyo.com/ys/article/2160993
 const ENEMY_LIST = {
     SlimePyro: {
         name: "スライム・炎",
