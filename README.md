@@ -1,4 +1,6 @@
-# GenshinImpactDamageEmulator
+# G.I.D.E. (Genshin Impact Damage Emulator)
+
+読み方は「ジード」
 
 ## はじめに
 
@@ -20,7 +22,7 @@ $ npm run tsc
 
 ## 更新履歴
 
-* Ver. 0.3.3 (2020/12/31)
+* Ver. 0.3.3 (2021/01/01)
   * TypeScriptに移行
 * Ver. 0.1.0 (2020/11/25)
   * 初版

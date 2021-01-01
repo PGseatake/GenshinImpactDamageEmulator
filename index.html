@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Genshin Impact Damage Emulator</title>
+    <title>G.I.D.E.</title>
     <link rel="stylesheet" href="./css/style.css">
+    <script type="text/javascript" src="./js/interface.js"></script>
     <script type="text/javascript" src="./js/param.js"></script>
     <script type="text/javascript" src="./js/class.js"></script>
     <script type="text/javascript" src="./js/character.js"></script>
@@ -429,37 +430,37 @@
                         <th>耐性</th>
                         <th>倍率</th>
                     </tr>
-                    <tr id="resist_pyro">
+                    <tr id="pyro">
                         <th class="pyro">炎元素</th>
                         <td class="pyro">0%</td>
                         <td class="pyro">0.0%</td>
                     </tr>
-                    <tr id="resist_hydro">
+                    <tr id="hydro">
                         <th class="hydro">水元素</th>
                         <td class="hydro">0%</td>
                         <td class="hydro">0.0%</td>
                     </tr>
-                    <tr id="resist_elect">
+                    <tr id="elect">
                         <th class="elect">雷元素</th>
                         <td class="elect">0%</td>
                         <td class="elect">0.0%</td>
                     </tr>
-                    <tr id="resist_anemo">
+                    <tr id="anemo">
                         <th class="anemo">風元素</th>
                         <td class="anemo">0%</td>
                         <td class="anemo">0.0%</td>
                     </tr>
-                    <tr id="resist_cryo">
+                    <tr id="cryo">
                         <th class="cryo">氷元素</th>
                         <td class="cryo">0%</td>
                         <td class="cryo">0.0%</td>
                     </tr>
-                    <tr id="resist_geo">
+                    <tr id="geo">
                         <th class="geo">岩元素</th>
                         <td class="geo">0%</td>
                         <td class="geo">0.0%</td>
                     </tr>
-                    <tr id="resist_phys">
+                    <tr id="phys">
                         <th class="phys">物理</th>
                         <td class="phys">0%</td>
                         <td class="phys">0.0%</td>
@@ -519,7 +520,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('chara')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('chara')">+</button>
         </div>
         <input id="tab_sword" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_sword">片手剣</label>
@@ -538,7 +539,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('sword')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('sword')">+</button>
         </div>
         <input id="tab_claymore" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_claymore">両手剣</label>
@@ -557,7 +558,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('claymore')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('claymore')">+</button>
         </div>
         <input id="tab_polearm" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_polearm">長柄武器</label>
@@ -576,7 +577,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('polearm')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('polearm')">+</button>
         </div>
         <input id="tab_bow" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_bow">弓</label>
@@ -595,7 +596,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('bow')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('bow')">+</button>
         </div>
         <input id="tab_catalyst" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_catalyst">法器</label>
@@ -614,7 +615,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('catalyst')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('catalyst')">+</button>
         </div>
         <input id="tab_flower" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_flower">生の花</label>
@@ -636,7 +637,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('flower')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('flower')">+</button>
         </div>
         <input id="tab_feather" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_feather">死の羽</label>
@@ -658,7 +659,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('feather')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('feather')">+</button>
         </div>
         <input id="tab_sands" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_sands">時の砂</label>
@@ -680,7 +681,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('sands')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('sands')">+</button>
         </div>
         <input id="tab_goblet" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_goblet">空の杯</label>
@@ -702,7 +703,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('goblet')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('goblet')">+</button>
         </div>
         <input id="tab_circlet" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_circlet">理の冠</label>
@@ -724,11 +725,12 @@
                 </thead>
                 <tbody></tbody>
             </table>
-            <button type="button" onclick="Table.insertRow('circlet')">+</button>
+            <button type="button" onclick="ItemTable.insertRow('circlet')">+</button>
         </div>
         <input id="tab_help" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_help">ヘルプ</label>
         <div class="tab_content">
+            <h2>Genshin Impact Damage Emulator</h2>
             <h3>使い方</h3>
             <ol>
                 <li>[キャラクター]～[理の冠]タブで各種値を設定します。</li>
@@ -754,6 +756,13 @@
         <input id="tab_history" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_history">更新履歴</label>
         <div class="tab_content">
+            <h4>Ver. 0.3.3 (2021/01/01)</h4>
+            <ul>
+                <li>ディルックの会心率が5%高くなっていた問題を修正</li>
+                <li>聖遺物「氷風を彷徨う勇士」セット・理の冠の名前誤りを修正</li>
+                <li>チーム・ボーナス・ダメージタブの内容を変更しても、タイトルの更新マークが付かないように修正</li>
+                <li>（アプリ名を「G.I.D.E.」"ジード" に変更）</li>
+            </ul>
             <h4>Ver. 0.3.2 (2020/12/25)</h4>
             <ul>
                 <li>以下のキャラクターと装備品を追加</li>
