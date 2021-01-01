@@ -507,7 +507,7 @@ const CHARACTER = {
             ]
         },
         special: StatusBonus.CriRate,
-        spvalue: [5.0, 5.0, 9.8, 14.6, 14.6, 19.4, 24.2],
+        spvalue: [0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 89.7 },

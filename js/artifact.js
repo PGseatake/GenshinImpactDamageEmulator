@@ -274,6 +274,6 @@ const CIRCLET_LIST = {
     Lavawalker: "火渡りの知恵",
     Petra: "不動玄石の相",
     Bolide: "夏祭りの仮面",
-    Icebreaker: "霜を纏った気骨",
+    Icebreaker: "氷雪を踏む音",
     OceanConqueror: "酒に漬けた帽子",
 };
