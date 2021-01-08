@@ -1766,6 +1766,18 @@ const ENEMY_LIST = {
             phys: 10
         }
     },
+    SamachurlCryo: {
+        name: "ヒルチャールシャーマン・氷",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 50,
+            geo: 10,
+            phys: 10
+        }
+    },
     SamachurlGeo: {
         name: "ヒルチャールシャーマン・岩",
         resist: {
@@ -1802,7 +1814,7 @@ const ENEMY_LIST = {
             phys: 10
         }
     },
-    Lawachurl: {
+    LawachurlGeo: {
         name: "ヒルチャール・岩兜の王",
         resist: {
             pyro: 10,
@@ -1814,8 +1826,32 @@ const ENEMY_LIST = {
             phys: 50
         },
     },
+    LawachurlCryo: {
+        name: "ヒルチャール・霜鎧の王",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 70,
+            geo: 10,
+            phys: 50
+        },
+    },
     RuinGuard: {
         name: "遺跡守衛",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 10,
+            phys: 70
+        },
+    },
+    RuinGrader: {
+        name: "遺跡重機",
         resist: {
             pyro: 10,
             hydro: 10,
@@ -1835,7 +1871,7 @@ const ENEMY_LIST = {
             anemo: 10,
             cryo: 10,
             geo: 10,
-            phys: 70
+            phys: 50
         },
     },
     WhopperflowerPyro: {
@@ -1910,7 +1946,7 @@ const ENEMY_LIST = {
             phys: 80
         },
     },
-    FatuiPyroAgent: {
+    FatuiAgentPyro: {
         name: "ファデュイ・デットエージェント・炎",
         resist: {
             pyro: 50,
@@ -1922,7 +1958,7 @@ const ENEMY_LIST = {
             phys: -20
         },
     },
-    FatuiElectroCicinMage: {
+    FatuiCicinMageElect: {
         name: "ファデュイ・雷蛍術師",
         resist: {
             pyro: 10,
@@ -1930,6 +1966,18 @@ const ENEMY_LIST = {
             elect: 50,
             anemo: 10,
             cryo: 10,
+            geo: 10,
+            phys: -20
+        },
+    },
+    FatuiCicinMageCryo: {
+        name: "ファデュイ・氷蛍術士",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 50,
             geo: 10,
             phys: -20
         },
@@ -1970,8 +2018,55 @@ const ENEMY_LIST = {
             phys: 10
         },
     },
-    // EyeoftheStorm: {},
-    ElectroHypostasis: {
+    EyeoftheStorm: {
+        name: "狂風のコア",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: Infinity,
+            cryo: 10,
+            geo: 10,
+            phys: 10
+        },
+    },
+    CicinElect: {
+        name: "雷蛍",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 50,
+            anemo: 10,
+            cryo: 10,
+            geo: 10,
+            phys: -50
+        },
+    },
+    CicinCryo: {
+        name: "氷蛍",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 50,
+            geo: 10,
+            phys: -50
+        },
+    },
+    SnowboarKing: {
+        name: "雪のイノシシ王",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 30,
+            geo: 10,
+            phys: 50
+        },
+    },
+    HypostasisElect: {
         name: "無相の雷",
         resist: {
             pyro: 10,
@@ -1983,7 +2078,7 @@ const ENEMY_LIST = {
             phys: 10
         },
     },
-    AnemoHypostasis: {
+    HypostasisAnemo: {
         name: "無相の風",
         resist: {
             pyro: 10,
@@ -1995,7 +2090,7 @@ const ENEMY_LIST = {
             phys: 10
         },
     },
-    GeoHypostasis: {
+    HypostasisGeo: {
         name: "無相の岩",
         resist: {
             pyro: 10,
@@ -2016,10 +2111,10 @@ const ENEMY_LIST = {
             anemo: 10,
             cryo: 10,
             geo: 10,
-            phys: 10
+            phys: 15
         },
     },
-    CryoRegisvine: {
+    RegisvineCryo: {
         name: "急凍樹",
         resist: {
             pyro: 110,
@@ -2031,7 +2126,7 @@ const ENEMY_LIST = {
             phys: 130
         },
     },
-    CryoRegisvineDown: {
+    RegisvineCryoDown: {
         name: "急凍樹（ダウン）",
         resist: {
             pyro: 10,
@@ -2043,7 +2138,7 @@ const ENEMY_LIST = {
             phys: 30
         },
     },
-    PyroRegisvine: {
+    RegisvinePyro: {
         name: "爆炎樹",
         resist: {
             pyro: 170,
@@ -2055,7 +2150,7 @@ const ENEMY_LIST = {
             phys: 130
         },
     },
-    PyroRegisvineDown: {
+    RegisvinePyroDown: {
         name: "爆炎樹（ダウン）",
         resist: {
             pyro: 70,
