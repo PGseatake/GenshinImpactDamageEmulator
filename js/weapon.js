@@ -254,7 +254,7 @@ const POLEARM_LIST = {
         second: CriticalBonus.Rate,
         passive: [
             { items: StatusBonus.AtkBuf, value: [3.2, 3.9, 4.6, 5.3, 6.0], limit: "敵に命中した時", times: 6, stack: 7 },
-            { items: CombatBonus.Skill, value: [12, 15, 18, 21, 24], limit: "7重まで発動した時" },
+            { items: CombatBonus.Skill, value: [12, 15, 18, 21, 24], limit: "さらに7重まで発動した時" },
         ],
     },
     SkywardSpine: {
@@ -549,7 +549,7 @@ const CATALYST_LIST = {
         name: "竜殺しの英傑譚",
         star: 3,
         second: StatusBonus.HpBuf,
-        passive: { items: StatusBonus.AtkBuf, value: [24, 30, 36, 42, 48], limit: "キャラを切り替えると、次に登場するキャラ", times: 10, target: "next" },
+        passive: { items: StatusBonus.AtkBuf, value: [24, 30, 36, 42, 48], limit: "次に登場するキャラ", times: 10, target: BonusTarget.Next },
     },
     AmberCatalyst: {
         name: "翡玉法珠",

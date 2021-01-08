@@ -9,6 +9,8 @@ const LABEL_TEXT = {
     atk: "攻撃力",
     def: "防御力",
     rank: "錬成",
+    resonance: "元素共鳴",
+    second: "秒",
 };
 const BONUS_LABEL = {
     other: {
@@ -216,26 +218,33 @@ const TEAM_BONUS = {
     geo: { items: StatusBonus.AnyDmg, value: 15, limit: "シールドが存在する時" },
 };
 class Bonus {
-    constructor(items, value, others, source) {
+    constructor(id, items, value, others, source) {
         var _a, _b, _c;
-        this.id = null;
+        this.id = id;
         this.apply = false;
         this.items = Array.isArray(items) ? items : [items];
         this.value = value;
-        this.limit = (_a = others.limit) !== null && _a !== void 0 ? _a : null;
+        this.limit = (_a = others.limit) !== null && _a !== void 0 ? _a : "";
         this.times = (_b = others.times) !== null && _b !== void 0 ? _b : 0;
         this.stack = (_c = others.stack) !== null && _c !== void 0 ? _c : 0;
         this.source = source;
     }
-    toString() {
+    get effect() {
         const labels = BONUS_LABEL;
         const items = this.items;
         let str = labels[items[0]].detail;
         for (let i = 1; i < items.length; ++i) {
             str += "・" + labels[items[i]].detail;
         }
-        str += `+${this.value}${labels[items[0]].suffix}`;
-        if (this.limit) {
+        const suffix = labels[items[0]].suffix;
+        if (!!suffix) {
+            return `${str}+${(Math.round(this.value * 10) / 10).toFixed(1)}${suffix}`;
+        }
+        return `${str}+${this.value}`;
+    }
+    toString() {
+        let str = this.effect;
+        if (!!this.limit) {
             str = `${this.limit}に${str}`;
         }
         if (0 < this.times) {
@@ -344,19 +353,42 @@ class Status {
         };
     }
     append(bonus) {
-        bonus.id = this.id;
-        this.bonus.push(bonus);
         if (!bonus.limit) {
-            for (const item of bonus.items) {
-                this.addValue({ type: item, value: bonus.value });
-            }
             bonus.apply = true;
+            this.apply(bonus);
+        }
+        this.bonus.push(bonus);
+    }
+    apply(bonus) {
+        for (const item of bonus.items) {
+            this.addValue({ type: item, value: bonus.value });
+        }
+    }
+    remove(bonus) {
+        for (const item of bonus.items) {
+            this.subValue({ type: item, value: bonus.value });
         }
     }
     addValue(bonus) {
         if (bonus.type !== StatusBonus.Other) {
             this.param[bonus.type] += bonus.value;
         }
+    }
+    subValue(bonus) {
+        if (bonus.type !== StatusBonus.Other) {
+            this.param[bonus.type] -= bonus.value;
+        }
+    }
+    clone() {
+        let status = new Status(this.id);
+        status.chara = this.chara;
+        status.conste = this.conste;
+        status.lv = this.lv;
+        status.bonus = this.bonus;
+        status.talent = Object.assign({}, this.talent);
+        status.base = Object.assign({}, this.base);
+        status.param = Object.assign({}, this.param);
+        return status;
     }
 }
 class Enemy {

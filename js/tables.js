@@ -16,6 +16,7 @@ const TableTypes = [
     "team",
     "bonus",
     "enemy",
+    "apply",
     "damage"
 ];
 const TableType = {
@@ -24,6 +25,7 @@ const TableType = {
     Team: "team",
     Bonus: "bonus",
     Enemy: "enemy",
+    Apply: "apply",
     Damage: "damage",
 };
 const TABLE_LABEL = {
@@ -42,6 +44,7 @@ const TABLE_LABEL = {
     team: "チーム",
     bonus: "ボーナス",
     enemy: "敵",
+    apply: "ボーナス",
     damage: "ダメージ",
 };
 class Table {
@@ -753,7 +756,8 @@ class TeamTable extends Table {
         return this.bridge.refresh(this);
     }
     onRefresh() {
-        Table.List.bonus.reset();
+        let bonus = Table.List.bonus;
+        bonus.reset();
         this.members = this.members.fill(null);
         let list = Table.List.equip.characters();
         let html = this.html;
@@ -774,9 +778,9 @@ class TeamTable extends Table {
                 this.members[no] = this.member(select.value);
             }
         }
-        this.build(html);
-        Table.List.bonus.attach(this.members);
+        bonus.attach(this.members);
         Table.List.damage.listup();
+        this.build(html);
     }
     build(html) {
         let rows = Array.from(html.rows);
@@ -815,12 +819,12 @@ class TeamTable extends Table {
     }
     assign(no, elem) {
         let bonus = Table.List.bonus;
-        bonus.detach(this.members[no]);
+        bonus.detach(this.members[no], this.members);
         this.members[no] = null;
         this.members[no] = this.member(elem.value);
-        this.build(this.html);
         bonus.attach(this.members);
         Table.List.damage.listup();
+        this.build(this.html);
         this.onChange();
     }
 }
@@ -829,11 +833,7 @@ class BonusTable extends Table {
         super(TableType.Bonus);
         this.bridge = new TableBridge(Table.List.team);
         this.items = [];
-    }
-    get clearable() {
-        return false;
-    }
-    save() {
+        this.teams = [];
     }
     load() {
         this.onRefresh();
@@ -847,33 +847,44 @@ class BonusTable extends Table {
         return this.bridge.refresh(this);
     }
     onRefresh() {
-        let rows = this.html.rows;
+        const innerHtml = (bonuses) => {
+            let text = "";
+            for (let bonus of bonuses) {
+                if (bonus.apply) {
+                    text += `<span style="color:silver">${bonus.toString()}</span>`;
+                }
+                else {
+                    text += bonus.toString();
+                }
+                text += "<br>";
+            }
+            return text;
+        };
         let members = Table.List.team.members;
-        for (let no = 0; no < 4; ++no) {
-            let status = members[no];
-            let cells = rows[1 + no].cells;
-            if (!status) {
+        let row = this.html.rows[1];
+        for (let status of members) {
+            let cells = row.cells;
+            if (!!status) {
+                cells[0].textContent = status.chara.name;
+                cells[1].innerHTML = innerHtml(status.bonus);
+            }
+            else {
                 cells[0].textContent = "-";
                 cells[1].innerHTML = "";
             }
-            else {
-                cells[0].textContent = status.chara.name;
-                let text = "";
-                for (let bonus of status.bonus) {
-                    if (bonus.apply) {
-                        text += `<span style="color:silver">${bonus.toString()}</span>`;
-                    }
-                    else {
-                        text += bonus.toString();
-                    }
-                    text += "<br>";
-                }
-                cells[1].innerHTML = text;
-            }
+            row = row.nextElementSibling;
+        }
+        let cell = row.cells[1];
+        if (0 < this.items.length) {
+            cell.innerHTML = innerHtml(this.items);
+        }
+        else {
+            cell.innerHTML = "";
         }
     }
     reset() {
         this.items = [];
+        this.teams = [];
     }
     weapon(status, bonuses, rank) {
         if (Array.isArray(bonuses)) {
@@ -915,21 +926,66 @@ class BonusTable extends Table {
     }
     append(status, value, others, source) {
         if (!!others.target && (others.target !== BonusTarget.Self)) {
-            let bonus = new Bonus(others.items, value, others, source);
-            bonus.id = status.id;
-            this.items.push(bonus);
+            this.items.push(new Bonus(status.id, others.items, value, others, status.chara.name));
         }
         else {
-            status.append(new Bonus(others.items, value, others, source));
+            status.append(new Bonus(status.id, others.items, value, others, source));
         }
     }
     attach(members) {
+        let types = [];
+        for (let status of members) {
+            if (!!status) {
+                types.push(status.chara.element);
+            }
+        }
+        types.sort();
+        let first = 0;
+        while (first < types.length) {
+            let type = types[first];
+            let last = types.lastIndexOf(type) + 1;
+            if (2 <= (last - first)) {
+                const data = TEAM_BONUS[type];
+                if (!!data) {
+                    let bonus = new Bonus("team", data.items, data.value, data, LABEL_TEXT.resonance);
+                    if (!bonus.limit) {
+                        bonus.apply = true;
+                        for (let status of members) {
+                            status === null || status === void 0 ? void 0 : status.apply(bonus);
+                        }
+                        this.teams.push(bonus);
+                    }
+                    this.items.push(bonus);
+                }
+            }
+            first = last;
+        }
     }
-    detach(status) {
+    detach(status, members) {
         if (!!status) {
             let bonuses = this.items.filter(bonus => bonus.id !== status.id);
             this.items = bonuses.filter(bonus => bonus.id !== "team");
+            for (let bonus of this.teams) {
+                for (let status of members) {
+                    status === null || status === void 0 ? void 0 : status.remove(bonus);
+                }
+            }
+            this.teams = [];
         }
+    }
+    enumerate(status) {
+        let bonuses = [];
+        for (let bonus of status.bonus) {
+            if (!bonus.apply) {
+                bonuses.push(bonus);
+            }
+        }
+        for (let bonus of this.items) {
+            if (!bonus.apply) {
+                bonuses.push(bonus);
+            }
+        }
+        return bonuses;
     }
 }
 class EnemyTable extends Table {
@@ -947,11 +1003,6 @@ class EnemyTable extends Table {
     static changeLevel(elem) {
         Table.List.enemy.level(elem);
         Table.List.damage.calculate();
-    }
-    get clearable() {
-        return false;
-    }
-    save() {
     }
     load() {
         let html = this.html;
@@ -994,6 +1045,111 @@ class EnemyTable extends Table {
         cell.textContent = (this.target.defence(level) * 100).toFixed(1) + "%";
     }
 }
+class ApplyTable extends Table {
+    constructor() {
+        super(TableType.Apply);
+        this.bonuses = [];
+    }
+    get list() {
+        let bonuses = [];
+        let rows = Array.from(this.html.rows);
+        for (let i = 1, len = rows.length; i < len; ++i) {
+            let cells = Array.from(rows[i].cells);
+            if (cells[0].firstElementChild.checked) {
+                const bonus = this.bonuses[i - 1];
+                let stack = 1;
+                let input = cells[3].firstElementChild;
+                if (!!input) {
+                    stack = parseInt(input.value);
+                }
+                bonuses.push({ types: bonus.items, value: bonus.value * stack });
+            }
+        }
+        return bonuses;
+    }
+    clear() {
+        let html = this.html;
+        let rows = html.rows;
+        for (let len = rows.length; 1 < len; --len) {
+            html.deleteRow(1);
+        }
+        this.bonuses = [];
+    }
+    rebuild(status) {
+        this.clear();
+        if (!!status) {
+            let html = this.html;
+            let rows = html.rows;
+            let caption = rows[0];
+            let bonuses = Table.List.bonus.enumerate(status);
+            for (let bonus of bonuses) {
+                let row = html.insertRow();
+                for (let cap of caption.cells) {
+                    const id = cap.id;
+                    let cell = row.insertCell();
+                    cell.id = id;
+                    ApplyTable.BuildCells[id](cell, bonus);
+                }
+            }
+            this.bonuses = bonuses;
+        }
+    }
+    status(status) {
+        let clone = status.clone();
+        const bonuses = this.list;
+        for (const bonus of bonuses) {
+            for (const type of bonus.types) {
+                clone.param[type] += bonus.value;
+            }
+        }
+        return clone;
+    }
+}
+ApplyTable.BuildCells = {
+    check: (cell, bonus) => {
+        let input = document.createElement("input");
+        input.type = "checkbox";
+        input.addEventListener("change", ev => Table.List.damage.calculate());
+        cell.appendChild(input);
+    },
+    source: (cell, bonus) => {
+        cell.className = "left";
+        cell.appendChild(document.createTextNode(bonus.source));
+    },
+    value: (cell, bonus) => {
+        cell.className = "left";
+        if (!!bonus.limit) {
+            cell.appendChild(document.createTextNode(bonus.limit));
+            cell.appendChild(document.createElement("br"));
+        }
+        cell.appendChild(document.createTextNode(bonus.effect));
+    },
+    stack: (cell, bonus) => {
+        if (1 < bonus.stack) {
+            let input = document.createElement("input");
+            input.className = "short";
+            input.type = "number";
+            input.min = "1";
+            input.max = bonus.stack.toString();
+            input.step = "1";
+            input.value = "1";
+            input.pattern = "[0-9]*";
+            input.addEventListener("change", ev => Table.List.damage.calculate());
+            cell.appendChild(input);
+        }
+        else {
+            cell.appendChild(document.createTextNode("-"));
+        }
+    },
+    times: (cell, bonus) => {
+        if (1 < bonus.times) {
+            cell.appendChild(document.createTextNode(bonus.times.toString() + LABEL_TEXT.second));
+        }
+        else {
+            cell.appendChild(document.createTextNode("-"));
+        }
+    },
+};
 class DamageTable extends Table {
     constructor() {
         super(TableType.Damage);
@@ -1009,17 +1165,12 @@ class DamageTable extends Table {
     static changeMember() {
         Table.List.damage.onRefresh();
     }
-    get clearable() {
-        return false;
-    }
     get member() {
         let no = this.html.querySelector("select#member_list").selectedIndex;
         if (no !== -1) {
             return Table.List.team.members[no];
         }
         return null;
-    }
-    save() {
     }
     load() {
         this.onRefresh();
@@ -1052,12 +1203,13 @@ class DamageTable extends Table {
     onRefresh() {
         let status = this.member;
         Table.List.enemy.defence(status);
+        Table.List.apply.rebuild(status);
         let html = this.html;
         for (let len = html.rows.length; 2 < len; --len) {
             html.deleteRow(2);
         }
         if (!!status) {
-            this.build(html, status);
+            this.rebuild(html, status);
         }
         else {
             let row = html.rows[0];
@@ -1068,15 +1220,11 @@ class DamageTable extends Table {
             cell.nextElementSibling.textContent = "0.0%";
         }
     }
-    build(html, status) {
+    rebuild(html, status) {
         let damageType = html.querySelector("select#damage_type");
         damageType.className = "hide";
         let rows = html.rows;
         rows[0].cells[0].lastChild.textContent = "Lv." + status.level;
-        let cells = rows[1].cells;
-        let critical = status.critical();
-        cells[2].textContent = status.attack.toFixed();
-        cells[3].textContent = `+${critical.damage.toFixed(1)}%(${critical.rate.toFixed(1)}%)`;
         let buildRow = (type) => {
             let level = status.talent[type];
             let row = html.insertRow();
@@ -1149,7 +1297,13 @@ class DamageTable extends Table {
         this.calcDamage(html, status);
     }
     calcDamage(html, status) {
-        let row = html.rows[2];
+        status = Table.List.apply.status(status);
+        let row = html.rows[1];
+        let cells = row.cells;
+        let critical = status.critical();
+        cells[2].textContent = status.attack.toFixed();
+        cells[3].textContent = `+${critical.damage.toFixed(1)}%(${critical.rate.toFixed(1)}%)`;
+        row = row.nextElementSibling;
         let enemy = Table.List.enemy.target;
         let attackPower = status.attack;
         let enemyDefence = enemy.defence(status.level);
@@ -1211,6 +1365,7 @@ window.onload = () => {
     Table.List.team = new TeamTable();
     Table.List.bonus = new BonusTable();
     Table.List.enemy = new EnemyTable();
+    Table.List.apply = new ApplyTable();
     Table.List.damage = new DamageTable();
     Table.loadData();
 };

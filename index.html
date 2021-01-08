@@ -430,7 +430,7 @@
         <input id="tab_damage" type="radio" name="TAB" class="tab_switch" onclick="refreshTable('damage')" />
         <label class="tab_label" for="tab_damage">ダメージ</label>
         <div class="tab_content">
-            <table id="tbl_enemy">
+            <table id="tbl_enemy" class="left">
                 <caption>敵</caption>
                 <tbody>
                     <tr>
@@ -482,6 +482,20 @@
                         <td>-</td>
                         <td>0.0%</td>
                     </tr>
+                </tbody>
+            </table>
+            <table id="tbl_apply">
+                <caption>ボーナス</caption>
+                <thead>
+                    <tr>
+                        <th id="check">適用</th>
+                        <th id="source">ソース</th>
+                        <th id="value">内容</th>
+                        <th id="stack">重</th>
+                        <th id="times">継続</th>
+                    </tr>
+                </thead>
+                <tbody>
                 </tbody>
             </table>
             <hr>
@@ -764,10 +778,21 @@
                 <li>プロトタイプ版のため、バグっていてもサポートしません。</li>
                 <li>プロトタイプ版のため、データの互換性は保証しません。</li>
             </ul>
+            <h3>データソース</h3>
+            <ul>
+                <li>https://genshin-impact.fandom.com/wiki/Genshin_Impact_Wiki</li>
+                <li>https://bbs.mihoyo.com/ys/</li>
+            </ul>
         </div>
         <input id="tab_history" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_history">更新履歴</label>
         <div class="tab_content">
+            <h4>Ver. 0.4.0 (2021/01/09)</h4>
+            <ul>
+                <li>元素スキル会心率に対応</li>
+                <li>元素共鳴によるボーナスを追加</li>
+                <li>条件付きのボーナスをダメージに適用する機能を追加</li>
+            </ul>
             <h4>Ver. 0.3.4 (2021/01/08)</h4>
             <ul>
                 <li>以下の敵キャラを追加</li>

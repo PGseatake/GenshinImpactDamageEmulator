@@ -22,6 +22,21 @@ table {
     border-collapse: collapse;
 }
 
+table#tbl_enemy {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    float: left;
+}
+
+table#tbl_apply {
+    min-width: 400px;
+    margin-bottom: 10px;
+}
+
+hr {
+    clear: left;
+}
+
 th {
     border: 1px solid gray;
     padding: 2px 2px;
@@ -56,6 +71,10 @@ td.left {
     text-align: left;
 }
 
+td.right {
+    text-align: right;
+}
+
 td.score {
     text-align: left;
     font-size: 0.7em;
@@ -68,6 +87,11 @@ input#import {
 input.numeric {
     text-align: right;
     width: 5em;
+}
+
+input.short {
+    text-align: right;
+    width: 3em;
 }
 
 select.bonus {

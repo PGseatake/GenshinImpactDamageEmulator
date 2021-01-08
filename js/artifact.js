@@ -111,7 +111,7 @@ const ARTIFACT_SET = {
         set2: { items: ElementBonus.Cryo, value: 15 },
         set4: [
             { items: CriticalBonus.Rate, value: 20, limit: "氷元素の影響を受けた敵" },
-            { items: CriticalBonus.Rate, value: 20, limit: "凍結状態の敵" }
+            { items: CriticalBonus.Rate, value: 20, limit: "さらに凍結状態の敵" }
         ]
     },
     OceanConqueror: {

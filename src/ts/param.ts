@@ -9,6 +9,8 @@ const LABEL_TEXT: Readonly<IMap<string>> = {
     atk: "攻撃力",
     def: "防御力",
     rank: "錬成",
+    resonance: "元素共鳴",
+    second: "秒",
 } as const;
 
 interface IBonusLabel {
@@ -245,34 +247,41 @@ class Bonus {
     public apply: boolean;
     public items: ReadonlyArray<BonusType>;
     public value: number;
-    public limit: Nullable<string>;
+    public limit: string;
     public times: number;
     public stack: number;
     public source: string;
 
-    constructor(items: DeepReadonly<Arrayable<BonusType>>, value: number, others: DeepReadonly<IBonus>, source: string) {
-        this.id = null;
+    constructor(id: string, items: DeepReadonly<Arrayable<BonusType>>, value: number, others: DeepReadonly<IBonus>, source: string) {
+        this.id = id;
         this.apply = false;
         this.items = Array.isArray(items) ? items : [items];
         this.value = value;
-        this.limit = others.limit ?? null;
+        this.limit = others.limit ?? "";
         this.times = others.times ?? 0;
         this.stack = others.stack ?? 0;
         this.source = source;
     }
 
-    toString(): string {
+    get effect(): string {
         const labels = BONUS_LABEL;
         const items = this.items;
         let str = labels[items[0]].detail;
         for (let i = 1; i < items.length; ++i) {
             str += "・" + labels[items[i]].detail;
         }
+        const suffix = labels[items[0]].suffix;
+        if (!!suffix) {
+            return `${str}+${(Math.round(this.value * 10) / 10).toFixed(1)}${suffix}`;
+        }
+        return `${str}+${this.value}`;
+    }
 
-        str += `+${this.value}${labels[items[0]].suffix}`;
+    toString(): string {
+        let str = this.effect;
 
         // TODO:多言語対応
-        if (this.limit) {
+        if (!!this.limit) {
             str = `${this.limit}に${str}`;
         }
         if (0 < this.times) {
@@ -412,13 +421,24 @@ class Status {
 
     // ボーナス追加
     append(bonus: Bonus) {
-        bonus.id = this.id;
-        this.bonus.push(bonus);
         if (!bonus.limit) {
-            for (const item of bonus.items) {
-                this.addValue({ type: item, value: bonus.value });
-            }
             bonus.apply = true;
+            this.apply(bonus);
+        }
+        this.bonus.push(bonus);
+    }
+
+    // ボーナス適用
+    apply(bonus: Bonus) {
+        for (const item of bonus.items) {
+            this.addValue({ type: item, value: bonus.value });
+        }
+    }
+
+    // ボーナス除去
+    remove(bonus: Bonus) {
+        for (const item of bonus.items) {
+            this.subValue({ type: item, value: bonus.value });
         }
     }
 
@@ -427,6 +447,26 @@ class Status {
         if (bonus.type !== StatusBonus.Other) {
             this.param[bonus.type] += bonus.value;
         }
+    }
+
+    // ボーナス値減算
+    subValue(bonus: IAnyBonusValue) {
+        if (bonus.type !== StatusBonus.Other) {
+            this.param[bonus.type] -= bonus.value;
+        }
+    }
+
+    // 複製
+    clone(): Status {
+        let status = new Status(this.id);
+        status.chara = this.chara;
+        status.conste = this.conste;
+        status.lv = this.lv;
+        status.bonus = this.bonus;
+        status.talent = { ...this.talent };
+        status.base = { ...this.base };
+        status.param = { ...this.param };
+        return status;
     }
 }
 
