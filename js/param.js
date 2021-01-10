@@ -448,9 +448,6 @@ class CombatAttribute {
         this.name = info.name;
         this.type = info.type;
         this.elem = info.elem;
-        if (this.elem === CombatElementType.Added) {
-            this.elem = ElementType.Anemo;
-        }
         this.value = [info.value * scale[index] / 100];
         if (!!info.value2) {
             this.value.push(info.value2 * scale[index] / 100);
@@ -467,31 +464,38 @@ class CombatAttribute {
     }
     damage(row, status, enemy) {
         let cell = row.cells[2];
-        let elem = cell.className;
-        let attackPower;
-        switch (this.based) {
-            case DamageBased.Def:
-                attackPower = status.defence;
-                break;
-            default:
-                attackPower = status.attack;
-                break;
+        if (!!cell.className) {
+            let elem = cell.className;
+            let attackPower;
+            switch (this.based) {
+                case DamageBased.Def:
+                    attackPower = status.defence;
+                    break;
+                default:
+                    attackPower = status.attack;
+                    break;
+            }
+            let enemyDefence = enemy.defence(status.level);
+            let elementBonus = status.elemental(elem);
+            let combatBonus = status.combat(this.type);
+            let enemyResist = enemy.resistance(elem);
+            let bonusDamage = (100 + elementBonus + combatBonus + status.param.any_dmg) / 100;
+            let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
+            cell.textContent = this.toString(value => (totalScale * value / 100).toFixed());
+            cell = cell.nextElementSibling;
+            let critical = status.critical(this.type);
+            totalScale *= (critical.damage + 100) / 100;
+            let text = this.toString(value => (totalScale * value / 100).toFixed());
+            if (critical.special) {
+                text = `${text}(${toFloorRate(critical.rate)})`;
+            }
+            cell.textContent = text;
         }
-        let enemyDefence = enemy.defence(status.level);
-        let elementBonus = status.elemental(elem);
-        let combatBonus = status.combat(this.type);
-        let enemyResist = enemy.resistance(elem);
-        let bonusDamage = (100 + elementBonus + combatBonus + status.param.any_dmg) / 100;
-        let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
-        cell.textContent = this.toString(value => (totalScale * value / 100).toFixed());
-        cell = cell.nextElementSibling;
-        let critical = status.critical(this.type);
-        totalScale *= (critical.damage + 100) / 100;
-        let text = this.toString(value => (totalScale * value / 100).toFixed());
-        if (critical.special) {
-            text = `${text}(${toFloorRate(critical.rate)})`;
+        else {
+            cell.textContent = "-";
+            cell = cell.nextElementSibling;
+            cell.textContent = "-";
         }
-        cell.textContent = text;
     }
 }
 const ASCENSION_LV_STEP = [20, 40, 50, 60, 70, 80];

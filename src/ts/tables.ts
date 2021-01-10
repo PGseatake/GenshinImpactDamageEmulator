@@ -1627,6 +1627,14 @@ class ApplyTable extends Table {
     }
 }
 
+const AddedDamageElement: IMap<string> = {
+    "": "-",
+    pyro: "火",
+    hydro: "水",
+    elect: "雷",
+    cryo: "氷"
+} as const;
+
 // ダメージテーブル
 class DamageTable extends Table implements IRefreshTable {
     // ダメージタイプ変更
@@ -1745,18 +1753,43 @@ class DamageTable extends Table implements IRefreshTable {
             let combats = status.chara.talent![type];
             for (let combat of combats) {
                 let attr = new CombatAttribute(combat, level);
+                let elem = attr.elem;
+
                 // ダメージタイプ
-                let className = attr.elem;
-                if (className === "switch") {
-                    className = "phys";
-                    damageType.className = ""; // ダメージタイプ表示
+                let className = "";
+                switch (elem) {
+                    case CombatElementType.Switch:
+                        damageType.className = ""; // ダメージタイプ表示
+                        className = ElementType.Phys;
+                        break;
+                    case CombatElementType.Added:
+                        break;
+                    default:
+                        className = elem;
+                        break;
                 }
 
                 row = html.insertRow();
 
                 // 名前セル
                 cel = document.createElement("th");
-                cel.textContent = attr.name;
+                if (elem === CombatElementType.Added) {
+                    cel.appendChild(document.createTextNode(attr.name));
+
+                    // 付加元素タイプ選択
+                    let select = document.createElement("select");
+                    for (let type in AddedDamageElement) {
+                        let opt = document.createElement("option");
+                        opt.value = type;
+                        opt.label = AddedDamageElement[type];
+                        select.appendChild(opt);
+                    }
+                    select.addEventListener("change", ev => this.addedType(ev.target as HTMLSelectElement));
+
+                    cel.appendChild(select);
+                } else {
+                    cel.textContent = attr.name;
+                }
                 row.appendChild(cel);
 
                 // 倍率セル
@@ -1828,6 +1861,35 @@ class DamageTable extends Table implements IRefreshTable {
         rebuildRow(TalentType.Burst);
 
         this.calcDamage(html, status);
+    }
+
+    // 付加元素タイプ設定
+    private addedType(select: HTMLSelectElement) {
+        let cell = select.parentElement!.nextElementSibling as HTMLCellElement;
+        let row = cell.parentElement as HTMLRowElement;
+
+        // 初期化しておく
+        const className = select.value;
+        cell.className = className;
+        cell = cell.nextElementSibling as HTMLCellElement;
+        cell.className = className;
+        cell.textContent = "-";
+        cell = cell.nextElementSibling as HTMLCellElement;
+        cell.className = className;
+        cell.textContent = "-";
+
+        let status = this.member;
+        if (!!status && !!select.value) {
+            // TODO: 付加元素ダメージが元素爆発に1つだけ前提
+            const combats = status.chara.talent!.burst;
+            for (const combat of combats) {
+                if (combat.elem === CombatElementType.Added) {
+                    let attr = new CombatAttribute(combat, status.talent.burst);
+                    attr.damage(row, status, Table.List.enemy!.target!);
+                    break;
+                }
+            }
+        }
     }
 
     // ダメージ計算

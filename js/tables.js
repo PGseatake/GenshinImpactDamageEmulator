@@ -1150,6 +1150,13 @@ ApplyTable.BuildCells = {
         }
     },
 };
+const AddedDamageElement = {
+    "": "-",
+    pyro: "火",
+    hydro: "水",
+    elect: "雷",
+    cryo: "氷"
+};
 class DamageTable extends Table {
     constructor() {
         super(TableType.Damage);
@@ -1235,14 +1242,36 @@ class DamageTable extends Table {
             let combats = status.chara.talent[type];
             for (let combat of combats) {
                 let attr = new CombatAttribute(combat, level);
-                let className = attr.elem;
-                if (className === "switch") {
-                    className = "phys";
-                    damageType.className = "";
+                let elem = attr.elem;
+                let className = "";
+                switch (elem) {
+                    case CombatElementType.Switch:
+                        damageType.className = "";
+                        className = ElementType.Phys;
+                        break;
+                    case CombatElementType.Added:
+                        break;
+                    default:
+                        className = elem;
+                        break;
                 }
                 row = html.insertRow();
                 cel = document.createElement("th");
-                cel.textContent = attr.name;
+                if (elem === CombatElementType.Added) {
+                    cel.appendChild(document.createTextNode(attr.name));
+                    let select = document.createElement("select");
+                    for (let type in AddedDamageElement) {
+                        let opt = document.createElement("option");
+                        opt.value = type;
+                        opt.label = AddedDamageElement[type];
+                        select.appendChild(opt);
+                    }
+                    select.addEventListener("change", ev => this.addedType(ev.target));
+                    cel.appendChild(select);
+                }
+                else {
+                    cel.textContent = attr.name;
+                }
                 row.appendChild(cel);
                 cel = document.createElement("td");
                 cel.className = className;
@@ -1296,6 +1325,29 @@ class DamageTable extends Table {
         rebuildRow(TalentType.Skill);
         rebuildRow(TalentType.Burst);
         this.calcDamage(html, status);
+    }
+    addedType(select) {
+        let cell = select.parentElement.nextElementSibling;
+        let row = cell.parentElement;
+        const className = select.value;
+        cell.className = className;
+        cell = cell.nextElementSibling;
+        cell.className = className;
+        cell.textContent = "-";
+        cell = cell.nextElementSibling;
+        cell.className = className;
+        cell.textContent = "-";
+        let status = this.member;
+        if (!!status && !!select.value) {
+            const combats = status.chara.talent.burst;
+            for (const combat of combats) {
+                if (combat.elem === CombatElementType.Added) {
+                    let attr = new CombatAttribute(combat, status.talent.burst);
+                    attr.damage(row, status, Table.List.enemy.target);
+                    break;
+                }
+            }
+        }
     }
     calcDamage(html, status) {
         status = Table.List.apply.status(status);

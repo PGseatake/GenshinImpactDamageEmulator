@@ -551,9 +551,6 @@ class CombatAttribute {
         this.name = info.name;
         this.type = info.type;
         this.elem = info.elem;
-        if (this.elem === CombatElementType.Added) {
-            this.elem = ElementType.Anemo; // TODO: とりあえず風属性にしておく
-        }
         this.value = [info.value * scale[index] / 100];
         if (!!info.value2) {
             this.value.push(info.value2 * scale[index] / 100);
@@ -572,43 +569,49 @@ class CombatAttribute {
 
     damage(row: HTMLRowElement, status: Status, enemy: Enemy) {
         let cell = row.cells[2];
-        let elem = cell.className as ElementType;
+        if (!!cell.className) {
+            let elem = cell.className as ElementType;
 
-        // 攻撃力
-        let attackPower: number;
-        switch (this.based) {
-            case DamageBased.Def:
-                attackPower = status.defence;
-                break;
-            default:
-                attackPower = status.attack;
-                break;
+            // 攻撃力
+            let attackPower: number;
+            switch (this.based) {
+                case DamageBased.Def:
+                    attackPower = status.defence;
+                    break;
+                default:
+                    attackPower = status.attack;
+                    break;
+            }
+
+            // 防御力
+            let enemyDefence = enemy.defence(status.level);
+
+            // 各種倍率
+            let elementBonus = status.elemental(elem);
+            let combatBonus = status.combat(this.type);
+            let enemyResist = enemy.resistance(elem);
+            let bonusDamage = (100 + elementBonus + combatBonus + status.param.any_dmg) / 100;
+            let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
+
+            // 最終ダメージ
+            cell.textContent = this.toString(value => (totalScale * value / 100).toFixed());
+            cell = cell.nextElementSibling as HTMLCellElement;
+
+            // 会心ダメージ
+            let critical = status.critical(this.type);
+            totalScale *= (critical.damage + 100) / 100;
+
+            let text = this.toString(value => (totalScale * value / 100).toFixed());
+            // 会心率が異なる場合は特別表示
+            if (critical.special) {
+                text = `${text}(${toFloorRate(critical.rate)})`;
+            }
+            cell.textContent = text;
+        } else {
+            cell.textContent = "-";
+            cell = cell.nextElementSibling as HTMLCellElement;
+            cell.textContent = "-";
         }
-
-        // 防御力
-        let enemyDefence = enemy.defence(status.level);
-
-        // 各種倍率
-        let elementBonus = status.elemental(elem);
-        let combatBonus = status.combat(this.type);
-        let enemyResist = enemy.resistance(elem);
-        let bonusDamage = (100 + elementBonus + combatBonus + status.param.any_dmg) / 100;
-        let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
-
-        // 最終ダメージ
-        cell.textContent = this.toString(value => (totalScale * value / 100).toFixed());
-        cell = cell.nextElementSibling as HTMLCellElement;
-
-        // 会心ダメージ
-        let critical = status.critical(this.type);
-        totalScale *= (critical.damage + 100) / 100;
-
-        let text = this.toString(value => (totalScale * value / 100).toFixed());
-        // 会心率が異なる場合は特別表示
-        if (critical.special) {
-            text = `${text}(${toFloorRate(critical.rate)})`;
-        }
-        cell.textContent = text;
     }
 }
 
