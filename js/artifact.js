@@ -2,122 +2,122 @@
 const ARTIFACT_SET = {
     Adventurer: {
         name: "冒険者",
-        set2: { items: StatusBonus.Hp, value: 1000 },
+        set2: { items: StatusBonusType.Hp, value: 1000 },
     },
     LuckyDog: {
         name: "幸運",
-        set2: { items: StatusBonus.Def, value: 100 },
+        set2: { items: StatusBonusType.Def, value: 100 },
     },
     Instructor: {
         name: "教官",
-        set2: { items: StatusBonus.Elem, value: 80 },
-        set4: { items: StatusBonus.Elem, value: 120, limit: "元素反応後", times: 8, target: BonusTarget.All },
+        set2: { items: StatusBonusType.Elem, value: 80 },
+        set4: { items: StatusBonusType.Elem, value: 120, limit: "元素反応後", times: 8, target: BonusTarget.All },
     },
     Berserker: {
         name: "狂戦士",
-        set2: { items: CriticalBonus.Rate, value: 12 },
-        set4: { items: CriticalBonus.Rate, value: 24, limit: "HP70%以下の時" },
+        set2: { items: CriticalBonusType.Rate, value: 12 },
+        set4: { items: CriticalBonusType.Rate, value: 24, limit: "HP70%以下の時" },
     },
     TheExile: {
         name: "亡命者",
-        set2: { items: StatusBonus.EnRec, value: 20 },
+        set2: { items: StatusBonusType.EnRec, value: 20 },
     },
     Sojourner: {
         name: "旅人の心",
-        set2: { items: StatusBonus.AtkBuf, value: 18 },
-        set4: { items: CriticalBonus.Heavy, value: 30 },
+        set2: { items: StatusBonusType.AtkBuf, value: 18 },
+        set4: { items: CriticalBonusType.Heavy, value: 30 },
     },
     Artist: {
         name: "武人",
-        set2: { items: [CombatBonus.Normal, CombatBonus.Heavy], value: 15 },
-        set4: { items: [CombatBonus.Normal, CombatBonus.Heavy], value: 25, limit: "元素スキル発動後", times: 8 },
+        set2: { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: 15 },
+        set4: { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: 25, limit: "元素スキル発動後", times: 8 },
     },
     Defender: {
         name: "守護の心",
-        set2: { items: StatusBonus.DefBuf, value: 30 },
+        set2: { items: StatusBonusType.DefBuf, value: 30 },
     },
     BraveHeart: {
         name: "勇士の心",
-        set2: { items: StatusBonus.AtkBuf, value: 18 },
-        set4: { items: StatusBonus.AnyDmg, value: 30, limit: "HP50%以上の敵" },
+        set2: { items: StatusBonusType.AtkBuf, value: 18 },
+        set4: { items: StatusBonusType.AnyDmg, value: 30, limit: "HP50%以上の敵" },
     },
     Gambler: {
         name: "博徒",
-        set2: { items: CombatBonus.Skill, value: 20 },
+        set2: { items: CombatBonusType.Skill, value: 20 },
     },
     Scholar: {
         name: "学者",
-        set2: { items: StatusBonus.EnRec, value: 20 },
+        set2: { items: StatusBonusType.EnRec, value: 20 },
     },
     Gladiator: {
         name: "剣闘士のフィナーレ",
-        set2: { items: StatusBonus.AtkBuf, value: 18 },
-        set4: { items: CombatBonus.Normal, value: 35, limit: "片手剣、両手剣、長柄武器キャラの時" },
+        set2: { items: StatusBonusType.AtkBuf, value: 18 },
+        set4: { items: CombatBonusType.Normal, value: 35, limit: "片手剣、両手剣、長柄武器キャラの時" },
     },
     Noblesse: {
         name: "旧貴族のしつけ",
-        set2: { items: CombatBonus.Burst, value: 20 },
-        set4: { items: StatusBonus.AtkBuf, value: 20, limit: "元素爆発後", times: 12, target: BonusTarget.All },
+        set2: { items: CombatBonusType.Burst, value: 20 },
+        set4: { items: StatusBonusType.AtkBuf, value: 20, limit: "元素爆発後", times: 12, target: BonusTarget.All },
     },
     Chivalry: {
         name: "血染めの騎士道",
-        set2: { items: ElementBonus.Phys, value: 25 },
-        set4: { items: CombatBonus.Heavy, value: 50, limit: "敵を倒した後", times: 10 },
+        set2: { items: ElementBonusType.Phys, value: 25 },
+        set4: { items: CombatBonusType.Heavy, value: 50, limit: "敵を倒した後", times: 10 },
     },
     Troupe: {
         name: "大地を流浪する楽団",
-        set2: { items: StatusBonus.Elem, value: 80 },
-        set4: { items: CombatBonus.Heavy, value: 35, limit: "弓、法器キャラの時" },
+        set2: { items: StatusBonusType.Elem, value: 80 },
+        set4: { items: CombatBonusType.Heavy, value: 35, limit: "弓、法器キャラの時" },
     },
     Venerer: {
         name: "翆緑の影",
-        set2: { items: ElementBonus.Anemo, value: 15 },
-        set4: { items: ReactionBonus.Swirl, value: 60 },
+        set2: { items: ElementBonusType.Anemo, value: 15 },
+        set4: { items: ReactionBonusType.Swirl, value: 60 },
     },
     Fury: {
         name: "雷のような怒り",
-        set2: { items: ElementBonus.Elect, value: 15 },
-        set4: { items: [ReactionBonus.Overload, ReactionBonus.Echarge, ReactionBonus.Conduct], value: 40 },
+        set2: { items: ElementBonusType.Elect, value: 15 },
+        set4: { items: [ReactionBonusType.Overload, ReactionBonusType.Echarge, ReactionBonusType.Conduct], value: 40 },
     },
     Thundersoother: {
         name: "雷を鎮める尊者",
-        set4: { items: StatusBonus.AnyDmg, value: 35, limit: "雷元素の影響を受けた敵" },
+        set4: { items: StatusBonusType.AnyDmg, value: 35, limit: "雷元素の影響を受けた敵" },
     },
     CrimsonWitch: {
         name: "燃え盛る炎の魔女",
-        set2: { items: ElementBonus.Pyro, value: 15 },
+        set2: { items: ElementBonusType.Pyro, value: 15 },
         set4: [
-            { items: ReactionBonus.Overload, value: 25 },
-            { items: [ReactionBonus.Vaporize, ReactionBonus.Melt], value: 15 },
-            { items: ReactionBonus.Overload, value: 12.5, limit: "元素スキル発動後", times: 10, stack: 3 },
-            { items: [ReactionBonus.Vaporize, ReactionBonus.Melt], value: 7.5, limit: "元素スキル発動後", times: 10, stack: 3 },
+            { items: ReactionBonusType.Overload, value: 25 },
+            { items: [ReactionBonusType.Vaporize, ReactionBonusType.Melt], value: 15 },
+            { items: ReactionBonusType.Overload, value: 12.5, limit: "元素スキル発動後", times: 10, stack: 3 },
+            { items: [ReactionBonusType.Vaporize, ReactionBonusType.Melt], value: 7.5, limit: "元素スキル発動後", times: 10, stack: 3 },
         ],
     },
     Lavawalker: {
         name: "烈火を渡る尊者",
-        set4: { items: StatusBonus.AnyDmg, value: 35, limit: "炎元素の影響を受けた敵" },
+        set4: { items: StatusBonusType.AnyDmg, value: 35, limit: "炎元素の影響を受けた敵" },
     },
     Petra: {
         name: "悠久の磐岩",
-        set2: { items: ElementBonus.Geo, value: 15 },
-        set4: { items: ElementBonus.Any, value: 35, limit: "結晶反応した元素", times: 10, target: BonusTarget.All },
+        set2: { items: ElementBonusType.Geo, value: 15 },
+        set4: { items: ElementBonusType.Any, value: 35, limit: "結晶反応した元素", times: 10, target: BonusTarget.All },
     },
     Bolide: {
         name: "逆飛びの流星",
-        set4: { items: [CombatBonus.Normal, CombatBonus.Heavy], value: 40, limit: "シールド状態の時" },
+        set4: { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: 40, limit: "シールド状態の時" },
     },
     Icebreaker: {
         name: "氷風を彷徨う勇士",
-        set2: { items: ElementBonus.Cryo, value: 15 },
+        set2: { items: ElementBonusType.Cryo, value: 15 },
         set4: [
-            { items: CriticalBonus.Rate, value: 20, limit: "氷元素の影響を受けた敵" },
-            { items: CriticalBonus.Rate, value: 20, limit: "さらに凍結状態の敵" }
+            { items: CriticalBonusType.Rate, value: 20, limit: "氷元素の影響を受けた敵" },
+            { items: CriticalBonusType.Rate, value: 20, limit: "さらに凍結状態の敵" }
         ]
     },
     OceanConqueror: {
         name: "沈淪の心",
-        set2: { items: ElementBonus.Hydro, value: 15 },
-        set4: { items: [CombatBonus.Normal, CombatBonus.Heavy], value: 30, limit: "元素スキルを発動後", times: 15 }
+        set2: { items: ElementBonusType.Hydro, value: 15 },
+        set4: { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: 30, limit: "元素スキルを発動後", times: 15 }
     },
 };
 const FLOWER_LIST = {

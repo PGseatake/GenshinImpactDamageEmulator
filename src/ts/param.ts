@@ -236,16 +236,16 @@ const BONUS_LABEL: DeepReadonly<Record<AnyBonusType, IBonusLabel>> = {
 
 // TODO: 多言語対応
 const TEAM_BONUS: DeepReadonly<Partial<Record<ElementType, IBasicBonus>>> = {
-    pyro: { items: StatusBonus.AtkBuf, value: 25 },
-    cryo: { items: CriticalBonus.Rate, value: 15, limit: "氷元素付着または凍結状態の敵" },
-    geo: { items: StatusBonus.AnyDmg, value: 15, limit: "シールドが存在する時" },
+    pyro: { items: StatusBonusType.AtkBuf, value: 25 },
+    cryo: { items: CriticalBonusType.Rate, value: 15, limit: "氷元素付着または凍結状態の敵" },
+    geo: { items: StatusBonusType.AnyDmg, value: 15, limit: "シールドが存在する時" },
 } as const;
 
 // ステータスボーナス
 class Bonus {
     public id: string;
     public apply: boolean;
-    public items: ReadonlyArray<BonusType>;
+    public types: ReadonlyArray<BonusType>;
     public value: number;
     public limit: string;
     public times: number;
@@ -255,7 +255,7 @@ class Bonus {
     constructor(id: string, items: DeepReadonly<Arrayable<BonusType>>, value: number, others: DeepReadonly<IBonus>, source: string) {
         this.id = id;
         this.apply = false;
-        this.items = Array.isArray(items) ? items : [items];
+        this.types = Array.isArray(items) ? items : [items];
         this.value = value;
         this.limit = others.limit ?? "";
         this.times = others.times ?? 0;
@@ -265,7 +265,7 @@ class Bonus {
 
     get effect(): string {
         const labels = BONUS_LABEL;
-        const items = this.items;
+        const items = this.types;
         let str = labels[items[0]].detail;
         for (let i = 1; i < items.length; ++i) {
             str += "・" + labels[items[i]].detail;
@@ -393,8 +393,8 @@ class Status {
     }
 
     // 元素反応ダメージ値（％）
-    reaction(type: ReactionBase): number {
-        if (type === ReactionBase.Transform) {
+    reaction(type: ReactionBaseType): number {
+        if (type === ReactionBaseType.Transform) {
             return this.elem_trans;
         } else {
             return this.elem_react;
@@ -430,28 +430,28 @@ class Status {
 
     // ボーナス適用
     apply(bonus: Bonus) {
-        for (const item of bonus.items) {
+        for (const item of bonus.types) {
             this.addValue({ type: item, value: bonus.value });
         }
     }
 
     // ボーナス除去
     remove(bonus: Bonus) {
-        for (const item of bonus.items) {
+        for (const item of bonus.types) {
             this.subValue({ type: item, value: bonus.value });
         }
     }
 
     // ボーナス値加算
     addValue(bonus: IAnyBonusValue) {
-        if (bonus.type !== StatusBonus.Other) {
+        if (bonus.type !== StatusBonusType.Other) {
             this.param[bonus.type] += bonus.value;
         }
     }
 
     // ボーナス値減算
     subValue(bonus: IAnyBonusValue) {
-        if (bonus.type !== StatusBonus.Other) {
+        if (bonus.type !== StatusBonusType.Other) {
             this.param[bonus.type] -= bonus.value;
         }
     }
@@ -550,7 +550,7 @@ class Attribute {
         this.name = info.name;
         this.type = info.type;
         this.elem = info.elem;
-        if (this.elem === CombatElementType.AddElem) {
+        if (this.elem === CombatElementType.Added) {
             this.elem = ElementType.Anemo; // TODO: とりあえず風属性にしておく
         }
         this.value = [info.value * scale[index] / 100];
@@ -628,80 +628,80 @@ function getArtifactParam(star: number, level: number, bonus: AnyBonusType): Nul
 
     let param = ARTIFACT_PARAM[star - 3];
     switch (bonus) {
-        case StatusBonus.Hp:
-        case StatusBonus.Atk:
-        case StatusBonus.Def:
-        case StatusBonus.AtkBuf:
-        case StatusBonus.DefBuf:
-        case StatusBonus.EnRec:
-        case CriticalBonus.Rate:
-        case CriticalBonus.Damage:
+        case StatusBonusType.Hp:
+        case StatusBonusType.Atk:
+        case StatusBonusType.Def:
+        case StatusBonusType.AtkBuf:
+        case StatusBonusType.DefBuf:
+        case StatusBonusType.EnRec:
+        case CriticalBonusType.Rate:
+        case CriticalBonusType.Damage:
             return param[bonus];
 
-        case StatusBonus.Elem:
+        case StatusBonusType.Elem:
             return param.def;
 
-        case StatusBonus.HpBuf:
-        case ElementBonus.Anemo:
-        case ElementBonus.Geo:
-        case ElementBonus.Elect:
-        case ElementBonus.Hydro:
-        case ElementBonus.Pyro:
-        case ElementBonus.Cryo:
+        case StatusBonusType.HpBuf:
+        case ElementBonusType.Anemo:
+        case ElementBonusType.Geo:
+        case ElementBonusType.Elect:
+        case ElementBonusType.Hydro:
+        case ElementBonusType.Pyro:
+        case ElementBonusType.Cryo:
             return param.atk_buf;
 
-        case ElementBonus.Phys:
+        case ElementBonusType.Phys:
             return param.def_buf;
     }
     return null;
 }
 
 const ARTIFACT_SUB = [
-    StatusBonus.Other,
-    StatusBonus.Hp,
-    StatusBonus.HpBuf,
-    StatusBonus.Atk,
-    StatusBonus.AtkBuf,
-    StatusBonus.Def,
-    StatusBonus.DefBuf,
-    StatusBonus.Elem,
-    StatusBonus.EnRec,
-    CriticalBonus.Rate,
-    CriticalBonus.Damage
+    StatusBonusType.Other,
+    StatusBonusType.Hp,
+    StatusBonusType.HpBuf,
+    StatusBonusType.Atk,
+    StatusBonusType.AtkBuf,
+    StatusBonusType.Def,
+    StatusBonusType.DefBuf,
+    StatusBonusType.Elem,
+    StatusBonusType.EnRec,
+    CriticalBonusType.Rate,
+    CriticalBonusType.Damage
 ] as const;
 
 const ARTIFACT_SANDS = [
-    StatusBonus.Other,
-    StatusBonus.HpBuf,
-    StatusBonus.AtkBuf,
-    StatusBonus.DefBuf,
-    StatusBonus.Elem,
-    StatusBonus.EnRec,
+    StatusBonusType.Other,
+    StatusBonusType.HpBuf,
+    StatusBonusType.AtkBuf,
+    StatusBonusType.DefBuf,
+    StatusBonusType.Elem,
+    StatusBonusType.EnRec,
 ] as const;
 
 const ARTIFACT_GOBLET = [
-    StatusBonus.Other,
-    StatusBonus.HpBuf,
-    StatusBonus.AtkBuf,
-    StatusBonus.DefBuf,
-    StatusBonus.Elem,
-    ElementBonus.Phys,
-    ElementBonus.Anemo,
-    ElementBonus.Geo,
-    ElementBonus.Elect,
-    ElementBonus.Hydro,
-    ElementBonus.Pyro,
-    ElementBonus.Cryo
+    StatusBonusType.Other,
+    StatusBonusType.HpBuf,
+    StatusBonusType.AtkBuf,
+    StatusBonusType.DefBuf,
+    StatusBonusType.Elem,
+    ElementBonusType.Phys,
+    ElementBonusType.Anemo,
+    ElementBonusType.Geo,
+    ElementBonusType.Elect,
+    ElementBonusType.Hydro,
+    ElementBonusType.Pyro,
+    ElementBonusType.Cryo
 ] as const;
 
 const ARTIFACT_CIRCLET = [
-    StatusBonus.Other,
-    StatusBonus.HpBuf,
-    StatusBonus.AtkBuf,
-    StatusBonus.DefBuf,
-    StatusBonus.Elem,
-    CriticalBonus.Rate,
-    CriticalBonus.Damage
+    StatusBonusType.Other,
+    StatusBonusType.HpBuf,
+    StatusBonusType.AtkBuf,
+    StatusBonusType.DefBuf,
+    StatusBonusType.Elem,
+    CriticalBonusType.Rate,
+    CriticalBonusType.Damage
 ] as const;
 
 const WEAPON_RANK_MAX = 5;

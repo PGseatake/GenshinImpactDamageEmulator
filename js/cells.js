@@ -434,24 +434,24 @@ class RateBonus extends NumberBonus {
     }
 }
 const BonusValueList = {
-    other: new NumberBonus(StatusBonus.Other),
-    hp: new IntBonus(StatusBonus.Hp),
-    hp_buf: new RateBonus(StatusBonus.HpBuf),
-    atk: new IntBonus(StatusBonus.Atk),
-    atk_buf: new RateBonus(StatusBonus.AtkBuf),
-    def: new IntBonus(StatusBonus.Def),
-    def_buf: new RateBonus(StatusBonus.DefBuf),
-    elem: new IntBonus(StatusBonus.Elem),
-    en_rec: new RateBonus(StatusBonus.EnRec),
-    cri_rate: new RateBonus(CriticalBonus.Rate),
-    cri_dmg: new RateBonus(CriticalBonus.Damage),
-    pyro_dmg: new RateBonus(ElementBonus.Pyro),
-    hydro_dmg: new RateBonus(ElementBonus.Hydro),
-    elect_dmg: new RateBonus(ElementBonus.Elect),
-    anemo_dmg: new RateBonus(ElementBonus.Anemo),
-    cryo_dmg: new RateBonus(ElementBonus.Cryo),
-    geo_dmg: new RateBonus(ElementBonus.Geo),
-    phys_dmg: new RateBonus(ElementBonus.Phys),
+    other: new NumberBonus(StatusBonusType.Other),
+    hp: new IntBonus(StatusBonusType.Hp),
+    hp_buf: new RateBonus(StatusBonusType.HpBuf),
+    atk: new IntBonus(StatusBonusType.Atk),
+    atk_buf: new RateBonus(StatusBonusType.AtkBuf),
+    def: new IntBonus(StatusBonusType.Def),
+    def_buf: new RateBonus(StatusBonusType.DefBuf),
+    elem: new IntBonus(StatusBonusType.Elem),
+    en_rec: new RateBonus(StatusBonusType.EnRec),
+    cri_rate: new RateBonus(CriticalBonusType.Rate),
+    cri_dmg: new RateBonus(CriticalBonusType.Damage),
+    pyro_dmg: new RateBonus(ElementBonusType.Pyro),
+    hydro_dmg: new RateBonus(ElementBonusType.Hydro),
+    elect_dmg: new RateBonus(ElementBonusType.Elect),
+    anemo_dmg: new RateBonus(ElementBonusType.Anemo),
+    cryo_dmg: new RateBonus(ElementBonusType.Cryo),
+    geo_dmg: new RateBonus(ElementBonusType.Geo),
+    phys_dmg: new RateBonus(ElementBonusType.Phys),
 };
 class BonusCell extends Cell {
     constructor(list, listeners = null) {
@@ -652,7 +652,7 @@ class EquipmentCell extends Cell {
         if (!!elem) {
             let child = elem.firstElementChild;
             let type = child.value;
-            if ((type in BonusValueList) && (type !== StatusBonus.Other)) {
+            if ((type in BonusValueList) && (type !== StatusBonusType.Other)) {
                 const bonus = BonusValueList[type];
                 const label = bonus.name.replace("(%)", "");
                 const value = child.nextElementSibling.value;
@@ -856,12 +856,12 @@ class ElemReactParam extends RateParam {
     constructor(param) {
         super(param);
         switch (param) {
-            case ReactionBonus.Melt:
-            case ReactionBonus.Vaporize:
-                this.base = ReactionBase.Amplify;
+            case ReactionBonusType.Melt:
+            case ReactionBonusType.Vaporize:
+                this.base = ReactionBaseType.Amplify;
                 break;
             default:
-                this.base = ReactionBase.Transform;
+                this.base = ReactionBaseType.Transform;
                 break;
         }
     }

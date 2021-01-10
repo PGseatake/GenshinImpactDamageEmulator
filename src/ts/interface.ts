@@ -100,15 +100,15 @@ const EquipmentTypes = [
     ArtifactType.Circlet
 ] as const;
 
-const CriticalBonus = {
+const CriticalBonusType = {
     Damage: "cri_dmg",
     Rate: "cri_rate",
     Heavy: "heavy_cri",
     Skill: "skill_cri",
 } as const;
-type CriticalBonus = typeof CriticalBonus[keyof typeof CriticalBonus];
+type CriticalBonusType = typeof CriticalBonusType[keyof typeof CriticalBonusType];
 
-const StatusBonus = {
+const StatusBonusType = {
     Other: "other",
     Hp: "hp",
     HpBuf: "hp_buf",
@@ -122,17 +122,17 @@ const StatusBonus = {
     // HealBuf: "heal_buf"
     AnyDmg: "any_dmg",
 } as const;
-type StatusBonus = typeof StatusBonus[keyof typeof StatusBonus] | CriticalBonus;
+type StatusBonusType = typeof StatusBonusType[keyof typeof StatusBonusType] | CriticalBonusType;
 
-const CombatBonus = {
+const CombatBonusType = {
     Normal: "normal_dmg",
     Heavy: "heavy_dmg",
     Skill: "skill_dmg",
     Burst: "burst_dmg"
 } as const;
-type CombatBonus = typeof CombatBonus[keyof typeof CombatBonus];
+type CombatBonusType = typeof CombatBonusType[keyof typeof CombatBonusType];
 
-const ElementBonus = {
+const ElementBonusType = {
     Phys: "phys_dmg",
     Pyro: "pyro_dmg",
     Hydro: "hydro_dmg",
@@ -142,9 +142,9 @@ const ElementBonus = {
     Geo: "geo_dmg",
     Any: "elem_dmg"
 } as const;
-type ElementBonus = typeof ElementBonus[keyof typeof ElementBonus];
+type ElementBonusType = typeof ElementBonusType[keyof typeof ElementBonusType];
 
-const ReactionBonus = {
+const ReactionBonusType = {
     // Burning: "burning_dmg",
     Vaporize: "vaporize_dmg",
     Melt: "melt_dmg",
@@ -154,17 +154,17 @@ const ReactionBonus = {
     Conduct: "conduct_dmg",
     Overload: "overload_dmg"
 } as const;
-type ReactionBonus = typeof ReactionBonus[keyof typeof ReactionBonus];
+type ReactionBonusType = typeof ReactionBonusType[keyof typeof ReactionBonusType];
 
-type AnyBonusType = StatusBonus | ElementBonus | CombatBonus | ReactionBonus;
+type AnyBonusType = StatusBonusType | ElementBonusType | CombatBonusType | ReactionBonusType;
 type BonusType = Exclude<AnyBonusType, "other">;
-type BonusValueType = Exclude<StatusBonus | ElementBonus, "elem_dmg" | "any_dmg" | "heavy_cri" | "skill_cri">;
+type BonusValueType = Exclude<StatusBonusType | ElementBonusType, "elem_dmg" | "any_dmg" | "heavy_cri" | "skill_cri">;
 
-const ReactionBase = {
+const ReactionBaseType = {
     Amplify: "ampl",
     Transform: "trans",
 } as const;
-type ReactionBase = typeof ReactionBase[keyof typeof ReactionBase];
+type ReactionBaseType = typeof ReactionBaseType[keyof typeof ReactionBaseType];
 
 const ReactionType = {
     // Burning: "burning",
@@ -262,7 +262,7 @@ type TalentType = typeof TalentType[keyof typeof TalentType];
 
 const CombatElementType = {
     Switch: "switch",
-    AddElem: "addem"
+    Added: "added"
 } as const;
 type CombatElementType = ElementType | typeof CombatElementType[keyof typeof CombatElementType];
 
@@ -315,16 +315,16 @@ interface ICriticalValue {
 type ItoString<T> = (value: T) => string;
 
 const TypeToBonus = {
-    element(type: ElementType): ElementBonus {
-        return type + "_dmg" as ElementBonus;
+    element(type: ElementType): ElementBonusType {
+        return type + "_dmg" as ElementBonusType;
     },
 
-    combat(type: CombatType): CombatBonus {
-        return type + "_dmg" as CombatBonus;
+    combat(type: CombatType): CombatBonusType {
+        return type + "_dmg" as CombatBonusType;
     },
 
-    reaction(type: ReactionType): ReactionBonus {
-        return type + "_dmg" as ReactionBonus;
+    reaction(type: ReactionType): ReactionBonusType {
+        return type + "_dmg" as ReactionBonusType;
     },
 
     buffer(type: CharaStatusType): BonusType {

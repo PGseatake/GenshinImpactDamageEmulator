@@ -52,13 +52,13 @@ const EquipmentTypes = [
     ArtifactType.Goblet,
     ArtifactType.Circlet
 ];
-const CriticalBonus = {
+const CriticalBonusType = {
     Damage: "cri_dmg",
     Rate: "cri_rate",
     Heavy: "heavy_cri",
     Skill: "skill_cri",
 };
-const StatusBonus = {
+const StatusBonusType = {
     Other: "other",
     Hp: "hp",
     HpBuf: "hp_buf",
@@ -70,13 +70,13 @@ const StatusBonus = {
     EnRec: "en_rec",
     AnyDmg: "any_dmg",
 };
-const CombatBonus = {
+const CombatBonusType = {
     Normal: "normal_dmg",
     Heavy: "heavy_dmg",
     Skill: "skill_dmg",
     Burst: "burst_dmg"
 };
-const ElementBonus = {
+const ElementBonusType = {
     Phys: "phys_dmg",
     Pyro: "pyro_dmg",
     Hydro: "hydro_dmg",
@@ -86,7 +86,7 @@ const ElementBonus = {
     Geo: "geo_dmg",
     Any: "elem_dmg"
 };
-const ReactionBonus = {
+const ReactionBonusType = {
     Vaporize: "vaporize_dmg",
     Melt: "melt_dmg",
     Swirl: "swirl_dmg",
@@ -95,7 +95,7 @@ const ReactionBonus = {
     Conduct: "conduct_dmg",
     Overload: "overload_dmg"
 };
-const ReactionBase = {
+const ReactionBaseType = {
     Amplify: "ampl",
     Transform: "trans",
 };
@@ -131,7 +131,7 @@ const TalentType = {
 };
 const CombatElementType = {
     Switch: "switch",
-    AddElem: "addem"
+    Added: "added"
 };
 const TypeToBonus = {
     element(type) {

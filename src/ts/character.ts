@@ -8,7 +8,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
         weapon: WeaponType.Sword,
         // Lv[1, 20, 20+, 40, 40+, 50, 50+, 60, 60+, 70, 70+, 80, 80+, 90]
         status: null,
-        special: StatusBonus.Other,
+        special: StatusBonusType.Other,
         // Lv[1, 20+, 40+, 50+, 60+, 70+, 80+]
         spvalue: null,
         talent: null
@@ -47,7 +47,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 635, 682
             ]
         },
-        special: StatusBonus.AtkBuf,
+        special: StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -69,7 +69,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             ],
             burst: [
                 { name: "竜巻ダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 80.8 },
-                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.AddElem, scale: DamageScale.Elem, value: 24.8 },
+                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Added, scale: DamageScale.Elem, value: 24.8 },
             ]
         }
     },
@@ -107,7 +107,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 635, 682
             ]
         },
-        special: StatusBonus.AtkBuf,
+        special: StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -163,7 +163,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 815, 876
             ]
         },
-        special: ElementBonus.Geo,
+        special: ElementBonusType.Geo,
         spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         talent: {
             combat: [
@@ -221,7 +221,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 559, 601
             ]
         },
-        special: StatusBonus.AtkBuf,
+        special: StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -279,7 +279,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 623, 669
             ]
         },
-        special: StatusBonus.HpBuf,
+        special: StatusBonusType.HpBuf,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -332,7 +332,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 603, 648
             ]
         },
-        special: ElementBonus.Elect,
+        special: ElementBonusType.Elect,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -392,7 +392,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 718, 771
             ]
         },
-        special: StatusBonus.EnRec,
+        special: StatusBonusType.EnRec,
         spvalue: [0.0, 0.0, 20.0 / 3, 40.0 / 3, 40.0 / 3, 20.0, 80.0 / 3],
         talent: {
             combat: [
@@ -451,7 +451,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 603, 648
             ]
         },
-        special: StatusBonus.AtkBuf,
+        special: StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -507,7 +507,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 729, 784
             ]
         },
-        special: CriticalBonus.Rate,
+        special: CriticalBonusType.Rate,
         spvalue: [0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
         talent: {
             combat: [
@@ -567,7 +567,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 559, 601
             ]
         },
-        special: ElementBonus.Cryo,
+        special: ElementBonusType.Cryo,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -625,7 +625,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 553, 594
             ]
         },
-        special: StatusBonus.AtkBuf,
+        special: StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -683,7 +683,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 715, 769
             ]
         },
-        special: StatusBonus.Other, // HealBuf
+        special: StatusBonusType.Other, // HealBuf
         spvalue: null,
         talent: {
             combat: [
@@ -740,7 +740,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 737, 792
             ]
         },
-        special: StatusBonus.EnRec,
+        special: StatusBonusType.EnRec,
         spvalue: [0.0, 0.0, 20.0 / 3, 40.0 / 3, 40.0 / 3, 20.0, 80.0 / 3],
         talent: {
             combat: [
@@ -796,7 +796,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 743, 800
             ]
         },
-        special: CriticalBonus.Damage,
+        special: CriticalBonusType.Damage,
         spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
         talent: {
             combat: [
@@ -856,7 +856,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 572, 615
             ]
         },
-        special: ElementBonus.Pyro,
+        special: ElementBonusType.Pyro,
         spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         talent: {
             combat: [
@@ -911,7 +911,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 533, 573
             ]
         },
-        special: StatusBonus.Elem,
+        special: StatusBonusType.Elem,
         spvalue: [0, 0, 24, 48, 48, 72, 96],
         talent: {
             combat: [
@@ -970,7 +970,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 607, 653
             ]
         },
-        special: StatusBonus.EnRec,
+        special: StatusBonusType.EnRec,
         spvalue: [0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
         talent: {
             combat: [
@@ -1026,7 +1026,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 533, 573
             ]
         },
-        special: ElementBonus.Geo,
+        special: ElementBonusType.Geo,
         spvalue: [0, 0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -1079,7 +1079,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 743, 799
             ]
         },
-        special: StatusBonus.DefBuf,
+        special: StatusBonusType.DefBuf,
         spvalue: [0, 0, 7.5, 15.0, 15.0, 22.5, 30.0],
         talent: {
             combat: [
@@ -1136,7 +1136,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 857, 992
             ]
         },
-        special: StatusBonus.Other, // HealBuf
+        special: StatusBonusType.Other, // HealBuf
         spvalue: null,
         talent: {
             combat: [
@@ -1193,7 +1193,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 699, 751
             ]
         },
-        special: ElementBonus.Phys,
+        special: ElementBonusType.Phys,
         spvalue: [0, 0, 7.5, 15.0, 15.0, 22.5, 30.0],
         talent: {
             combat: [
@@ -1250,7 +1250,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 654, 703
             ]
         },
-        special: ElementBonus.Anemo,
+        special: ElementBonusType.Anemo,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -1268,7 +1268,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             ],
             burst: [
                 { name: "継続ダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 148 },
-                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.AddElem, scale: DamageScale.Elem, value: 44 },
+                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Added, scale: DamageScale.Elem, value: 44 },
             ]
         }
     },
@@ -1306,7 +1306,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 757, 815
             ]
         },
-        special: ElementBonus.Hydro,
+        special: ElementBonusType.Hydro,
         spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         talent: {
             combat: [
@@ -1376,7 +1376,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 622, 670
             ]
         },
-        special: StatusBonus.EnRec,
+        special: StatusBonusType.EnRec,
         spvalue: [0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
         talent: {
             combat: [
@@ -1398,7 +1398,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             ],
             burst: [
                 { name: "継続ダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 37.6 },
-                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.AddElem, scale: DamageScale.Elem, value: 18.8 },
+                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Added, scale: DamageScale.Elem, value: 18.8 },
             ]
         }
     },
@@ -1436,7 +1436,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 623, 669
             ]
         },
-        special: StatusBonus.Elem,
+        special: StatusBonusType.Elem,
         spvalue: [0, 0, 24, 48, 48, 72, 96],
         talent: {
             combat: [
@@ -1505,7 +1505,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 706, 759
             ]
         },
-        special: StatusBonus.AtkBuf,
+        special: StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -1561,7 +1561,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 743, 799
             ]
         },
-        special: StatusBonus.AtkBuf,
+        special: StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
@@ -1619,7 +1619,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 686, 738
             ]
         },
-        special: ElementBonus.Geo,
+        special: ElementBonusType.Geo,
         spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         talent: {
             combat: [

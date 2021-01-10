@@ -491,13 +491,13 @@ class ArtifactTable extends ItemTable {
 class FlowerTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Flower, FLOWER_LIST);
-        this.cells.main = new SingleBonusCell(StatusBonus.Hp, { change: e => this.onChange(e) });
+        this.cells.main = new SingleBonusCell(StatusBonusType.Hp, { change: e => this.onChange(e) });
     }
 }
 class FeatherTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Feather, FEATHER_LIST);
-        this.cells.main = new SingleBonusCell(StatusBonus.Atk, { change: e => this.onChange(e) });
+        this.cells.main = new SingleBonusCell(StatusBonusType.Atk, { change: e => this.onChange(e) });
     }
 }
 class SandsTable extends ArtifactTable {
@@ -996,7 +996,7 @@ class EnemyTable extends Table {
     static changeList(elem) {
         let tbl = Table.List.enemy;
         let html = tbl.html;
-        tbl.build(html, elem.value);
+        tbl.rebuild(html, elem.value);
         tbl.level(html.querySelector("input#enemy_level"));
         Table.List.damage.calculate();
     }
@@ -1013,12 +1013,12 @@ class EnemyTable extends Table {
             opt.label = ENEMY_LIST[key].name;
             select.appendChild(opt);
         }
-        this.build(html, select.value);
+        this.rebuild(html, select.value);
     }
     clear() {
         this.defence(null);
     }
-    build(html, name) {
+    rebuild(html, name) {
         this.target = new Enemy(name);
         let row = html.rows[2];
         while (!!row.id) {
@@ -1062,7 +1062,7 @@ class ApplyTable extends Table {
                 if (!!input) {
                     stack = parseInt(input.value);
                 }
-                bonuses.push({ types: bonus.items, value: bonus.value * stack });
+                bonuses.push({ types: bonus.types, value: bonus.value * stack });
             }
         }
         return bonuses;
