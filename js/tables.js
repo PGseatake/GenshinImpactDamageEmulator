@@ -1234,7 +1234,7 @@ class DamageTable extends Table {
             row.appendChild(cel);
             let combats = status.chara.talent[type];
             for (let combat of combats) {
-                let attr = new Attribute(combat, level);
+                let attr = new CombatAttribute(combat, level);
                 let className = attr.elem;
                 if (className === "switch") {
                     className = "phys";
@@ -1246,12 +1246,13 @@ class DamageTable extends Table {
                 row.appendChild(cel);
                 cel = document.createElement("td");
                 cel.className = className;
-                cel.textContent = attr.toString(value => {
-                    if (value < 100) {
-                        return value.toFixed(1) + "%";
-                    }
-                    return value.toFixed() + "%";
-                });
+                let text = attr.toString(value => toFloorRate(value));
+                switch (attr.based) {
+                    case DamageBased.Def:
+                        text += "(防)";
+                        break;
+                }
+                cel.textContent = text;
                 row.appendChild(cel);
                 cel = document.createElement("td");
                 cel.className = className;
@@ -1302,38 +1303,16 @@ class DamageTable extends Table {
         let cells = row.cells;
         let critical = status.critical();
         cells[2].textContent = status.attack.toFixed();
-        cells[3].textContent = `+${critical.damage.toFixed(1)}%(${critical.rate.toFixed(1)}%)`;
+        cells[3].textContent = `+${toFloorRate(critical.damage)}(${toFloorRate(critical.rate)})`;
         row = row.nextElementSibling;
         let enemy = Table.List.enemy.target;
-        let attackPower = status.attack;
-        let enemyDefence = enemy.defence(status.level);
         let damageRow = (type) => {
             row = row.nextElementSibling;
             let level = status.talent[type];
             let combats = status.chara.talent[type];
             for (let combat of combats) {
-                let cell = row.cells[2];
-                let elem = cell.className;
-                let attr = new Attribute(combat, level);
-                let elementBonus = status.elemental(elem);
-                let combatBonus = status.combat(attr.type);
-                let enemyResist = enemy.resistance(elem);
-                let bonusDamage = (100 + elementBonus + combatBonus + status.param.any_dmg) / 100;
-                let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
-                cell.textContent = attr.toString(value => (totalScale * value / 100).toFixed());
-                cell = cell.nextElementSibling;
-                let critical = status.critical(attr.type);
-                totalScale *= (critical.damage + 100) / 100;
-                let text = attr.toString(value => (totalScale * value / 100).toFixed());
-                switch (attr.type) {
-                    case CombatType.Heavy:
-                    case CombatType.Skill:
-                        if (critical.combat) {
-                            text = `${text} (${critical.rate}%)`;
-                        }
-                        break;
-                }
-                cell.textContent = text;
+                let attr = new CombatAttribute(combat, level);
+                attr.damage(row, status, enemy);
                 row = row.nextElementSibling;
             }
         };

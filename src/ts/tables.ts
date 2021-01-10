@@ -1744,7 +1744,7 @@ class DamageTable extends Table implements IRefreshTable {
 
             let combats = status.chara.talent![type];
             for (let combat of combats) {
-                let attr = new Attribute(combat, level);
+                let attr = new CombatAttribute(combat, level);
                 // ダメージタイプ
                 let className = attr.elem;
                 if (className === "switch") {
@@ -1762,12 +1762,14 @@ class DamageTable extends Table implements IRefreshTable {
                 // 倍率セル
                 cel = document.createElement("td");
                 cel.className = className;
-                cel.textContent = attr.toString(value => {
-                    if (value < 100) {
-                        return value.toFixed(1) + "%";
-                    }
-                    return value.toFixed() + "%";
-                });
+                let text = attr.toString(value => toFloorRate(value));
+                switch (attr.based) {
+                    // ダメージ素を追加
+                    case DamageBased.Def:
+                        text += "(防)"; // TODO: とりあえず
+                        break;
+                }
+                cel.textContent = text;
                 row.appendChild(cel);
 
                 // ダメージセル
@@ -1837,13 +1839,10 @@ class DamageTable extends Table implements IRefreshTable {
         let cells = row.cells;
         let critical = status.critical();
         cells[2].textContent = status.attack.toFixed();
-        cells[3].textContent = `+${critical.damage.toFixed(1)}%(${critical.rate.toFixed(1)}%)`;
+        cells[3].textContent = `+${toFloorRate(critical.damage)}(${toFloorRate(critical.rate)})`;
 
         row = row.nextElementSibling as HTMLRowElement;
         let enemy = Table.List.enemy!.target!;
-
-        let attackPower = status.attack;
-        let enemyDefence = enemy.defence(status.level);
 
         let damageRow = (type: TalentType) => {
             row = row.nextElementSibling as HTMLRowElement; // キャプション行スキップ
@@ -1851,35 +1850,8 @@ class DamageTable extends Table implements IRefreshTable {
             let level = status.talent[type];
             let combats = status.chara.talent![type];
             for (let combat of combats) {
-                let cell = row.cells[2];
-                let elem = cell.className as ElementType;
-                let attr = new Attribute(combat, level);
-
-                // 各種倍率
-                let elementBonus = status.elemental(elem);
-                let combatBonus = status.combat(attr.type);
-                let enemyResist = enemy.resistance(elem);
-                let bonusDamage = (100 + elementBonus + combatBonus + status.param.any_dmg) / 100;
-                let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
-
-                // 最終ダメージ
-                cell.textContent = attr.toString(value => (totalScale * value / 100).toFixed());
-                cell = cell.nextElementSibling as HTMLCellElement;
-
-                // 会心ダメージ
-                let critical = status.critical(attr.type);
-                totalScale *= (critical.damage + 100) / 100;
-                let text = attr.toString(value => (totalScale * value / 100).toFixed());
-                // 会心率が異なる場合は特別表示
-                switch (attr.type) {
-                    case CombatType.Heavy:
-                    case CombatType.Skill:
-                        if (critical.combat) {
-                            text = `${text} (${critical.rate}%)`;
-                        }
-                        break;
-                }
-                cell.textContent = text;
+                let attr = new CombatAttribute(combat, level);
+                attr.damage(row, status, enemy);
 
                 row = row.nextElementSibling as HTMLRowElement;
             }

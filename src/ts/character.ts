@@ -179,7 +179,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             ],
             skill: [
                 { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Phys, value: 130 },
-                //{ name: "刹那の花ダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Phys, value: 134 },
+                { name: "刹那の花ダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Phys, value: 134, based: DamageBased.Def },
             ],
             burst: [
                 { name: "爆発ダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Elem, value: 367 },
@@ -1094,7 +1094,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
                 { name: "高空落下攻撃ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 186 },
             ],
             skill: [
-                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Elem, value: 120, base: "def" },
+                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Elem, value: 120, based: DamageBased.Def },
             ],
             burst: [
                 { name: "爆発ダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Elem, value: 67.2 },

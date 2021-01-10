@@ -415,7 +415,7 @@ class Status {
         return {
             rate: 5 + this.param.cri_rate + combat, // 基礎5%追加
             damage: 50 + this.param.cri_dmg, // 基礎50%追加
-            combat: combat !== 0,
+            special: combat !== 0,
         };
     }
 
@@ -529,12 +529,13 @@ const DAMAGE_SCALE: DeepReadonly<Record<DamageScale, number[]>> = {
 } as const;
 
 // 天賦の各種倍率
-class Attribute {
+class CombatAttribute {
     public name: string;
     public type: CombatType;
     public elem: CombatElementType;
     public value: number[];
     public multi: number;
+    public based: DamageBased;
 
     constructor(info: DeepReadonly<ICombat>, level: number) {
         const scale = DAMAGE_SCALE[info.scale];
@@ -557,18 +558,57 @@ class Attribute {
         if (!!info.value2) {
             this.value.push(info.value2 * scale[index] / 100);
         }
-        this.multi = 0;
-        if (!!info.multi) {
-            this.multi = info.multi;
-        }
+        this.multi = info.multi ?? 1;
+        this.based = info.based ?? DamageBased.Atk;
     }
 
     toString(func: ItoString<number>): string {
         let str = this.value.map(func).join("+");
-        if (!!this.multi) {
+        if (1 < this.multi) {
             return `${str}x${this.multi}`;
         }
         return str;
+    }
+
+    damage(row: HTMLRowElement, status: Status, enemy: Enemy) {
+        let cell = row.cells[2];
+        let elem = cell.className as ElementType;
+
+        // 攻撃力
+        let attackPower: number;
+        switch (this.based) {
+            case DamageBased.Def:
+                attackPower = status.defence;
+                break;
+            default:
+                attackPower = status.attack;
+                break;
+        }
+
+        // 防御力
+        let enemyDefence = enemy.defence(status.level);
+
+        // 各種倍率
+        let elementBonus = status.elemental(elem);
+        let combatBonus = status.combat(this.type);
+        let enemyResist = enemy.resistance(elem);
+        let bonusDamage = (100 + elementBonus + combatBonus + status.param.any_dmg) / 100;
+        let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
+
+        // 最終ダメージ
+        cell.textContent = this.toString(value => (totalScale * value / 100).toFixed());
+        cell = cell.nextElementSibling as HTMLCellElement;
+
+        // 会心ダメージ
+        let critical = status.critical(this.type);
+        totalScale *= (critical.damage + 100) / 100;
+
+        let text = this.toString(value => (totalScale * value / 100).toFixed());
+        // 会心率が異なる場合は特別表示
+        if (critical.special) {
+            text = `${text}(${toFloorRate(critical.rate)})`;
+        }
+        cell.textContent = text;
     }
 }
 

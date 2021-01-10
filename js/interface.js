@@ -119,6 +119,10 @@ const DamageScale = {
     Elem: "elem",
     Etc1: "etc1"
 };
+const DamageBased = {
+    Atk: "atk",
+    Def: "def"
+};
 const BonusTarget = {
     Self: "self",
     Next: "next",
@@ -147,3 +151,15 @@ const TypeToBonus = {
         return type + "_buf";
     },
 };
+function toFloorRate(value) {
+    if (value < 100) {
+        return value.toFixed(1) + "%";
+    }
+    return value.toFixed() + "%";
+}
+function toRoundRate(value) {
+    if (value < 100) {
+        return (Math.round(value * 10) / 10).toFixed(1) + "%";
+    }
+    return Math.round(value).toFixed() + "%";
+}

@@ -193,6 +193,12 @@ const DamageScale = {
 } as const;
 type DamageScale = typeof DamageScale[keyof typeof DamageScale];
 
+const DamageBased = {
+    Atk: "atk",
+    Def: "def"
+} as const;
+type DamageBased = typeof DamageBased[keyof typeof DamageBased];
+
 const BonusTarget = {
     Self: "self",
     Next: "next",
@@ -274,7 +280,7 @@ interface ICombat {
     value: number;
     value2?: number;
     multi?: number;
-    base?: string;
+    based?: DamageBased;
 }
 
 type CharaStatusType = "hp" | "atk" | "def";
@@ -309,7 +315,7 @@ interface IAscensionLevel {
 interface ICriticalValue {
     rate: number;
     damage: number;
-    combat: boolean;
+    special: boolean;
 }
 
 type ItoString<T> = (value: T) => string;
@@ -331,3 +337,17 @@ const TypeToBonus = {
         return type + "_buf" as BonusType;
     },
 } as const;
+
+function toFloorRate(value: number): string {
+    if (value < 100) {
+        return value.toFixed(1) + "%";
+    }
+    return value.toFixed() + "%";
+}
+
+function toRoundRate(value: number): string {
+    if (value < 100) {
+        return (Math.round(value * 10) / 10).toFixed(1) + "%";
+    }
+    return Math.round(value).toFixed() + "%";
+}

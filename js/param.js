@@ -349,7 +349,7 @@ class Status {
         return {
             rate: 5 + this.param.cri_rate + combat,
             damage: 50 + this.param.cri_dmg,
-            combat: combat !== 0,
+            special: combat !== 0,
         };
     }
     append(bonus) {
@@ -432,8 +432,9 @@ const DAMAGE_SCALE = {
     elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0,],
     etc1: [100.0, 110.5, 121.5, 135.0, 147.0, 159.5, 175.5, 192.0, 208.0, 224.0, 240.5, 256.5, 270.0, 283.5, 297.0],
 };
-class Attribute {
+class CombatAttribute {
     constructor(info, level) {
+        var _a, _b;
         const scale = DAMAGE_SCALE[info.scale];
         const index = (num => {
             if (0 < num) {
@@ -454,17 +455,43 @@ class Attribute {
         if (!!info.value2) {
             this.value.push(info.value2 * scale[index] / 100);
         }
-        this.multi = 0;
-        if (!!info.multi) {
-            this.multi = info.multi;
-        }
+        this.multi = (_a = info.multi) !== null && _a !== void 0 ? _a : 1;
+        this.based = (_b = info.based) !== null && _b !== void 0 ? _b : DamageBased.Atk;
     }
     toString(func) {
         let str = this.value.map(func).join("+");
-        if (!!this.multi) {
+        if (1 < this.multi) {
             return `${str}x${this.multi}`;
         }
         return str;
+    }
+    damage(row, status, enemy) {
+        let cell = row.cells[2];
+        let elem = cell.className;
+        let attackPower;
+        switch (this.based) {
+            case DamageBased.Def:
+                attackPower = status.defence;
+                break;
+            default:
+                attackPower = status.attack;
+                break;
+        }
+        let enemyDefence = enemy.defence(status.level);
+        let elementBonus = status.elemental(elem);
+        let combatBonus = status.combat(this.type);
+        let enemyResist = enemy.resistance(elem);
+        let bonusDamage = (100 + elementBonus + combatBonus + status.param.any_dmg) / 100;
+        let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
+        cell.textContent = this.toString(value => (totalScale * value / 100).toFixed());
+        cell = cell.nextElementSibling;
+        let critical = status.critical(this.type);
+        totalScale *= (critical.damage + 100) / 100;
+        let text = this.toString(value => (totalScale * value / 100).toFixed());
+        if (critical.special) {
+            text = `${text}(${toFloorRate(critical.rate)})`;
+        }
+        cell.textContent = text;
     }
 }
 const ASCENSION_LV_STEP = [20, 40, 50, 60, 70, 80];
