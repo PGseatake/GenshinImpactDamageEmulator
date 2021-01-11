@@ -268,7 +268,7 @@ type TalentType = typeof TalentType[keyof typeof TalentType];
 
 const CombatElementType = {
     Switch: "switch",
-    Added: "added"
+    Contact: "contact"
 } as const;
 type CombatElementType = ElementType | typeof CombatElementType[keyof typeof CombatElementType];
 

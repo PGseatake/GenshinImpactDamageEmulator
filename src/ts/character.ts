@@ -69,7 +69,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             ],
             burst: [
                 { name: "竜巻ダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 80.8 },
-                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Added, scale: DamageScale.Elem, value: 24.8 },
+                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Contact, scale: DamageScale.Elem, value: 24.8 },
             ]
         }
     },
@@ -1268,7 +1268,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             ],
             burst: [
                 { name: "継続ダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 148 },
-                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Added, scale: DamageScale.Elem, value: 44 },
+                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Contact, scale: DamageScale.Elem, value: 44 },
             ]
         }
     },
@@ -1398,7 +1398,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             ],
             burst: [
                 { name: "継続ダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 37.6 },
-                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Added, scale: DamageScale.Elem, value: 18.8 },
+                { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Contact, scale: DamageScale.Elem, value: 18.8 },
             ]
         }
     },

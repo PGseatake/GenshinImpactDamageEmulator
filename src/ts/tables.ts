@@ -1627,7 +1627,7 @@ class ApplyTable extends Table {
     }
 }
 
-const AddedDamageElement: IMap<string> = {
+const ContactDamageElement: IMap<string> = {
     "": "-",
     pyro: "火",
     hydro: "水",
@@ -1762,7 +1762,7 @@ class DamageTable extends Table implements IRefreshTable {
                         damageType.className = ""; // ダメージタイプ表示
                         className = ElementType.Phys;
                         break;
-                    case CombatElementType.Added:
+                    case CombatElementType.Contact:
                         break;
                     default:
                         className = elem;
@@ -1773,18 +1773,18 @@ class DamageTable extends Table implements IRefreshTable {
 
                 // 名前セル
                 cel = document.createElement("th");
-                if (elem === CombatElementType.Added) {
+                if (elem === CombatElementType.Contact) {
                     cel.appendChild(document.createTextNode(attr.name));
 
                     // 付加元素タイプ選択
                     let select = document.createElement("select");
-                    for (let type in AddedDamageElement) {
+                    for (let type in ContactDamageElement) {
                         let opt = document.createElement("option");
                         opt.value = type;
-                        opt.label = AddedDamageElement[type];
+                        opt.label = ContactDamageElement[type];
                         select.appendChild(opt);
                     }
-                    select.addEventListener("change", ev => this.addedType(ev.target as HTMLSelectElement));
+                    select.addEventListener("change", ev => this.contactType(ev.target as HTMLSelectElement));
 
                     cel.appendChild(select);
                 } else {
@@ -1864,7 +1864,7 @@ class DamageTable extends Table implements IRefreshTable {
     }
 
     // 付加元素タイプ設定
-    private addedType(select: HTMLSelectElement) {
+    private contactType(select: HTMLSelectElement) {
         let cell = select.parentElement!.nextElementSibling as HTMLCellElement;
         let row = cell.parentElement as HTMLRowElement;
 
@@ -1883,7 +1883,7 @@ class DamageTable extends Table implements IRefreshTable {
             // TODO: 付加元素ダメージが元素爆発に1つだけ前提
             const combats = status.chara.talent!.burst;
             for (const combat of combats) {
-                if (combat.elem === CombatElementType.Added) {
+                if (combat.elem === CombatElementType.Contact) {
                     let attr = new CombatAttribute(combat, status.talent.burst);
                     attr.damage(row, status, Table.List.enemy!.target!);
                     break;

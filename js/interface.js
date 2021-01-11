@@ -135,7 +135,7 @@ const TalentType = {
 };
 const CombatElementType = {
     Switch: "switch",
-    Added: "added"
+    Contact: "contact"
 };
 const TypeToBonus = {
     element(type) {

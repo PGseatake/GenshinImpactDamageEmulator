@@ -1150,7 +1150,7 @@ ApplyTable.BuildCells = {
         }
     },
 };
-const AddedDamageElement = {
+const ContactDamageElement = {
     "": "-",
     pyro: "火",
     hydro: "水",
@@ -1249,7 +1249,7 @@ class DamageTable extends Table {
                         damageType.className = "";
                         className = ElementType.Phys;
                         break;
-                    case CombatElementType.Added:
+                    case CombatElementType.Contact:
                         break;
                     default:
                         className = elem;
@@ -1257,16 +1257,16 @@ class DamageTable extends Table {
                 }
                 row = html.insertRow();
                 cel = document.createElement("th");
-                if (elem === CombatElementType.Added) {
+                if (elem === CombatElementType.Contact) {
                     cel.appendChild(document.createTextNode(attr.name));
                     let select = document.createElement("select");
-                    for (let type in AddedDamageElement) {
+                    for (let type in ContactDamageElement) {
                         let opt = document.createElement("option");
                         opt.value = type;
-                        opt.label = AddedDamageElement[type];
+                        opt.label = ContactDamageElement[type];
                         select.appendChild(opt);
                     }
-                    select.addEventListener("change", ev => this.addedType(ev.target));
+                    select.addEventListener("change", ev => this.contactType(ev.target));
                     cel.appendChild(select);
                 }
                 else {
@@ -1326,7 +1326,7 @@ class DamageTable extends Table {
         rebuildRow(TalentType.Burst);
         this.calcDamage(html, status);
     }
-    addedType(select) {
+    contactType(select) {
         let cell = select.parentElement.nextElementSibling;
         let row = cell.parentElement;
         const className = select.value;
@@ -1341,7 +1341,7 @@ class DamageTable extends Table {
         if (!!status && !!select.value) {
             const combats = status.chara.talent.burst;
             for (const combat of combats) {
-                if (combat.elem === CombatElementType.Added) {
+                if (combat.elem === CombatElementType.Contact) {
                     let attr = new CombatAttribute(combat, status.talent.burst);
                     attr.damage(row, status, Table.List.enemy.target);
                     break;
