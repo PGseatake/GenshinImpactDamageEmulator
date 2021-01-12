@@ -649,6 +649,66 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             ]
         }
     },
+    Ganyu: {
+        name: "甘雨",
+        star: 5,
+        element: ElementType.Cryo,
+        weapon: WeaponType.Bow,
+        status: {
+            hp: [
+                763, 1978,
+                2632, 3939,
+                4403, 5066,
+                5686, 6555,
+                6820, 7495,
+                7960, 8643,
+                9108, 9797
+            ],
+            atk: [
+                26, 68,
+                90, 135,
+                151, 173,
+                194, 217,
+                233, 256,
+                272, 295,
+                311, 335
+            ],
+            def: [
+                49, 127,
+                169, 253,
+                283, 326,
+                366, 409,
+                439, 482,
+                512, 556,
+                586, 630
+            ]
+        },
+        special: CriticalBonusType.Damage,
+        spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 31.7 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 35.6 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 45.5 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 45.5 },
+                { name: "5段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 48.2 },
+                { name: "6段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 57.6 },
+                { name: "狙い撃ち", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 43.9 },
+                { name: "1段チャージ狙い撃ち", type: CombatType.Heavy, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 124 },
+                { name: "霜華の矢の命中ダメージ", type: CombatType.Heavy, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 128 },
+                { name: "霜華の矢・霜華満開ダメージ", type: CombatType.Heavy, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 218 },
+                { name: "落下期間のダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 56.8 },
+                { name: "低空落下攻撃ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 114 },
+                { name: "高空落下攻撃ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 142 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 132 },
+            ],
+            burst: [
+                { name: "氷柱ダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 70 }
+            ]
+        }
+    },
     Jean: {
         name: "ジン",
         star: 5,
