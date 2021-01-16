@@ -178,6 +178,15 @@ const ReactionType = {
 } as const;
 type ReactionType = typeof ReactionType[keyof typeof ReactionType];
 
+const ReactionSquareTypes = [
+    "",
+    ElementType.Pyro,
+    ElementType.Hydro,
+    ElementType.Elect,
+    ElementType.Cryo
+] as const;
+type ReactionSquareType = typeof ReactionSquareTypes[number];
+
 const CombatType = {
     Normal: "normal",
     Heavy: "heavy",

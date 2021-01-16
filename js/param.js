@@ -256,6 +256,29 @@ class Bonus {
         return `[${this.source}] ${str}`;
     }
 }
+const ReactionDamageScale = {
+    pyro: {
+        "vaporize": 1.5,
+        "overload": 1.0,
+        "melt": 2.0,
+    },
+    hydro: {
+        "vaporize": 2.0,
+        "echarge": 1.0,
+    },
+    elect: {
+        "overload": 1.0,
+        "echarge": 1.0,
+        "conduct": 1.0,
+    },
+    cryo: {
+        "melt": 1.5,
+        "conduct": 1.0,
+    },
+    anemo: {
+        "swirl": 1.0,
+    }
+};
 class Status {
     constructor(id) {
         this.id = id;
@@ -303,14 +326,32 @@ class Status {
     get level() {
         return parseInt(this.lv.replace("+", ""));
     }
+    get reactions() {
+        const chara = this.chara;
+        const elem = chara.element;
+        const scale = ReactionDamageScale[elem];
+        let list = [];
+        if (!!scale) {
+            for (const type in scale) {
+                list.push(type);
+            }
+        }
+        if (elem === ElementType.Geo) {
+            list.push(ReactionType.Shutter);
+        }
+        else if (chara.weapon === WeaponType.Claymore) {
+            list.push(ReactionType.Shutter);
+        }
+        return list;
+    }
     get elem_react() {
-        return (this.param.elem * 25) / (9 * (this.param.elem + 1400)) * 100;
+        return this.param.elem / (1401 + this.param.elem) * 100;
     }
     get elem_ampl() {
-        return this.elem_react;
+        return 25.0 / 9.0 * this.elem_react;
     }
     get elem_trans() {
-        return 2.4 * this.elem_react;
+        return 60.0 / 9.0 * this.elem_react;
     }
     get attack() {
         return this.base.atk + (this.base.atk * this.param.atk_buf / 100) + this.param.atk;
@@ -318,23 +359,45 @@ class Status {
     get defence() {
         return this.base.def + (this.base.def * this.param.def_buf / 100) + this.param.def;
     }
-    combat(type) {
+    combatBonus(type) {
         return this.param[TypeToBonus.combat(type)];
     }
-    elemental(type) {
+    elementBonus(type) {
         let rate = this.param[TypeToBonus.element(type)];
         if (type !== ElementType.Phys) {
             rate += this.param.elem_dmg;
         }
         return rate;
     }
-    reaction(type) {
-        if (type === ReactionBaseType.Transform) {
-            return this.elem_trans;
+    elementMaster(type) {
+        let scale;
+        switch (type) {
+            case ReactionType.Melt:
+            case ReactionType.Vaporize:
+                scale = this.elem_trans;
+                break;
+            default:
+                scale = this.elem_ampl;
+                break;
         }
-        else {
-            return this.elem_react;
+        return scale;
+    }
+    reactionBonus(type) {
+        return this.param[TypeToBonus.reaction(type)];
+    }
+    reactionScale(elem, reaction) {
+        if ((reaction === ReactionType.Shutter) &&
+            ((elem === ElementType.Phys) || (elem === ElementType.Geo))) {
+            return 1.0;
         }
+        const scales = ReactionDamageScale[elem];
+        if (!!scales) {
+            const value = scales[reaction];
+            if (!!value) {
+                return value;
+            }
+        }
+        return 0.0;
     }
     critical(type = CombatType.Normal) {
         let combat = 0;
@@ -462,10 +525,11 @@ class CombatAttribute {
         }
         return str;
     }
-    damage(row, status, enemy) {
+    damage(row, status, enemy, reaction) {
         let cell = row.cells[2];
         if (!!cell.className) {
             let elem = cell.className;
+            reaction = this.reaction(elem, reaction);
             let attackPower;
             switch (this.based) {
                 case DamageBased.Def:
@@ -475,27 +539,70 @@ class CombatAttribute {
                     attackPower = status.attack;
                     break;
             }
-            let enemyDefence = enemy.defence(status.level);
-            let elementBonus = status.elemental(elem);
-            let combatBonus = status.combat(this.type);
-            let enemyResist = enemy.resistance(elem);
-            let bonusDamage = (100 + elementBonus + combatBonus + status.param.any_dmg) / 100;
-            let totalScale = attackPower * enemyDefence * enemyResist * bonusDamage;
-            cell.textContent = this.toString(value => (totalScale * value / 100).toFixed());
-            cell = cell.nextElementSibling;
-            let critical = status.critical(this.type);
-            totalScale *= (critical.damage + 100) / 100;
-            let text = this.toString(value => (totalScale * value / 100).toFixed());
-            if (critical.special) {
-                text = `${text}(${toFloorRate(critical.rate)})`;
+            const enemyDefence = enemy.defence(status.level);
+            const enemyResist = enemy.resistance(elem);
+            const combatBonus = status.combatBonus(this.type);
+            const elementBonus = status.elementBonus(elem);
+            const combatScale = (100 + combatBonus + elementBonus + status.param.any_dmg) / 100;
+            const critical = status.critical(this.type);
+            const criticalScale = (100 + critical.damage) / 100;
+            const setDamage = (damage) => {
+                cell.textContent = this.toString(value => (damage * value / 100).toFixed());
+                cell = cell.nextElementSibling;
+                damage *= criticalScale;
+                let text = this.toString(value => (damage * value / 100).toFixed());
+                if (critical.special) {
+                    text = `${text}(${toFloorRate(critical.rate)})`;
+                }
+                cell.textContent = text;
+                cell = cell.nextElementSibling;
+            };
+            let totalDamage = attackPower * combatScale * enemyDefence * enemyResist;
+            if ((reaction === ReactionType.Vaporize) || (reaction === ReactionType.Melt)) {
+                let damage = totalDamage;
+                cell.innerHTML = `<span class="strike">${this.toString(value => (damage * value / 100).toFixed())}</span>`;
+                cell = cell.nextElementSibling;
+                damage *= criticalScale;
+                cell.innerHTML = `<span class="strike">${this.toString(value => (damage * value / 100).toFixed())}</span>`;
+                cell = cell.nextElementSibling;
             }
-            cell.textContent = text;
+            else {
+                setDamage(totalDamage);
+            }
+            if (!!reaction) {
+                const elementMaster = status.elementMaster(reaction);
+                const reactionBonus = status.reactionBonus(reaction);
+                const reactionScale = status.reactionScale(elem, reaction) * (100 + elementMaster + reactionBonus) / 100;
+                setDamage(totalDamage * reactionScale);
+            }
+            else {
+                for (let i = 0; i < 2; ++i) {
+                    cell.textContent = "-";
+                    cell = cell.nextElementSibling;
+                }
+            }
         }
         else {
-            cell.textContent = "-";
-            cell = cell.nextElementSibling;
-            cell.textContent = "-";
+            for (let i = 0; i < 4; ++i) {
+                cell.textContent = "-";
+                cell = cell.nextElementSibling;
+            }
         }
+    }
+    reaction(elem, reaction) {
+        if (this.elem !== CombatElementType.Contact) {
+            if (reaction === ReactionType.Shutter) {
+                switch (elem) {
+                    case ElementType.Phys:
+                    case ElementType.Geo:
+                        return reaction;
+                }
+            }
+            else if (elem !== ElementType.Phys) {
+                return reaction;
+            }
+        }
+        return undefined;
     }
 }
 const ASCENSION_LV_STEP = [20, 40, 50, 60, 70, 80];

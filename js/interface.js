@@ -108,6 +108,13 @@ const ReactionType = {
     Conduct: "conduct",
     Overload: "overload"
 };
+const ReactionSquareTypes = [
+    "",
+    ElementType.Pyro,
+    ElementType.Hydro,
+    ElementType.Elect,
+    ElementType.Cryo
+];
 const CombatType = {
     Normal: "normal",
     Heavy: "heavy",

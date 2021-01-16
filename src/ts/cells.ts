@@ -1126,20 +1126,11 @@ class DamageParam extends RateParam {
 
 // 元素反応パラメータ向け
 class ElemReactParam extends RateParam {
-    private base: ReactionBaseType;
+    private reaction: ReactionType;
 
-    constructor(param: BonusType) {
-        super(param);
-
-        switch (param) {
-            case ReactionBonusType.Melt:
-            case ReactionBonusType.Vaporize:
-                this.base = ReactionBaseType.Amplify;
-                break;
-            default:
-                this.base = ReactionBaseType.Transform;
-                break;
-        }
+    constructor(type: ReactionBonusType) {
+        super(type);
+        this.reaction = type.replace("_dmg", "") as ReactionType;
     }
 
     set(cell: HTMLCellElement, status: Status) {
@@ -1147,7 +1138,7 @@ class ElemReactParam extends RateParam {
             cell.textContent = "+0.0%";
             (cell.nextElementSibling as HTMLCellElement).textContent = "+0.0%";
         } else {
-            cell.textContent = "+" + this.text(status.reaction(this.base));
+            cell.textContent = "+" + this.text(status.elementMaster(this.reaction));
             (cell.nextElementSibling as HTMLCellElement).textContent = "+" + this.text(status.param[this.type]);
         }
     }

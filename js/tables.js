@@ -1150,12 +1150,21 @@ ApplyTable.BuildCells = {
         }
     },
 };
-const ContactDamageElement = {
+const ReactionSquareLabel = {
     "": "-",
     pyro: "火",
     hydro: "水",
     elect: "雷",
     cryo: "氷"
+};
+const ReactionLabel = {
+    vaporize: "蒸発",
+    melt: "融解",
+    swirl: "拡散",
+    echarge: "感電",
+    shutter: "氷砕き",
+    conduct: "超電導",
+    overload: "過負荷"
 };
 class DamageTable extends Table {
     constructor() {
@@ -1232,11 +1241,37 @@ class DamageTable extends Table {
         damageType.className = "hide";
         let rows = html.rows;
         rows[0].cells[0].lastChild.textContent = "Lv." + status.level;
+        {
+            let cell = rows[1].cells[4];
+            removeChildren(cell);
+            const reactions = status.reactions;
+            if (0 < reactions.length) {
+                let select = document.createElement("select");
+                select.id = "reaction_type";
+                {
+                    let opt = document.createElement("option");
+                    opt.value = "";
+                    opt.label = "-";
+                    select.appendChild(opt);
+                }
+                for (const type of reactions) {
+                    let opt = document.createElement("option");
+                    opt.value = type;
+                    opt.label = ReactionLabel[type];
+                    select.appendChild(opt);
+                }
+                select.addEventListener("change", ev => this.calculate());
+                cell.appendChild(select);
+            }
+            else {
+                cell.appendChild(document.createTextNode("-"));
+            }
+        }
         let buildRow = (type) => {
             let level = status.talent[type];
             let row = html.insertRow();
             let cel = document.createElement("th");
-            cel.colSpan = 4;
+            cel.colSpan = 6;
             cel.textContent = `${LABEL_TEXT[type]} : Lv.${level}`;
             row.appendChild(cel);
             let combats = status.chara.talent[type];
@@ -1257,20 +1292,18 @@ class DamageTable extends Table {
                 }
                 row = html.insertRow();
                 cel = document.createElement("th");
+                cel.appendChild(document.createTextNode(attr.name));
                 if (elem === CombatElementType.Contact) {
-                    cel.appendChild(document.createTextNode(attr.name));
                     let select = document.createElement("select");
-                    for (let type in ContactDamageElement) {
+                    select.id = "contact_type";
+                    for (let type of ReactionSquareTypes) {
                         let opt = document.createElement("option");
                         opt.value = type;
-                        opt.label = ContactDamageElement[type];
+                        opt.label = ReactionSquareLabel[type];
                         select.appendChild(opt);
                     }
                     select.addEventListener("change", ev => this.contactType(ev.target));
                     cel.appendChild(select);
-                }
-                else {
-                    cel.textContent = attr.name;
                 }
                 row.appendChild(cel);
                 cel = document.createElement("td");
@@ -1283,12 +1316,11 @@ class DamageTable extends Table {
                 }
                 cel.textContent = text;
                 row.appendChild(cel);
-                cel = document.createElement("td");
-                cel.className = className;
-                row.appendChild(cel);
-                cel = document.createElement("td");
-                cel.className = className;
-                row.appendChild(cel);
+                for (let i = 0; i < 4; ++i) {
+                    cel = document.createElement("td");
+                    cel.className = className;
+                    row.appendChild(cel);
+                }
             }
         };
         buildRow(TalentType.Combat);
@@ -1301,9 +1333,9 @@ class DamageTable extends Table {
             this.calcDamage(html, status);
         }
     }
-    damageType(html, elem, status) {
+    damageType(html, select, status) {
         let chara = status.chara;
-        let className = elem.value;
+        let className = select.value;
         if (className === "elem") {
             className = chara.element;
         }
@@ -1314,9 +1346,9 @@ class DamageTable extends Table {
             for (let i = 0, len = combat.length; i < len; ++i) {
                 if (combat[i].elem === CombatElementType.Switch) {
                     let cells = row.cells;
-                    cells[1].className = className;
-                    cells[2].className = className;
-                    cells[3].className = className;
+                    for (let i = 1; i <= 5; ++i) {
+                        cells[i].className = className;
+                    }
                 }
                 row = row.nextElementSibling;
             }
@@ -1349,13 +1381,21 @@ class DamageTable extends Table {
             }
         }
     }
+    reactionType(cell) {
+        let select = cell.firstElementChild;
+        if (!!select) {
+            return select.value;
+        }
+        return undefined;
+    }
     calcDamage(html, status) {
         status = Table.List.apply.status(status);
         let row = html.rows[1];
-        let cells = row.cells;
-        let critical = status.critical();
+        let cells = Array.from(row.cells);
+        const critical = status.critical();
         cells[2].textContent = status.attack.toFixed();
         cells[3].textContent = `+${toFloorRate(critical.damage)}(${toFloorRate(critical.rate)})`;
+        const reaction = this.reactionType(cells[4]);
         row = row.nextElementSibling;
         let enemy = Table.List.enemy.target;
         let damageRow = (type) => {
@@ -1364,7 +1404,7 @@ class DamageTable extends Table {
             let combats = status.chara.talent[type];
             for (let combat of combats) {
                 let attr = new CombatAttribute(combat, level);
-                attr.damage(row, status, enemy);
+                attr.damage(row, status, enemy, reaction);
                 row = row.nextElementSibling;
             }
         };

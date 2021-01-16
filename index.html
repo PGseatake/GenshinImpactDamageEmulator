@@ -503,19 +503,21 @@
                 <thead>
                     <tr>
                         <th><select id="member_list" onchange="DamageTable.changeMember()"></select>Lv.0</th>
-                        <th>倍率<select id="damage_type" onchange="DamageTable.changeType(this)">
-                                <option value="phys">物理</option>
-                                <option value="elem">元素</option>
-                            </select>
-                        </th>
+                        <th>倍率</th>
                         <th>ダメージ</th>
                         <th>会心</th>
+                        <th colspan="2">元素反応</th>
                     </tr>
                     <tr>
                         <th>攻撃力</th>
-                        <td>-</td>
+                        <td><select id="damage_type" onchange="DamageTable.changeType(this)">
+                            <option value="phys">物理</option>
+                            <option value="elem">元素</option>
+                        </select></td>
                         <td>0</td>
                         <td>0.0%</td>
+                        <td></td>
+                        <th>会心</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -788,6 +790,10 @@
         <input id="tab_history" type="radio" name="TAB" class="tab_switch" />
         <label class="tab_label" for="tab_history">更新履歴</label>
         <div class="tab_content">
+            <h4>Ver. 0.5.0 (2021/01/17)</h4>
+            <ul>
+                <li>元素反応のダメージ表示に対応</li>
+            </ul>
             <h4>Ver. 0.4.1 (2021/01/12)</h4>
             <ul>
                 <li>以下のキャラクターを追加</li>

@@ -853,17 +853,9 @@ class DamageParam extends RateParam {
     }
 }
 class ElemReactParam extends RateParam {
-    constructor(param) {
-        super(param);
-        switch (param) {
-            case ReactionBonusType.Melt:
-            case ReactionBonusType.Vaporize:
-                this.base = ReactionBaseType.Amplify;
-                break;
-            default:
-                this.base = ReactionBaseType.Transform;
-                break;
-        }
+    constructor(type) {
+        super(type);
+        this.reaction = type.replace("_dmg", "");
     }
     set(cell, status) {
         if (!status) {
@@ -871,7 +863,7 @@ class ElemReactParam extends RateParam {
             cell.nextElementSibling.textContent = "+0.0%";
         }
         else {
-            cell.textContent = "+" + this.text(status.reaction(this.base));
+            cell.textContent = "+" + this.text(status.elementMaster(this.reaction));
             cell.nextElementSibling.textContent = "+" + this.text(status.param[this.type]);
         }
     }

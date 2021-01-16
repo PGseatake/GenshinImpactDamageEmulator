@@ -1627,12 +1627,23 @@ class ApplyTable extends Table {
     }
 }
 
-const ContactDamageElement: IMap<string> = {
+const ReactionSquareLabel: Record<ReactionSquareType, string> = {
     "": "-",
     pyro: "火",
     hydro: "水",
     elect: "雷",
     cryo: "氷"
+} as const;
+
+const ReactionLabel: Record<ReactionType, string> = {
+    // burning: "燃焼",
+    vaporize: "蒸発",
+    melt: "融解",
+    swirl: "拡散",
+    echarge: "感電",
+    shutter: "氷砕き",
+    conduct: "超電導",
+    overload: "過負荷"
 } as const;
 
 // ダメージテーブル
@@ -1740,13 +1751,44 @@ class DamageTable extends Table implements IRefreshTable {
         let rows = html.rows;
         rows[0].cells[0].lastChild!.textContent = "Lv." + status.level;
 
+        // 元素反応設定
+        {
+            let cell = rows[1].cells[4];
+            removeChildren(cell);
+
+            const reactions = status.reactions;
+            if (0 < reactions.length) {
+                let select = document.createElement("select");
+                select.id = "reaction_type";
+                // 反応なしを追加
+                {
+                    let opt = document.createElement("option");
+                    opt.value = "";
+                    opt.label = "-";
+                    select.appendChild(opt);
+                }
+                // 元素反応を追加
+                for (const type of reactions) {
+                    let opt = document.createElement("option");
+                    opt.value = type;
+                    opt.label = ReactionLabel[type];
+                    select.appendChild(opt);
+                }
+                select.addEventListener("change", ev => this.calculate());
+
+                cell.appendChild(select);
+            } else {
+                cell.appendChild(document.createTextNode("-"));
+            }
+        }
+
         let buildRow = (type: TalentType) => {
             let level = status.talent[type];
 
             // キャプション行追加
             let row = html.insertRow();
             let cel = document.createElement("th");
-            cel.colSpan = 4;
+            cel.colSpan = 6;
             cel.textContent = `${LABEL_TEXT[type]} : Lv.${level}`;
             row.appendChild(cel);
 
@@ -1773,22 +1815,20 @@ class DamageTable extends Table implements IRefreshTable {
 
                 // 名前セル
                 cel = document.createElement("th");
+                cel.appendChild(document.createTextNode(attr.name));
                 if (elem === CombatElementType.Contact) {
-                    cel.appendChild(document.createTextNode(attr.name));
-
                     // 付加元素タイプ選択
                     let select = document.createElement("select");
-                    for (let type in ContactDamageElement) {
+                    select.id = "contact_type";
+                    for (let type of ReactionSquareTypes) {
                         let opt = document.createElement("option");
                         opt.value = type;
-                        opt.label = ContactDamageElement[type];
+                        opt.label = ReactionSquareLabel[type];
                         select.appendChild(opt);
                     }
                     select.addEventListener("change", ev => this.contactType(ev.target as HTMLSelectElement));
 
                     cel.appendChild(select);
-                } else {
-                    cel.textContent = attr.name;
                 }
                 row.appendChild(cel);
 
@@ -1805,15 +1845,12 @@ class DamageTable extends Table implements IRefreshTable {
                 cel.textContent = text;
                 row.appendChild(cel);
 
-                // ダメージセル
-                cel = document.createElement("td");
-                cel.className = className;
-                row.appendChild(cel);
-
-                // 会心セル
-                cel = document.createElement("td");
-                cel.className = className;
-                row.appendChild(cel);
+                // 後続のセル作成
+                for (let i = 0; i < 4; ++i) {
+                    cel = document.createElement("td");
+                    cel.className = className;
+                    row.appendChild(cel);
+                }
             }
         };
 
@@ -1830,11 +1867,11 @@ class DamageTable extends Table implements IRefreshTable {
     }
 
     // ダメージタイプ設定
-    private damageType(html: HTMLTableElement, elem: HTMLSelectElement, status: Status) {
+    private damageType(html: HTMLTableElement, select: HTMLSelectElement, status: Status) {
         let chara = status.chara;
 
         // ダメージタイプ切替
-        let className = elem.value;
+        let className = select.value;
         if (className === "elem") {
             className = chara.element;
         }
@@ -1848,9 +1885,9 @@ class DamageTable extends Table implements IRefreshTable {
                 // 元素付与されるものはセル色変更
                 if (combat[i].elem === CombatElementType.Switch) {
                     let cells = row.cells;
-                    cells[1].className = className;
-                    cells[2].className = className;
-                    cells[3].className = className;
+                    for (let i = 1; i <= 5; ++i) {
+                        cells[i].className = className;
+                    }
                 }
                 row = row.nextElementSibling as HTMLRowElement;
             }
@@ -1892,16 +1929,27 @@ class DamageTable extends Table implements IRefreshTable {
         }
     }
 
+    // 元素反応タイプ取得
+    private reactionType(cell: HTMLCellElement): ReactionType | undefined {
+        let select = cell.firstElementChild as Nullable<HTMLSelectElement>;
+        if (!!select) {
+            return select.value as ReactionType;
+        }
+        return undefined;
+    }
+
     // ダメージ計算
     private calcDamage(html: HTMLTableElement, status: Status) {
         status = Table.List.apply!.status(status);
 
         // キャラ攻撃力設定
         let row = html.rows[1];
-        let cells = row.cells;
-        let critical = status.critical();
+        let cells = Array.from(row.cells);
+        const critical = status.critical();
         cells[2].textContent = status.attack.toFixed();
         cells[3].textContent = `+${toFloorRate(critical.damage)}(${toFloorRate(critical.rate)})`;
+
+        const reaction = this.reactionType(cells[4]);
 
         row = row.nextElementSibling as HTMLRowElement;
         let enemy = Table.List.enemy!.target!;
@@ -1913,7 +1961,7 @@ class DamageTable extends Table implements IRefreshTable {
             let combats = status.chara.talent![type];
             for (let combat of combats) {
                 let attr = new CombatAttribute(combat, level);
-                attr.damage(row, status, enemy);
+                attr.damage(row, status, enemy, reaction);
 
                 row = row.nextElementSibling as HTMLRowElement;
             }
