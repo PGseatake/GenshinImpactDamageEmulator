@@ -319,6 +319,33 @@ const ReactionDamageScale: DeepReadonly<Partial<Record<ElementType, Partial<Reco
     }
 } as const;
 
+interface IReactionDamageValue {
+    resist: ElementType;
+    values: Float[];
+}
+const ReactionDamageValue: DeepReadonly<Record<TransformReactionType, IReactionDamageValue>> = {
+    "conduct": {
+        resist: ElementType.Cryo,
+        values: [8, 9, 9, 10, 11, 12, 12, 13, 16, 17, 18, 20, 22, 23, 27, 29, 31, 34, 37, 40, 42, 46, 48, 51, 53, 56, 59, 61, 64, 68, 71, 74, 77, 80, 84, 88, 91, 96, 99, 103, 107, 111, 117, 121, 128, 133, 140, 147, 154, 161, 168, 174, 182, 189, 199, 208, 217, 226, 236, 244, 254, 266, 278, 290, 303, 314, 326, 337, 348, 360, 371, 382, 391, 401, 414, 427, 438, 450, 461, 472, 483, 494, 507, 518, 532, 544, 557, 570, 586, 601]
+    },
+    "swirl": {
+        resist: ElementType.Anemo,
+        values: [10, 11, 11, 12, 13, 14, 16, 17, 18, 20, 22, 23, 27, 29, 32, 34, 38, 41, 44, 48, 51, 54, 58, 61, 64, 68, 70, 73, 78, 81, 86, 89, 92, 97, 101, 106, 110, 114, 119, 123, 129, 134, 140, 146, 153, 161, 169, 177, 184, 193, 201, 210, 218, 227, 239, 249, 260, 271, 282, 293, 306, 319, 333, 348, 364, 378, 391, 404, 418, 431, 444, 459, 470, 481, 498, 512, 526, 540, 553, 568, 581, 594, 608, 621, 639, 653, 669, 684, 702, 721]
+    },
+    "echarge": {
+        resist: ElementType.Elect,
+        values: [20, 22, 23, 24, 27, 29, 31, 34, 37, 40, 44, 48, 53, 58, 64, 70, 77, 83, 90, 97, 103, 110, 117, 123, 130, 136, 141, 147, 156, 163, 171, 178, 186, 193, 202, 211, 220, 230, 239, 248, 258, 269, 280, 291, 307, 322, 338, 353, 370, 388, 403, 420, 437, 453, 478, 499, 521, 542, 566, 588, 611, 639, 667, 696, 729, 756, 783, 810, 837, 863, 890, 918, 941, 963, 997, 1024, 1052, 1080, 1108, 1136, 1162, 1189, 1216, 1243, 1279, 1308, 1338, 1369, 1406, 1443]
+    },
+    "shutter": {
+        resist: ElementType.Phys,
+        values: [26, 28, 29, 31, 33, 37, 39, 42, 47, 51, 56, 60, 67, 72, 80, 88, 96, 104, 112, 120, 129, 137, 146, 153, 162, 169, 177, 184, 194, 203, 213, 223, 232, 242, 253, 264, 276, 287, 299, 310, 322, 336, 350, 364, 383, 402, 422, 442, 463, 484, 504, 526, 547, 568, 598, 624, 651, 678, 707, 736, 763, 799, 834, 870, 911, 944, 979, 1012, 1046, 1080, 1113, 1148, 1176, 1204, 1246, 1281, 1316, 1350, 1386, 1419, 1452, 1486, 1520, 1553, 1599, 1634, 1672, 1712, 1758, 1803]
+    },
+    "overload": {
+        resist: ElementType.Pyro,
+        values: [33, 37, 39, 42, 44, 49, 52, 57, 62, 68, 73, 81, 89, 97, 107, 118, 128, 139, 150, 161, 172, 183, 194, 206, 217, 226, 236, 246, 259, 272, 284, 298, 310, 323, 338, 352, 368, 383, 399, 414, 430, 448, 467, 487, 511, 537, 562, 590, 618, 647, 673, 700, 729, 757, 797, 832, 868, 904, 942, 980, 1019, 1064, 1112, 1160, 1216, 1260, 1306, 1350, 1394, 1440, 1484, 1530, 1568, 1607, 1661, 1708, 1754, 1800, 1847, 1892, 1937, 1981, 2027, 2072, 2132, 2179, 2229, 2282, 2343, 2406]
+    },
+} as const;
+
 // キャラステータス
 class Status {
     public id: string;
@@ -401,18 +428,19 @@ class Status {
         return types;
     }
 
-    private get elem_react(): number {
-        return this.param.elem / (1401 + this.param.elem) * 100;
+    // 元素反応・ベース
+    private get elem_react(): Rate {
+        return this.param.elem / (1400 + this.param.elem) * 100;
     }
 
     // 元素反応・増幅（％）
-    private get elem_ampl(): number {
-        return 25.0 / 9.0 * this.elem_react;
+    private get elem_ampl(): Rate {
+        return this.elem_react * 25.0 / 9.0;
     }
 
     // 元素反応・転化（％）
-    private get elem_trans(): number {
-        return 60.0 / 9.0 * this.elem_react;
+    private get elem_trans(): Rate {
+        return this.elem_react * 60.0 / 9.0;
     }
 
     // 攻撃力（実数）
@@ -430,15 +458,6 @@ class Status {
         return this.param[TypeToBonus.combat(type)];
     }
 
-    // 元素ダメージ値（％）
-    elementBonus(type: ElementType): number {
-        let rate = this.param[TypeToBonus.element(type)];
-        if (type !== ElementType.Phys) {
-            rate += this.param.elem_dmg;
-        }
-        return rate;
-    }
-
     // 元素熟知ダメージ値（％）
     elementMaster(type: ReactionType): Rate {
         let rate: Rate;
@@ -454,22 +473,35 @@ class Status {
         return rate;
     }
 
+    // 元素ダメージ値（％）
+    elementBonus(type: ElementType, phys: ElementType = ElementType.Phys): Rate {
+        let rate = this.param[TypeToBonus.element(type)];
+        if (type !== phys) {
+            rate += this.param.elem_dmg;
+        }
+        return rate;
+    }
+
     // 元素反応ダメージ値（％）
     reactionBonus(type: ReactionType): Rate {
         return this.param[TypeToBonus.reaction(type)];
     }
 
     // 元素反応のダメージ倍率
-    reactionScale(elem: ElementType, reaction: ReactionType): number {
-        if ((reaction === ReactionType.Shutter) &&
-            ((elem === ElementType.Phys) || (elem === ElementType.Geo))) {
-            return 1.0;
-        }
-        const scales = ReactionDamageScale[elem];
-        if (!!scales) {
-            const value = scales[reaction];
-            if (!!value) {
-                return value;
+    reactionScale(elem: ElementType, reaction: ReactionType): Scale {
+        if (reaction === ReactionType.Shutter) {
+            switch (elem) {
+                case ElementType.Phys:
+                case ElementType.Geo:
+                    return 1.0;
+            }
+        } else {
+            const scales = ReactionDamageScale[elem];
+            if (!!scales) {
+                const value = scales[reaction];
+                if (!!value) {
+                    return value;
+                }
             }
         }
         return 0.0;
@@ -633,14 +665,18 @@ class CombatAttribute {
         return str;
     }
 
+    private toDamage(damage: Float): string {
+        let str = this.value.map(value => (damage * value / 100).toFixed()).join("+");
+        if (1 < this.multi) {
+            return `${str}x${this.multi}`;
+        }
+        return str;
+    }
+
     damage(row: HTMLRowElement, status: Status, enemy: Enemy, reaction?: ReactionType) {
         let cell = row.cells[2];
         if (!!cell.className) {
             let elem = cell.className as ElementType;
-            // TODO: 風元素か反応元素かボーナスなしか要検証
-            // if (this.elem === CombatElementType.Contact) {
-            //     elem = ElementType.Anemo;
-            // }
 
             // 元素反応の正規化
             reaction = this.reaction(elem, reaction);
@@ -662,56 +698,65 @@ class CombatAttribute {
 
             // 各種倍率
             const combatBonus = status.combatBonus(this.type);
-            const elementBonus = status.elementBonus(elem);
-            const combatScale = (100 + combatBonus + elementBonus + status.param.any_dmg) / 100;
+            const elementBonus = status.elementBonus(elem, elem);
+            const elemAnyBonus = status.param.elem_dmg + status.param.any_dmg;
+            const combatScale = toScale(combatBonus + elementBonus + elemAnyBonus);
             const critical = status.critical(this.type);
-            const criticalScale = (100 + critical.damage) / 100;
+            const criticalScale = toScale(critical.damage);
 
-            const setDamage = (damage: number) => {
+            const setDamage = (damage: Float) => {
                 // 通常ダメージ
-                cell.textContent = this.toString(value => (damage * value / 100).toFixed());
+                cell.textContent = this.toDamage(damage);
                 cell = cell.nextElementSibling as HTMLCellElement;
 
-                damage *= criticalScale;
-
                 // 会心ダメージ
-                let text = this.toString(value => (damage * value / 100).toFixed());
+                let text = this.toDamage(damage * criticalScale);
                 // 会心率が異なる場合は特別表示
                 if (critical.special) {
-                    text = `${text}(${toFloorRate(critical.rate)})`;
+                    text = `${text}(${floorRate(critical.rate)})`;
                 }
                 cell.textContent = text;
                 cell = cell.nextElementSibling as HTMLCellElement;
             };
 
-            let totalDamage = attackPower * combatScale * enemyDefence * enemyResist;
-
-            // 蒸発と溶解は取り消し線で表示
-            if ((reaction === ReactionType.Vaporize) || (reaction === ReactionType.Melt)) {
-                let damage = totalDamage;
-
-                // 通常ダメージ
-                cell.innerHTML = `<span class="strike">${this.toString(value => (damage * value / 100).toFixed())}</span>`;
-                cell = cell.nextElementSibling as HTMLCellElement;
-
-                damage *= criticalScale;
-
-                // 会心ダメージ
-                cell.innerHTML = `<span class="strike">${this.toString(value => (damage * value / 100).toFixed())}</span>`;
-                cell = cell.nextElementSibling as HTMLCellElement;
-            } else {
-                // 通常表示
-                setDamage(totalDamage);
-            }
+            const totalDamage = attackPower * combatScale * enemyDefence * enemyResist;
 
             if (!!reaction) {
                 const elementMaster = status.elementMaster(reaction);
                 const reactionBonus = status.reactionBonus(reaction);
-                const reactionScale = status.reactionScale(elem, reaction) * (100 + elementMaster + reactionBonus) / 100;
 
-                // 元素反応ダメージ
-                setDamage(totalDamage * reactionScale);
+                if (IsAmplifyReaction(reaction)) {
+                    // 蒸発と溶解は取り消し線で表示
+                    cell.innerHTML = `<span class="strike">${this.toDamage(totalDamage)}</span>`;
+                    cell = cell.nextElementSibling as HTMLCellElement;
+                    cell.innerHTML = `<span class="strike">${this.toDamage(totalDamage * criticalScale)}</span>`;
+                    cell = cell.nextElementSibling as HTMLCellElement;
+
+                    const reactionScale = status.reactionScale(elem, reaction) * toScale(elementMaster + reactionBonus);
+
+                    // 元素反応ダメージ
+                    setDamage(totalDamage * reactionScale);
+                } else {
+                    // 通常表示
+                    setDamage(totalDamage);
+
+                    const reactionScale = toScale(elementMaster + reactionBonus);
+                    const reactionValue = ReactionDamageValue[reaction];
+                    const reactionResist = enemy.resistance(reactionValue.resist);
+                    const reactionDamage = reactionValue.values[status.level - 1] * reactionScale * reactionResist;
+                    console.log(reactionScale);
+                    console.log(reactionValue);
+
+                    // 元素反応ダメージ
+                    cell.textContent = reactionDamage.toFixed();
+                    cell = cell.nextElementSibling as HTMLCellElement;
+                    cell.textContent = "-"; // 会心なし
+                    cell = cell.nextElementSibling as HTMLCellElement;
+                }
             } else {
+                // 通常攻撃のみ
+                setDamage(totalDamage);
+
                 for (let i = 0; i < 2; ++i) {
                     cell.textContent = "-";
                     cell = cell.nextElementSibling as HTMLCellElement;

@@ -197,7 +197,7 @@ class Table {
     protected static updateCell<
         TList extends ITableCellList,
         TProp extends keyof TList,
-        TArgs extends any[]
+        TArgs extends unknown[]
     >(row: HTMLRowElement, cells: TList, prop: TProp, ...args: [...TArgs]) {
         cells[prop].update(row.querySelector("td#" + prop) as HTMLCellElement, ...args);
     }
@@ -212,8 +212,8 @@ class Table {
     }
 
     protected type: TableType;
-    private serial: number;
-    public counter: number;
+    private serial: Integer;
+    public counter: Integer;
 
     // コンストラクタ
     constructor(type: TableType) {
@@ -244,7 +244,7 @@ class Table {
     }
 
     // データの再表示
-    refresh(): number {
+    refresh(): Integer {
         return 0;
     }
 
@@ -724,7 +724,7 @@ class ArtifactTable extends ItemTable {
     }
 
     // スコアの更新
-    private updateScore(row: HTMLRowElement, cells: IArtifactCellList, star: number, level: number) {
+    private updateScore(row: HTMLRowElement, cells: IArtifactCellList, star: Integer, level: Integer) {
         let cel = row.querySelector("td#name") as HTMLCellElement;
         cel.className = "score"; // TODO: とりあえずここで設定
         removeWithoutFirstChild(cel);
@@ -801,7 +801,7 @@ class CircletTable extends ArtifactTable {
 class EquipmentCellTable {
     private table: ItemTable;
     private cell: EquipmentCell;
-    private counter: number;
+    private counter: Integer;
     private items: Nullable<HTMLElementList>;
 
     constructor(type: EquipmentType, cell: EquipmentCell) {
@@ -892,7 +892,7 @@ class EquipmentTable extends ItemTable {
     }
 
     // データの再表示
-    refresh(): number {
+    refresh(): Integer {
         // 更新情報の取得
         let updated = false;
         let updates: IMap<EquipmentCellTable> = {};
@@ -1021,7 +1021,7 @@ interface IRefreshTable extends Table {
 // テーブル更新の橋渡し
 class TableBridge {
     private parent: Table;
-    private counter: number;
+    private counter: Integer;
 
     constructor(parent: Table) {
         this.parent = parent;
@@ -1032,7 +1032,7 @@ class TableBridge {
         this.counter = this.parent.counter;
     }
 
-    refresh(owner: IRefreshTable): number {
+    refresh(owner: IRefreshTable): Integer {
         let counter = this.parent.refresh();
         if (this.counter !== counter) {
             this.counter = counter;
@@ -1048,7 +1048,7 @@ type TeamParamType = Exclude<BonusType, "hp_buf" | "atk_buf" | "def_buf" | "elem
 // チームテーブル
 class TeamTable extends Table implements IRefreshTable {
     // メンバー変更
-    static changeMember(no: number, elem: HTMLSelectElement) {
+    static changeMember(no: Integer, elem: HTMLSelectElement) {
         Table.List.team!.assign(no, elem);
     }
 
@@ -1113,7 +1113,7 @@ class TeamTable extends Table implements IRefreshTable {
     }
 
     // データの再表示
-    refresh(): number {
+    refresh(): Integer {
         return this.bridge.refresh(this);
     }
 
@@ -1209,7 +1209,7 @@ class TeamTable extends Table implements IRefreshTable {
     }
 
     // メンバー登録
-    private assign(no: number, elem: HTMLSelectElement) {
+    private assign(no: Integer, elem: HTMLSelectElement) {
         let bonus = Table.List.bonus!;
         bonus.detach(this.members[no], this.members);
 
@@ -1251,7 +1251,7 @@ class BonusTable extends Table implements IRefreshTable {
     }
 
     // データの再表示
-    refresh(): number {
+    refresh(): Integer {
         return this.bridge.refresh(this);
     }
 
@@ -1303,7 +1303,7 @@ class BonusTable extends Table implements IRefreshTable {
     }
 
     // 武器ボーナス追加
-    weapon(status: Status, bonuses: DeepReadonly<Arrayable<IWeaponBonus>>, rank: number) {
+    weapon(status: Status, bonuses: DeepReadonly<Arrayable<IWeaponBonus>>, rank: Integer) {
         if (Array.isArray(bonuses)) {
             for (let bonus of bonuses) {
                 this.append(status, bonus.value[rank], bonus, LABEL_TEXT.weapon);
@@ -1346,7 +1346,7 @@ class BonusTable extends Table implements IRefreshTable {
     }
 
     // ボーナス追加
-    private append(status: Status, value: number, others: DeepReadonly<IBonus>, source: string) {
+    private append(status: Status, value: Integer, others: DeepReadonly<IBonus>, source: string) {
         if (!!others.target && (others.target !== BonusTarget.Self)) {
             this.items.push(new Bonus(status.id, others.items, value, others, status.chara.name));
         } else {
@@ -1505,7 +1505,7 @@ class EnemyTable extends Table {
 
 interface IApplyBonusValue {
     readonly types: ReadonlyArray<BonusType>;
-    readonly value: number;
+    readonly value: Integer | Rate;
 }
 
 // ボーナス適用テーブル
@@ -1712,7 +1712,7 @@ class DamageTable extends Table implements IRefreshTable {
     }
 
     // データの再表示
-    refresh(): number {
+    refresh(): Integer {
         return this.bridge.refresh(this);
     }
 
@@ -1835,7 +1835,7 @@ class DamageTable extends Table implements IRefreshTable {
                 // 倍率セル
                 cel = document.createElement("td");
                 cel.className = className;
-                let text = attr.toString(value => toFloorRate(value));
+                let text = attr.toString(value => floorRate(value));
                 switch (attr.based) {
                     // ダメージ素を追加
                     case DamageBased.Def:
@@ -1947,7 +1947,7 @@ class DamageTable extends Table implements IRefreshTable {
         let cells = Array.from(row.cells);
         const critical = status.critical();
         cells[2].textContent = status.attack.toFixed();
-        cells[3].textContent = `+${toFloorRate(critical.damage)}(${toFloorRate(critical.rate)})`;
+        cells[3].textContent = `+${floorRate(critical.damage)}(${floorRate(critical.rate)})`;
 
         const reaction = this.reactionType(cells[4]);
 

@@ -95,10 +95,6 @@ const ReactionBonusType = {
     Conduct: "conduct_dmg",
     Overload: "overload_dmg"
 };
-const ReactionBaseType = {
-    Amplify: "ampl",
-    Transform: "trans",
-};
 const ReactionType = {
     Vaporize: "vaporize",
     Melt: "melt",
@@ -107,6 +103,19 @@ const ReactionType = {
     Shutter: "shutter",
     Conduct: "conduct",
     Overload: "overload"
+};
+const IsAmplifyReaction = (type) => {
+    switch (type) {
+        case ReactionType.Melt:
+        case ReactionType.Vaporize:
+            return true;
+    }
+    return false;
+};
+const TransformReactionType = (type) => {
+    if (IsAmplifyReaction(type))
+        return false;
+    return true;
 };
 const ReactionSquareTypes = [
     "",

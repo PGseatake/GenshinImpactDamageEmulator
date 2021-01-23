@@ -70,22 +70,6 @@ const ArtifactTypes = [
     ArtifactType.Circlet
 ] as const;
 
-/*
-type ItemType = WeaponType | ArtifactType;
-const ItemTypes = [
-    WeaponType.Sword,
-    WeaponType.Claymore,
-    WeaponType.Polearm,
-    WeaponType.Bow,
-    WeaponType.Catalyst,
-    ArtifactType.Flower,
-    ArtifactType.Feather,
-    ArtifactType.Sands,
-    ArtifactType.Goblet,
-    ArtifactType.Circlet
-] as const;
-*/
-
 const EquipmentType = {
     Chara: "chara"
 } as const;
@@ -165,12 +149,6 @@ type AnyBonusType = StatusBonusType | ElementBonusType | CombatBonusType | React
 type BonusType = Exclude<AnyBonusType, "other">;
 type BonusValueType = Exclude<StatusBonusType | ElementBonusType, "elem_dmg" | "any_dmg" | "heavy_cri" | "skill_cri">;
 
-const ReactionBaseType = {
-    Amplify: "ampl",
-    Transform: "trans",
-} as const;
-type ReactionBaseType = typeof ReactionBaseType[keyof typeof ReactionBaseType];
-
 const ReactionType = {
     // Burning: "burning",
     Vaporize: "vaporize",
@@ -182,6 +160,23 @@ const ReactionType = {
     Overload: "overload"
 } as const;
 type ReactionType = typeof ReactionType[keyof typeof ReactionType];
+
+type AmplifyReactionType = "vaporize" | "melt";
+const IsAmplifyReaction = (type: ReactionType): type is AmplifyReactionType => {
+    switch (type) {
+        case ReactionType.Melt:
+        case ReactionType.Vaporize:
+            return true;
+    }
+    return false;
+};
+
+type TransformReactionType = "swirl" | "echarge" | "shutter" | "conduct" | "overload";
+const TransformReactionType = (type: ReactionType): type is TransformReactionType => {
+    if (IsAmplifyReaction(type)) return false;
+    // if (type === ReactionType.Burning) return false;
+    return true;
+};
 
 const ReactionSquareTypes = [
     "",
