@@ -828,8 +828,8 @@ class RateParam extends Param {
             cell.nextElementSibling.textContent = this.text(status.param[this.type]);
         }
     }
-    text(num) {
-        return num.toFixed(1) + "%";
+    text(rate) {
+        return rate.toFixed(1) + "%";
     }
 }
 class ElemBuffParam extends RateParam {

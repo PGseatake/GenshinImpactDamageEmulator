@@ -238,7 +238,7 @@ class Bonus {
         }
         const suffix = labels[items[0]].suffix;
         if (!!suffix) {
-            return `${str}+${(Math.round(this.value * 10) / 10).toFixed(1)}${suffix}`;
+            return `${str}+${roundFloat(this.value)}${suffix}`;
         }
         return `${str}+${this.value}`;
     }
@@ -329,20 +329,20 @@ class Status {
     get reactions() {
         const chara = this.chara;
         const elem = chara.element;
-        const scale = ReactionDamageScale[elem];
-        let list = [];
-        if (!!scale) {
-            for (const type in scale) {
-                list.push(type);
+        const scales = ReactionDamageScale[elem];
+        let types = [];
+        if (!!scales) {
+            for (const type in scales) {
+                types.push(type);
             }
         }
         if (elem === ElementType.Geo) {
-            list.push(ReactionType.Shutter);
+            types.push(ReactionType.Shutter);
         }
         else if (chara.weapon === WeaponType.Claymore) {
-            list.push(ReactionType.Shutter);
+            types.push(ReactionType.Shutter);
         }
-        return list;
+        return types;
     }
     get elem_react() {
         return this.param.elem / (1401 + this.param.elem) * 100;
@@ -370,17 +370,17 @@ class Status {
         return rate;
     }
     elementMaster(type) {
-        let scale;
+        let rate;
         switch (type) {
             case ReactionType.Melt:
             case ReactionType.Vaporize:
-                scale = this.elem_trans;
+                rate = this.elem_ampl;
                 break;
             default:
-                scale = this.elem_ampl;
+                rate = this.elem_trans;
                 break;
         }
-        return scale;
+        return rate;
     }
     reactionBonus(type) {
         return this.param[TypeToBonus.reaction(type)];
@@ -400,19 +400,19 @@ class Status {
         return 0.0;
     }
     critical(type = CombatType.Normal) {
-        let combat = 0;
+        let special = 0;
         switch (type) {
             case CombatType.Heavy:
-                combat = this.param.heavy_cri;
+                special = this.param.heavy_cri;
                 break;
             case CombatType.Skill:
-                combat = this.param.skill_cri;
+                special = this.param.skill_cri;
                 break;
         }
         return {
-            rate: 5 + this.param.cri_rate + combat,
+            rate: 5 + this.param.cri_rate + special,
             damage: 50 + this.param.cri_dmg,
-            special: combat !== 0,
+            special: special !== 0,
         };
     }
     append(bonus) {
@@ -499,15 +499,7 @@ class CombatAttribute {
     constructor(info, level) {
         var _a, _b;
         const scale = DAMAGE_SCALE[info.scale];
-        const index = (num => {
-            if (0 < num) {
-                if (scale.length <= num) {
-                    return scale.length - 1;
-                }
-                return num;
-            }
-            return 0;
-        })(level - 1);
+        const index = Math.min(Math.max(0, level - 1), scale.length - 1);
         this.name = info.name;
         this.type = info.type;
         this.elem = info.elem;

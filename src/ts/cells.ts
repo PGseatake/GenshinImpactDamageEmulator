@@ -115,7 +115,7 @@ class IntCell extends Cell implements INumberCell {
         return "0";
     }
 
-    value(cell: HTMLCellElement): number {
+    value(cell: HTMLCellElement): Integer {
         return (cell.firstElementChild as HTMLTruthElement).truth;
     }
 
@@ -133,7 +133,7 @@ class IntCell extends Cell implements INumberCell {
         return this.build(cell, value);
     }
 
-    build(cell: HTMLCellElement, value: string | number): HTMLTruthElement {
+    build(cell: HTMLCellElement, value: string | Integer): HTMLTruthElement {
         let child = document.createElement("input") as HTMLTruthElement;
         child.type = "number";
         child.step = "1";
@@ -195,7 +195,7 @@ class RateCell extends Cell implements INumberCell {
         return "0.0";
     }
 
-    value(cell: HTMLCellElement): number {
+    value(cell: HTMLCellElement): Rate {
         return (cell.firstElementChild as HTMLTruthElement).truth;
     }
 
@@ -213,7 +213,7 @@ class RateCell extends Cell implements INumberCell {
         return this.build(cell, value);
     }
 
-    build(cell: HTMLCellElement, value: string | number): HTMLTruthElement {
+    build(cell: HTMLCellElement, value: string | Rate): HTMLTruthElement {
         let child = document.createElement("input") as HTMLTruthElement;
         child.type = "number";
         child.step = "0.1";
@@ -365,10 +365,10 @@ class AscensionLevelCell extends Cell {
 
 // 整数範囲セル
 class RangeCell extends Cell {
-    protected min: number;
-    protected max: number;
+    protected min: Integer;
+    protected max: Integer;
 
-    constructor(min: number, max: number, listeners: EventListenerList = null) {
+    constructor(min: Integer, max: Integer, listeners: EventListenerList = null) {
         super(listeners);
         this.min = min;
         this.max = max;
@@ -378,7 +378,7 @@ class RangeCell extends Cell {
         return this.min.toString();
     }
 
-    value(cell: HTMLCellElement): number {
+    value(cell: HTMLCellElement): Integer {
         let select = cell.firstElementChild as HTMLSelectElement;
         return parseInt(select.value);
     }
@@ -402,7 +402,7 @@ class RangeCell extends Cell {
         return this.build(cell, value);
     }
 
-    protected build(cell: HTMLCellElement, value: number): HTMLSelectElement {
+    protected build(cell: HTMLCellElement, value: Integer): HTMLSelectElement {
         let child = document.createElement("select");
         // 連番option追加
         for (let i = this.min; i <= this.max; ++i) {
@@ -445,7 +445,7 @@ class ArtifactLevelCell extends RangeCell {
         return super.load(cell, id, values);
     }
 
-    update(cell: HTMLCellElement, star: number) {
+    update(cell: HTMLCellElement, star: Integer) {
         const value = (cell.firstElementChild as HTMLSelectElement).selectedIndex;
         removeChildren(cell);
 
@@ -668,7 +668,7 @@ class CharaSpecialCell extends BonusCell {
 
 // ボーナスリストセル
 class BonusListCell extends BonusCell {
-    update(cell: HTMLCellElement, star: number, level: number) {
+    update(cell: HTMLCellElement, star: Integer, level: Integer) {
         removeWithoutFirstChild(cell);
 
         let select = cell.firstElementChild as HTMLSelectElement;
@@ -695,7 +695,7 @@ class BonusListCell extends BonusCell {
         return child;
     }
 
-    protected param(star: number, level: number, bonus: AnyBonusType): number {
+    protected param(star: Integer, level: Integer, bonus: AnyBonusType): Float {
         let param = getArtifactParam(star, level, bonus);
         if (!!param) {
             return param.intercept + level * param.slope;
@@ -960,7 +960,7 @@ class EquipmentCell extends Cell {
         this.build(cell, index, items);
     }
 
-    private build(cell: HTMLCellElement, index: number, items: HTMLElementList): HTMLSelectElement {
+    private build(cell: HTMLCellElement, index: Integer, items: HTMLElementList): HTMLSelectElement {
         let child = document.createElement("select");
         for (let i = 0, len = items.length; i < len; ++i) {
             let item = items[i] as HTMLCellElement;
@@ -1082,7 +1082,7 @@ class BaseParam extends Param {
         }
     }
 
-    private text(base: number, add: number, buf: number): string {
+    private text(base: Integer, add: Integer, buf: Rate): string {
         return Math.floor((base * (buf * 10) / 1000) + add).toFixed();
     }
 }
@@ -1097,8 +1097,8 @@ class RateParam extends Param {
         }
     }
 
-    protected text(num: number): string {
-        return num.toFixed(1) + "%";
+    protected text(rate: Rate): string {
+        return rate.toFixed(1) + "%";
     }
 }
 

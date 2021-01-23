@@ -1308,7 +1308,7 @@ class DamageTable extends Table {
                 row.appendChild(cel);
                 cel = document.createElement("td");
                 cel.className = className;
-                let text = attr.toString(value => toFloorRate(value));
+                let text = attr.toString(value => floorRate(value));
                 switch (attr.based) {
                     case DamageBased.Def:
                         text += "(防)";
@@ -1394,7 +1394,7 @@ class DamageTable extends Table {
         let cells = Array.from(row.cells);
         const critical = status.critical();
         cells[2].textContent = status.attack.toFixed();
-        cells[3].textContent = `+${toFloorRate(critical.damage)}(${toFloorRate(critical.rate)})`;
+        cells[3].textContent = `+${floorRate(critical.damage)}(${floorRate(critical.rate)})`;
         const reaction = this.reactionType(cells[4]);
         row = row.nextElementSibling;
         let enemy = Table.List.enemy.target;

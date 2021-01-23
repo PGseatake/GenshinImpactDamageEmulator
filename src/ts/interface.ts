@@ -20,6 +20,11 @@ interface IMap<T> {
     [key: string]: T;
 }
 
+type Rate = number;
+type Scale = number;
+type Float = number;
+type Integer = number;
+
 const ElementType = {
     Phys: "phys",
     Pyro: "pyro",
@@ -217,31 +222,31 @@ type BonusTarget = typeof BonusTarget[keyof typeof BonusTarget];
 
 interface IBonus {
     items: Arrayable<BonusType>;
-    value: Arrayable<number>;
+    value: Arrayable<Integer | Rate>;
     limit?: string;
-    times?: number;
-    stack?: number;
+    times?: Integer;
+    stack?: Integer;
     target?: BonusTarget;
 }
 interface IBasicBonus extends IBonus {
-    value: number;
+    value: Integer | Rate;
 }
 interface IWeaponBonus extends IBonus {
-    value: Array<number>;
+    value: Array<Integer | Rate>;
 }
 
 interface IRankedWeaponBonus {
     bonus: Arrayable<IWeaponBonus> | undefined;
-    rank: number;
+    rank: Integer;
 }
 
 interface IBonusValue {
     type: BonusValueType;
-    value: number;
+    value: Integer | Rate;
 }
 interface IAnyBonusValue {
     type: AnyBonusType;
-    value: number;
+    value: Integer | Rate;
 }
 
 interface INameable {
@@ -249,7 +254,7 @@ interface INameable {
 }
 
 interface IWeapon extends INameable {
-    star: number;
+    star: Integer;
     second: BonusValueType;
     passive?: Arrayable<IWeaponBonus>;
 }
@@ -260,9 +265,9 @@ interface IArtifactSet extends INameable {
 }
 
 interface IArtifactBonus {
-    intercept: number;
-    slope: number;
-    substep?: number;
+    intercept: Float;
+    slope: Float;
+    substep?: Float;
 }
 
 type ArtifactParamType = "hp" | "atk" | "def" | "atk_buf" | "def_buf" | "en_rec" | "cri_rate" | "cri_dmg";
@@ -286,44 +291,44 @@ interface ICombat {
     type: CombatType;
     elem: CombatElementType;
     scale: DamageScale;
-    value: number;
-    value2?: number;
-    multi?: number;
+    value: Rate;
+    value2?: Rate;
+    multi?: Integer;
     based?: DamageBased;
 }
 
 type CharaStatusType = "hp" | "atk" | "def";
-type CharaStatus = Record<CharaStatusType, number[]>;
+type CharaStatus = Record<CharaStatusType, Integer[]>;
 type CharaTalent = Record<TalentType, ICombat[]>;
 
 interface ICharacter extends INameable {
-    star: number;
+    star: Integer;
     element: ElementType;
     weapon: WeaponType;
     status: Nullable<CharaStatus>;
     special: BonusValueType;
-    spvalue: Nullable<number[]>;
+    spvalue: Nullable<Rate[]>;
     talent: Nullable<CharaTalent>;
 }
 
-type StatusBase = Record<CharaStatusType, number>;
-type StatusParam = Record<BonusType, number>;
-type StatusTalent = Record<TalentType, number>;
+type StatusBase = Record<CharaStatusType, Integer>;
+type StatusParam = Record<BonusType, Integer | Rate>;
+type StatusTalent = Record<TalentType, Integer>;
 
-type Resist = Record<ElementType, number>;
+type Resist = Record<ElementType, Rate>;
 
 interface IEnemy extends INameable {
     resist: Resist;
 }
 
 interface IAscensionLevel {
-    level: number;
-    index: number;
+    level: Integer;
+    index: Integer;
 }
 
 interface ICriticalValue {
-    rate: number;
-    damage: number;
+    rate: Rate;
+    damage: Rate;
     special: boolean;
 }
 
@@ -347,16 +352,34 @@ const TypeToBonus = {
     },
 } as const;
 
-function toFloorRate(value: number): string {
+function floorRate(value: Rate): string {
     if (value < 100) {
         return value.toFixed(1) + "%";
     }
     return value.toFixed() + "%";
 }
 
-function toRoundRate(value: number): string {
+function roundRate(value: Rate): string {
     if (value < 100) {
         return (Math.round(value * 10) / 10).toFixed(1) + "%";
     }
     return Math.round(value).toFixed() + "%";
+}
+
+function floorFloat(value: Float): string {
+    if (value < 100) {
+        return value.toFixed(1);
+    }
+    return value.toFixed();
+}
+
+function roundFloat(value: Float): string {
+    if (value < 100) {
+        return (Math.round(value * 10) / 10).toFixed(1);
+    }
+    return Math.round(value).toFixed();
+}
+
+function toScale(rate: Rate): Scale {
+    return (100.0 + rate) / 100.0;
 }

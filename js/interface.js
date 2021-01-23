@@ -158,15 +158,30 @@ const TypeToBonus = {
         return type + "_buf";
     },
 };
-function toFloorRate(value) {
+function floorRate(value) {
     if (value < 100) {
         return value.toFixed(1) + "%";
     }
     return value.toFixed() + "%";
 }
-function toRoundRate(value) {
+function roundRate(value) {
     if (value < 100) {
         return (Math.round(value * 10) / 10).toFixed(1) + "%";
     }
     return Math.round(value).toFixed() + "%";
+}
+function floorFloat(value) {
+    if (value < 100) {
+        return value.toFixed(1);
+    }
+    return value.toFixed();
+}
+function roundFloat(value) {
+    if (value < 100) {
+        return (Math.round(value * 10) / 10).toFixed(1);
+    }
+    return Math.round(value).toFixed();
+}
+function toScale(rate) {
+    return (100.0 + rate) / 100.0;
 }
