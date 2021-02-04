@@ -116,6 +116,7 @@ type StatusBonusType = typeof StatusBonusType[keyof typeof StatusBonusType] | Cr
 const CombatBonusType = {
     Normal: "normal_dmg",
     Heavy: "heavy_dmg",
+    Plunge: "plunge_dmg",
     Skill: "skill_dmg",
     Burst: "burst_dmg"
 } as const;
@@ -190,6 +191,7 @@ type ReactionSquareType = typeof ReactionSquareTypes[number];
 const CombatType = {
     Normal: "normal",
     Heavy: "heavy",
+    Plunge: "plunge",
     Skill: "skill",
     Burst: "burst",
 } as const;

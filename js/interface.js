@@ -73,6 +73,7 @@ const StatusBonusType = {
 const CombatBonusType = {
     Normal: "normal_dmg",
     Heavy: "heavy_dmg",
+    Plunge: "plunge_dmg",
     Skill: "skill_dmg",
     Burst: "burst_dmg"
 };
@@ -127,6 +128,7 @@ const ReactionSquareTypes = [
 const CombatType = {
     Normal: "normal",
     Heavy: "heavy",
+    Plunge: "plunge",
     Skill: "skill",
     Burst: "burst",
 };

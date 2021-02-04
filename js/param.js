@@ -145,6 +145,12 @@ const BONUS_LABEL = {
         detail: "重撃ダメージ",
         suffix: "%"
     },
+    plunge_dmg: {
+        table: "落下攻撃ダメ",
+        select: "",
+        detail: "落下攻撃ダメージ",
+        suffix: "%"
+    },
     heavy_cri: {
         table: "重撃会心率",
         select: "",
@@ -332,6 +338,7 @@ class Status {
             phys_dmg: 0.0,
             normal_dmg: 0.0,
             heavy_dmg: 0.0,
+            plunge_dmg: 0.0,
             heavy_cri: 0.0,
             skill_dmg: 0.0,
             skill_cri: 0.0,
@@ -601,8 +608,6 @@ class CombatAttribute {
                     const reactionValue = ReactionDamageValue[reaction];
                     const reactionResist = enemy.resistance(reactionValue.resist);
                     const reactionDamage = reactionValue.values[status.level - 1] * reactionScale * reactionResist;
-                    console.log(reactionScale);
-                    console.log(reactionValue);
                     cell.textContent = reactionDamage.toFixed();
                     cell = cell.nextElementSibling;
                     cell.textContent = "-";

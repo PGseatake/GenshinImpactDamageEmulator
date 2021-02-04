@@ -721,6 +721,7 @@ class TeamTable extends Table {
             geo_dmg: new ElemBuffParam("geo_dmg"),
             phys_dmg: new ElemBuffParam("phys_dmg"),
             normal_dmg: new DamageParam("normal_dmg"),
+            plunge_dmg: new DamageParam("plunge_dmg"),
             heavy_dmg: new DamageParam("heavy_dmg"),
             heavy_cri: new DamageParam("heavy_cri"),
             skill_dmg: new DamageParam("skill_dmg"),
