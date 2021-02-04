@@ -26,6 +26,14 @@ const SWORD_LIST = {
             { items: StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "さらにシールド状態の時", times: 8, stack: 5 },
         ]
     },
+    PrimordialJadeCutter: {
+        name: "磐岩結緑",
+        star: 5,
+        second: CriticalBonusType.Rate,
+        passive: [
+            { items: StatusBonusType.HpBuf, value: [20, 25, 30, 35, 40] },
+        ]
+    },
     FavoniusSword: {
         name: "西風剣",
         star: 4,

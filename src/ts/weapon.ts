@@ -34,6 +34,16 @@ const SWORD_LIST: DeepReadonly<IMap<IWeapon>> = {
             { items: StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "さらにシールド状態の時", times: 8, stack: 5 },
         ]
     },
+    PrimordialJadeCutter: {
+        name: "磐岩結緑",
+        star: 5,
+        second: CriticalBonusType.Rate,
+        passive: [
+            // HP上限+20~40%。
+            { items: StatusBonusType.HpBuf, value: [20, 25, 30, 35, 40] },
+            // また、キャラクターのHP上限の?.?%分、攻撃力がアップする。
+        ]
+    },
     FavoniusSword: {
         name: "西風剣",
         star: 4,

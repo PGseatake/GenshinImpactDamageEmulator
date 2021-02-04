@@ -1518,6 +1518,61 @@ const CHARACTER = {
             ]
         }
     },
+    Xiao: {
+        name: "魈",
+        star: 5,
+        element: ElementType.Anemo,
+        weapon: WeaponType.Polearm,
+        status: {
+            hp: [
+                991, 2572,
+                3422, 5120,
+                5724, 6586,
+                7391, 8262,
+                8866, 9744,
+                10348, 11236,
+                11840, 12736
+            ],
+            atk: [
+                26, 71,
+                94, 141,
+                157, 181,
+                203, 227,
+                243, 267,
+                284, 308,
+                325, 349
+            ],
+            def: [
+                62, 161,
+                215, 321,
+                359, 413,
+                464, 519,
+                556, 612,
+                649, 705,
+                743, 799
+            ]
+        },
+        special: CriticalBonusType.Rate,
+        spvalue: [0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 27.5, value2: 27.5 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 56.9 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 68.6 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 37.7, value2: 37.7 },
+                { name: "5段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 71.5 },
+                { name: "6段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 95.8 },
+                { name: "重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 121 },
+                { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 82 },
+                { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 164 },
+                { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 204 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 253 },
+            ],
+            burst: []
+        }
+    },
     Xingqiu: {
         name: "行秋",
         star: 4,
