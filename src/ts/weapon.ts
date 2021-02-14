@@ -329,9 +329,9 @@ const POLEARM_LIST: DeepReadonly<IMap<IWeapon>> = {
         star: 5,
         second: CriticalBonusType.Rate,
         passive: [
-            // 敵に命中した時、自身の攻撃力+3.2~6%、継続時間6秒、最大7重まで。0.3秒に最大1回発動でき、7重まで発動するとスキルダメージ+12~24%。
+            // 敵に命中した時、自身の攻撃力+3.2~6%、継続時間6秒、最大7重まで。0.3秒に最大1回発動でき、7重まで発動すると与ダメージ+12~24%。
             { items: StatusBonusType.AtkBuf, value: [3.2, 3.9, 4.6, 5.3, 6.0], limit: "敵に命中した時", times: 6, stack: 7 },
-            { items: CombatBonusType.Skill, value: [12, 15, 18, 21, 24], limit: "さらに7重まで発動した時" },
+            { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24], limit: "さらに7重まで発動した時" },
         ],
     },
     SkywardSpine: {

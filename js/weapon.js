@@ -262,7 +262,7 @@ const POLEARM_LIST = {
         second: CriticalBonusType.Rate,
         passive: [
             { items: StatusBonusType.AtkBuf, value: [3.2, 3.9, 4.6, 5.3, 6.0], limit: "敵に命中した時", times: 6, stack: 7 },
-            { items: CombatBonusType.Skill, value: [12, 15, 18, 21, 24], limit: "さらに7重まで発動した時" },
+            { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24], limit: "さらに7重まで発動した時" },
         ],
     },
     SkywardSpine: {
