@@ -41,7 +41,7 @@ const SWORD_LIST: DeepReadonly<IMap<IWeapon>> = {
         passive: [
             // HP上限+20~40%。
             { items: StatusBonusType.HpBuf, value: [20, 25, 30, 35, 40] },
-            // また、キャラクターのHP上限の?.?%分、攻撃力がアップする。
+            // また、キャラクターのHP上限の1.2~2.4%分、攻撃力がアップする。
         ]
     },
     FavoniusSword: {
@@ -281,6 +281,16 @@ const CLAYMORE_LIST: DeepReadonly<IMap<IWeapon>> = {
         // 敵が氷元素の影響を受けている場合、攻撃力の200%のダメージを受ける。この効果は10秒毎に1回のみ発動可能。
         // passive: null
     },
+    LithicBlade: {
+        name: "千岩古剣",
+        star: 4,
+        second: StatusBonusType.AtkBuf,
+        // チームに璃月出身のキャラクターが1人いる毎に、この武器を装備したキャラクターの攻撃力＋7~11%、会心率＋3~7%。最大4重まで。
+        passive: [
+            { items: StatusBonusType.AtkBuf, value: [7, 8, 9, 10, 11], limit: "チームに璃月出身のキャラクターが1人いる毎", stack: 4 },
+            { items: CriticalBonusType.Rate, value: [3, 4, 5, 6, 7], limit: "チームに璃月出身のキャラクターが1人いる毎", stack: 4 },
+        ]
+    },
     SkyriderGreatsword: {
         name: "飛天大御剣",
         star: 3,
@@ -352,6 +362,17 @@ const POLEARM_LIST: DeepReadonly<IMap<IWeapon>> = {
             { items: StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "攻撃が命中した時", times: 8, stack: 5 },
             // また、シールド状態の時、攻撃力アップの効果量は2倍になる。
             { items: StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "さらにシールド状態の時", times: 8, stack: 5 },
+        ]
+    },
+    StaffHoma: {
+        name: "護摩の杖",
+        star: 5,
+        second: CriticalBonusType.Damage,
+        passive: [
+            // HP上限+20~40%。
+            { items: StatusBonusType.HpBuf, value: [20, 25, 30, 35, 40] },
+            // また、キャラクターのHP上限の0.8~1.6%分、攻撃力がアップする。
+            // キャラクターのHPが50%未満の時、攻撃力が更にHP上限の1.0~1.8%分アップする。
         ]
     },
     DragonsBane: {
@@ -505,22 +526,22 @@ const BOW_LIST: DeepReadonly<IMap<IWeapon>> = {
         name: "リングボウ",
         star: 4,
         second: ElementBonusType.Phys,
-        // 通常攻撃と狙い撃ち射撃が命中すると、攻撃力+4~8％、通常攻撃速度1.2~2.4％、継続時間6秒、最大4重まで、0.3秒に1回のみ発動可能。
+        // 通常攻撃と狙い撃ち射撃が命中すると、攻撃力+4~8%、通常攻撃速度1.2~2.4%、継続時間6秒、最大4重まで、0.3秒に1回のみ発動可能。
         passive: { items: StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "通常攻撃と狙い撃ちが命中した時", times: 6, stack: 4 },
     },
     BlackcliffWarbow: {
         name: "黒岩の戦弓",
         star: 4,
         second: CriticalBonusType.Damage,
-        // 敵を倒した後、攻撃力+12~24％、継続時間30秒。最大3重まで、継続時間は加算されず、重ごとに別カウントされる。
+        // 敵を倒した後、攻撃力+12~24%、継続時間30秒。最大3重まで、継続時間は加算されず、重ごとに別カウントされる。
         passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     ViridescentHunt: {
         name: "蒼翠の狩猟弓",
         star: 4,
         second: CriticalBonusType.Rate,
-        // 通常攻撃と重撃が命中時、50％の確率で風の目を生成し、近くの敵を吸い寄せる。
-        // 0.5秒毎に攻撃力の40~80％のダメージを与える。継続時間4秒、14~10秒毎に1回のみ発動可能。
+        // 通常攻撃と重撃が命中時、50%の確率で風の目を生成し、近くの敵を吸い寄せる。
+        // 0.5秒毎に攻撃力の40~80%のダメージを与える。継続時間4秒、14~10秒毎に1回のみ発動可能。
         // passive: null,
     },
     Messenger: {
@@ -614,9 +635,9 @@ const CATALYST_LIST: DeepReadonly<IMap<IWeapon>> = {
         passive: [
             // 叙唱:攻撃力+60~120%
             { items: StatusBonusType.AtkBuf, value: [60, 75, 90, 105, 120], limit: "叙唱：キャラ登場時", times: 10 },
-            // 詠唱:全元素ダメージ+48~96％
+            // 詠唱:全元素ダメージ+48~96%
             { items: ElementBonusType.Any, value: [48, 60, 72, 84, 96], limit: "詠唱：キャラ登場時", times: 10 },
-            // 間奏曲:元素熟知+240~480％
+            // 間奏曲:元素熟知+240~480%
             { items: StatusBonusType.Elem, value: [240, 300, 360, 420, 480], limit: "間奏曲：キャラ登場時", times: 10 },
         ],
     },

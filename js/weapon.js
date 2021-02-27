@@ -221,6 +221,15 @@ const CLAYMORE_LIST = {
         star: 4,
         second: ElementBonusType.Phys,
     },
+    LithicBlade: {
+        name: "千岩古剣",
+        star: 4,
+        second: StatusBonusType.AtkBuf,
+        passive: [
+            { items: StatusBonusType.AtkBuf, value: [7, 8, 9, 10, 11], limit: "チームに璃月出身のキャラクターが1人いる毎", stack: 4 },
+            { items: CriticalBonusType.Rate, value: [3, 4, 5, 6, 7], limit: "チームに璃月出身のキャラクターが1人いる毎", stack: 4 },
+        ]
+    },
     SkyriderGreatsword: {
         name: "飛天大御剣",
         star: 3,
@@ -278,6 +287,14 @@ const POLEARM_LIST = {
         passive: [
             { items: StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "攻撃が命中した時", times: 8, stack: 5 },
             { items: StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "さらにシールド状態の時", times: 8, stack: 5 },
+        ]
+    },
+    StaffHoma: {
+        name: "護摩の杖",
+        star: 5,
+        second: CriticalBonusType.Damage,
+        passive: [
+            { items: StatusBonusType.HpBuf, value: [20, 25, 30, 35, 40] },
         ]
     },
     DragonsBane: {

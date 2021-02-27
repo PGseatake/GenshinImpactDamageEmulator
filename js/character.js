@@ -175,8 +175,8 @@ const CHARACTER = {
                 { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 160 },
             ],
             skill: [
-                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Phys, value: 130 },
-                { name: "刹那の花ダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Phys, value: 134, based: DamageBased.Def },
+                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Elem, value: 130 },
+                { name: "刹那の花ダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Elem, value: 134, based: DamageBased.Def },
             ],
             burst: [
                 { name: "爆発ダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Elem, value: 367 },
@@ -2108,6 +2108,66 @@ const ENEMY_LIST = {
             phys: 30
         },
     },
+    Geovishap: {
+        name: "ヴィシャップ・岩",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 50,
+            phys: 30
+        },
+    },
+    GeovishapPyro: {
+        name: "ヴィシャップ・岩（元素変化・火）",
+        resist: {
+            pyro: 30,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 50,
+            phys: 30
+        },
+    },
+    GeovishapHydro: {
+        name: "ヴィシャップ・岩（元素変化・水）",
+        resist: {
+            pyro: 10,
+            hydro: 30,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 50,
+            phys: 30
+        },
+    },
+    GeovishapElect: {
+        name: "ヴィシャップ・岩（元素変化・雷）",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 30,
+            anemo: 10,
+            cryo: 10,
+            geo: 50,
+            phys: 30
+        },
+    },
+    GeovishapCryo: {
+        name: "ヴィシャップ・岩（元素変化・氷）",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 30,
+            geo: 50,
+            phys: 30
+        },
+    },
     AbyssMage: {
         name: "アビスの魔術師",
         resist: {
@@ -2264,6 +2324,114 @@ const ENEMY_LIST = {
             phys: 30
         },
     },
+    PrimoGeovishapPyro: {
+        name: "エンシェントヴィシャップ・岩（火）",
+        resist: {
+            pyro: 30,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 50,
+            phys: 30
+        },
+    },
+    PrimoGeovishapHydro: {
+        name: "エンシェントヴィシャップ・岩（水）",
+        resist: {
+            pyro: 10,
+            hydro: 30,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 50,
+            phys: 30
+        },
+    },
+    PrimoGeovishapElect: {
+        name: "エンシェントヴィシャップ・岩（雷）",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 30,
+            anemo: 10,
+            cryo: 10,
+            geo: 50,
+            phys: 30
+        },
+    },
+    PrimoGeovishapCryo: {
+        name: "エンシェントヴィシャップ・岩（氷）",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 30,
+            geo: 50,
+            phys: 30
+        },
+    },
+    PrimoGeovishapPyroDown: {
+        name: "エンシェントヴィシャップ・岩（火・ダウン）",
+        resist: {
+            pyro: -20,
+            hydro: -40,
+            elect: -40,
+            anemo: -40,
+            cryo: -40,
+            geo: 0,
+            phys: -20
+        },
+    },
+    PrimoGeovishapHydroDown: {
+        name: "エンシェントヴィシャップ・岩（水・ダウン）",
+        resist: {
+            pyro: -40,
+            hydro: -20,
+            elect: -40,
+            anemo: -40,
+            cryo: -40,
+            geo: 0,
+            phys: -20
+        },
+    },
+    PrimoGeovishapElectDown: {
+        name: "エンシェントヴィシャップ・岩（雷・ダウン）",
+        resist: {
+            pyro: -40,
+            hydro: -40,
+            elect: -20,
+            anemo: -40,
+            cryo: -40,
+            geo: 0,
+            phys: -20
+        },
+    },
+    PrimoGeovishapCryoDown: {
+        name: "エンシェントヴィシャップ・岩（氷・ダウン）",
+        resist: {
+            pyro: -40,
+            hydro: -40,
+            elect: -40,
+            anemo: -40,
+            cryo: -20,
+            geo: 0,
+            phys: -20
+        },
+    },
+    PrimoGeovishapWaking: {
+        name: "エンシェントヴィシャップ・岩（寝起き）",
+        resist: {
+            pyro: 210,
+            hydro: 210,
+            elect: 210,
+            anemo: 210,
+            cryo: 210,
+            geo: 250,
+            phys: 230
+        },
+    },
     Dvalin: {
         name: "トワリン",
         resist: {
@@ -2277,7 +2445,7 @@ const ENEMY_LIST = {
         },
     },
     Andrius: {
-        name: "北風の狼",
+        name: "アンドリアス",
         resist: {
             pyro: 10,
             hydro: 10,
