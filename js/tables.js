@@ -833,8 +833,8 @@ class BonusTable extends Table {
     constructor() {
         super(TableType.Bonus);
         this.bridge = new TableBridge(Table.List.team);
-        this.items = [];
-        this.teams = [];
+        this.applied = [];
+        this.everyone = [];
     }
     load() {
         this.onRefresh();
@@ -851,11 +851,11 @@ class BonusTable extends Table {
         const innerHtml = (bonuses) => {
             let text = "";
             for (let bonus of bonuses) {
-                if (bonus.apply) {
-                    text += `<span style="color:silver">${bonus.toString()}</span>`;
+                if (bonus.valid) {
+                    text += bonus.toString();
                 }
                 else {
-                    text += bonus.toString();
+                    text += `<span style="color:silver">${bonus.toString()}</span>`;
                 }
                 text += "<br>";
             }
@@ -876,16 +876,16 @@ class BonusTable extends Table {
             row = row.nextElementSibling;
         }
         let cell = row.cells[1];
-        if (0 < this.items.length) {
-            cell.innerHTML = innerHtml(this.items);
+        if (0 < this.everyone.length) {
+            cell.innerHTML = innerHtml(this.everyone);
         }
         else {
             cell.innerHTML = "";
         }
     }
     reset() {
-        this.items = [];
-        this.teams = [];
+        this.applied = [];
+        this.everyone = [];
     }
     weapon(status, bonuses, rank) {
         if (Array.isArray(bonuses)) {
@@ -927,7 +927,7 @@ class BonusTable extends Table {
     }
     append(status, value, others, source) {
         if (!!others.target && (others.target !== BonusTarget.Self)) {
-            this.items.push(new Bonus(status.id, others.items, value, others, status.chara.name));
+            this.everyone.push(new Bonus(status.id, others.items, value, others, status.chara.name));
         }
         else {
             status.append(new Bonus(status.id, others.items, value, others, source));
@@ -950,13 +950,13 @@ class BonusTable extends Table {
                 if (!!data) {
                     let bonus = new Bonus("team", data.items, data.value, data, LABEL_TEXT.resonance);
                     if (!bonus.limit) {
-                        bonus.apply = true;
+                        bonus.valid = false;
                         for (let status of members) {
-                            status === null || status === void 0 ? void 0 : status.apply(bonus);
+                            status === null || status === void 0 ? void 0 : status.addValues(bonus.apply());
                         }
-                        this.teams.push(bonus);
+                        this.applied.push(bonus);
                     }
-                    this.items.push(bonus);
+                    this.everyone.push(bonus);
                 }
             }
             first = last;
@@ -964,25 +964,25 @@ class BonusTable extends Table {
     }
     detach(status, members) {
         if (!!status) {
-            let bonuses = this.items.filter(bonus => bonus.id !== status.id);
-            this.items = bonuses.filter(bonus => bonus.id !== "team");
-            for (let bonus of this.teams) {
+            let bonuses = this.everyone.filter(bonus => bonus.id !== status.id);
+            this.everyone = bonuses.filter(bonus => bonus.id !== "team");
+            for (let bonus of this.applied) {
                 for (let status of members) {
-                    status === null || status === void 0 ? void 0 : status.remove(bonus);
+                    status === null || status === void 0 ? void 0 : status.subValues(bonus.apply());
                 }
             }
-            this.teams = [];
+            this.applied = [];
         }
     }
     enumerate(status) {
         let bonuses = [];
         for (let bonus of status.bonus) {
-            if (!bonus.apply) {
+            if (bonus.valid) {
                 bonuses.push(bonus);
             }
         }
-        for (let bonus of this.items) {
-            if (!bonus.apply) {
+        for (let bonus of this.everyone) {
+            if (bonus.valid) {
                 bonuses.push(bonus);
             }
         }
@@ -1051,23 +1051,6 @@ class ApplyTable extends Table {
         super(TableType.Apply);
         this.bonuses = [];
     }
-    get list() {
-        let bonuses = [];
-        let rows = Array.from(this.html.rows);
-        for (let i = 1, len = rows.length; i < len; ++i) {
-            let cells = Array.from(rows[i].cells);
-            if (cells[0].firstElementChild.checked) {
-                const bonus = this.bonuses[i - 1];
-                let stack = 1;
-                let input = cells[3].firstElementChild;
-                if (!!input) {
-                    stack = parseInt(input.value);
-                }
-                bonuses.push({ types: bonus.types, value: bonus.value * stack });
-            }
-        }
-        return bonuses;
-    }
     clear() {
         let html = this.html;
         let rows = html.rows;
@@ -1085,72 +1068,21 @@ class ApplyTable extends Table {
             let bonuses = Table.List.bonus.enumerate(status);
             for (let bonus of bonuses) {
                 let row = html.insertRow();
-                for (let cap of caption.cells) {
-                    const id = cap.id;
-                    let cell = row.insertCell();
-                    cell.id = id;
-                    ApplyTable.BuildCells[id](cell, bonus);
-                }
+                bonus.build(caption, row, ev => Table.List.damage.calculate());
             }
             this.bonuses = bonuses;
         }
     }
     status(status) {
         let clone = status.clone();
-        const bonuses = this.list;
-        for (const bonus of bonuses) {
-            for (const type of bonus.types) {
-                clone.param[type] += bonus.value;
-            }
+        let row = this.html.rows[0];
+        for (let bonus of this.bonuses) {
+            row = row.nextElementSibling;
+            clone.addValues(bonus.applyRow(row));
         }
         return clone;
     }
 }
-ApplyTable.BuildCells = {
-    check: (cell, bonus) => {
-        let input = document.createElement("input");
-        input.type = "checkbox";
-        input.addEventListener("change", ev => Table.List.damage.calculate());
-        cell.appendChild(input);
-    },
-    source: (cell, bonus) => {
-        cell.className = "left";
-        cell.appendChild(document.createTextNode(bonus.source));
-    },
-    value: (cell, bonus) => {
-        cell.className = "left";
-        if (!!bonus.limit) {
-            cell.appendChild(document.createTextNode(bonus.limit));
-            cell.appendChild(document.createElement("br"));
-        }
-        cell.appendChild(document.createTextNode(bonus.effect));
-    },
-    stack: (cell, bonus) => {
-        if (1 < bonus.stack) {
-            let input = document.createElement("input");
-            input.className = "short";
-            input.type = "number";
-            input.min = "1";
-            input.max = bonus.stack.toString();
-            input.step = "1";
-            input.value = "1";
-            input.pattern = "[0-9]*";
-            input.addEventListener("change", ev => Table.List.damage.calculate());
-            cell.appendChild(input);
-        }
-        else {
-            cell.appendChild(document.createTextNode("-"));
-        }
-    },
-    times: (cell, bonus) => {
-        if (1 < bonus.times) {
-            cell.appendChild(document.createTextNode(bonus.times.toString() + LABEL_TEXT.second));
-        }
-        else {
-            cell.appendChild(document.createTextNode("-"));
-        }
-    },
-};
 const ReactionSquareLabel = {
     "": "-",
     pyro: "火",

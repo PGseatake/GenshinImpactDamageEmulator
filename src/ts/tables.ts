@@ -1228,15 +1228,15 @@ class TeamTable extends Table implements IRefreshTable {
 // ボーナステーブル
 class BonusTable extends Table implements IRefreshTable {
     private bridge: TableBridge;
-    private items: Bonus[];
-    private teams: Bonus[];
+    private applied: Bonus[];
+    private everyone: Bonus[];
 
     // コンストラクタ
     constructor() {
         super(TableType.Bonus);
         this.bridge = new TableBridge(Table.List.team!);
-        this.items = [];
-        this.teams = [];
+        this.applied = [];
+        this.everyone = [];
     }
 
     // データの読込
@@ -1261,10 +1261,10 @@ class BonusTable extends Table implements IRefreshTable {
         const innerHtml = (bonuses: Bonus[]) => {
             let text = "";
             for (let bonus of bonuses) {
-                if (bonus.apply) {
-                    text += `<span style="color:silver">${bonus.toString()}</span>`;
-                } else {
+                if (bonus.valid) {
                     text += bonus.toString();
+                } else {
+                    text += `<span style="color:silver">${bonus.toString()}</span>`;
                 }
                 text += "<br>";
             }
@@ -1290,8 +1290,8 @@ class BonusTable extends Table implements IRefreshTable {
 
         let cell = row.cells[1];
         // 全員向けのボーナス表示
-        if (0 < this.items.length) {
-            cell.innerHTML = innerHtml(this.items);
+        if (0 < this.everyone.length) {
+            cell.innerHTML = innerHtml(this.everyone);
         } else {
             cell.innerHTML = "";
         }
@@ -1299,8 +1299,8 @@ class BonusTable extends Table implements IRefreshTable {
 
     // ボーナスの全削除
     reset() {
-        this.items = [];
-        this.teams = [];
+        this.applied = [];
+        this.everyone = [];
     }
 
     // 武器ボーナス追加
@@ -1349,7 +1349,7 @@ class BonusTable extends Table implements IRefreshTable {
     // ボーナス追加
     private append(status: Status, value: Integer, others: DeepReadonly<IBonus>, source: string) {
         if (!!others.target && (others.target !== BonusTarget.Self)) {
-            this.items.push(new Bonus(status.id, others.items, value, others, status.chara.name));
+            this.everyone.push(new Bonus(status.id, others.items, value, others, status.chara.name));
         } else {
             status.append(new Bonus(status.id, others.items, value, others, source));
         }
@@ -1376,13 +1376,13 @@ class BonusTable extends Table implements IRefreshTable {
                     let bonus = new Bonus("team", data.items, data.value, data, LABEL_TEXT.resonance);
                     // ステータスに即適用
                     if (!bonus.limit) {
-                        bonus.apply = true;
+                        bonus.valid = false;
                         for (let status of members) {
-                            status?.apply(bonus);
+                            status?.addValues(bonus.apply());
                         }
-                        this.teams.push(bonus);
+                        this.applied.push(bonus);
                     }
-                    this.items.push(bonus);
+                    this.everyone.push(bonus);
                 }
             }
             first = last;
@@ -1393,17 +1393,17 @@ class BonusTable extends Table implements IRefreshTable {
     detach(status: Nullable<Status>, members: Nullable<Status>[]) {
         if (!!status) {
             // 削除したメンバーのボーナスを全削除
-            let bonuses = this.items.filter(bonus => bonus.id !== status.id);
+            let bonuses = this.everyone.filter(bonus => bonus.id !== status.id);
             // チームボーナス削除
-            this.items = bonuses.filter(bonus => bonus.id !== "team");
+            this.everyone = bonuses.filter(bonus => bonus.id !== "team");
 
             // 適用したチームボーナスを除去
-            for (let bonus of this.teams) {
+            for (let bonus of this.applied) {
                 for (let status of members) {
-                    status?.remove(bonus);
+                    status?.subValues(bonus.apply());
                 }
             }
-            this.teams = [];
+            this.applied = [];
         }
     }
 
@@ -1411,12 +1411,12 @@ class BonusTable extends Table implements IRefreshTable {
     enumerate(status: Status): Bonus[] {
         let bonuses: Bonus[] = [];
         for (let bonus of status.bonus) {
-            if (!bonus.apply) {
+            if (bonus.valid) {
                 bonuses.push(bonus);
             }
         }
-        for (let bonus of this.items) {
-            if (!bonus.apply) {
+        for (let bonus of this.everyone) {
+            if (bonus.valid) {
                 bonuses.push(bonus);
             }
         }
@@ -1504,82 +1504,14 @@ class EnemyTable extends Table {
     }
 }
 
-interface IApplyBonusValue {
-    readonly types: ReadonlyArray<BonusType>;
-    readonly value: Integer | Rate;
-}
-
 // ボーナス適用テーブル
 class ApplyTable extends Table {
-    static BuildCells: IMap<(cell: HTMLCellElement, bonus: Bonus) => void> = {
-        check: (cell: HTMLCellElement, bonus: Bonus) => {
-            let input = document.createElement("input");
-            input.type = "checkbox";
-            input.addEventListener("change", ev => Table.List.damage!.calculate());
-            cell.appendChild(input);
-        },
-        source: (cell: HTMLCellElement, bonus: Bonus) => {
-            cell.className = "left";
-            cell.appendChild(document.createTextNode(bonus.source));
-        },
-        value: (cell: HTMLCellElement, bonus: Bonus) => {
-            cell.className = "left";
-            if (!!bonus.limit) {
-                cell.appendChild(document.createTextNode(bonus.limit));
-                cell.appendChild(document.createElement("br"));
-            }
-            cell.appendChild(document.createTextNode(bonus.effect));
-        },
-        stack: (cell: HTMLCellElement, bonus: Bonus) => {
-            if (1 < bonus.stack) {
-                let input = document.createElement("input");
-                input.className = "short";
-                input.type = "number";
-                input.min = "1";
-                input.max = bonus.stack.toString();
-                input.step = "1";
-                input.value = "1";
-                input.pattern = "[0-9]*";
-                input.addEventListener("change", ev => Table.List.damage!.calculate());
-                cell.appendChild(input);
-            } else {
-                cell.appendChild(document.createTextNode("-"));
-            }
-        },
-        times: (cell: HTMLCellElement, bonus: Bonus) => {
-            if (1 < bonus.times) {
-                cell.appendChild(document.createTextNode(bonus.times.toString() + LABEL_TEXT.second));
-            } else {
-                cell.appendChild(document.createTextNode("-"));
-            }
-        },
-    } as const;
-
     private bonuses: Bonus[];
 
     // コンストラクタ
     constructor() {
         super(TableType.Apply);
         this.bonuses = [];
-    }
-
-    // 適用リストを取得
-    get list(): IApplyBonusValue[] {
-        let bonuses: IApplyBonusValue[] = [];
-        let rows = Array.from(this.html.rows);
-        for (let i = 1, len = rows.length; i < len; ++i) {
-            let cells = Array.from(rows[i].cells);
-            if ((cells[0].firstElementChild as HTMLInputElement).checked) {
-                const bonus = this.bonuses[i - 1];
-                let stack = 1;
-                let input = cells[3].firstElementChild as HTMLInputElement;
-                if (!!input) {
-                    stack = parseInt(input.value);
-                }
-                bonuses.push({ types: bonus.types, value: bonus.value * stack });
-            }
-        }
-        return bonuses;
     }
 
     // データの読込
@@ -1604,12 +1536,7 @@ class ApplyTable extends Table {
             let bonuses = Table.List.bonus!.enumerate(status);
             for (let bonus of bonuses) {
                 let row = html.insertRow();
-                for (let cap of caption.cells) {
-                    const id = cap.id;
-                    let cell = row.insertCell();
-                    cell.id = id;
-                    ApplyTable.BuildCells[id](cell, bonus);
-                }
+                bonus.build(caption, row, ev => Table.List.damage!.calculate());
             }
             this.bonuses = bonuses;
         }
@@ -1618,11 +1545,10 @@ class ApplyTable extends Table {
     // ステータスに適用
     status(status: Status): Status {
         let clone = status.clone();
-        const bonuses = this.list;
-        for (const bonus of bonuses) {
-            for (const type of bonus.types) {
-                clone.param[type] += bonus.value;
-            }
+        let row = this.html.rows[0];
+        for (let bonus of this.bonuses) {
+            row = row.nextElementSibling as HTMLRowElement;
+            clone.addValues(bonus.applyRow(row));
         }
         return clone;
     }
