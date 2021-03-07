@@ -135,7 +135,8 @@ const CombatType = {
 const DamageScale = {
     Phys: "phys",
     Elem: "elem",
-    Etc1: "etc1"
+    Etc1: "etc1",
+    Xiao: "xiao",
 };
 const DamageBased = {
     Atk: "atk",

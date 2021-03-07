@@ -706,6 +706,62 @@ const CHARACTER = {
             ]
         }
     },
+    Hutao: {
+        name: "胡桃",
+        star: 5,
+        element: ElementType.Pyro,
+        weapon: WeaponType.Polearm,
+        status: {
+            hp: [
+                1211, 3141,
+                4179, 6253,
+                6990, 8042,
+                9026, 10089,
+                10826, 11899,
+                12637, 13721,
+                14459, 15552
+            ],
+            atk: [
+                8, 21,
+                29, 43,
+                48, 55,
+                62, 69,
+                74, 81,
+                86, 94,
+                99, 106
+            ],
+            def: [
+                68, 177,
+                235, 352,
+                394, 453,
+                508, 568,
+                610, 670,
+                712, 773,
+                815, 876
+            ]
+        },
+        special: CriticalBonusType.Damage,
+        spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 46.9 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 48.3 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 61.1 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 65.6 },
+                { name: "5段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 33.3, value2: 35.2 },
+                { name: "6段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 86.0 },
+                { name: "重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 136 },
+                { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 65.4 },
+                { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 131 },
+                { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 163 },
+            ],
+            skill: [],
+            burst: [
+                { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Xiao, value: 303 },
+                { name: "低HP時スキルダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Xiao, value: 379 },
+            ]
+        }
+    },
     Jean: {
         name: "ジン",
         star: 5,
