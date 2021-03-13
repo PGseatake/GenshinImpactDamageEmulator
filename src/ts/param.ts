@@ -64,16 +64,19 @@ const ReactionDamageValue: DeepReadonly<Record<TransformReactionType, IReactionD
     },
 } as const;
 
+type FlatDamage = Record<CombatType, Float>;
+
 // キャラステータス
 class Status {
     public id: string;
     public chara: DeepReadonly<ICharacter>;
     public conste: Integer;
     public lv: string;
-    public bonus: Bonus[];
+    public bonus: BonusBase[];
     public talent: StatusTalent;
     public base: StatusBase;
     public param: StatusParam;
+    public flat: FlatDamage;
 
     constructor(id: string) {
         this.id = id;
@@ -118,6 +121,13 @@ class Status {
             vaporize_dmg: 0.0,
             overload_dmg: 0.0
         };
+        this.flat = {
+            normal: 0.0,
+            heavy: 0.0,
+            plunge: 0.0,
+            skill: 0.0,
+            burst: 0.0
+        };
     }
 
     get level(): Integer {
@@ -160,6 +170,11 @@ class Status {
     // 元素反応・転化（％）
     private get elem_trans(): Rate {
         return this.elem_react * 60.0 / 9.0;
+    }
+
+    // 攻撃力（実数）
+    get hp(): Float {
+        return this.base.hp + (this.base.hp * this.param.hp_buf / 100) + this.param.hp;
     }
 
     // 攻撃力（実数）
@@ -245,37 +260,45 @@ class Status {
     }
 
     // ボーナス追加
-    append(bonus: Bonus) {
+    append(bonus: BonusBase) {
         if (!bonus.limit) {
             bonus.valid = false;
-            this.addValues(bonus.apply());
+            this.addValues(bonus.apply(this));
         }
         this.bonus.push(bonus);
     }
 
     // ボーナス値加算
-    addValue(bonus: IAnyBonusValue) {
-        if (bonus.type !== StatusBonusType.Other) {
-            this.param[bonus.type] += bonus.value;
+    addValue(bonus: AnyBonusValue) {
+        if (!!bonus.flat) {
+            this.flat[bonus.type] += bonus.value;
+        } else {
+            if (bonus.type !== StatusBonusType.Other) {
+                this.param[bonus.type] += bonus.value;
+            }
         }
     }
 
     // ボーナス値減算
-    subValue(bonus: IAnyBonusValue) {
-        if (bonus.type !== StatusBonusType.Other) {
-            this.param[bonus.type] -= bonus.value;
+    subValue(bonus: AnyBonusValue) {
+        if (!!bonus.flat) {
+            this.flat[bonus.type] -= bonus.value;
+        } else {
+            if (bonus.type !== StatusBonusType.Other) {
+                this.param[bonus.type] -= bonus.value;
+            }
         }
     }
 
     // ボーナス値加算
-    addValues(values: IAnyBonusValue[]) {
+    addValues(values: AnyBonusValue[]) {
         for (const value of values) {
             this.addValue(value);
         }
     }
 
     // ボーナス値減算
-    subValues(values: IAnyBonusValue[]) {
+    subValues(values: AnyBonusValue[]) {
         for (const value of values) {
             this.subValue(value);
         }
@@ -291,6 +314,7 @@ class Status {
         status.talent = { ...this.talent };
         status.base = { ...this.base };
         status.param = { ...this.param };
+        status.flat = { ...this.flat };
         return status;
     }
 }
@@ -385,8 +409,8 @@ class CombatAttribute {
         return str;
     }
 
-    private toDamage(damage: Float): string {
-        let str = this.value.map(value => (damage * value / 100).toFixed()).join("+");
+    private toDamage(damage: Float, flat: Float): string {
+        let str = this.value.map(value => (damage * value / 100 + flat).toFixed()).join("+");
         if (1 < this.multi) {
             return `${str}x${this.multi}`;
         }
@@ -424,13 +448,15 @@ class CombatAttribute {
             const critical = status.critical(this.type);
             const criticalScale = toScale(critical.damage);
 
+            const flatDamage = status.flat[this.type];
+
             const setDamage = (damage: Float) => {
                 // 通常ダメージ
-                cell.textContent = this.toDamage(damage);
+                cell.textContent = this.toDamage(damage, flatDamage);
                 cell = cell.nextElementSibling as HTMLCellElement;
 
                 // 会心ダメージ
-                let text = this.toDamage(damage * criticalScale);
+                let text = this.toDamage(damage * criticalScale, flatDamage);
                 // 会心率が異なる場合は特別表示
                 if (critical.special) {
                     text = `${text}(${floorRate(critical.rate)})`;
@@ -447,9 +473,9 @@ class CombatAttribute {
 
                 if (IsAmplifyReaction(reaction)) {
                     // 蒸発と溶解は取り消し線で表示
-                    cell.innerHTML = `<span class="strike">${this.toDamage(totalDamage)}</span>`;
+                    cell.innerHTML = `<span class="strike">${this.toDamage(totalDamage, flatDamage)}</span>`;
                     cell = cell.nextElementSibling as HTMLCellElement;
-                    cell.innerHTML = `<span class="strike">${this.toDamage(totalDamage * criticalScale)}</span>`;
+                    cell.innerHTML = `<span class="strike">${this.toDamage(totalDamage * criticalScale, flatDamage)}</span>`;
                     cell = cell.nextElementSibling as HTMLCellElement;
 
                     const reactionScale = status.reactionScale(elem, reaction) * toScale(elementMaster + reactionBonus);

@@ -798,24 +798,44 @@ class TeamTable extends Table {
         }
     }
     member(cid) {
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         let equip = Table.List.equip;
         let row = document.querySelector("table#tbl_equip tr#" + cid);
         let status = new Status(this.rid);
-        let chara = equip.apply(row, EquipmentType.Chara, status);
+        const chara = equip.apply(row, EquipmentType.Chara, status);
         status.chara = chara;
-        let bonus = Table.List.bonus;
         let weapon = equip.applyWeapon(row, chara.weapon, status);
-        if (!!weapon.bonus) {
-            bonus.weapon(status, weapon.bonus, weapon.rank);
-        }
-        let items = [
+        const items = [
             equip.apply(row, ArtifactType.Flower, status),
             equip.apply(row, ArtifactType.Feather, status),
             equip.apply(row, ArtifactType.Sands, status),
             equip.apply(row, ArtifactType.Goblet, status),
             equip.apply(row, ArtifactType.Circlet, status),
         ];
+        let bonus = Table.List.bonus;
         bonus.artifact(status, items);
+        bonus.weapon(status, weapon.bonus, weapon.rank);
+        const name = chara.name;
+        bonus.appends(status, (_a = chara.passive) === null || _a === void 0 ? void 0 : _a.skill, name);
+        bonus.appends(status, (_b = chara.passive) === null || _b === void 0 ? void 0 : _b.burst, name);
+        if ((21 <= status.level) || (status.lv === "20+")) {
+            bonus.appends(status, (_c = chara.passive) === null || _c === void 0 ? void 0 : _c.lv4, name);
+        }
+        if ((61 <= status.level) || (status.lv === "60+")) {
+            bonus.appends(status, (_d = chara.passive) === null || _d === void 0 ? void 0 : _d.lv5, name);
+        }
+        if (1 <= status.conste) {
+            bonus.appends(status, (_e = chara.conste) === null || _e === void 0 ? void 0 : _e.lv1, name);
+        }
+        if (2 <= status.conste) {
+            bonus.appends(status, (_f = chara.conste) === null || _f === void 0 ? void 0 : _f.lv2, name);
+        }
+        if (4 <= status.conste) {
+            bonus.appends(status, (_g = chara.conste) === null || _g === void 0 ? void 0 : _g.lv4, name);
+        }
+        if (6 <= status.conste) {
+            bonus.appends(status, (_h = chara.conste) === null || _h === void 0 ? void 0 : _h.lv6, name);
+        }
         return status;
     }
     assign(no, elem) {
@@ -888,13 +908,17 @@ class BonusTable extends Table {
         this.everyone = [];
     }
     weapon(status, bonuses, rank) {
-        if (Array.isArray(bonuses)) {
-            for (let bonus of bonuses) {
-                this.append(status, bonus.value[rank], bonus, LABEL_TEXT.weapon);
+        if (!!bonuses) {
+            if (Array.isArray(bonuses)) {
+                for (const bonus of bonuses) {
+                    const data = Object.assign(Object.assign({}, bonus), { value: bonus.value[rank] });
+                    this.append(status, data, LABEL_TEXT.weapon);
+                }
             }
-        }
-        else {
-            this.append(status, bonuses.value[rank], bonuses, LABEL_TEXT.weapon);
+            else {
+                const data = Object.assign(Object.assign({}, bonuses), { value: bonuses.value[rank] });
+                this.append(status, data, LABEL_TEXT.weapon);
+            }
         }
     }
     artifact(status, items) {
@@ -906,31 +930,50 @@ class BonusTable extends Table {
             if (item in ARTIFACT_SET) {
                 let same = last - first;
                 let artifact = ARTIFACT_SET[item];
-                if ((2 <= same) && !!artifact.set2) {
-                    let bonus = artifact.set2;
-                    this.append(status, bonus.value, bonus, LABEL_TEXT.artifact);
+                if (2 <= same) {
+                    this.appends(status, artifact.set2, LABEL_TEXT.artifact);
                 }
-                if ((4 <= same) && !!artifact.set4) {
-                    let bonuses = artifact.set4;
-                    if (Array.isArray(bonuses)) {
-                        for (let bonus of bonuses) {
-                            this.append(status, bonus.value, bonus, LABEL_TEXT.artifact);
-                        }
-                    }
-                    else {
-                        this.append(status, bonuses.value, bonuses, LABEL_TEXT.artifact);
-                    }
+                if (4 <= same) {
+                    this.appends(status, artifact.set4, LABEL_TEXT.artifact);
                 }
             }
             first = last;
         }
     }
-    append(status, value, others, source) {
-        if (!!others.target && (others.target !== BonusTarget.Self)) {
-            this.everyone.push(new Bonus(status.id, others.items, value, others, status.chara.name));
+    appends(status, bonuses, source) {
+        if (!!bonuses) {
+            if (Array.isArray(bonuses)) {
+                for (const bonus of bonuses) {
+                    this.append(status, bonus, source);
+                }
+            }
+            else {
+                this.append(status, bonuses, source);
+            }
         }
-        else {
-            status.append(new Bonus(status.id, others.items, value, others, source));
+    }
+    append(status, bonus, source) {
+        switch (bonus.extra) {
+            case undefined:
+                if (!bonus.target || (bonus.target === BonusTarget.Self)) {
+                    status.append(new BasicBonus(status.id, bonus, source));
+                }
+                else {
+                    this.everyone.push(new BasicBonus(status.id, bonus, status.chara.name));
+                }
+                break;
+            case ExtraBonusType.Flat:
+                if (!bonus.target || (bonus.target === BonusTarget.Self)) {
+                    status.append(new FlatBonus(status.id, bonus, source, status));
+                }
+                else {
+                    this.everyone.push(new FlatBonus(status.id, bonus, status.chara.name, status));
+                }
+                break;
+            case ExtraBonusType.Reduct:
+                break;
+            case ExtraBonusType.Enchant:
+                break;
         }
     }
     attach(members) {
@@ -948,11 +991,11 @@ class BonusTable extends Table {
             if (2 <= (last - first)) {
                 const data = TEAM_BONUS[type];
                 if (!!data) {
-                    let bonus = new Bonus("team", data.items, data.value, data, LABEL_TEXT.resonance);
+                    let bonus = new BasicBonus("team", data, LABEL_TEXT.resonance);
                     if (!bonus.limit) {
                         bonus.valid = false;
                         for (let status of members) {
-                            status === null || status === void 0 ? void 0 : status.addValues(bonus.apply());
+                            status === null || status === void 0 ? void 0 : status.addValues(bonus.apply(status));
                         }
                         this.applied.push(bonus);
                     }
@@ -968,7 +1011,7 @@ class BonusTable extends Table {
             this.everyone = bonuses.filter(bonus => bonus.id !== "team");
             for (let bonus of this.applied) {
                 for (let status of members) {
-                    status === null || status === void 0 ? void 0 : status.subValues(bonus.apply());
+                    status === null || status === void 0 ? void 0 : status.subValues(bonus.apply(status));
                 }
             }
             this.applied = [];
@@ -1078,7 +1121,7 @@ class ApplyTable extends Table {
         let row = this.html.rows[0];
         for (let bonus of this.bonuses) {
             row = row.nextElementSibling;
-            clone.addValues(bonus.applyRow(row));
+            clone.addValues(bonus.applyRow(status, row));
         }
         return clone;
     }

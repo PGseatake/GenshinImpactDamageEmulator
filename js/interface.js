@@ -113,7 +113,7 @@ const IsAmplifyReaction = (type) => {
     }
     return false;
 };
-const TransformReactionType = (type) => {
+const IsTransformReaction = (type) => {
     if (IsAmplifyReaction(type))
         return false;
     return true;
@@ -143,9 +143,38 @@ const DamageBased = {
     Def: "def"
 };
 const BonusTarget = {
+    All: "all",
     Self: "self",
     Next: "next",
-    All: "all"
+    Other: "other",
+};
+const ExtraBonusType = {
+    Flat: "flat",
+    Reduct: "reduct",
+    Enchant: "enchant",
+};
+const FlatBonusDest = {
+    Atk: "atk",
+    Elem: "elem",
+    Combat: "combat",
+    Skill: "skill",
+    Burst: "burst",
+    NormalDmg: "normal_dmg",
+    SkillDmg: "skill_dmg",
+    BurstDmg: "burst_dmg",
+    HydroDmg: "hydro_dmg",
+};
+const FlatBonusBase = {
+    None: "none",
+    Hp: "hp",
+    Atk: "atk",
+    Def: "def",
+    Elem: "elem",
+    EnRec: "en_rec",
+};
+const ReductBonusType = {
+    Def: "def",
+    Contact: "contact"
 };
 const TalentType = {
     Combat: "combat",

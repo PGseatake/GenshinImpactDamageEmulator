@@ -8,7 +8,9 @@ const CHARACTER = {
         status: null,
         special: StatusBonusType.Other,
         spvalue: null,
-        talent: null
+        talent: null,
+        passive: null,
+        conste: null
     },
     TravelAnemo: {
         name: "旅人(風)",
@@ -68,6 +70,14 @@ const CHARACTER = {
                 { name: "竜巻ダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 80.8 },
                 { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Contact, scale: DamageScale.Elem, value: 24.8 },
             ]
+        },
+        passive: {},
+        conste: {
+            lv2: { items: StatusBonusType.EnRec, value: 16.0 },
+            lv6: [
+                { extra: ExtraBonusType.Reduct, type: ElementType.Anemo, value: 20.0, limit: "元素爆発のダメージを受けた時" },
+                { extra: ExtraBonusType.Reduct, type: CombatElementType.Contact, value: 20.0, limit: "元素変化があった時" },
+            ]
         }
     },
     TravelGeo: {
@@ -124,6 +134,10 @@ const CHARACTER = {
             burst: [
                 { name: "地震波1回のダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Elem, value: 148 },
             ]
+        },
+        passive: {},
+        conste: {
+            lv1: { items: CriticalBonusType.Rate, value: 10.0, limit: "岩潮幾重の岩の山に包囲されている時", target: BonusTarget.All },
         }
     },
     Albedo: {
@@ -182,6 +196,15 @@ const CHARACTER = {
                 { name: "爆発ダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Elem, value: 367 },
                 { name: "生滅の花ダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Elem, value: 72 },
             ]
+        },
+        passive: {
+            lv4: { items: CombatBonusType.Skill, value: 25.0, limit: "元素スキルがHP50％以下の敵にダメージを与えた時" },
+            lv5: { items: StatusBonusType.Elem, value: 125, limit: "元素爆発を発動した時付近のキャラ", times: 10, target: BonusTarget.All },
+        },
+        conste: {
+            lv2: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Burst, base: StatusBonusType.Def, value: 30.0, limit: "生滅カウントに応じて元素爆発を発動した時", stack: 4 },
+            lv4: { items: CombatBonusType.Plunge, value: 30.0, limit: "元素爆発エリア内のキャラ", target: BonusTarget.All },
+            lv6: { items: StatusBonusType.AnyDmg, value: 17.0, limit: "元素爆発エリア内で結晶反応によるシールド状態の時" },
         }
     },
     Amber: {
@@ -240,6 +263,12 @@ const CHARACTER = {
                 { name: "矢の雨1回のダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 28.1 },
                 { name: "矢の雨の合計ダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 505 },
             ]
+        },
+        passive: {
+            lv5: { items: StatusBonusType.AtkBuf, value: 15.0, limit: "狙い撃ちが弱点に命中した時", times: 10 },
+        },
+        conste: {
+            lv6: { items: StatusBonusType.AtkBuf, value: 15.0, limit: "元素爆発を発動した時", times: 10, target: BonusTarget.All },
         }
     },
     Barbara: {
@@ -293,6 +322,10 @@ const CHARACTER = {
                 { name: "水玉ダメージ", type: CombatType.Skill, elem: ElementType.Hydro, scale: DamageScale.Elem, value: 58.4 },
             ],
             burst: []
+        },
+        passive: {},
+        conste: {
+            lv2: { items: ElementBonusType.Hydro, value: 15.0, limit: "元素スキル継続中・出場キャラ", target: BonusTarget.All },
         }
     },
     Beidou: {
@@ -353,6 +386,12 @@ const CHARACTER = {
                 { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 122 },
                 { name: "落雷ダメージ", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 96 },
             ]
+        },
+        passive: {
+            lv5: { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: 15.0, limit: "最大ダメージ上昇効果のある元素スキルを発動した時", times: 10 },
+        },
+        conste: {
+            lv6: { extra: ExtraBonusType.Reduct, type: ElementType.Elect, value: 15.0, limit: "元素爆発継続中・周囲の敵" },
         }
     },
     Bennett: {
@@ -412,6 +451,16 @@ const CHARACTER = {
             burst: [
                 { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 233 },
             ]
+        },
+        passive: {
+            burst: { extra: ExtraBonusType.Flat, dest: StatusBonusType.Atk, base: FlatBonusBase.Atk, value: 56.0, scale: DamageScale.Elem, limit: "元素爆発エリア内のキャラ", target: BonusTarget.All }
+        },
+        conste: {
+            lv2: { items: StatusBonusType.EnRec, value: 30.0, limit: "HPが70%以下の時" },
+            lv6: [
+                { items: ElementBonusType.Pyro, value: 15.0, limit: "元素爆発エリア内の片手剣・両手剣・長柄武器キャラ" },
+                { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発エリア内の片手剣・両手剣・長柄武器キャラ", target: BonusTarget.All },
+            ]
         }
     },
     Chongyun: {
@@ -468,6 +517,13 @@ const CHARACTER = {
             burst: [
                 { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 142 },
             ]
+        },
+        passive: {
+            skill: { extra: ExtraBonusType.Enchant, elem: ElementType.Cryo, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキルエリア内の片手剣・両手剣・長柄武器キャラ", target: BonusTarget.All },
+            lv5: { extra: ExtraBonusType.Reduct, type: ElementType.Cryo, value: 10.0, limit: "元素スキルの霊刃が命中した敵", times: 8 },
+        },
+        conste: {
+            lv6: { items: CombatBonusType.Burst, value: 15.0, limit: "HPの割合が重雲より低い敵" },
         }
     },
     Diluc: {
@@ -528,6 +584,16 @@ const CHARACTER = {
                 { name: "継続ダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 60.0 },
                 { name: "爆発ダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 204 }
             ]
+        },
+        passive: {
+            burst: { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発発動後", times: 8, target: BonusTarget.Self },
+            lv5: { items: ElementBonusType.Pyro, value: 20.0, limit: "元素爆発の炎元素付与継続中", times: 12 },
+        },
+        conste: {
+            lv1: { items: StatusBonusType.AnyDmg, value: 15.0, limit: "HP50%より上回る敵" },
+            lv2: { items: StatusBonusType.AtkBuf, value: 10.0, limit: "ダメージを受けた時", times: 10, stack: 3 },
+            lv4: { items: CombatBonusType.Skill, value: 40.0, limit: "元素スキル発動2秒後", times: 2 },
+            lv6: { items: CombatBonusType.Normal, value: 30.0, limit: "元素スキル発動後2回まで", times: 6 },
         }
     },
     Diona: {
@@ -586,6 +652,11 @@ const CHARACTER = {
                 { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 80 },
                 { name: "エリアの継続ダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 52.6 },
             ]
+        },
+        passive: {},
+        conste: {
+            lv2: { items: CombatBonusType.Skill, value: 15.0 },
+            lv6: { items: StatusBonusType.Elem, value: 200, limit: "元素爆発エリア内でHP50%以上のキャラ", target: BonusTarget.All },
         }
     },
     Fischl: {
@@ -644,7 +715,9 @@ const CHARACTER = {
             burst: [
                 { name: "落雷ダメージ", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 208 }
             ]
-        }
+        },
+        passive: {},
+        conste: {}
     },
     Ganyu: {
         name: "甘雨",
@@ -704,6 +777,13 @@ const CHARACTER = {
             burst: [
                 { name: "氷柱ダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 70 }
             ]
+        },
+        passive: {
+            lv5: { items: ElementBonusType.Cryo, value: 20.0, limit: "元素爆発エリア内のキャラ", target: BonusTarget.All },
+        },
+        conste: {
+            lv1: { extra: ExtraBonusType.Reduct, type: ElementType.Cryo, value: 15.0, limit: "霜華の矢・霜華満開が命中した時", times: 6 },
+            lv4: { items: CombatBonusType.Burst, value: 5.0, limit: "元素爆発エリア内の敵・3秒毎", stack: 5 },
         }
     },
     Hutao: {
@@ -760,6 +840,14 @@ const CHARACTER = {
                 { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Xiao, value: 303 },
                 { name: "低HP時スキルダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Xiao, value: 379 },
             ]
+        },
+        passive: {
+            lv4: { items: CriticalBonusType.Rate, value: 12, limit: "元素スキル終了後", times: 8, target: BonusTarget.Other },
+            lv5: { items: ElementBonusType.Pyro, value: 100 / 3, limit: "HPが50%以下の時" },
+        },
+        conste: {
+            lv4: { items: CriticalBonusType.Rate, value: 12, limit: "胡桃自ら与えた血梅香状態の敵が倒された時", times: 15, target: BonusTarget.Other },
+            lv6: { items: CriticalBonusType.Rate, value: 100, limit: "戦闘不能に至るダメージを受けた時", times: 10 },
         }
     },
     Jean: {
@@ -817,6 +905,11 @@ const CHARACTER = {
                 { name: "爆発ダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 425 },
                 { name: "エリア出入りダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 78.4 },
             ]
+        },
+        passive: {},
+        conste: {
+            lv1: { items: CombatBonusType.Skill, value: 40.0, limit: "スキル長押しが1秒以上の時" },
+            lv4: { extra: ExtraBonusType.Reduct, type: ElementType.Anemo, value: 40.0, limit: "元素爆発エリア内の敵" },
         }
     },
     Kaeya: {
@@ -873,7 +966,9 @@ const CHARACTER = {
             burst: [
                 { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 77.6 },
             ]
-        }
+        },
+        passive: {},
+        conste: {}
     },
     Keqing: {
         name: "刻晴",
@@ -933,6 +1028,13 @@ const CHARACTER = {
                 { name: "連斬ダメージ", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 24.0, multi: 8 },
                 { name: "最後の一撃ダメージ	", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 189 },
             ]
+        },
+        passive: {
+            lv5: { items: [CriticalBonusType.Rate, StatusBonusType.EnRec], value: 15.0, limit: "元素爆発継続中", times: 8 },
+        },
+        conste: {
+            lv4: { items: StatusBonusType.AtkBuf, value: 25.0, limit: "雷元素の関連反応を起こした時", times: 10 },
+            lv6: { items: ElementBonusType.Elect, value: 6.0, limit: "通常攻撃、重撃、元素スキルまたは元素爆発を発動する時", times: 8 },
         }
     },
     Klee: {
@@ -988,6 +1090,13 @@ const CHARACTER = {
             burst: [
                 { name: "ドッカン花火ダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 42.6 },
             ]
+        },
+        passive: {
+            lv5: { items: CombatBonusType.Heavy, value: 50.0, limit: "爆裂花火を消費した時", times: 25 },
+        },
+        conste: {
+            lv2: { extra: ExtraBonusType.Reduct, type: ReductBonusType.Def, value: 23.0, limit: "ブービートラップダメージを受けた敵", times: 10 },
+            lv6: { items: ElementBonusType.Pyro, value: 10.0, limit: "元素爆発発動後", times: 25, target: BonusTarget.All },
         }
     },
     Lisa: {
@@ -1047,6 +1156,12 @@ const CHARACTER = {
             burst: [
                 { name: "放電ダメージ", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 36.6 }
             ]
+        },
+        passive: {
+            lv5: { extra: ExtraBonusType.Reduct, type: ReductBonusType.Def, value: 15.0, limit: "元素爆発の攻撃を受けた敵", times: 10 },
+        },
+        conste: {
+            lv2: { items: StatusBonusType.DefBuf, value: 20.0, limit: "スキル長押し中" },
         }
     },
     Mona: {
@@ -1103,6 +1218,14 @@ const CHARACTER = {
             burst: [
                 { name: "泡影破裂ダメージ", type: CombatType.Burst, elem: ElementType.Hydro, scale: DamageScale.Elem, value: 442 },
             ]
+        },
+        passive: {
+            lv5: { extra: ExtraBonusType.Flat, dest: ElementBonusType.Hydro, base: StatusBonusType.EnRec, value: 20.0 },
+        },
+        conste: {
+            lv1: { items: [ReactionBonusType.Echarge, ReactionBonusType.Vaporize], value: 15.0 },
+            lv4: { items: CriticalBonusType.Rate, value: 15.0, limit: "星異状態の敵を攻撃する時", target: BonusTarget.All },
+            lv6: { items: CombatBonusType.Heavy, value: 60.0, limit: "虚実流動で1秒移動する毎", times: 8, stack: 3 },
         }
     },
     Ningguang: {
@@ -1156,7 +1279,11 @@ const CHARACTER = {
             burst: [
                 { name: "宝石ダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Elem, value: 87.0 },
             ]
-        }
+        },
+        passive: {
+            lv5: { items: ElementBonusType.Geo, value: 12.0, limit: "璇璣屏を突き抜けたキャラ", times: 10, target: BonusTarget.All },
+        },
+        conste: {}
     },
     Noelle: {
         name: "ノエル",
@@ -1213,6 +1340,11 @@ const CHARACTER = {
                 { name: "爆発ダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Elem, value: 67.2 },
                 { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Elem, value: 92.8 },
             ]
+        },
+        passive: {},
+        conste: {
+            lv2: { items: CombatBonusType.Heavy, value: 15.0 },
+            lv6: { extra: ExtraBonusType.Flat, dest: StatusBonusType.Atk, base: StatusBonusType.Def, value: 50.0, limit: "元素爆発継続中" },
         }
     },
     Qiqi: {
@@ -1270,6 +1402,10 @@ const CHARACTER = {
             burst: [
                 { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 285 },
             ]
+        },
+        passive: {},
+        conste: {
+            lv2: { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: 15.0, limit: "氷元素の影響を受けた敵" },
         }
     },
     Razor: {
@@ -1327,6 +1463,14 @@ const CHARACTER = {
             burst: [
                 { name: "爆発ダメージ", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 160 },
             ]
+        },
+        passive: {
+            lv5: { items: StatusBonusType.EnRec, value: 30.0, limit: "元素エネルギーが50%以下の時" },
+        },
+        conste: {
+            lv1: { items: StatusBonusType.AnyDmg, value: 10.0, limit: "元素オーブまたは元素粒子を獲得した時", times: 8 },
+            lv2: { items: CriticalBonusType.Rate, value: 10.0, limit: "HPが30％以下の敵を攻撃する時" },
+            lv4: { extra: ExtraBonusType.Reduct, type: ReductBonusType.Def, value: 15.0, limit: "元素スキル一回押しで攻撃した時", times: 7 },
         }
     },
     Sucrose: {
@@ -1383,7 +1527,12 @@ const CHARACTER = {
                 { name: "継続ダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 148 },
                 { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Contact, scale: DamageScale.Elem, value: 44 },
             ]
-        }
+        },
+        passive: {
+            lv4: { items: StatusBonusType.Elem, value: 50, limit: "拡散反応を起こした時、該当元素のキャラ", times: 8, target: BonusTarget.Other },
+            lv5: { extra: ExtraBonusType.Flat, dest: StatusBonusType.Elem, base: StatusBonusType.Elem, value: 20.0, limit: "元素スキル・元素爆発が敵に命中した時", times: 8, target: BonusTarget.Other },
+        },
+        conste: {}
     },
     Tartaglia: {
         name: "タルタリヤ",
@@ -1453,7 +1602,9 @@ const CHARACTER = {
                 { name: "スキルダメージ・遠隔", type: CombatType.Burst, elem: ElementType.Hydro, scale: DamageScale.Elem, value: 378 },
                 { name: "断流・爆 ダメージ", type: CombatType.Burst, elem: ElementType.Hydro, scale: DamageScale.Elem, value: 120 },
             ]
-        }
+        },
+        passive: {},
+        conste: {}
     },
     Venti: {
         name: "ウェンティ",
@@ -1513,6 +1664,15 @@ const CHARACTER = {
                 { name: "継続ダメージ", type: CombatType.Burst, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 37.6 },
                 { name: "付加元素ダメージ", type: CombatType.Burst, elem: CombatElementType.Contact, scale: DamageScale.Elem, value: 18.8 },
             ]
+        },
+        passive: {},
+        conste: {
+            lv2: [
+                { extra: ExtraBonusType.Reduct, type: [ElementType.Anemo, ElementType.Phys], value: 12.0, limit: "元素スキル発動後", times: 10 },
+                { extra: ExtraBonusType.Reduct, type: [ElementType.Anemo, ElementType.Phys], value: 12.0, limit: "さらにノックバックした敵が着地する前" },
+            ],
+            lv4: { items: ElementBonusType.Anemo, value: 25.0, limit: "元素オーブまたは元素粒子を獲得した時", times: 10 },
+            lv6: { extra: ExtraBonusType.Reduct, type: [ElementType.Anemo, ReductBonusType.Contact], value: 20.0, limit: "元素爆発の影響を受ける敵" },
         }
     },
     Xiangling: {
@@ -1572,6 +1732,13 @@ const CHARACTER = {
                 { name: "振り回しによる3段ダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 110 },
                 { name: "旋火輪ダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 112 },
             ]
+        },
+        passive: {
+            lv5: { items: StatusBonusType.AtkBuf, value: 10.0, limit: "唐辛子を拾った時", times: 10 },
+        },
+        conste: {
+            lv1: { extra: ExtraBonusType.Reduct, type: ElementType.Pyro, value: 15.0, limit: "グゥオパァーに攻撃された敵", times: 6 },
+            lv6: { items: ElementBonusType.Pyro, value: 15.0, limit: "元素爆発継続中", target: BonusTarget.All },
         }
     },
     Xiao: {
@@ -1627,6 +1794,15 @@ const CHARACTER = {
                 { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Anemo, scale: DamageScale.Elem, value: 253 },
             ],
             burst: []
+        },
+        passive: {
+            burst: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Combat, base: FlatBonusBase.None, value: 58.5, scale: DamageScale.Xiao, limit: "元素爆発発動後", times: 15 },
+            lv4: { items: StatusBonusType.AnyDmg, value: 5.0, limit: "元素爆発継続中3秒毎", stack: 5 },
+            lv5: { items: CombatBonusType.Skill, value: 15.0, limit: "元素スキル発動後", times: 7, stack: 3 },
+        },
+        conste: {
+            lv2: { items: StatusBonusType.EnRec, value: 25.0, limit: "フィールド上にいない時" },
+            lv4: { items: StatusBonusType.DefBuf, value: 100.0, limit: "HPが50%未満の時" },
         }
     },
     Xingqiu: {
@@ -1683,6 +1859,13 @@ const CHARACTER = {
             burst: [
                 { name: "剣雨のダメージ", type: CombatType.Burst, elem: ElementType.Hydro, scale: DamageScale.Elem, value: 54.3 },
             ]
+        },
+        passive: {
+            lv5: { items: ElementBonusType.Hydro, value: 20.0 },
+        },
+        conste: {
+            lv2: { extra: ExtraBonusType.Reduct, type: ElementType.Hydro, value: 15.0, limit: "元素爆発の攻撃を受けた敵", times: 4 },
+            lv4: { items: CombatBonusType.Skill, value: 15.0, limit: "元素爆発継続中" },
         }
     },
     Xinyan: {
@@ -1741,6 +1924,12 @@ const CHARACTER = {
                 { name: "スキルダメージ	", type: CombatType.Burst, elem: ElementType.Phys, scale: DamageScale.Elem, value: 341 },
                 { name: "継続炎ダメージ	", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 40.0 }
             ]
+        },
+        passive: {
+            lv5: { items: ElementBonusType.Phys, value: 15.0, limit: "元素スキルのシールドが存在する時" },
+        },
+        conste: {
+            lv4: { extra: ExtraBonusType.Reduct, type: ElementType.Phys, value: 15.0, limit: "元素スキルのダメージを受けた敵", times: 12 },
         }
     },
     Zhongli: {
@@ -1800,7 +1989,15 @@ const CHARACTER = {
             burst: [
                 { name: "スキルダメージ	", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Etc1, value: 401.4 },
             ]
-        }
+        },
+        passive: {
+            lv5: [
+                { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Combat, base: StatusBonusType.Hp, value: 1.39 },
+                { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Skill, base: StatusBonusType.Hp, value: 1.9 },
+                { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Burst, base: StatusBonusType.Hp, value: 100.0 / 3 },
+            ]
+        },
+        conste: {}
     },
 };
 const ENEMY_LIST = {

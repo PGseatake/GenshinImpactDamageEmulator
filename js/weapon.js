@@ -32,6 +32,7 @@ const SWORD_LIST = {
         second: CriticalBonusType.Rate,
         passive: [
             { items: StatusBonusType.HpBuf, value: [20, 25, 30, 35, 40] },
+            { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk, base: FlatBonusBase.Hp, value: [1.2, 1.5, 1.8, 2.1, 2.4] },
         ]
     },
     FavoniusSword: {
@@ -295,6 +296,8 @@ const POLEARM_LIST = {
         second: CriticalBonusType.Damage,
         passive: [
             { items: StatusBonusType.HpBuf, value: [20, 25, 30, 35, 40] },
+            { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk, base: FlatBonusBase.Hp, value: [0.8, 1.0, 1.2, 1.4, 1.6] },
+            { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk, base: FlatBonusBase.Hp, value: [1.0, 1.2, 1.4, 1.6, 1.8], limit: "HPが50未満の時" },
         ]
     },
     DragonsBane: {

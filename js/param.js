@@ -101,6 +101,13 @@ class Status {
             vaporize_dmg: 0.0,
             overload_dmg: 0.0
         };
+        this.flat = {
+            normal: 0.0,
+            heavy: 0.0,
+            plunge: 0.0,
+            skill: 0.0,
+            burst: 0.0
+        };
     }
     get level() {
         return parseInt(this.lv.replace("+", ""));
@@ -131,6 +138,9 @@ class Status {
     }
     get elem_trans() {
         return this.elem_react * 60.0 / 9.0;
+    }
+    get hp() {
+        return this.base.hp + (this.base.hp * this.param.hp_buf / 100) + this.param.hp;
     }
     get attack() {
         return this.base.atk + (this.base.atk * this.param.atk_buf / 100) + this.param.atk;
@@ -202,18 +212,28 @@ class Status {
     append(bonus) {
         if (!bonus.limit) {
             bonus.valid = false;
-            this.addValues(bonus.apply());
+            this.addValues(bonus.apply(this));
         }
         this.bonus.push(bonus);
     }
     addValue(bonus) {
-        if (bonus.type !== StatusBonusType.Other) {
-            this.param[bonus.type] += bonus.value;
+        if (!!bonus.flat) {
+            this.flat[bonus.type] += bonus.value;
+        }
+        else {
+            if (bonus.type !== StatusBonusType.Other) {
+                this.param[bonus.type] += bonus.value;
+            }
         }
     }
     subValue(bonus) {
-        if (bonus.type !== StatusBonusType.Other) {
-            this.param[bonus.type] -= bonus.value;
+        if (!!bonus.flat) {
+            this.flat[bonus.type] -= bonus.value;
+        }
+        else {
+            if (bonus.type !== StatusBonusType.Other) {
+                this.param[bonus.type] -= bonus.value;
+            }
         }
     }
     addValues(values) {
@@ -235,6 +255,7 @@ class Status {
         status.talent = Object.assign({}, this.talent);
         status.base = Object.assign({}, this.base);
         status.param = Object.assign({}, this.param);
+        status.flat = Object.assign({}, this.flat);
         return status;
     }
 }
@@ -302,8 +323,8 @@ class CombatAttribute {
         }
         return str;
     }
-    toDamage(damage) {
-        let str = this.value.map(value => (damage * value / 100).toFixed()).join("+");
+    toDamage(damage, flat) {
+        let str = this.value.map(value => (damage * value / 100 + flat).toFixed()).join("+");
         if (1 < this.multi) {
             return `${str}x${this.multi}`;
         }
@@ -331,10 +352,11 @@ class CombatAttribute {
             const combatScale = toScale(combatBonus + elementBonus + elemAnyBonus);
             const critical = status.critical(this.type);
             const criticalScale = toScale(critical.damage);
+            const flatDamage = status.flat[this.type];
             const setDamage = (damage) => {
-                cell.textContent = this.toDamage(damage);
+                cell.textContent = this.toDamage(damage, flatDamage);
                 cell = cell.nextElementSibling;
-                let text = this.toDamage(damage * criticalScale);
+                let text = this.toDamage(damage * criticalScale, flatDamage);
                 if (critical.special) {
                     text = `${text}(${floorRate(critical.rate)})`;
                 }
@@ -346,9 +368,9 @@ class CombatAttribute {
                 const elementMaster = status.elementMaster(reaction);
                 const reactionBonus = status.reactionBonus(reaction);
                 if (IsAmplifyReaction(reaction)) {
-                    cell.innerHTML = `<span class="strike">${this.toDamage(totalDamage)}</span>`;
+                    cell.innerHTML = `<span class="strike">${this.toDamage(totalDamage, flatDamage)}</span>`;
                     cell = cell.nextElementSibling;
-                    cell.innerHTML = `<span class="strike">${this.toDamage(totalDamage * criticalScale)}</span>`;
+                    cell.innerHTML = `<span class="strike">${this.toDamage(totalDamage * criticalScale, flatDamage)}</span>`;
                     cell = cell.nextElementSibling;
                     const reactionScale = status.reactionScale(elem, reaction) * toScale(elementMaster + reactionBonus);
                     setDamage(totalDamage * reactionScale);

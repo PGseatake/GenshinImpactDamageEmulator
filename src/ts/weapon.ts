@@ -42,6 +42,7 @@ const SWORD_LIST: DeepReadonly<IMap<IWeapon>> = {
             // HP上限+20~40%。
             { items: StatusBonusType.HpBuf, value: [20, 25, 30, 35, 40] },
             // また、キャラクターのHP上限の1.2~2.4%分、攻撃力がアップする。
+            { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk, base: FlatBonusBase.Hp, value: [1.2, 1.5, 1.8, 2.1, 2.4] },
         ]
     },
     FavoniusSword: {
@@ -372,7 +373,9 @@ const POLEARM_LIST: DeepReadonly<IMap<IWeapon>> = {
             // HP上限+20~40%。
             { items: StatusBonusType.HpBuf, value: [20, 25, 30, 35, 40] },
             // また、キャラクターのHP上限の0.8~1.6%分、攻撃力がアップする。
+            { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk, base: FlatBonusBase.Hp, value: [0.8, 1.0, 1.2, 1.4, 1.6] },
             // キャラクターのHPが50%未満の時、攻撃力が更にHP上限の1.0~1.8%分アップする。
+            { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk, base: FlatBonusBase.Hp, value: [1.0, 1.2, 1.4, 1.6, 1.8], limit: "HPが50未満の時" },
         ]
     },
     DragonsBane: {

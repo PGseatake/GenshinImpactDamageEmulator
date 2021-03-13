@@ -92,6 +92,7 @@ const EquipmentTypes = [
 const CriticalBonusType = {
     Damage: "cri_dmg",
     Rate: "cri_rate",
+    // Normal: "normal_cri",
     Heavy: "heavy_cri",
     Skill: "skill_cri",
 } as const;
@@ -103,7 +104,6 @@ const StatusBonusType = {
     HpBuf: "hp_buf",
     Atk: "atk",
     AtkBuf: "atk_buf",
-    // AtkBase: "atk_base",
     Def: "def",
     DefBuf: "def_buf",
     Elem: "elem",
@@ -173,7 +173,7 @@ const IsAmplifyReaction = (type: ReactionType): type is AmplifyReactionType => {
 };
 
 type TransformReactionType = "swirl" | "echarge" | "shutter" | "conduct" | "overload";
-const TransformReactionType = (type: ReactionType): type is TransformReactionType => {
+const IsTransformReaction = (type: ReactionType): type is TransformReactionType => {
     if (IsAmplifyReaction(type)) return false;
     // if (type === ReactionType.Burning) return false;
     return true;
@@ -200,7 +200,7 @@ type CombatType = typeof CombatType[keyof typeof CombatType];
 const DamageScale = {
     Phys: "phys",
     Elem: "elem",
-    Etc1: "etc1",
+    Etc1: "etc1", // Zhongli
     Xiao: "xiao",
 } as const;
 type DamageScale = typeof DamageScale[keyof typeof DamageScale];
@@ -212,13 +212,15 @@ const DamageBased = {
 type DamageBased = typeof DamageBased[keyof typeof DamageBased];
 
 const BonusTarget = {
-    Self: "self",
-    Next: "next",
-    All: "all"
+    All: "all", // 全員
+    Self: "self", // 自キャラ
+    Next: "next", // 次キャラ
+    Other: "other", // 自キャラ以外
 } as const;
 type BonusTarget = typeof BonusTarget[keyof typeof BonusTarget];
 
 interface IBonus {
+    extra?: undefined;
     items: Arrayable<BonusType>;
     value: Arrayable<Integer | Rate>;
     limit?: string;
@@ -233,19 +235,110 @@ interface IWeaponBonus extends IBonus {
     value: Array<Integer | Rate>;
 }
 
+type AnyWeaponBonus = Arrayable<IWeaponBonus | IWeaponFlatBonus>;
+
 interface IRankedWeaponBonus {
-    bonus: Arrayable<IWeaponBonus> | undefined;
+    bonus: AnyWeaponBonus | undefined;
     rank: Integer;
+}
+
+const ExtraBonusType = {
+    Flat: "flat",
+    Reduct: "reduct",
+    Enchant: "enchant",
+} as const;
+type ExtraBonusType = typeof ExtraBonusType[keyof typeof ExtraBonusType];
+
+interface IExtraBonus {
+    extra?: ExtraBonusType;
+}
+
+const FlatBonusDest = {
+    // StatusType 実数
+    Atk: "atk",
+    Elem: "elem",
+    // CombatType 実数
+    Combat: "combat",
+    Skill: "skill",
+    Burst: "burst",
+    // CombatBonusType 割合
+    NormalDmg: "normal_dmg",
+    SkillDmg: "skill_dmg",
+    BurstDmg: "burst_dmg",
+    // ElementBonusType 割合
+    HydroDmg: "hydro_dmg",
+} as const;
+type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
+
+const FlatBonusBase = {
+    None: "none",
+    Hp: "hp", // 最終値
+    Atk: "atk", // 基礎値
+    Def: "def", // 最終値
+    Elem: "elem",
+    EnRec: "en_rec",
+} as const;
+type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
+
+interface IFlatBonus extends IExtraBonus {
+    extra: "flat";
+    dest: FlatBonusDest;
+    base: FlatBonusBase;
+    value: Arrayable<Rate>;
+    scale?: DamageScale;
+    limit?: string;
+    times?: Integer;
+    stack?: Integer;
+    target?: BonusTarget;
+}
+interface IBasicFlatBonus extends IFlatBonus {
+    value: Rate;
+}
+interface IWeaponFlatBonus extends IFlatBonus {
+    value: Array<Rate>;
+}
+
+const ReductBonusType = {
+    Def: "def",
+    Contact: "contact"
+} as const;
+type ReductBonusType = ElementType | typeof ReductBonusType[keyof typeof ReductBonusType];
+
+interface IReductBonus extends IExtraBonus {
+    extra: "reduct";
+    type: Arrayable<ReductBonusType>;
+    value: Float;
+    limit?: string;
+    times?: Integer;
+}
+
+interface IEnchantBonus extends IExtraBonus {
+    extra: "enchant";
+    elem: ElementType;
+    dest: Array<CombatType>;
+    limit: string;
+    times?: Integer;
+    target: BonusTarget;
 }
 
 interface IBonusValue {
     type: BonusValueType;
     value: Integer | Rate;
 }
-interface IAnyBonusValue {
+
+interface IBasicBonusValue {
+    flat?: undefined;
     type: AnyBonusType;
-    value: Integer | Rate;
+    value: Float | Rate;
 }
+
+interface IFlatBonusValue {
+    flat: true;
+    type: CombatType;
+    value: Float;
+}
+
+type AnyBonusValue = IBasicBonusValue | IFlatBonusValue;
 
 interface INameable {
     name: string;
@@ -254,7 +347,7 @@ interface INameable {
 interface IWeapon extends INameable {
     star: Integer;
     second: BonusValueType;
-    passive?: Arrayable<IWeaponBonus>;
+    passive?: Arrayable<IWeaponBonus | IWeaponFlatBonus>;
 }
 
 interface IArtifactSet extends INameable {
@@ -299,6 +392,22 @@ type CharaStatusType = "hp" | "atk" | "def";
 type CharaStatus = Record<CharaStatusType, Integer[]>;
 type CharaTalent = Record<TalentType, ICombat[]>;
 
+type AnyExtraBonus = IBasicBonus | IBasicFlatBonus | IReductBonus | IEnchantBonus;
+
+interface IPassive {
+    skill?: Arrayable<AnyExtraBonus>;
+    burst?: Arrayable<AnyExtraBonus>;
+    lv4?: Arrayable<AnyExtraBonus>;
+    lv5?: Arrayable<AnyExtraBonus>;
+}
+
+interface IConste {
+    lv1?: Arrayable<AnyExtraBonus>;
+    lv2?: Arrayable<AnyExtraBonus>;
+    lv4?: Arrayable<AnyExtraBonus>;
+    lv6?: Arrayable<AnyExtraBonus>;
+}
+
 interface ICharacter extends INameable {
     star: Integer;
     element: ElementType;
@@ -307,6 +416,8 @@ interface ICharacter extends INameable {
     special: BonusValueType;
     spvalue: Nullable<Rate[]>;
     talent: Nullable<CharaTalent>;
+    passive: Nullable<IPassive>;
+    conste: Nullable<IConste>;
 }
 
 type StatusBase = Record<CharaStatusType, Integer>;

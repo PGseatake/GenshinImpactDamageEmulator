@@ -1181,30 +1181,51 @@ class TeamTable extends Table implements IRefreshTable {
         let status = new Status(this.rid);
 
         // キャラクターのステータスチェック
-        let chara = equip.apply(row, EquipmentType.Chara, status);
+        const chara = equip.apply(row, EquipmentType.Chara, status);
         status.chara = chara;
-
-        let bonus = Table.List.bonus!;
-        // TODO: 天賦によるボーナス追加
-        // TODO: 星座によるボーナス追加
 
         // 武器のステータスチェック
         let weapon = equip.applyWeapon(row, chara.weapon, status);
-        // 武器ボーナス追加
-        if (!!weapon.bonus) {
-            bonus.weapon(status, weapon.bonus, weapon.rank);
-        }
 
         // 聖遺物のステータスチェック
-        let items: string[] = [
+        const items: string[] = [
             equip.apply(row, ArtifactType.Flower, status),
             equip.apply(row, ArtifactType.Feather, status),
             equip.apply(row, ArtifactType.Sands, status),
             equip.apply(row, ArtifactType.Goblet, status),
             equip.apply(row, ArtifactType.Circlet, status),
         ];
+
+        let bonus = Table.List.bonus!;
         // 聖遺物の組み合わせボーナス追加
         bonus.artifact(status, items);
+        // 武器ボーナス追加
+        bonus.weapon(status, weapon.bonus, weapon.rank);
+
+        const name = chara.name;
+        // 天賦によるボーナス追加
+        bonus.appends(status, chara.passive?.skill, name);
+        bonus.appends(status, chara.passive?.burst, name);
+        if ((21 <= status.level) || (status.lv === "20+")) {
+            bonus.appends(status, chara.passive?.lv4, name);
+        }
+        if ((61 <= status.level) || (status.lv === "60+")) {
+            bonus.appends(status, chara.passive?.lv5, name);
+        }
+
+        // 星座によるボーナス追加
+        if (1 <= status.conste) {
+            bonus.appends(status, chara.conste?.lv1, name);
+        }
+        if (2 <= status.conste) {
+            bonus.appends(status, chara.conste?.lv2, name);
+        }
+        if (4 <= status.conste) {
+            bonus.appends(status, chara.conste?.lv4, name);
+        }
+        if (6 <= status.conste) {
+            bonus.appends(status, chara.conste?.lv6, name);
+        }
 
         return status;
     }
@@ -1228,8 +1249,8 @@ class TeamTable extends Table implements IRefreshTable {
 // ボーナステーブル
 class BonusTable extends Table implements IRefreshTable {
     private bridge: TableBridge;
-    private applied: Bonus[];
-    private everyone: Bonus[];
+    private applied: BonusBase[];
+    private everyone: BonusBase[];
 
     // コンストラクタ
     constructor() {
@@ -1258,7 +1279,7 @@ class BonusTable extends Table implements IRefreshTable {
 
     // データの再表示
     onRefresh() {
-        const innerHtml = (bonuses: Bonus[]) => {
+        const innerHtml = (bonuses: BonusBase[]) => {
             let text = "";
             for (let bonus of bonuses) {
                 if (bonus.valid) {
@@ -1304,13 +1325,17 @@ class BonusTable extends Table implements IRefreshTable {
     }
 
     // 武器ボーナス追加
-    weapon(status: Status, bonuses: DeepReadonly<Arrayable<IWeaponBonus>>, rank: Integer) {
-        if (Array.isArray(bonuses)) {
-            for (let bonus of bonuses) {
-                this.append(status, bonus.value[rank], bonus, LABEL_TEXT.weapon);
+    weapon(status: Status, bonuses: DeepReadonly<AnyWeaponBonus> | undefined, rank: Integer) {
+        if (!!bonuses) {
+            if (Array.isArray(bonuses)) {
+                for (const bonus of bonuses) {
+                    const data: DeepReadonly<IBasicBonus | IBasicFlatBonus> = { ...bonus, value: bonus.value[rank] };
+                    this.append(status, data, LABEL_TEXT.weapon);
+                }
+            } else {
+                const data: DeepReadonly<IBasicBonus | IBasicFlatBonus> = { ...bonuses, value: bonuses.value[rank] };
+                this.append(status, data, LABEL_TEXT.weapon);
             }
-        } else {
-            this.append(status, bonuses.value[rank], bonuses, LABEL_TEXT.weapon);
         }
     }
 
@@ -1326,20 +1351,12 @@ class BonusTable extends Table implements IRefreshTable {
                 let same = last - first;
                 let artifact = ARTIFACT_SET[item];
                 // 2セットの効果追加
-                if ((2 <= same) && !!artifact.set2) {
-                    let bonus = artifact.set2;
-                    this.append(status, bonus.value, bonus, LABEL_TEXT.artifact);
+                if (2 <= same) {
+                    this.appends(status, artifact.set2, LABEL_TEXT.artifact);
                 }
                 // 4セットの効果追加
-                if ((4 <= same) && !!artifact.set4) {
-                    let bonuses = artifact.set4;
-                    if (Array.isArray(bonuses)) {
-                        for (let bonus of bonuses) {
-                            this.append(status, bonus.value, bonus, LABEL_TEXT.artifact);
-                        }
-                    } else {
-                        this.append(status, bonuses.value, bonuses, LABEL_TEXT.artifact);
-                    }
+                if (4 <= same) {
+                    this.appends(status, artifact.set4, LABEL_TEXT.artifact);
                 }
             }
             first = last;
@@ -1347,11 +1364,39 @@ class BonusTable extends Table implements IRefreshTable {
     }
 
     // ボーナス追加
-    private append(status: Status, value: Integer, others: DeepReadonly<IBonus>, source: string) {
-        if (!!others.target && (others.target !== BonusTarget.Self)) {
-            this.everyone.push(new Bonus(status.id, others.items, value, others, status.chara.name));
-        } else {
-            status.append(new Bonus(status.id, others.items, value, others, source));
+    appends(status: Status, bonuses: DeepReadonly<Arrayable<AnyExtraBonus>> | undefined, source: string) {
+        if (!!bonuses) {
+            if (Array.isArray(bonuses)) {
+                for (const bonus of bonuses) {
+                    this.append(status, bonus, source);
+                }
+            } else {
+                this.append(status, bonuses, source);
+            }
+        }
+    }
+
+    // ボーナス追加
+    private append(status: Status, bonus: DeepReadonly<AnyExtraBonus>, source: string) {
+        switch (bonus.extra) {
+            case undefined:
+                if (!bonus.target || (bonus.target === BonusTarget.Self)) {
+                    status.append(new BasicBonus(status.id, bonus, source));
+                } else {
+                    this.everyone.push(new BasicBonus(status.id, bonus, status.chara.name));
+                }
+                break;
+            case ExtraBonusType.Flat:
+                if (!bonus.target || (bonus.target === BonusTarget.Self)) {
+                    status.append(new FlatBonus(status.id, bonus, source, status));
+                } else {
+                    this.everyone.push(new FlatBonus(status.id, bonus, status.chara.name, status));
+                }
+                break;
+            case ExtraBonusType.Reduct:
+                break;
+            case ExtraBonusType.Enchant:
+                break;
         }
     }
 
@@ -1373,12 +1418,12 @@ class BonusTable extends Table implements IRefreshTable {
             if (2 <= (last - first)) {
                 const data = TEAM_BONUS[type];
                 if (!!data) {
-                    let bonus = new Bonus("team", data.items, data.value, data, LABEL_TEXT.resonance);
+                    let bonus = new BasicBonus("team", data, LABEL_TEXT.resonance);
                     // ステータスに即適用
                     if (!bonus.limit) {
                         bonus.valid = false;
                         for (let status of members) {
-                            status?.addValues(bonus.apply());
+                            status?.addValues(bonus.apply(status));
                         }
                         this.applied.push(bonus);
                     }
@@ -1400,7 +1445,7 @@ class BonusTable extends Table implements IRefreshTable {
             // 適用したチームボーナスを除去
             for (let bonus of this.applied) {
                 for (let status of members) {
-                    status?.subValues(bonus.apply());
+                    status?.subValues(bonus.apply(status));
                 }
             }
             this.applied = [];
@@ -1408,8 +1453,8 @@ class BonusTable extends Table implements IRefreshTable {
     }
 
     // 全ボーナス列挙
-    enumerate(status: Status): Bonus[] {
-        let bonuses: Bonus[] = [];
+    enumerate(status: Status): BonusBase[] {
+        let bonuses: BonusBase[] = [];
         for (let bonus of status.bonus) {
             if (bonus.valid) {
                 bonuses.push(bonus);
@@ -1506,7 +1551,7 @@ class EnemyTable extends Table {
 
 // ボーナス適用テーブル
 class ApplyTable extends Table {
-    private bonuses: Bonus[];
+    private bonuses: BonusBase[];
 
     // コンストラクタ
     constructor() {
@@ -1548,7 +1593,7 @@ class ApplyTable extends Table {
         let row = this.html.rows[0];
         for (let bonus of this.bonuses) {
             row = row.nextElementSibling as HTMLRowElement;
-            clone.addValues(bonus.applyRow(row));
+            clone.addValues(bonus.applyRow(status, row));
         }
         return clone;
     }
