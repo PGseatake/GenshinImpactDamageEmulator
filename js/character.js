@@ -824,16 +824,16 @@ const CHARACTER = {
         spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
         talent: {
             combat: [
-                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 46.9 },
-                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 48.3 },
-                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 61.1 },
-                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 65.6 },
-                { name: "5段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 33.3, value2: 35.2 },
-                { name: "6段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 86.0 },
-                { name: "重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 136 },
-                { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 65.4 },
-                { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 131 },
-                { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 163 },
+                { name: "1段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 46.9 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 48.3 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 61.1 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 65.6 },
+                { name: "5段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 33.3, value2: 35.2 },
+                { name: "6段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 86.0 },
+                { name: "重撃ダメージ", type: CombatType.Heavy, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 136 },
+                { name: "落下期間のダメージ", type: CombatType.Plunge, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 65.4 },
+                { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 131 },
+                { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 163 },
             ],
             skill: [],
             burst: [
@@ -842,6 +842,9 @@ const CHARACTER = {
             ]
         },
         passive: {
+            skill: [
+                { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk, base: FlatBonusBase.Hp, scale: DamageScale.Xiao, value: 3.84, limit: "元素スキル発動後", times: 9 },
+            ],
             lv4: { items: CriticalBonusType.Rate, value: 12, limit: "元素スキル終了後", times: 8, target: BonusTarget.Other },
             lv5: { items: ElementBonusType.Pyro, value: 100 / 3, limit: "HPが50%以下の時" },
         },

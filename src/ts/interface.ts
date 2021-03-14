@@ -202,6 +202,7 @@ const DamageScale = {
     Elem: "elem",
     Etc1: "etc1", // Zhongli
     Xiao: "xiao",
+    Hutao: "hutao",
 } as const;
 type DamageScale = typeof DamageScale[keyof typeof DamageScale];
 

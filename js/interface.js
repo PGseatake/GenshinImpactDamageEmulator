@@ -137,6 +137,7 @@ const DamageScale = {
     Elem: "elem",
     Etc1: "etc1",
     Xiao: "xiao",
+    Hutao: "hutao",
 };
 const DamageBased = {
     Atk: "atk",
