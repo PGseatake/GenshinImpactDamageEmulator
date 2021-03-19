@@ -129,7 +129,7 @@ const CHARACTER = {
                 { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 160 },
             ],
             skill: [
-                { name: "スキルダメージ	", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Elem, value: 248 },
+                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Elem, value: 248 },
             ],
             burst: [
                 { name: "地震波1回のダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Elem, value: 148 },
@@ -1027,9 +1027,9 @@ const CHARACTER = {
                 { name: "雷連斬ダメージ", type: CombatType.Skill, elem: ElementType.Elect, scale: DamageScale.Elem, value: 84.0, multi: 2 },
             ],
             burst: [
-                { name: "スキルダメージ	", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 88.0 },
+                { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 88.0 },
                 { name: "連斬ダメージ", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 24.0, multi: 8 },
-                { name: "最後の一撃ダメージ	", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 189 },
+                { name: "最後の一撃ダメージ", type: CombatType.Burst, elem: ElementType.Elect, scale: DamageScale.Elem, value: 189 },
             ]
         },
         passive: {
@@ -1857,7 +1857,7 @@ const CHARACTER = {
                 { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 160 },
             ],
             skill: [
-                { name: "スキルダメージ	", type: CombatType.Skill, elem: ElementType.Hydro, scale: DamageScale.Elem, value: 168, value2: 191 },
+                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Hydro, scale: DamageScale.Elem, value: 168, value2: 191 },
             ],
             burst: [
                 { name: "剣雨のダメージ", type: CombatType.Burst, elem: ElementType.Hydro, scale: DamageScale.Elem, value: 54.3 },
@@ -1921,11 +1921,11 @@ const CHARACTER = {
             ],
             skill: [
                 { name: "振り回しダメージ", type: CombatType.Skill, elem: ElementType.Phys, scale: DamageScale.Elem, value: 170 },
-                { name: "継続ダメージ	", type: CombatType.Skill, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 33.6 }
+                { name: "継続ダメージ", type: CombatType.Skill, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 33.6 }
             ],
             burst: [
-                { name: "スキルダメージ	", type: CombatType.Burst, elem: ElementType.Phys, scale: DamageScale.Elem, value: 341 },
-                { name: "継続炎ダメージ	", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 40.0 }
+                { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Phys, scale: DamageScale.Elem, value: 341 },
+                { name: "継続炎ダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 40.0 }
             ]
         },
         passive: {
@@ -1990,7 +1990,7 @@ const CHARACTER = {
                 { name: "長押しダメージ", type: CombatType.Skill, elem: ElementType.Geo, scale: DamageScale.Elem, value: 80.0 },
             ],
             burst: [
-                { name: "スキルダメージ	", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Etc1, value: 401.4 },
+                { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Geo, scale: DamageScale.Etc1, value: 401.4 },
             ]
         },
         passive: {

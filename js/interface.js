@@ -52,6 +52,35 @@ const EquipmentTypes = [
     ArtifactType.Goblet,
     ArtifactType.Circlet
 ];
+const ReactionType = {
+    Vaporize: "vaporize",
+    Melt: "melt",
+    Swirl: "swirl",
+    Echarge: "echarge",
+    Shutter: "shutter",
+    Conduct: "conduct",
+    Overload: "overload"
+};
+const IsAmplifyReaction = (type) => {
+    switch (type) {
+        case ReactionType.Melt:
+        case ReactionType.Vaporize:
+            return true;
+    }
+    return false;
+};
+const IsTransformReaction = (type) => {
+    if (IsAmplifyReaction(type))
+        return false;
+    return true;
+};
+const ContactReactionTypes = [
+    "",
+    ElementType.Pyro,
+    ElementType.Hydro,
+    ElementType.Elect,
+    ElementType.Cryo
+];
 const CriticalBonusType = {
     Damage: "cri_dmg",
     Rate: "cri_rate",
@@ -96,35 +125,12 @@ const ReactionBonusType = {
     Conduct: "conduct_dmg",
     Overload: "overload_dmg"
 };
-const ReactionType = {
-    Vaporize: "vaporize",
-    Melt: "melt",
-    Swirl: "swirl",
-    Echarge: "echarge",
-    Shutter: "shutter",
-    Conduct: "conduct",
-    Overload: "overload"
+const BonusTarget = {
+    All: "all",
+    Self: "self",
+    Next: "next",
+    Other: "other",
 };
-const IsAmplifyReaction = (type) => {
-    switch (type) {
-        case ReactionType.Melt:
-        case ReactionType.Vaporize:
-            return true;
-    }
-    return false;
-};
-const IsTransformReaction = (type) => {
-    if (IsAmplifyReaction(type))
-        return false;
-    return true;
-};
-const ReactionSquareTypes = [
-    "",
-    ElementType.Pyro,
-    ElementType.Hydro,
-    ElementType.Elect,
-    ElementType.Cryo
-];
 const CombatType = {
     Normal: "normal",
     Heavy: "heavy",
@@ -142,12 +148,6 @@ const DamageScale = {
 const DamageBased = {
     Atk: "atk",
     Def: "def"
-};
-const BonusTarget = {
-    All: "all",
-    Self: "self",
-    Next: "next",
-    Other: "other",
 };
 const ExtraBonusType = {
     Flat: "flat",

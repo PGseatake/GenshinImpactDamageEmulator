@@ -13,7 +13,7 @@ const LABEL_TEXT: Readonly<IMap<string>> = {
     second: "秒",
 } as const;
 
-const ReactionDamageScale: DeepReadonly<Partial<Record<ElementType, Partial<Record<ReactionType, Scale>>>>> = {
+const REACTION_DAMAGE_SCALE: DeepReadonly<Partial<Record<ElementType, Partial<Record<ReactionType, Scale>>>>> = {
     pyro: {
         "vaporize": 1.5,
         "overload": 1.0,
@@ -41,7 +41,7 @@ interface IReactionDamageValue {
     resist: ElementType;
     values: Float[];
 }
-const ReactionDamageValue: DeepReadonly<Record<TransformReactionType, IReactionDamageValue>> = {
+const REACTION_DAMAGE_VALUE: DeepReadonly<Record<TransformReactionType, IReactionDamageValue>> = {
     "conduct": {
         resist: ElementType.Cryo,
         values: [8, 9, 9, 10, 11, 12, 12, 13, 16, 17, 18, 20, 22, 23, 27, 29, 31, 34, 37, 40, 42, 46, 48, 51, 53, 56, 59, 61, 64, 68, 71, 74, 77, 80, 84, 88, 91, 96, 99, 103, 107, 111, 117, 121, 128, 133, 140, 147, 154, 161, 168, 174, 182, 189, 199, 208, 217, 226, 236, 244, 254, 266, 278, 290, 303, 314, 326, 337, 348, 360, 371, 382, 391, 401, 414, 427, 438, 450, 461, 472, 483, 494, 507, 518, 532, 544, 557, 570, 586, 601]
@@ -65,6 +65,12 @@ const ReactionDamageValue: DeepReadonly<Record<TransformReactionType, IReactionD
 } as const;
 
 type FlatDamage = Record<CombatType, Float>;
+
+interface ICriticalValue {
+    rate: Rate;
+    damage: Rate;
+    special: boolean;
+}
 
 // キャラステータス
 class Status {
@@ -138,11 +144,11 @@ class Status {
     get reactions(): ReactionType[] {
         const chara = this.chara;
         const elem = chara.element;
-        const scales = ReactionDamageScale[elem];
+        const scales = REACTION_DAMAGE_SCALE[elem];
 
         let types: ReactionType[] = [];
         // 元素反応を追加
-        if (!!scales) {
+        if (scales) {
             for (const type in scales) {
                 types.push(type as ReactionType);
             }
@@ -230,10 +236,10 @@ class Status {
                     return 1.0;
             }
         } else {
-            const scales = ReactionDamageScale[elem];
-            if (!!scales) {
+            const scales = REACTION_DAMAGE_SCALE[elem];
+            if (scales) {
                 const value = scales[reaction];
-                if (!!value) {
+                if (value) {
                     return value;
                 }
             }
@@ -270,7 +276,7 @@ class Status {
 
     // ボーナス値加算
     addValue(bonus: AnyBonusValue) {
-        if (!!bonus.flat) {
+        if (bonus.flat) {
             this.flat[bonus.type] += bonus.value;
         } else {
             if (bonus.type !== StatusBonusType.Other) {
@@ -281,7 +287,7 @@ class Status {
 
     // ボーナス値減算
     subValue(bonus: AnyBonusValue) {
-        if (!!bonus.flat) {
+        if (bonus.flat) {
             this.flat[bonus.type] -= bonus.value;
         } else {
             if (bonus.type !== StatusBonusType.Other) {
@@ -323,7 +329,6 @@ class Status {
 class Enemy {
     public name: string;
     public level: Integer;
-    public debuff: Rate;
     public resist: DeepReadonly<Resist>;
     public reduct: Resist;
 
@@ -331,8 +336,6 @@ class Enemy {
         const info = ENEMY_LIST[id];
         this.name = info.name;
         this.level = 0;
-        // デバフ（％）
-        this.debuff = 0;
         // 耐性（％）
         this.resist = info.resist;
         // 耐性減衰（％）
@@ -351,8 +354,7 @@ class Enemy {
     defence(level: Integer): Scale {
         const charaLevel = level + 100;
         const enemyLevel = this.level + 100;
-        const debuffRate = 1.0 - (this.debuff / 100);
-        return charaLevel / (debuffRate * enemyLevel + charaLevel);
+        return charaLevel / (enemyLevel + charaLevel);
     }
 
     // 耐性（小数）
@@ -397,14 +399,14 @@ class CombatAttribute {
         this.type = info.type;
         this.elem = info.elem;
         this.value = [info.value * scale[index] / 100];
-        if (!!info.value2) {
+        if (info.value2) {
             this.value.push(info.value2 * scale[index] / 100);
         }
         this.multi = info.multi ?? 1;
         this.based = info.based ?? DamageBased.Atk;
     }
 
-    toString(func: ItoString<Rate>): string {
+    toString(func: (value: Rate) => string): string {
         let str = this.value.map(func).join("+");
         if (1 < this.multi) {
             return `${str}x${this.multi}`;
@@ -422,7 +424,7 @@ class CombatAttribute {
 
     damage(row: HTMLRowElement, status: Status, enemy: Enemy, reaction?: ReactionType) {
         let cell = row.cells[2];
-        if (!!cell.className) {
+        if (cell.className) {
             let elem = cell.className as ElementType;
 
             // 元素反応の正規化
@@ -470,7 +472,7 @@ class CombatAttribute {
 
             const totalDamage = attackPower * combatScale * enemyDefence * enemyResist;
 
-            if (!!reaction) {
+            if (reaction) {
                 const elementMaster = status.elementMaster(reaction);
                 const reactionBonus = status.reactionBonus(reaction);
 
@@ -490,7 +492,7 @@ class CombatAttribute {
                     setDamage(totalDamage);
 
                     const reactionScale = toScale(elementMaster + reactionBonus);
-                    const reactionValue = ReactionDamageValue[reaction];
+                    const reactionValue = REACTION_DAMAGE_VALUE[reaction];
                     const reactionResist = enemy.resistance(reactionValue.resist);
                     const reactionDamage = reactionValue.values[status.level - 1] * reactionScale * reactionResist;
 
@@ -578,7 +580,7 @@ const ARTIFACT_PARAM: DeepReadonly<ArtifactParam[]> = [
     }
 ] as const;
 
-function getArtifactParam(star: Integer, level: Integer, bonus: AnyBonusType): Nullable<IArtifactBonus> {
+function getArtifactParam(star: Integer, level: Integer, bonus: AnyBonusType): Nullable<IArtifactParam> {
     // ☆を正規化
     if (star < 3 || 5 < star) {
         return null;

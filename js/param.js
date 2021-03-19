@@ -12,7 +12,7 @@ const LABEL_TEXT = {
     resonance: "元素共鳴",
     second: "秒",
 };
-const ReactionDamageScale = {
+const REACTION_DAMAGE_SCALE = {
     pyro: {
         "vaporize": 1.5,
         "overload": 1.0,
@@ -35,7 +35,7 @@ const ReactionDamageScale = {
         "swirl": 1.0,
     }
 };
-const ReactionDamageValue = {
+const REACTION_DAMAGE_VALUE = {
     "conduct": {
         resist: ElementType.Cryo,
         values: [8, 9, 9, 10, 11, 12, 12, 13, 16, 17, 18, 20, 22, 23, 27, 29, 31, 34, 37, 40, 42, 46, 48, 51, 53, 56, 59, 61, 64, 68, 71, 74, 77, 80, 84, 88, 91, 96, 99, 103, 107, 111, 117, 121, 128, 133, 140, 147, 154, 161, 168, 174, 182, 189, 199, 208, 217, 226, 236, 244, 254, 266, 278, 290, 303, 314, 326, 337, 348, 360, 371, 382, 391, 401, 414, 427, 438, 450, 461, 472, 483, 494, 507, 518, 532, 544, 557, 570, 586, 601]
@@ -115,9 +115,9 @@ class Status {
     get reactions() {
         const chara = this.chara;
         const elem = chara.element;
-        const scales = ReactionDamageScale[elem];
+        const scales = REACTION_DAMAGE_SCALE[elem];
         let types = [];
-        if (!!scales) {
+        if (scales) {
             for (const type in scales) {
                 types.push(type);
             }
@@ -183,10 +183,10 @@ class Status {
             }
         }
         else {
-            const scales = ReactionDamageScale[elem];
-            if (!!scales) {
+            const scales = REACTION_DAMAGE_SCALE[elem];
+            if (scales) {
                 const value = scales[reaction];
-                if (!!value) {
+                if (value) {
                     return value;
                 }
             }
@@ -217,7 +217,7 @@ class Status {
         this.bonus.push(bonus);
     }
     addValue(bonus) {
-        if (!!bonus.flat) {
+        if (bonus.flat) {
             this.flat[bonus.type] += bonus.value;
         }
         else {
@@ -227,7 +227,7 @@ class Status {
         }
     }
     subValue(bonus) {
-        if (!!bonus.flat) {
+        if (bonus.flat) {
             this.flat[bonus.type] -= bonus.value;
         }
         else {
@@ -264,7 +264,6 @@ class Enemy {
         const info = ENEMY_LIST[id];
         this.name = info.name;
         this.level = 0;
-        this.debuff = 0;
         this.resist = info.resist;
         this.reduct = {
             pyro: 0,
@@ -279,8 +278,7 @@ class Enemy {
     defence(level) {
         const charaLevel = level + 100;
         const enemyLevel = this.level + 100;
-        const debuffRate = 1.0 - (this.debuff / 100);
-        return charaLevel / (debuffRate * enemyLevel + charaLevel);
+        return charaLevel / (enemyLevel + charaLevel);
     }
     resistance(type) {
         const value = this.resist[type] - this.reduct[type];
@@ -311,7 +309,7 @@ class CombatAttribute {
         this.type = info.type;
         this.elem = info.elem;
         this.value = [info.value * scale[index] / 100];
-        if (!!info.value2) {
+        if (info.value2) {
             this.value.push(info.value2 * scale[index] / 100);
         }
         this.multi = (_a = info.multi) !== null && _a !== void 0 ? _a : 1;
@@ -333,7 +331,7 @@ class CombatAttribute {
     }
     damage(row, status, enemy, reaction) {
         let cell = row.cells[2];
-        if (!!cell.className) {
+        if (cell.className) {
             let elem = cell.className;
             reaction = this.reaction(elem, reaction);
             let attackPower;
@@ -365,7 +363,7 @@ class CombatAttribute {
                 cell = cell.nextElementSibling;
             };
             const totalDamage = attackPower * combatScale * enemyDefence * enemyResist;
-            if (!!reaction) {
+            if (reaction) {
                 const elementMaster = status.elementMaster(reaction);
                 const reactionBonus = status.reactionBonus(reaction);
                 if (IsAmplifyReaction(reaction)) {
@@ -379,7 +377,7 @@ class CombatAttribute {
                 else {
                     setDamage(totalDamage);
                     const reactionScale = toScale(elementMaster + reactionBonus);
-                    const reactionValue = ReactionDamageValue[reaction];
+                    const reactionValue = REACTION_DAMAGE_VALUE[reaction];
                     const reactionResist = enemy.resistance(reactionValue.resist);
                     const reactionDamage = reactionValue.values[status.level - 1] * reactionScale * reactionResist;
                     cell.textContent = reactionDamage.toFixed();

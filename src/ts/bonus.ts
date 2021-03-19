@@ -276,7 +276,7 @@ class BonusBase {
     public toString(): string {
         let str = this.effect;
 
-        if (!!this.limit) {
+        if (this.limit) {
             str = `${this.limit}に${str}`;
         }
         if (0 < this.times) {
@@ -312,7 +312,7 @@ class BonusBase {
 
     private buildValue(cell: HTMLCellElement) {
         cell.className = "left";
-        if (!!this.limit) {
+        if (this.limit) {
             cell.appendChild(document.createTextNode(this.limit));
             cell.appendChild(document.createElement("br"));
         }
@@ -354,7 +354,7 @@ class BonusBase {
             if (input?.checked) {
                 let stack = 1;
                 input = row.querySelector("td#stack input[type='number']") as HTMLInputElement;
-                if (!!input) {
+                if (input) {
                     stack = parseInt(input.value);
                 }
                 return this.apply(status, stack);
@@ -395,12 +395,9 @@ class BasicBonus extends BonusBase {
     public get effect(): string {
         const labels = BONUS_LABEL;
         const items = this.types;
-        let str = labels[items[0]].detail;
-        for (let i = 1; i < items.length; ++i) {
-            str += "・" + labels[items[i]].detail;
-        }
+        let str = this.types.map(type => labels[type].detail).join("・");
         const suffix = labels[items[0]].suffix;
-        if (!!suffix) {
+        if (suffix) {
             return `${str}+${roundFloat(this.value)}${suffix}`;
         }
         return `${str}+${this.value}`;
@@ -428,7 +425,7 @@ class FlatBonus extends BonusBase {
         this.dest = dest;
         this.base = data.base;
         this.value = data.value;
-        if (!!data.scale) {
+        if (data.scale) {
             this.value *= DAMAGE_SCALE[data.scale][status.talent.burst - 1] / 100; // TODO: 元素爆発固定
         }
         this.limit = data.limit ?? "";

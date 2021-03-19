@@ -112,7 +112,7 @@ class Table {
         let data: IMap<any> = { ver: VERSION };
         for (const type of TableTypes) {
             let json = localStorage.getItem(type);
-            if (!!json) {
+            if (json) {
                 data[type] = JSON.parse(json);
             }
         }
@@ -141,13 +141,13 @@ class Table {
     static importData() {
         let elem = document.getElementById("import") as HTMLInputElement;
         let file = elem.files!.item(0);
-        if (!!file) {
+        if (file) {
             // jsonファイル読み込み
             let reader = new FileReader();
             reader.readAsText(file);
             reader.onload = () => {
                 let json = reader.result as string;
-                if (!!json) {
+                if (json) {
                     let data = JSON.parse(json);
                     // TODO: ここでデータのチェックをする
 
@@ -261,7 +261,7 @@ class Table {
     }
 
     // 値変更通知
-    onChange(e: Nullable<Event> = null) {
+    onChange(ev: Nullable<Event> = null) {
         ++this.counter;
     }
 }
@@ -278,8 +278,8 @@ class ItemTable extends Table {
 
     // 削除確認
     // TODO: 多言語対応
-    static removeConfirm(e: Event) {
-        let btn = e.target as HTMLButtonElement;
+    static removeConfirm(ev: Event) {
+        let btn = ev.target as HTMLButtonElement;
         let row = btn.parentElement!.parentElement as HTMLRowElement;
         let html = row.parentElement!.parentElement as HTMLTableElement;
         let tbl = Table.List[html.id.replace("tbl_", "") as ItemTableType]!;
@@ -350,7 +350,7 @@ class ItemTable extends Table {
     // データの読込
     load() {
         let json = localStorage.getItem(this.type);
-        if (!!json) {
+        if (json) {
             let data: IMap<CellData>[] = JSON.parse(json);
 
             // htmlに展開
@@ -451,8 +451,8 @@ class ItemTable extends Table {
     }
 
     // 値変更通知
-    onChange(e: Nullable<Event> = null) {
-        super.onChange(e);
+    onChange(ev: Nullable<Event> = null) {
+        super.onChange(ev);
 
         if (!Table.Updated) {
             Table.Updated = true;
@@ -479,12 +479,12 @@ interface ICharaCellList extends ITableCellList {
 class CharaTable extends ItemTable {
     constructor() {
         super(TableType.Chara);
-        const listeners = { change: (e: Event) => this.onChange(e) };
+        const listeners = { change: (ev: Event) => this.onChange(ev) };
         const cells: ICharaCellList = {
             index: new IndexCell(),
-            name: new NameCell(CHARACTER, { change: e => this.changeName(e) }),
+            name: new NameCell(CHARACTER, { change: ev => this.changeName(ev) }),
             conste: new RangeCell(0, 6, listeners),
-            level: new AscensionLevelCell({ change: e => this.changeLevel(e) }),
+            level: new AscensionLevelCell({ change: ev => this.changeLevel(ev) }),
             hp: new CharaStatusCell(listeners),
             atk: new CharaStatusCell(listeners),
             def: new CharaStatusCell(listeners),
@@ -514,8 +514,8 @@ class CharaTable extends ItemTable {
     }
 
     // 名前の変更
-    private changeName(e: Event) {
-        let select = e.target as HTMLSelectElement;
+    private changeName(ev: Event) {
+        let select = ev.target as HTMLSelectElement;
         const name = select.value;
         let row = select.parentElement!.parentElement as HTMLRowElement;
 
@@ -530,12 +530,12 @@ class CharaTable extends ItemTable {
         // 追加効果更新
         Table.updateCell(row, cells, "special", name, level);
 
-        this.onChange(e);
+        this.onChange(ev);
     }
 
     // レベルの変更
-    private changeLevel(e: Event) {
-        let select = e.target as HTMLSelectElement;
+    private changeLevel(ev: Event) {
+        let select = ev.target as HTMLSelectElement;
         const level = select.value;
         let row = select.parentElement!.parentNode as HTMLRowElement;
 
@@ -550,7 +550,7 @@ class CharaTable extends ItemTable {
         // 追加効果更新
         Table.updateCell(row, cells, "special", name, level);
 
-        this.onChange(e);
+        this.onChange(ev);
     }
 }
 
@@ -567,10 +567,10 @@ interface IWeaponCellList extends ITableCellList {
 class WeaponTable extends ItemTable {
     constructor(type: WeaponType, list: DeepReadonly<IMap<IWeapon>>) {
         super(type);
-        const listeners = { change: (e: Event) => this.onChange(e) };
+        const listeners = { change: (ev: Event) => this.onChange(ev) };
         const cells: IWeaponCellList = {
             index: new IndexCell(),
-            name: new NameCell(list, { change: e => this.changeName(e) }),
+            name: new NameCell(list, { change: ev => this.changeName(ev) }),
             level: new AscensionLevelCell(listeners),
             rank: new RangeCell(1, WEAPON_RANK_MAX, listeners),
             atk: new IntCell(listeners),
@@ -591,15 +591,15 @@ class WeaponTable extends ItemTable {
     }
 
     // 名前の変更
-    private changeName(e: Event) {
-        let select = e.target as HTMLSelectElement;
+    private changeName(ev: Event) {
+        let select = ev.target as HTMLSelectElement;
         const bonus = select.value;
         let row = select.parentElement!.parentElement as HTMLRowElement;
 
         // 追加効果変更
         Table.updateCell(row, this.cells, "second", bonus);
 
-        this.onChange(e);
+        this.onChange(ev);
     }
 }
 
@@ -619,12 +619,12 @@ interface IArtifactCellList extends ITableCellList {
 class ArtifactTable extends ItemTable {
     constructor(type: ArtifactType, list: DeepReadonly<IMap<string>>) {
         super(type);
-        const listeners = { change: (e: Event) => this.changeSub(e) };
+        const listeners = { change: (ev: Event) => this.changeSub(ev) };
         const cells: IArtifactCellList = {
             index: new IndexCell(),
-            name: new ArtifactCell(list, { change: e => this.onChange(e) }),
-            star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => this.changeStar(e) }),
-            level: new ArtifactLevelCell({ change: e => this.changeLevel(e) }),
+            name: new ArtifactCell(list, { change: ev => this.onChange(ev) }),
+            star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: ev => this.changeStar(ev) }),
+            level: new ArtifactLevelCell({ change: ev => this.changeLevel(ev) }),
             main: new BonusListCell([]), // 継承先で上書き
             sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
             sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
@@ -641,7 +641,7 @@ class ArtifactTable extends ItemTable {
         // 読み込み時のスコア表示
         const builders = this.cells as IArtifactCellList;
         let row = this.html.rows[2];
-        while (!!row) {
+        while (row) {
             this.updateScore(row, builders, Table.cellValue(row, builders, "star"), Table.cellValue(row, builders, "level"));
             row = row.nextElementSibling as HTMLRowElement;
         }
@@ -661,8 +661,8 @@ class ArtifactTable extends ItemTable {
     }
 
     // ☆の変更
-    private changeStar(e: Event) {
-        let select = e.target as HTMLSelectElement;
+    private changeStar(ev: Event) {
+        let select = ev.target as HTMLSelectElement;
         const star = parseInt(select.value);
         let row = select.parentElement!.parentElement as HTMLRowElement;
 
@@ -678,12 +678,12 @@ class ArtifactTable extends ItemTable {
         // 聖遺物スコアの更新
         this.updateScore(row, cells, star, level);
 
-        this.onChange(e);
+        this.onChange(ev);
     }
 
     // レベルの変更
-    private changeLevel(e: Event) {
-        let select = e.target as HTMLSelectElement;
+    private changeLevel(ev: Event) {
+        let select = ev.target as HTMLSelectElement;
         const level = parseInt(select.value);
         let row = select.parentElement!.parentElement as HTMLRowElement;
 
@@ -696,12 +696,12 @@ class ArtifactTable extends ItemTable {
         // 聖遺物スコアの更新
         this.updateScore(row, cells, star, level);
 
-        this.onChange(e);
+        this.onChange(ev);
     }
 
     // メイン効果の変更
-    protected changeMain(e: Event) {
-        let select = e.target as HTMLSelectElement;
+    protected changeMain(ev: Event) {
+        let select = ev.target as HTMLSelectElement;
         let cel = select.parentElement as HTMLCellElement;
         let row = cel.parentElement as HTMLRowElement;
 
@@ -709,18 +709,18 @@ class ArtifactTable extends ItemTable {
         const cells = this.cells as IArtifactCellList;
         cells.main.update(cel, Table.cellValue(row, cells, "star"), Table.cellValue(row, cells, "level"));
 
-        this.onChange(e);
+        this.onChange(ev);
     }
 
     // サブ効果の変更
-    private changeSub(e: Event) {
-        let row = (e.target as HTMLElement).parentNode!.parentNode as HTMLRowElement;
+    private changeSub(ev: Event) {
+        let row = (ev.target as HTMLElement).parentNode!.parentNode as HTMLRowElement;
 
         // 聖遺物スコアの更新
         const cells = this.cells as IArtifactCellList;
         this.updateScore(row, cells, Table.cellValue(row, cells, "star"), Table.cellValue(row, cells, "level"));
 
-        this.onChange(e);
+        this.onChange(ev);
     }
 
     // スコアの更新
@@ -744,7 +744,7 @@ class ArtifactTable extends ItemTable {
 
         for (let i = 0; i < 4; ++i) {
             let param = getArtifactParam(star, level, sub[i].type);
-            if (!!param && !!param.substep) {
+            if (param && param.substep) {
                 let value = Math.round(sub[i].value / param.substep);
                 score[i] = value;
                 total += value;
@@ -761,7 +761,7 @@ class ArtifactTable extends ItemTable {
 class FlowerTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Flower, FLOWER_LIST);
-        this.cells.main = new SingleBonusCell(StatusBonusType.Hp, { change: e => this.onChange(e) });
+        this.cells.main = new SingleBonusCell(StatusBonusType.Hp, { change: ev => this.onChange(ev) });
     }
 }
 
@@ -769,7 +769,7 @@ class FlowerTable extends ArtifactTable {
 class FeatherTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Feather, FEATHER_LIST);
-        this.cells.main = new SingleBonusCell(StatusBonusType.Atk, { change: e => this.onChange(e) });
+        this.cells.main = new SingleBonusCell(StatusBonusType.Atk, { change: ev => this.onChange(ev) });
     }
 }
 
@@ -777,7 +777,7 @@ class FeatherTable extends ArtifactTable {
 class SandsTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Sands, SANDS_LIST);
-        this.cells.main = new MultiBonusCell(ARTIFACT_SANDS, { change: e => this.changeMain(e) });
+        this.cells.main = new MultiBonusCell(ARTIFACT_SANDS, { change: ev => this.changeMain(ev) });
     }
 }
 
@@ -785,7 +785,7 @@ class SandsTable extends ArtifactTable {
 class GobletTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Goblet, GOBLET_LIST);
-        this.cells.main = new MultiBonusCell(ARTIFACT_GOBLET, { change: e => this.changeMain(e) });
+        this.cells.main = new MultiBonusCell(ARTIFACT_GOBLET, { change: ev => this.changeMain(ev) });
     }
 }
 
@@ -793,7 +793,7 @@ class GobletTable extends ArtifactTable {
 class CircletTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Circlet, CIRCLET_LIST);
-        this.cells.main = new MultiBonusCell(ARTIFACT_CIRCLET, { change: e => this.changeMain(e) });
+        this.cells.main = new MultiBonusCell(ARTIFACT_CIRCLET, { change: ev => this.changeMain(ev) });
     }
 }
 
@@ -853,8 +853,8 @@ class EquipmentTable extends ItemTable {
 
     constructor() {
         super(TableType.Equip);
-        const listeners = { change: (e: Event) => this.onChange(e) };
-        let chara = new EquipmentCell(EquipmentType.Chara, { change: e => this.changeChara(e) });
+        const listeners = { change: (ev: Event) => this.onChange(ev) };
+        let chara = new EquipmentCell(EquipmentType.Chara, { change: ev => this.changeChara(ev) });
         let weapon = new EquipWeaponCell(listeners);
         let flower = new EquipmentCell(ArtifactType.Flower, listeners);
         let feather = new EquipmentCell(ArtifactType.Feather, listeners);
@@ -887,7 +887,7 @@ class EquipmentTable extends ItemTable {
     }
 
     // データ削除可能かどうか
-    removable(id: string): boolean {
+    removable(_: string): boolean {
         return true;
     }
 
@@ -1001,8 +1001,8 @@ class EquipmentTable extends ItemTable {
     }
 
     // キャラの変更
-    private changeChara(e: Event) {
-        let select = e.target as HTMLSelectElement;
+    private changeChara(ev: Event) {
+        let select = ev.target as HTMLSelectElement;
         const value = select.value;
 
         // 変更したキャラクターの武器種を変更
@@ -1010,7 +1010,7 @@ class EquipmentTable extends ItemTable {
         const weapon = CHARACTER[(cell.firstElementChild as HTMLSelectElement).value].weapon;
         this.tables[weapon].update(select.parentElement!.nextElementSibling as HTMLCellElement);
 
-        this.onChange(e);
+        this.onChange(ev);
     }
 }
 
@@ -1297,7 +1297,7 @@ class BonusTable extends Table implements IRefreshTable {
 
         for (let status of members) {
             let cells = row.cells;
-            if (!!status) {
+            if (status) {
                 // キャラクター名更新
                 cells[0].textContent = status.chara.name;
                 // ボーナス一覧更新
@@ -1326,7 +1326,7 @@ class BonusTable extends Table implements IRefreshTable {
 
     // 武器ボーナス追加
     weapon(status: Status, bonuses: DeepReadonly<AnyWeaponBonus> | undefined, rank: Integer) {
-        if (!!bonuses) {
+        if (bonuses) {
             if (Array.isArray(bonuses)) {
                 for (const bonus of bonuses) {
                     const data: DeepReadonly<IBasicBonus | IBasicFlatBonus> = { ...bonus, value: bonus.value[rank] };
@@ -1365,7 +1365,7 @@ class BonusTable extends Table implements IRefreshTable {
 
     // ボーナス追加
     appends(status: Status, bonuses: DeepReadonly<Arrayable<AnyExtraBonus>> | undefined, source: string) {
-        if (!!bonuses) {
+        if (bonuses) {
             if (Array.isArray(bonuses)) {
                 for (const bonus of bonuses) {
                     this.append(status, bonus, source);
@@ -1404,7 +1404,7 @@ class BonusTable extends Table implements IRefreshTable {
     attach(members: Nullable<Status>[]) {
         let types: ElementType[] = [];
         for (let status of members) {
-            if (!!status) {
+            if (status) {
                 types.push(status.chara.element);
             }
         }
@@ -1417,7 +1417,7 @@ class BonusTable extends Table implements IRefreshTable {
             // チームボーナス追加
             if (2 <= (last - first)) {
                 const data = TEAM_BONUS[type];
-                if (!!data) {
+                if (data) {
                     let bonus = new BasicBonus("team", data, LABEL_TEXT.resonance);
                     // ステータスに即適用
                     if (!bonus.limit) {
@@ -1436,7 +1436,7 @@ class BonusTable extends Table implements IRefreshTable {
 
     // チームボーナス削除
     detach(status: Nullable<Status>, members: Nullable<Status>[]) {
-        if (!!status) {
+        if (status) {
             // 削除したメンバーのボーナスを全削除
             let bonuses = this.everyone.filter(bonus => bonus.id !== status.id);
             // チームボーナス削除
@@ -1520,7 +1520,7 @@ class EnemyTable extends Table {
 
         // 各元素の耐性更新
         let row = html.rows[2];
-        while (!!row.id) {
+        while (row.id) {
             const type = row.id as ElementType;
             let cells = row.cells;
             let resist = this.target.resist[type];
@@ -1544,8 +1544,8 @@ class EnemyTable extends Table {
     // 防御力設定
     defence(status: Nullable<Status>) {
         let cell = (this.html.querySelector("tbody")!.lastElementChild as HTMLRowElement).cells[2];
-        let level = !!status ? status.level : 0;
-        cell.textContent = (this.target!.defence(level) * 100).toFixed(1) + "%";
+        let level = status ? status.level : 0;
+        cell.textContent = floorRate(this.target!.defence(level) * 100);
     }
 }
 
@@ -1573,15 +1573,15 @@ class ApplyTable extends Table {
     rebuild(status: Nullable<Status>) {
         this.clear();
 
-        if (!!status) {
+        if (status) {
             let html = this.html;
             let rows = html.rows;
-
             let caption = rows[0];
+
             let bonuses = Table.List.bonus!.enumerate(status);
             for (let bonus of bonuses) {
                 let row = html.insertRow();
-                bonus.build(caption, row, ev => Table.List.damage!.calculate());
+                bonus.build(caption, row, _ => Table.List.damage!.calculate());
             }
             this.bonuses = bonuses;
         }
@@ -1599,7 +1599,7 @@ class ApplyTable extends Table {
     }
 }
 
-const ReactionSquareLabel: Record<ReactionSquareType, string> = {
+const CONTACT_REACTION_LABEL: Record<ContactReactionType, string> = {
     "": "-",
     pyro: "火",
     hydro: "水",
@@ -1607,7 +1607,7 @@ const ReactionSquareLabel: Record<ReactionSquareType, string> = {
     cryo: "氷"
 } as const;
 
-const ReactionLabel: Record<ReactionType, string> = {
+const REACTION_LABEL: Record<ReactionType, string> = {
     // burning: "燃焼",
     vaporize: "蒸発",
     melt: "融解",
@@ -1624,7 +1624,7 @@ class DamageTable extends Table implements IRefreshTable {
     static changeType(elem: HTMLSelectElement) {
         let tbl = Table.List.damage!;
         let member = tbl.member;
-        if (!!member) {
+        if (member) {
             tbl.damageType(tbl.html, elem, member);
         }
     }
@@ -1673,7 +1673,7 @@ class DamageTable extends Table implements IRefreshTable {
         let members = Table.List.team!.members;
         for (let i = 0; i < 4; ++i) {
             let member = members[i];
-            if (!!member) {
+            if (member) {
                 let opt = document.createElement("option");
                 opt.value = i.toString();
                 opt.label = member.chara.name;
@@ -1700,7 +1700,7 @@ class DamageTable extends Table implements IRefreshTable {
             html.deleteRow(2);
         }
 
-        if (!!status) {
+        if (status) {
             this.rebuild(html, status);
         } else {
             // キャラレベルと攻撃力を0クリア
@@ -1743,10 +1743,10 @@ class DamageTable extends Table implements IRefreshTable {
                 for (const type of reactions) {
                     let opt = document.createElement("option");
                     opt.value = type;
-                    opt.label = ReactionLabel[type];
+                    opt.label = REACTION_LABEL[type];
                     select.appendChild(opt);
                 }
-                select.addEventListener("change", ev => this.calculate());
+                select.addEventListener("change", _ => this.calculate());
 
                 cell.appendChild(select);
             } else {
@@ -1792,10 +1792,10 @@ class DamageTable extends Table implements IRefreshTable {
                     // 付加元素タイプ選択
                     let select = document.createElement("select");
                     select.id = "contact_type";
-                    for (let type of ReactionSquareTypes) {
+                    for (let type of ContactReactionTypes) {
                         let opt = document.createElement("option");
                         opt.value = type;
-                        opt.label = ReactionSquareLabel[type];
+                        opt.label = CONTACT_REACTION_LABEL[type];
                         select.appendChild(opt);
                     }
                     select.addEventListener("change", ev => this.contactType(ev.target as HTMLSelectElement));
@@ -1888,7 +1888,7 @@ class DamageTable extends Table implements IRefreshTable {
         cell.textContent = "-";
 
         let status = this.member;
-        if (!!status && !!select.value) {
+        if (status && select.value) {
             // TODO: 付加元素ダメージが元素爆発に1つだけ前提
             const combats = status.chara.talent!.burst;
             for (const combat of combats) {
@@ -1904,7 +1904,7 @@ class DamageTable extends Table implements IRefreshTable {
     // 元素反応タイプ取得
     private reactionType(cell: HTMLCellElement): ReactionType | undefined {
         let select = cell.firstElementChild as Nullable<HTMLSelectElement>;
-        if (!!select) {
+        if (select) {
             return select.value as ReactionType;
         }
         return undefined;
@@ -1947,7 +1947,7 @@ class DamageTable extends Table implements IRefreshTable {
     // ダメージ計算（外部公開向け）
     calculate() {
         let member = this.member;
-        if (!!member) {
+        if (member) {
             this.calcDamage(this.html, member);
         }
     }

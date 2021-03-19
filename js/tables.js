@@ -72,7 +72,7 @@ class Table {
         let data = { ver: VERSION };
         for (const type of TableTypes) {
             let json = localStorage.getItem(type);
-            if (!!json) {
+            if (json) {
                 data[type] = JSON.parse(json);
             }
         }
@@ -94,12 +94,12 @@ class Table {
     static importData() {
         let elem = document.getElementById("import");
         let file = elem.files.item(0);
-        if (!!file) {
+        if (file) {
             let reader = new FileReader();
             reader.readAsText(file);
             reader.onload = () => {
                 let json = reader.result;
-                if (!!json) {
+                if (json) {
                     let data = JSON.parse(json);
                     for (const type of TableTypes) {
                         Table.List[type].clear();
@@ -163,7 +163,7 @@ class Table {
     }
     load() {
     }
-    onChange(e = null) {
+    onChange(ev = null) {
         ++this.counter;
     }
 }
@@ -181,8 +181,8 @@ class ItemTable extends Table {
         tbl.insert(html, tbl.initial(html));
         tbl.onChange();
     }
-    static removeConfirm(e) {
-        let btn = e.target;
+    static removeConfirm(ev) {
+        let btn = ev.target;
         let row = btn.parentElement.parentElement;
         let html = row.parentElement.parentElement;
         let tbl = Table.List[html.id.replace("tbl_", "")];
@@ -231,7 +231,7 @@ class ItemTable extends Table {
     }
     load() {
         let json = localStorage.getItem(this.type);
-        if (!!json) {
+        if (json) {
             let data = JSON.parse(json);
             let html = this.html;
             let init = this.initial(html);
@@ -292,8 +292,8 @@ class ItemTable extends Table {
     status(row, status) {
         return null;
     }
-    onChange(e = null) {
-        super.onChange(e);
+    onChange(ev = null) {
+        super.onChange(ev);
         if (!Table.Updated) {
             Table.Updated = true;
             document.title = "* " + Table.Title;
@@ -303,12 +303,12 @@ class ItemTable extends Table {
 class CharaTable extends ItemTable {
     constructor() {
         super(TableType.Chara);
-        const listeners = { change: (e) => this.onChange(e) };
+        const listeners = { change: (ev) => this.onChange(ev) };
         const cells = {
             index: new IndexCell(),
-            name: new NameCell(CHARACTER, { change: e => this.changeName(e) }),
+            name: new NameCell(CHARACTER, { change: ev => this.changeName(ev) }),
             conste: new RangeCell(0, 6, listeners),
-            level: new AscensionLevelCell({ change: e => this.changeLevel(e) }),
+            level: new AscensionLevelCell({ change: ev => this.changeLevel(ev) }),
             hp: new CharaStatusCell(listeners),
             atk: new CharaStatusCell(listeners),
             def: new CharaStatusCell(listeners),
@@ -333,8 +333,8 @@ class CharaTable extends ItemTable {
         status.talent.burst = Table.cellValue(row, cells, "burst");
         return CHARACTER[name];
     }
-    changeName(e) {
-        let select = e.target;
+    changeName(ev) {
+        let select = ev.target;
         const name = select.value;
         let row = select.parentElement.parentElement;
         const cells = this.cells;
@@ -343,10 +343,10 @@ class CharaTable extends ItemTable {
         Table.updateCell(row, cells, "atk", name, level);
         Table.updateCell(row, cells, "def", name, level);
         Table.updateCell(row, cells, "special", name, level);
-        this.onChange(e);
+        this.onChange(ev);
     }
-    changeLevel(e) {
-        let select = e.target;
+    changeLevel(ev) {
+        let select = ev.target;
         const level = select.value;
         let row = select.parentElement.parentNode;
         const cells = this.cells;
@@ -355,16 +355,16 @@ class CharaTable extends ItemTable {
         Table.updateCell(row, cells, "atk", name, level);
         Table.updateCell(row, cells, "def", name, level);
         Table.updateCell(row, cells, "special", name, level);
-        this.onChange(e);
+        this.onChange(ev);
     }
 }
 class WeaponTable extends ItemTable {
     constructor(type, list) {
         super(type);
-        const listeners = { change: (e) => this.onChange(e) };
+        const listeners = { change: (ev) => this.onChange(ev) };
         const cells = {
             index: new IndexCell(),
-            name: new NameCell(list, { change: e => this.changeName(e) }),
+            name: new NameCell(list, { change: ev => this.changeName(ev) }),
             level: new AscensionLevelCell(listeners),
             rank: new RangeCell(1, WEAPON_RANK_MAX, listeners),
             atk: new IntCell(listeners),
@@ -380,23 +380,23 @@ class WeaponTable extends ItemTable {
         status.addValue(Table.cellValue(row, cells, "second"));
         return { bonus: WEAPON_LIST[this.type][name].passive, rank: rank - 1 };
     }
-    changeName(e) {
-        let select = e.target;
+    changeName(ev) {
+        let select = ev.target;
         const bonus = select.value;
         let row = select.parentElement.parentElement;
         Table.updateCell(row, this.cells, "second", bonus);
-        this.onChange(e);
+        this.onChange(ev);
     }
 }
 class ArtifactTable extends ItemTable {
     constructor(type, list) {
         super(type);
-        const listeners = { change: (e) => this.changeSub(e) };
+        const listeners = { change: (ev) => this.changeSub(ev) };
         const cells = {
             index: new IndexCell(),
-            name: new ArtifactCell(list, { change: e => this.onChange(e) }),
-            star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: e => this.changeStar(e) }),
-            level: new ArtifactLevelCell({ change: e => this.changeLevel(e) }),
+            name: new ArtifactCell(list, { change: ev => this.onChange(ev) }),
+            star: new RangeCell(1, ARTIFACT_STAR_MAX, { change: ev => this.changeStar(ev) }),
+            level: new ArtifactLevelCell({ change: ev => this.changeLevel(ev) }),
             main: new BonusListCell([]),
             sub1: new BonusValueCell(ARTIFACT_SUB, listeners),
             sub2: new BonusValueCell(ARTIFACT_SUB, listeners),
@@ -409,7 +409,7 @@ class ArtifactTable extends ItemTable {
         super.load();
         const builders = this.cells;
         let row = this.html.rows[2];
-        while (!!row) {
+        while (row) {
             this.updateScore(row, builders, Table.cellValue(row, builders, "star"), Table.cellValue(row, builders, "level"));
             row = row.nextElementSibling;
         }
@@ -424,8 +424,8 @@ class ArtifactTable extends ItemTable {
         status.addValue(Table.cellValue(row, cells, "sub4"));
         return name;
     }
-    changeStar(e) {
-        let select = e.target;
+    changeStar(ev) {
+        let select = ev.target;
         const star = parseInt(select.value);
         let row = select.parentElement.parentElement;
         const cells = this.cells;
@@ -434,31 +434,31 @@ class ArtifactTable extends ItemTable {
         const level = cells.level.value(cel);
         Table.updateCell(row, cells, "main", star, level);
         this.updateScore(row, cells, star, level);
-        this.onChange(e);
+        this.onChange(ev);
     }
-    changeLevel(e) {
-        let select = e.target;
+    changeLevel(ev) {
+        let select = ev.target;
         const level = parseInt(select.value);
         let row = select.parentElement.parentElement;
         const cells = this.cells;
         const star = Table.cellValue(row, cells, "star");
         Table.updateCell(row, cells, "main", star, level);
         this.updateScore(row, cells, star, level);
-        this.onChange(e);
+        this.onChange(ev);
     }
-    changeMain(e) {
-        let select = e.target;
+    changeMain(ev) {
+        let select = ev.target;
         let cel = select.parentElement;
         let row = cel.parentElement;
         const cells = this.cells;
         cells.main.update(cel, Table.cellValue(row, cells, "star"), Table.cellValue(row, cells, "level"));
-        this.onChange(e);
+        this.onChange(ev);
     }
-    changeSub(e) {
-        let row = e.target.parentNode.parentNode;
+    changeSub(ev) {
+        let row = ev.target.parentNode.parentNode;
         const cells = this.cells;
         this.updateScore(row, cells, Table.cellValue(row, cells, "star"), Table.cellValue(row, cells, "level"));
-        this.onChange(e);
+        this.onChange(ev);
     }
     updateScore(row, cells, star, level) {
         let cel = row.querySelector("td#name");
@@ -477,7 +477,7 @@ class ArtifactTable extends ItemTable {
         let limit = 10 + Math.floor(level / 4) * 10;
         for (let i = 0; i < 4; ++i) {
             let param = getArtifactParam(star, level, sub[i].type);
-            if (!!param && !!param.substep) {
+            if (param && param.substep) {
                 let value = Math.round(sub[i].value / param.substep);
                 score[i] = value;
                 total += value;
@@ -491,31 +491,31 @@ class ArtifactTable extends ItemTable {
 class FlowerTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Flower, FLOWER_LIST);
-        this.cells.main = new SingleBonusCell(StatusBonusType.Hp, { change: e => this.onChange(e) });
+        this.cells.main = new SingleBonusCell(StatusBonusType.Hp, { change: ev => this.onChange(ev) });
     }
 }
 class FeatherTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Feather, FEATHER_LIST);
-        this.cells.main = new SingleBonusCell(StatusBonusType.Atk, { change: e => this.onChange(e) });
+        this.cells.main = new SingleBonusCell(StatusBonusType.Atk, { change: ev => this.onChange(ev) });
     }
 }
 class SandsTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Sands, SANDS_LIST);
-        this.cells.main = new MultiBonusCell(ARTIFACT_SANDS, { change: e => this.changeMain(e) });
+        this.cells.main = new MultiBonusCell(ARTIFACT_SANDS, { change: ev => this.changeMain(ev) });
     }
 }
 class GobletTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Goblet, GOBLET_LIST);
-        this.cells.main = new MultiBonusCell(ARTIFACT_GOBLET, { change: e => this.changeMain(e) });
+        this.cells.main = new MultiBonusCell(ARTIFACT_GOBLET, { change: ev => this.changeMain(ev) });
     }
 }
 class CircletTable extends ArtifactTable {
     constructor() {
         super(ArtifactType.Circlet, CIRCLET_LIST);
-        this.cells.main = new MultiBonusCell(ARTIFACT_CIRCLET, { change: e => this.changeMain(e) });
+        this.cells.main = new MultiBonusCell(ARTIFACT_CIRCLET, { change: ev => this.changeMain(ev) });
     }
 }
 class EquipmentCellTable {
@@ -548,8 +548,8 @@ class EquipmentCellTable {
 class EquipmentTable extends ItemTable {
     constructor() {
         super(TableType.Equip);
-        const listeners = { change: (e) => this.onChange(e) };
-        let chara = new EquipmentCell(EquipmentType.Chara, { change: e => this.changeChara(e) });
+        const listeners = { change: (ev) => this.onChange(ev) };
+        let chara = new EquipmentCell(EquipmentType.Chara, { change: ev => this.changeChara(ev) });
         let weapon = new EquipWeaponCell(listeners);
         let flower = new EquipmentCell(ArtifactType.Flower, listeners);
         let feather = new EquipmentCell(ArtifactType.Feather, listeners);
@@ -589,7 +589,7 @@ class EquipmentTable extends ItemTable {
             ItemTable.insertRow("equip");
         }
     }
-    removable(id) {
+    removable(_) {
         return true;
     }
     refresh() {
@@ -673,13 +673,13 @@ class EquipmentTable extends ItemTable {
         }
         return require;
     }
-    changeChara(e) {
-        let select = e.target;
+    changeChara(ev) {
+        let select = ev.target;
         const value = select.value;
         let cell = document.querySelector(`table#tbl_chara tr#${value} td#name`);
         const weapon = CHARACTER[cell.firstElementChild.value].weapon;
         this.tables[weapon].update(select.parentElement.nextElementSibling);
-        this.onChange(e);
+        this.onChange(ev);
     }
 }
 class TableBridge {
@@ -885,7 +885,7 @@ class BonusTable extends Table {
         let row = this.html.rows[1];
         for (let status of members) {
             let cells = row.cells;
-            if (!!status) {
+            if (status) {
                 cells[0].textContent = status.chara.name;
                 cells[1].innerHTML = innerHtml(status.bonus);
             }
@@ -908,7 +908,7 @@ class BonusTable extends Table {
         this.everyone = [];
     }
     weapon(status, bonuses, rank) {
-        if (!!bonuses) {
+        if (bonuses) {
             if (Array.isArray(bonuses)) {
                 for (const bonus of bonuses) {
                     const data = Object.assign(Object.assign({}, bonus), { value: bonus.value[rank] });
@@ -941,7 +941,7 @@ class BonusTable extends Table {
         }
     }
     appends(status, bonuses, source) {
-        if (!!bonuses) {
+        if (bonuses) {
             if (Array.isArray(bonuses)) {
                 for (const bonus of bonuses) {
                     this.append(status, bonus, source);
@@ -979,7 +979,7 @@ class BonusTable extends Table {
     attach(members) {
         let types = [];
         for (let status of members) {
-            if (!!status) {
+            if (status) {
                 types.push(status.chara.element);
             }
         }
@@ -990,7 +990,7 @@ class BonusTable extends Table {
             let last = types.lastIndexOf(type) + 1;
             if (2 <= (last - first)) {
                 const data = TEAM_BONUS[type];
-                if (!!data) {
+                if (data) {
                     let bonus = new BasicBonus("team", data, LABEL_TEXT.resonance);
                     if (!bonus.limit) {
                         bonus.valid = false;
@@ -1006,7 +1006,7 @@ class BonusTable extends Table {
         }
     }
     detach(status, members) {
-        if (!!status) {
+        if (status) {
             let bonuses = this.everyone.filter(bonus => bonus.id !== status.id);
             this.everyone = bonuses.filter(bonus => bonus.id !== "team");
             for (let bonus of this.applied) {
@@ -1065,7 +1065,7 @@ class EnemyTable extends Table {
     rebuild(html, name) {
         this.target = new Enemy(name);
         let row = html.rows[2];
-        while (!!row.id) {
+        while (row.id) {
             const type = row.id;
             let cells = row.cells;
             let resist = this.target.resist[type];
@@ -1085,8 +1085,8 @@ class EnemyTable extends Table {
     }
     defence(status) {
         let cell = this.html.querySelector("tbody").lastElementChild.cells[2];
-        let level = !!status ? status.level : 0;
-        cell.textContent = (this.target.defence(level) * 100).toFixed(1) + "%";
+        let level = status ? status.level : 0;
+        cell.textContent = floorRate(this.target.defence(level) * 100);
     }
 }
 class ApplyTable extends Table {
@@ -1104,14 +1104,14 @@ class ApplyTable extends Table {
     }
     rebuild(status) {
         this.clear();
-        if (!!status) {
+        if (status) {
             let html = this.html;
             let rows = html.rows;
             let caption = rows[0];
             let bonuses = Table.List.bonus.enumerate(status);
             for (let bonus of bonuses) {
                 let row = html.insertRow();
-                bonus.build(caption, row, ev => Table.List.damage.calculate());
+                bonus.build(caption, row, _ => Table.List.damage.calculate());
             }
             this.bonuses = bonuses;
         }
@@ -1126,14 +1126,14 @@ class ApplyTable extends Table {
         return clone;
     }
 }
-const ReactionSquareLabel = {
+const CONTACT_REACTION_LABEL = {
     "": "-",
     pyro: "火",
     hydro: "水",
     elect: "雷",
     cryo: "氷"
 };
-const ReactionLabel = {
+const REACTION_LABEL = {
     vaporize: "蒸発",
     melt: "融解",
     swirl: "拡散",
@@ -1150,7 +1150,7 @@ class DamageTable extends Table {
     static changeType(elem) {
         let tbl = Table.List.damage;
         let member = tbl.member;
-        if (!!member) {
+        if (member) {
             tbl.damageType(tbl.html, elem, member);
         }
     }
@@ -1180,7 +1180,7 @@ class DamageTable extends Table {
         let members = Table.List.team.members;
         for (let i = 0; i < 4; ++i) {
             let member = members[i];
-            if (!!member) {
+            if (member) {
                 let opt = document.createElement("option");
                 opt.value = i.toString();
                 opt.label = member.chara.name;
@@ -1200,7 +1200,7 @@ class DamageTable extends Table {
         for (let len = html.rows.length; 2 < len; --len) {
             html.deleteRow(2);
         }
-        if (!!status) {
+        if (status) {
             this.rebuild(html, status);
         }
         else {
@@ -1233,10 +1233,10 @@ class DamageTable extends Table {
                 for (const type of reactions) {
                     let opt = document.createElement("option");
                     opt.value = type;
-                    opt.label = ReactionLabel[type];
+                    opt.label = REACTION_LABEL[type];
                     select.appendChild(opt);
                 }
-                select.addEventListener("change", ev => this.calculate());
+                select.addEventListener("change", _ => this.calculate());
                 cell.appendChild(select);
             }
             else {
@@ -1272,10 +1272,10 @@ class DamageTable extends Table {
                 if (elem === CombatElementType.Contact) {
                     let select = document.createElement("select");
                     select.id = "contact_type";
-                    for (let type of ReactionSquareTypes) {
+                    for (let type of ContactReactionTypes) {
                         let opt = document.createElement("option");
                         opt.value = type;
-                        opt.label = ReactionSquareLabel[type];
+                        opt.label = CONTACT_REACTION_LABEL[type];
                         select.appendChild(opt);
                     }
                     select.addEventListener("change", ev => this.contactType(ev.target));
@@ -1346,7 +1346,7 @@ class DamageTable extends Table {
         cell.className = className;
         cell.textContent = "-";
         let status = this.member;
-        if (!!status && !!select.value) {
+        if (status && select.value) {
             const combats = status.chara.talent.burst;
             for (const combat of combats) {
                 if (combat.elem === CombatElementType.Contact) {
@@ -1359,7 +1359,7 @@ class DamageTable extends Table {
     }
     reactionType(cell) {
         let select = cell.firstElementChild;
-        if (!!select) {
+        if (select) {
             return select.value;
         }
         return undefined;
@@ -1390,7 +1390,7 @@ class DamageTable extends Table {
     }
     calculate() {
         let member = this.member;
-        if (!!member) {
+        if (member) {
             this.calcDamage(this.html, member);
         }
     }

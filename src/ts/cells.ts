@@ -1,5 +1,5 @@
 function removeChildren(elem: HTMLElement) {
-    while (!!elem.lastChild) {
+    while (elem.lastChild) {
         elem.lastChild.remove();
     }
 }
@@ -74,7 +74,7 @@ class Cell {
 
     protected listen<T extends HTMLElement>(cell: HTMLCellElement, child: T): T {
         // childに外部リスナーを登録
-        if (!!this.listeners) {
+        if (this.listeners) {
             for (const type in this.listeners) {
                 child.addEventListener(type, this.listeners[type as keyof HTMLElementEventMap]!);
             }
@@ -89,7 +89,7 @@ class Cell {
 class IntCell extends Cell implements INumberCell {
     private static onChange(e: Event) {
         let input = e.target as HTMLTruthElement;
-        if (!!input.value) {
+        if (input.value) {
             input.truth = parseInt(input.value);
         } else {
             input.truth = 0;
@@ -160,7 +160,7 @@ class IntCell extends Cell implements INumberCell {
 class RateCell extends Cell implements INumberCell {
     private static onChange(e: Event) {
         let input = e.target as HTMLTruthElement;
-        if (!!input.value) {
+        if (input.value) {
             input.truth = parseFloat(input.value);
         } else {
             input.truth = 0.0;
@@ -241,7 +241,7 @@ class RateCell extends Cell implements INumberCell {
 
 // 空のセル
 class EmptyCell extends Cell implements INumberCell {
-    build(cell: HTMLCellElement, value: string | number): HTMLTruthElement {
+    build(cell: HTMLCellElement, _: string | number): HTMLTruthElement {
         // 処理簡略化のため非表示で配置しておく
         let child = document.createElement("input") as HTMLTruthElement;
         child.type = "text";
@@ -261,7 +261,7 @@ class IndexCell extends Cell {
         return (row.rowIndex - 1).toString(); // 0,1はキャプション行
     }
 
-    load(cell: HTMLCellElement, id: string, values: IMap<string>): null {
+    load(cell: HTMLCellElement, _: string, __: IMap<string>): null {
         cell.appendChild(document.createTextNode(this.index(cell)));
         return null;
     }
@@ -275,7 +275,7 @@ class IndexCell extends Cell {
 class CharaStatusCell extends IntCell {
     update(cell: HTMLCellElement, name: string, level: string) {
         const status = CHARACTER[name].status;
-        if (!!status) {
+        if (status) {
             const param = status[cell.id as CharaStatusType];
             const bound = [ASCENSION_LV_MIN].concat(ASCENSION_LV_STEP, ASCENSION_LV_MAX);
             const step = AscensionLevelCell.step(level);
@@ -298,6 +298,11 @@ class CharaStatusCell extends IntCell {
             input.truth = value;
         }
     }
+}
+
+interface IAscensionLevel {
+    level: Integer;
+    index: Integer;
 }
 
 // 突破レベルセル
@@ -554,7 +559,7 @@ class NumberBonus {
         return "0";
     }
 
-    cell(listeners: EventListenerList): NumberCell {
+    cell(_: EventListenerList): NumberCell {
         return new EmptyCell();
     }
 }
@@ -639,7 +644,7 @@ class CharaSpecialCell extends BonusCell {
         super([]);
     }
 
-    load(cell: HTMLCellElement, id: string, values: IMap<string>): null {
+    load(cell: HTMLCellElement, _: string, values: IMap<string>): null {
         cell.className = "bonus";
         this.build(cell, values.name, values.level);
         return null;
@@ -657,7 +662,7 @@ class CharaSpecialCell extends BonusCell {
         cell.appendChild(this.select(bonus));
 
         let value = 0;
-        if (!!chara.spvalue) {
+        if (chara.spvalue) {
             value = chara.spvalue[AscensionLevelCell.step(level).index];
         }
 
@@ -697,7 +702,7 @@ class BonusListCell extends BonusCell {
 
     protected param(star: Integer, level: Integer, bonus: AnyBonusType): Float {
         let param = getArtifactParam(star, level, bonus);
-        if (!!param) {
+        if (param) {
             return param.intercept + level * param.slope;
         }
         return 0.0;
@@ -710,7 +715,7 @@ class SingleBonusCell extends BonusListCell {
         super([bonus], listeners);
     }
 
-    load(cell: HTMLCellElement, id: string, values: IMap<string>): HTMLSelectElement {
+    load(cell: HTMLCellElement, _: string, values: IMap<string>): HTMLSelectElement {
         cell.className = "bonus";
 
         let child = this.build(cell, values.star, values.level, this.list[0]);
@@ -840,7 +845,7 @@ interface IEquipmentEventListener extends EventListenerObject {
 class EquipmentCell extends Cell {
     private static detailLine(cell: HTMLCellElement, row: HTMLRowElement, id: string, prefix: string) {
         let elem = row.querySelector("td#" + id);
-        if (!!elem) {
+        if (elem) {
             let child = elem.firstElementChild as HTMLValueElement;
             cell.appendChild(document.createElement("br"));
             cell.appendChild(document.createTextNode(prefix + child.value));
@@ -849,7 +854,7 @@ class EquipmentCell extends Cell {
 
     private static detailBonus(cell: HTMLCellElement, row: HTMLRowElement, id: string) {
         let elem = row.querySelector("td#" + id);
-        if (!!elem) {
+        if (elem) {
             let child = elem.firstElementChild as HTMLValueElement;
             let type = child.value as BonusValueType;
             if ((type in BonusValueList) && (type !== StatusBonusType.Other)) {
@@ -955,7 +960,7 @@ class EquipmentCell extends Cell {
 
     update(cell: HTMLCellElement, items: HTMLElementList) {
         let row = this.value(cell);
-        const index = !!row ? (row.rowIndex - 2) : 0;
+        const index = row ? (row.rowIndex - 2) : 0;
         removeChildren(cell);
         this.build(cell, index, items);
     }
@@ -984,7 +989,7 @@ class EquipmentCell extends Cell {
         // 初回の詳細情報を表示
         if (this.type in EquipmentCell.DetailTable) {
             let row = this.value(cell);
-            if (!!row) {
+            if (row) {
                 EquipmentCell.DetailTable[this.type](cell, row);
             }
         }

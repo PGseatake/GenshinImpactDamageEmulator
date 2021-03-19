@@ -4,7 +4,7 @@
     "description": "",
     "main": "",
     "scripts": {
-        "tsc": "tsc"
+        "tsc": "tsc --newLine LF"
     },
     "author": "",
     "license": "ISC",

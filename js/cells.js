@@ -1,6 +1,6 @@
 "use strict";
 function removeChildren(elem) {
-    while (!!elem.lastChild) {
+    while (elem.lastChild) {
         elem.lastChild.remove();
     }
 }
@@ -32,7 +32,7 @@ class Cell {
     update(cell, ...args) {
     }
     listen(cell, child) {
-        if (!!this.listeners) {
+        if (this.listeners) {
             for (const type in this.listeners) {
                 child.addEventListener(type, this.listeners[type]);
             }
@@ -44,7 +44,7 @@ class Cell {
 class IntCell extends Cell {
     static onChange(e) {
         let input = e.target;
-        if (!!input.value) {
+        if (input.value) {
             input.truth = parseInt(input.value);
         }
         else {
@@ -104,7 +104,7 @@ class IntCell extends Cell {
 class RateCell extends Cell {
     static onChange(e) {
         let input = e.target;
-        if (!!input.value) {
+        if (input.value) {
             input.truth = parseFloat(input.value);
         }
         else {
@@ -174,7 +174,7 @@ class RateCell extends Cell {
     }
 }
 class EmptyCell extends Cell {
-    build(cell, value) {
+    build(cell, _) {
         let child = document.createElement("input");
         child.type = "text";
         child.value = "";
@@ -189,7 +189,7 @@ class IndexCell extends Cell {
         let row = cell.parentElement;
         return (row.rowIndex - 1).toString();
     }
-    load(cell, id, values) {
+    load(cell, _, __) {
         cell.appendChild(document.createTextNode(this.index(cell)));
         return null;
     }
@@ -200,7 +200,7 @@ class IndexCell extends Cell {
 class CharaStatusCell extends IntCell {
     update(cell, name, level) {
         const status = CHARACTER[name].status;
-        if (!!status) {
+        if (status) {
             const param = status[cell.id];
             const bound = [ASCENSION_LV_MIN].concat(ASCENSION_LV_STEP, ASCENSION_LV_MAX);
             const step = AscensionLevelCell.step(level);
@@ -416,7 +416,7 @@ class NumberBonus {
     get init() {
         return "0";
     }
-    cell(listeners) {
+    cell(_) {
         return new EmptyCell();
     }
 }
@@ -484,7 +484,7 @@ class CharaSpecialCell extends BonusCell {
     constructor() {
         super([]);
     }
-    load(cell, id, values) {
+    load(cell, _, values) {
         cell.className = "bonus";
         this.build(cell, values.name, values.level);
         return null;
@@ -499,7 +499,7 @@ class CharaSpecialCell extends BonusCell {
         this.list = [bonus];
         cell.appendChild(this.select(bonus));
         let value = 0;
-        if (!!chara.spvalue) {
+        if (chara.spvalue) {
             value = chara.spvalue[AscensionLevelCell.step(level).index];
         }
         let builder = BonusValueList[bonus].cell(null);
@@ -530,7 +530,7 @@ class BonusListCell extends BonusCell {
     }
     param(star, level, bonus) {
         let param = getArtifactParam(star, level, bonus);
-        if (!!param) {
+        if (param) {
             return param.intercept + level * param.slope;
         }
         return 0.0;
@@ -540,7 +540,7 @@ class SingleBonusCell extends BonusListCell {
     constructor(bonus, listeners = null) {
         super([bonus], listeners);
     }
-    load(cell, id, values) {
+    load(cell, _, values) {
         cell.className = "bonus";
         let child = this.build(cell, values.star, values.level, this.list[0]);
         child.disabled = true;
@@ -641,7 +641,7 @@ class EquipmentCell extends Cell {
     }
     static detailLine(cell, row, id, prefix) {
         let elem = row.querySelector("td#" + id);
-        if (!!elem) {
+        if (elem) {
             let child = elem.firstElementChild;
             cell.appendChild(document.createElement("br"));
             cell.appendChild(document.createTextNode(prefix + child.value));
@@ -649,7 +649,7 @@ class EquipmentCell extends Cell {
     }
     static detailBonus(cell, row, id) {
         let elem = row.querySelector("td#" + id);
-        if (!!elem) {
+        if (elem) {
             let child = elem.firstElementChild;
             let type = child.value;
             if ((type in BonusValueList) && (type !== StatusBonusType.Other)) {
@@ -705,7 +705,7 @@ class EquipmentCell extends Cell {
     }
     update(cell, items) {
         let row = this.value(cell);
-        const index = !!row ? (row.rowIndex - 2) : 0;
+        const index = row ? (row.rowIndex - 2) : 0;
         removeChildren(cell);
         this.build(cell, index, items);
     }
@@ -727,7 +727,7 @@ class EquipmentCell extends Cell {
         child.addEventListener("change", this.onChange);
         if (this.type in EquipmentCell.DetailTable) {
             let row = this.value(cell);
-            if (!!row) {
+            if (row) {
                 EquipmentCell.DetailTable[this.type](cell, row);
             }
         }

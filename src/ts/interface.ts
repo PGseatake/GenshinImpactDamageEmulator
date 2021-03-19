@@ -89,6 +89,44 @@ const EquipmentTypes = [
     ArtifactType.Circlet
 ] as const;
 
+const ReactionType = {
+    // Burning: "burning",
+    Vaporize: "vaporize",
+    Melt: "melt",
+    Swirl: "swirl",
+    Echarge: "echarge",
+    Shutter: "shutter",
+    Conduct: "conduct",
+    Overload: "overload"
+} as const;
+type ReactionType = typeof ReactionType[keyof typeof ReactionType];
+
+type AmplifyReactionType = "vaporize" | "melt";
+const IsAmplifyReaction = (type: ReactionType): type is AmplifyReactionType => {
+    switch (type) {
+        case ReactionType.Melt:
+        case ReactionType.Vaporize:
+            return true;
+    }
+    return false;
+};
+
+type TransformReactionType = "swirl" | "echarge" | "shutter" | "conduct" | "overload";
+const IsTransformReaction = (type: ReactionType): type is TransformReactionType => {
+    if (IsAmplifyReaction(type)) return false;
+    // if (type === ReactionType.Burning) return false;
+    return true;
+};
+
+const ContactReactionTypes = [
+    "",
+    ElementType.Pyro,
+    ElementType.Hydro,
+    ElementType.Elect,
+    ElementType.Cryo
+] as const;
+type ContactReactionType = typeof ContactReactionTypes[number];
+
 const CriticalBonusType = {
     Damage: "cri_dmg",
     Rate: "cri_rate",
@@ -150,68 +188,6 @@ type AnyBonusType = StatusBonusType | ElementBonusType | CombatBonusType | React
 type BonusType = Exclude<AnyBonusType, "other">;
 type BonusValueType = Exclude<StatusBonusType | ElementBonusType, "elem_dmg" | "any_dmg" | "heavy_cri" | "skill_cri">;
 
-const ReactionType = {
-    // Burning: "burning",
-    Vaporize: "vaporize",
-    Melt: "melt",
-    Swirl: "swirl",
-    Echarge: "echarge",
-    Shutter: "shutter",
-    Conduct: "conduct",
-    Overload: "overload"
-} as const;
-type ReactionType = typeof ReactionType[keyof typeof ReactionType];
-
-type AmplifyReactionType = "vaporize" | "melt";
-const IsAmplifyReaction = (type: ReactionType): type is AmplifyReactionType => {
-    switch (type) {
-        case ReactionType.Melt:
-        case ReactionType.Vaporize:
-            return true;
-    }
-    return false;
-};
-
-type TransformReactionType = "swirl" | "echarge" | "shutter" | "conduct" | "overload";
-const IsTransformReaction = (type: ReactionType): type is TransformReactionType => {
-    if (IsAmplifyReaction(type)) return false;
-    // if (type === ReactionType.Burning) return false;
-    return true;
-};
-
-const ReactionSquareTypes = [
-    "",
-    ElementType.Pyro,
-    ElementType.Hydro,
-    ElementType.Elect,
-    ElementType.Cryo
-] as const;
-type ReactionSquareType = typeof ReactionSquareTypes[number];
-
-const CombatType = {
-    Normal: "normal",
-    Heavy: "heavy",
-    Plunge: "plunge",
-    Skill: "skill",
-    Burst: "burst",
-} as const;
-type CombatType = typeof CombatType[keyof typeof CombatType];
-
-const DamageScale = {
-    Phys: "phys",
-    Elem: "elem",
-    Etc1: "etc1", // Zhongli
-    Xiao: "xiao",
-    Hutao: "hutao",
-} as const;
-type DamageScale = typeof DamageScale[keyof typeof DamageScale];
-
-const DamageBased = {
-    Atk: "atk",
-    Def: "def"
-} as const;
-type DamageBased = typeof DamageBased[keyof typeof DamageBased];
-
 const BonusTarget = {
     All: "all", // 全員
     Self: "self", // 自キャラ
@@ -242,6 +218,30 @@ interface IRankedWeaponBonus {
     bonus: AnyWeaponBonus | undefined;
     rank: Integer;
 }
+
+const CombatType = {
+    Normal: "normal",
+    Heavy: "heavy",
+    Plunge: "plunge",
+    Skill: "skill",
+    Burst: "burst",
+} as const;
+type CombatType = typeof CombatType[keyof typeof CombatType];
+
+const DamageScale = {
+    Phys: "phys",
+    Elem: "elem",
+    Etc1: "etc1", // Zhongli
+    Xiao: "xiao",
+    Hutao: "hutao",
+} as const;
+type DamageScale = typeof DamageScale[keyof typeof DamageScale];
+
+const DamageBased = {
+    Atk: "atk",
+    Def: "def"
+} as const;
+type DamageBased = typeof DamageBased[keyof typeof DamageBased];
 
 const ExtraBonusType = {
     Flat: "flat",
@@ -322,6 +322,8 @@ interface IEnchantBonus extends IExtraBonus {
     target: BonusTarget;
 }
 
+type AnyExtraBonus = IBasicBonus | IBasicFlatBonus | IReductBonus | IEnchantBonus;
+
 interface IBonusValue {
     type: BonusValueType;
     value: Integer | Rate;
@@ -356,14 +358,14 @@ interface IArtifactSet extends INameable {
     set4?: Arrayable<IBasicBonus>;
 }
 
-interface IArtifactBonus {
+interface IArtifactParam {
     intercept: Float;
     slope: Float;
     substep?: Float;
 }
 
 type ArtifactParamType = "hp" | "atk" | "def" | "atk_buf" | "def_buf" | "en_rec" | "cri_rate" | "cri_dmg";
-type ArtifactParam = Record<ArtifactParamType, IArtifactBonus>;
+type ArtifactParam = Record<ArtifactParamType, IArtifactParam>;
 
 const TalentType = {
     Combat: "combat",
@@ -392,8 +394,6 @@ interface ICombat {
 type CharaStatusType = "hp" | "atk" | "def";
 type CharaStatus = Record<CharaStatusType, Integer[]>;
 type CharaTalent = Record<TalentType, ICombat[]>;
-
-type AnyExtraBonus = IBasicBonus | IBasicFlatBonus | IReductBonus | IEnchantBonus;
 
 interface IPassive {
     skill?: Arrayable<AnyExtraBonus>;
@@ -430,19 +430,6 @@ type Resist = Record<ElementType, Rate>;
 interface IEnemy extends INameable {
     resist: Resist;
 }
-
-interface IAscensionLevel {
-    level: Integer;
-    index: Integer;
-}
-
-interface ICriticalValue {
-    rate: Rate;
-    damage: Rate;
-    special: boolean;
-}
-
-type ItoString<T> = (value: T) => string;
 
 const TypeToBonus = {
     element(type: ElementType): ElementBonusType {
