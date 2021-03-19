@@ -101,6 +101,12 @@ const SWORD_LIST = {
             { items: CriticalBonusType.Skill, value: [6, 7.5, 9, 10.5, 12] },
         ]
     },
+    AlleyFlash: {
+        name: "ダークアレイの閃光",
+        star: 4,
+        second: StatusBonusType.Elem,
+        passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24] },
+    },
     TravelersSword: {
         name: "旅道の剣",
         star: 3,
@@ -381,6 +387,16 @@ const BOW_LIST = {
             { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: [8, 10, 12, 14, 16], limit: "矢を放った後0.1秒毎", stack: 5 },
         ]
     },
+    ElegyForTheEnd: {
+        name: "終焉を嘆く詩",
+        star: 5,
+        second: StatusBonusType.EnRec,
+        passive: [
+            { items: StatusBonusType.Elem, value: [60, 75, 90, 105, 120] },
+            { items: StatusBonusType.Elem, value: [100, 125, 150, 175, 200], limit: "元素スキルまたは元素爆発が4回敵に命中した時", times: 12 },
+            { items: StatusBonusType.AtkBuf, value: [20, 25, 30, 35, 40], limit: "元素スキルまたは元素爆発が4回敵に命中した時", times: 12 },
+        ]
+    },
     FavoniusWarbow: {
         name: "西風猟弓",
         star: 4,
@@ -555,6 +571,12 @@ const CATALYST_LIST = {
         name: "冬忍びの実",
         star: 4,
         second: StatusBonusType.AtkBuf,
+    },
+    WineAndSong: {
+        name: "ダークアレイの酒と詩",
+        star: 4,
+        second: StatusBonusType.EnRec,
+        passive: { items: StatusBonusType.AtkBuf, value: [25, 30, 35, 40, 45], limit: "ダッシュまたはダッシュを代替する能力を使用した時", times: 5 },
     },
     TwinNephrite: {
         name: "特級の宝玉",

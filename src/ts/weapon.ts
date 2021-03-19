@@ -129,6 +129,13 @@ const SWORD_LIST: DeepReadonly<IMap<IWeapon>> = {
             { items: CriticalBonusType.Skill, value: [6, 7.5, 9, 10.5, 12] },
         ]
     },
+    AlleyFlash: {
+        name: "ダークアレイの閃光",
+        star: 4,
+        second: StatusBonusType.Elem,
+        // キャラクターが与えるダメージ+12~24%。ダメージを受けると、このダメージアップ効果は5秒間無効になる。
+        passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24] },
+    },
     TravelersSword: {
         name: "旅道の剣",
         star: 3,
@@ -480,6 +487,20 @@ const BOW_LIST: DeepReadonly<IMap<IWeapon>> = {
             { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: [8, 10, 12, 14, 16], limit: "矢を放った後0.1秒毎", stack: 5 },
         ]
     },
+    ElegyForTheEnd: {
+        name: "終焉を嘆く詩",
+        star: 5,
+        second: StatusBonusType.EnRec,
+        passive: [
+            // 風と共に流れる｢千年の大楽章｣の一部。元素熟知+60~120。
+            { items: StatusBonusType.Elem, value: [60, 75, 90, 105, 120] },
+            // 元素スキルまたは元素爆発が敵に命中すると、追憶の欠片を一枚獲得する。この効果は0.2秒毎に一回のみ発動でき、待機中のキャラクターも発動できる。
+            // 追憶の欠片を4枚集めると、全ての追憶の欠片を消費し、周囲のチーム全員に12秒継続する｢千年の大楽章・別れの歌｣効果を付与する:元素熟知+100~200、攻撃力+20~40%。
+            { items: StatusBonusType.Elem, value: [100, 125, 150, 175, 200], limit: "元素スキルまたは元素爆発が4回敵に命中した時", times: 12 },
+            { items: StatusBonusType.AtkBuf, value: [20, 25, 30, 35, 40], limit: "元素スキルまたは元素爆発が4回敵に命中した時", times: 12 },
+            // 発動後の20秒間、追憶の欠片を再度獲得することはできない。｢千年の大楽章｣のもたらす各効果中、同種類の効果は重ね掛け不可。
+        ]
+    },
     FavoniusWarbow: {
         name: "西風猟弓",
         star: 4,
@@ -704,6 +725,14 @@ const CATALYST_LIST: DeepReadonly<IMap<IWeapon>> = {
         // 通常攻撃と重撃が敵に命中した時、60%の確率で敵の上に恒氷晶核が作られ落下し、攻撃力の80%の範囲ダメージを与える。
         // 敵が氷元素の影響を受けている場合、攻撃力の200%のダメージを受ける。この効果は10秒毎に1回のみ発動可能。
         // passive: null
+    },
+    WineAndSong: {
+        name: "ダークアレイの酒と詩",
+        star: 4,
+        second: StatusBonusType.EnRec,
+        // 通常攻撃が敵に命中すると、ダッシュまたはダッシュを代替する能力のスタミナ消費-？%、持続時間5秒。
+        // また、ダッシュまたはダッシュを代替する能力を使用すると、攻撃力+25~45%、持続時間5秒。
+        passive: { items: StatusBonusType.AtkBuf, value: [25, 30, 35, 40, 45], limit: "ダッシュまたはダッシュを代替する能力を使用した時", times: 5 },
     },
     TwinNephrite: {
         name: "特級の宝玉",
