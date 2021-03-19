@@ -227,10 +227,10 @@ class BonusBase {
         this.target = BonusTarget.Self;
         this.source = source;
         this.builders = {
-            check: (cell, change) => this.buildCheck(cell, change),
+            check: (cell, changes) => this.buildCheck(cell, changes),
             source: (cell, _) => this.buildSource(cell),
             value: (cell, _) => this.buildValue(cell),
-            stack: (cell, change) => this.buildStack(cell, change),
+            stack: (cell, changes) => this.buildStack(cell, changes),
             times: (cell, _) => this.buildTimes(cell),
         };
     }
@@ -255,13 +255,15 @@ class BonusBase {
             const id = cap.id;
             let cell = row.insertCell();
             cell.id = id;
-            this.builders[id](cell, change);
+            this.builders[id](cell, [change]);
         }
     }
-    buildCheck(cell, change) {
+    buildCheck(cell, changes) {
         let input = document.createElement("input");
         input.type = "checkbox";
-        input.addEventListener("change", change);
+        for (let change of changes) {
+            input.addEventListener("change", change);
+        }
         cell.appendChild(input);
     }
     buildSource(cell) {
@@ -276,7 +278,7 @@ class BonusBase {
         }
         cell.appendChild(document.createTextNode(this.effect));
     }
-    buildStack(cell, change) {
+    buildStack(cell, changes) {
         if (1 < this.stack) {
             let input = document.createElement("input");
             input.className = "short";
@@ -286,7 +288,9 @@ class BonusBase {
             input.step = "1";
             input.value = "1";
             input.pattern = "[0-9]*";
-            input.addEventListener("change", change);
+            for (let change of changes) {
+                input.addEventListener("change", change);
+            }
             cell.appendChild(input);
         }
         else {
@@ -321,9 +325,11 @@ class BonusBase {
     applicable(status) {
         if (this.valid) {
             switch (this.target) {
-                case BonusTarget.Other:
                 case BonusTarget.Next:
+                case BonusTarget.Other:
                     return this.source !== status.chara.name;
+                case BonusTarget.Enemy:
+                    return false;
             }
             return true;
         }
@@ -434,6 +440,47 @@ class FlatBonus extends BonusBase {
                 return [{ flat: true, type: this.dest, value: value },];
             default:
                 return [{ type: this.dest, value: value }];
+        }
+    }
+}
+const REDUCT_LABEL = {
+    phys: "物理耐性",
+    pyro: "火耐性",
+    hydro: "水耐性",
+    elect: "雷耐性",
+    anemo: "風耐性",
+    cryo: "氷耐性",
+    geo: "岩耐性",
+    defence: "防御力",
+    contact: "元素反応した元素耐性",
+};
+class ReductBonus extends BonusBase {
+    constructor(id, data, source, change) {
+        var _a, _b;
+        super(id, source);
+        const types = data.type;
+        this.types = Array.isArray(types) ? types : [types];
+        this.value = data.value;
+        this.limit = (_a = data.limit) !== null && _a !== void 0 ? _a : "";
+        this.times = (_b = data.times) !== null && _b !== void 0 ? _b : 0;
+        this.target = BonusTarget.Enemy;
+        this.change = change;
+    }
+    buildCheck(cell, changes) {
+        super.buildCheck(cell, [this.change, ...changes]);
+    }
+    get effect() {
+        const types = this.types.map(type => REDUCT_LABEL[type]).join("・");
+        return `敵の${types}-${roundRate(this.value)}`;
+    }
+    applyEnemy(enemy, row) {
+        let input = row.querySelector("td#check input[type='checkbox']");
+        if (input === null || input === void 0 ? void 0 : input.checked) {
+            for (const type of this.types) {
+                if (type !== ReductBonusType.Contact) {
+                    enemy.reduct[type] += this.value;
+                }
+            }
         }
     }
 }

@@ -1394,6 +1394,7 @@ class BonusTable extends Table implements IRefreshTable {
                 }
                 break;
             case ExtraBonusType.Reduct:
+                status.append(new ReductBonus(status.id, bonus, status.chara.name, _ => EnemyTable.update()));
                 break;
             case ExtraBonusType.Enchant:
                 break;
@@ -1465,25 +1466,29 @@ class BonusTable extends Table implements IRefreshTable {
                 bonuses.push(bonus);
             }
         }
+        // 超電導を追加 TODO: 多言語対応
+        const data = { extra: ExtraBonusType.Reduct, type: ElementType.Phys, value: 40, limit: "超電導が発生した時", times: 12 } as const;
+        bonuses.push(new ReductBonus("conduct", data, "元素反応", _ => EnemyTable.update()));
         return bonuses;
     }
 }
 
 // 敵テーブル
 class EnemyTable extends Table {
+    // テーブル更新
+    static update() {
+        Table.List.enemy!.rebuild(Table.List.damage!.member);
+    }
+
     // 敵キャラ変更
     static changeList(elem: HTMLSelectElement) {
-        let tbl = Table.List.enemy!;
-        let html = tbl.html;
-        tbl.rebuild(html, elem.value);
-        tbl.level(html.querySelector("input#enemy_level") as HTMLInputElement);
-
+        Table.List.enemy!.rebuild(Table.List.damage!.member, elem);
         Table.List.damage!.calculate();
     }
 
     // レベル変更
     static changeLevel(elem: HTMLInputElement) {
-        Table.List.enemy!.level(elem);
+        Table.List.enemy!.level(Table.List.damage!.member, elem);
         Table.List.damage!.calculate();
     }
 
@@ -1506,7 +1511,8 @@ class EnemyTable extends Table {
             select.appendChild(opt);
         }
 
-        this.rebuild(html, select.value);
+        this.target = new Enemy(select.value);
+        this.build(html, this.target);
     }
 
     // データの削除
@@ -1515,30 +1521,43 @@ class EnemyTable extends Table {
     }
 
     // テーブル再構築
-    private rebuild(html: HTMLTableElement, name: string) {
-        this.target = new Enemy(name);
+    rebuild(status: Nullable<Status>, select?: HTMLSelectElement) {
+        let html = this.html;
+        if (!select) {
+            select = html.querySelector("select#enemy_list") as HTMLSelectElement;
+        }
 
+        this.target = new Enemy(select.value);
+        Table.List.apply!.enemy(this.target);
+
+        this.build(html, this.target);
+        this.level(status, html.querySelector("input#enemy_level") as HTMLInputElement);
+    }
+
+    // テーブル構築
+    private build(html: HTMLTableElement, target: Enemy) {
         // 各元素の耐性更新
         let row = html.rows[2];
         while (row.id) {
             const type = row.id as ElementType;
             let cells = row.cells;
-            let resist = this.target.resist[type];
+            let resist = target.resist[type];
+            let reduct = target.reduct[type];
             if (resist === Infinity) {
                 cells[1].textContent = LABEL_TEXT.invalid;
             } else {
-                cells[1].textContent = resist + "%";
+                cells[1].textContent = (resist - reduct) + "%";
             }
-            cells[2].textContent = (this.target.resistance(type) * 100).toFixed(1) + "%";
+            cells[2].textContent = floorRate(target.resistance(type) * 100);
 
             row = row.nextElementSibling as HTMLRowElement;
         }
     }
 
     // レベル設定
-    private level(elem: HTMLInputElement) {
-        this.target!.level = parseInt(elem.value);
-        this.defence(Table.List.damage!.member);
+    private level(status: Nullable<Status>, input: HTMLInputElement) {
+        this.target!.level = parseInt(input.value);
+        this.defence(status);
     }
 
     // 防御力設定
@@ -1583,8 +1602,11 @@ class ApplyTable extends Table {
                 let row = html.insertRow();
                 bonus.build(caption, row, _ => Table.List.damage!.calculate());
             }
+
             this.bonuses = bonuses;
         }
+
+        Table.List.enemy!.rebuild(status);
     }
 
     // ステータスに適用
@@ -1596,6 +1618,17 @@ class ApplyTable extends Table {
             clone.addValues(bonus.applyRow(status, row));
         }
         return clone;
+    }
+
+    // 敵に適用
+    enemy(enemy: Enemy) {
+        let row = this.html.rows[0];
+        for (let bonus of this.bonuses) {
+            row = row.nextElementSibling as HTMLRowElement;
+            if (bonus.target === BonusTarget.Enemy) {
+                (bonus as ReductBonus).applyEnemy(enemy, row);
+            }
+        }
     }
 }
 
@@ -1691,7 +1724,6 @@ class DamageTable extends Table implements IRefreshTable {
     // データの再表示
     onRefresh() {
         let status = this.member;
-        Table.List.enemy!.defence(status);
         Table.List.apply!.rebuild(status);
 
         // キャプション行以外を削除

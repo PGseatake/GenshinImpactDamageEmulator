@@ -245,11 +245,11 @@ class BonusBase {
     public id: string;
     public valid: boolean;
     public limit: string;
+    public target: BonusTarget;
     protected times: Integer;
     protected stack: Integer;
-    protected target: BonusTarget;
     protected source: string;
-    protected builders: Record<BonusCellType, (cell: HTMLCellElement, change: EventListener) => void>;
+    protected builders: Record<BonusCellType, (cell: HTMLCellElement, changes: EventListener[]) => void>;
 
     constructor(id: string, source: string) {
         this.id = id;
@@ -260,10 +260,10 @@ class BonusBase {
         this.target = BonusTarget.Self;
         this.source = source;
         this.builders = {
-            check: (cell, change) => this.buildCheck(cell, change),
+            check: (cell, changes) => this.buildCheck(cell, changes),
             source: (cell, _) => this.buildSource(cell),
             value: (cell, _) => this.buildValue(cell),
-            stack: (cell, change) => this.buildStack(cell, change),
+            stack: (cell, changes) => this.buildStack(cell, changes),
             times: (cell, _) => this.buildTimes(cell),
         };
     }
@@ -294,23 +294,25 @@ class BonusBase {
             const id = cap.id;
             let cell = row.insertCell();
             cell.id = id;
-            this.builders[id as BonusCellType](cell, change);
+            this.builders[id as BonusCellType](cell, [change]);
         }
     }
 
-    private buildCheck(cell: HTMLCellElement, change: EventListener) {
+    protected buildCheck(cell: HTMLCellElement, changes: EventListener[]) {
         let input = document.createElement("input");
         input.type = "checkbox";
-        input.addEventListener("change", change);
+        for (let change of changes) {
+            input.addEventListener("change", change);
+        }
         cell.appendChild(input);
     }
 
-    private buildSource(cell: HTMLCellElement) {
+    protected buildSource(cell: HTMLCellElement) {
         cell.className = "left";
         cell.appendChild(document.createTextNode(this.source));
     }
 
-    private buildValue(cell: HTMLCellElement) {
+    protected buildValue(cell: HTMLCellElement) {
         cell.className = "left";
         if (this.limit) {
             cell.appendChild(document.createTextNode(this.limit));
@@ -319,7 +321,7 @@ class BonusBase {
         cell.appendChild(document.createTextNode(this.effect));
     }
 
-    private buildStack(cell: HTMLCellElement, change: EventListener) {
+    protected buildStack(cell: HTMLCellElement, changes: EventListener[]) {
         if (1 < this.stack) {
             let input = document.createElement("input");
             input.className = "short";
@@ -329,14 +331,16 @@ class BonusBase {
             input.step = "1";
             input.value = "1";
             input.pattern = "[0-9]*";
-            input.addEventListener("change", change);
+            for (let change of changes) {
+                input.addEventListener("change", change);
+            }
             cell.appendChild(input);
         } else {
             cell.appendChild(document.createTextNode("-"));
         }
     }
 
-    private buildTimes(cell: HTMLCellElement) {
+    protected buildTimes(cell: HTMLCellElement) {
         if (1 < this.times) {
             cell.appendChild(document.createTextNode(this.times.toString() + LABEL_TEXT.second));
         } else {
@@ -366,9 +370,11 @@ class BonusBase {
     private applicable(status: Status): boolean {
         if (this.valid) {
             switch (this.target) {
-                case BonusTarget.Other:
                 case BonusTarget.Next:
+                case BonusTarget.Other:
                     return this.source !== status.chara.name;
+                case BonusTarget.Enemy:
+                    return false;
             }
             return true;
         }
@@ -493,6 +499,58 @@ class FlatBonus extends BonusBase {
                 return [{ flat: true, type: this.dest, value: value },];
             default:
                 return [{ type: this.dest, value: value }];
+        }
+    }
+}
+
+// TODO:多言語対応
+const REDUCT_LABEL: DeepReadonly<Record<ReductBonusType, string>> = {
+    phys: "物理耐性",
+    pyro: "火耐性",
+    hydro: "水耐性",
+    elect: "雷耐性",
+    anemo: "風耐性",
+    cryo: "氷耐性",
+    geo: "岩耐性",
+    defence: "防御力",
+    contact: "元素反応した元素耐性",
+};
+
+// 耐性減衰ボーナス
+class ReductBonus extends BonusBase {
+    private types: Readonly<ReductBonusType[]>;
+    private value: Rate;
+    private change: EventListener;
+
+    constructor(id: string, data: DeepReadonly<IReductBonus>, source: string, change: EventListener) {
+        super(id, source);
+        const types = data.type;
+        this.types = Array.isArray(types) ? types : [types];
+        this.value = data.value;
+        this.limit = data.limit ?? "";
+        this.times = data.times ?? 0;
+        this.target = BonusTarget.Enemy;
+        this.change = change;
+    }
+
+    protected buildCheck(cell: HTMLCellElement, changes: EventListener[]) {
+        super.buildCheck(cell, [this.change, ...changes]);
+    }
+
+    // TODO:多言語対応
+    public get effect(): string {
+        const types = this.types.map(type => REDUCT_LABEL[type]).join("・");
+        return `敵の${types}-${roundRate(this.value)}`;
+    }
+
+    public applyEnemy(enemy: Enemy, row: HTMLRowElement) {
+        let input = row.querySelector("td#check input[type='checkbox']") as HTMLInputElement;
+        if (input?.checked) {
+            for (const type of this.types) {
+                if (type !== ReductBonusType.Contact) {
+                    enemy.reduct[type] += this.value;
+                }
+            }
         }
     }
 }

@@ -193,6 +193,7 @@ const BonusTarget = {
     Self: "self", // 自キャラ
     Next: "next", // 次キャラ
     Other: "other", // 自キャラ以外
+    Enemy: "enemy", // 敵
 } as const;
 type BonusTarget = typeof BonusTarget[keyof typeof BonusTarget];
 
@@ -300,7 +301,7 @@ interface IWeaponFlatBonus extends IFlatBonus {
 }
 
 const ReductBonusType = {
-    Def: "def",
+    Defence: "defence",
     Contact: "contact"
 } as const;
 type ReductBonusType = ElementType | typeof ReductBonusType[keyof typeof ReductBonusType];
@@ -426,6 +427,7 @@ type StatusParam = Record<BonusType, Integer | Rate>;
 type StatusTalent = Record<TalentType, Integer>;
 
 type Resist = Record<ElementType, Rate>;
+type Reduct = Resist & { defence: Rate; };
 
 interface IEnemy extends INameable {
     resist: Resist;

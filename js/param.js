@@ -273,12 +273,13 @@ class Enemy {
             cryo: 0,
             geo: 0,
             phys: 0,
+            defence: 0,
         };
     }
     defence(level) {
         const charaLevel = level + 100;
         const enemyLevel = this.level + 100;
-        return charaLevel / (enemyLevel + charaLevel);
+        return charaLevel / (enemyLevel + charaLevel) + (this.reduct.defence / 100);
     }
     resistance(type) {
         const value = this.resist[type] - this.reduct[type];

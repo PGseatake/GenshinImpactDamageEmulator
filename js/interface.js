@@ -130,6 +130,7 @@ const BonusTarget = {
     Self: "self",
     Next: "next",
     Other: "other",
+    Enemy: "enemy",
 };
 const CombatType = {
     Normal: "normal",
@@ -174,7 +175,7 @@ const FlatBonusBase = {
     EnRec: "en_rec",
 };
 const ReductBonusType = {
-    Def: "def",
+    Defence: "defence",
     Contact: "contact"
 };
 const TalentType = {

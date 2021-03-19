@@ -1098,7 +1098,7 @@ const CHARACTER = {
             lv5: { items: CombatBonusType.Heavy, value: 50.0, limit: "爆裂花火を消費した時", times: 25 },
         },
         conste: {
-            lv2: { extra: ExtraBonusType.Reduct, type: ReductBonusType.Def, value: 23.0, limit: "ブービートラップダメージを受けた敵", times: 10 },
+            lv2: { extra: ExtraBonusType.Reduct, type: ReductBonusType.Defence, value: 23.0, limit: "ブービートラップダメージを受けた敵", times: 10 },
             lv6: { items: ElementBonusType.Pyro, value: 10.0, limit: "元素爆発発動後", times: 25, target: BonusTarget.All },
         }
     },
@@ -1161,7 +1161,7 @@ const CHARACTER = {
             ]
         },
         passive: {
-            lv5: { extra: ExtraBonusType.Reduct, type: ReductBonusType.Def, value: 15.0, limit: "元素爆発の攻撃を受けた敵", times: 10 },
+            lv5: { extra: ExtraBonusType.Reduct, type: ReductBonusType.Defence, value: 15.0, limit: "元素爆発の攻撃を受けた敵", times: 10 },
         },
         conste: {
             lv2: { items: StatusBonusType.DefBuf, value: 20.0, limit: "スキル長押し中" },
@@ -1473,7 +1473,7 @@ const CHARACTER = {
         conste: {
             lv1: { items: StatusBonusType.AnyDmg, value: 10.0, limit: "元素オーブまたは元素粒子を獲得した時", times: 8 },
             lv2: { items: CriticalBonusType.Rate, value: 10.0, limit: "HPが30％以下の敵を攻撃する時" },
-            lv4: { extra: ExtraBonusType.Reduct, type: ReductBonusType.Def, value: 15.0, limit: "元素スキル一回押しで攻撃した時", times: 7 },
+            lv4: { extra: ExtraBonusType.Reduct, type: ReductBonusType.Defence, value: 15.0, limit: "元素スキル一回押しで攻撃した時", times: 7 },
         }
     },
     Sucrose: {

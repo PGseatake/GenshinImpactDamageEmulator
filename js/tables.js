@@ -971,6 +971,7 @@ class BonusTable extends Table {
                 }
                 break;
             case ExtraBonusType.Reduct:
+                status.append(new ReductBonus(status.id, bonus, status.chara.name, _ => EnemyTable.update()));
                 break;
             case ExtraBonusType.Enchant:
                 break;
@@ -1029,6 +1030,8 @@ class BonusTable extends Table {
                 bonuses.push(bonus);
             }
         }
+        const data = { extra: ExtraBonusType.Reduct, type: ElementType.Phys, value: 40, limit: "超電導が発生した時", times: 12 };
+        bonuses.push(new ReductBonus("conduct", data, "元素反応", _ => EnemyTable.update()));
         return bonuses;
     }
 }
@@ -1037,15 +1040,15 @@ class EnemyTable extends Table {
         super(TableType.Enemy);
         this.target = null;
     }
+    static update() {
+        Table.List.enemy.rebuild(Table.List.damage.member);
+    }
     static changeList(elem) {
-        let tbl = Table.List.enemy;
-        let html = tbl.html;
-        tbl.rebuild(html, elem.value);
-        tbl.level(html.querySelector("input#enemy_level"));
+        Table.List.enemy.rebuild(Table.List.damage.member, elem);
         Table.List.damage.calculate();
     }
     static changeLevel(elem) {
-        Table.List.enemy.level(elem);
+        Table.List.enemy.level(Table.List.damage.member, elem);
         Table.List.damage.calculate();
     }
     load() {
@@ -1057,31 +1060,42 @@ class EnemyTable extends Table {
             opt.label = ENEMY_LIST[key].name;
             select.appendChild(opt);
         }
-        this.rebuild(html, select.value);
+        this.target = new Enemy(select.value);
+        this.build(html, this.target);
     }
     clear() {
         this.defence(null);
     }
-    rebuild(html, name) {
-        this.target = new Enemy(name);
+    rebuild(status, select) {
+        let html = this.html;
+        if (!select) {
+            select = html.querySelector("select#enemy_list");
+        }
+        this.target = new Enemy(select.value);
+        Table.List.apply.enemy(this.target);
+        this.build(html, this.target);
+        this.level(status, html.querySelector("input#enemy_level"));
+    }
+    build(html, target) {
         let row = html.rows[2];
         while (row.id) {
             const type = row.id;
             let cells = row.cells;
-            let resist = this.target.resist[type];
+            let resist = target.resist[type];
+            let reduct = target.reduct[type];
             if (resist === Infinity) {
                 cells[1].textContent = LABEL_TEXT.invalid;
             }
             else {
-                cells[1].textContent = resist + "%";
+                cells[1].textContent = (resist - reduct) + "%";
             }
-            cells[2].textContent = (this.target.resistance(type) * 100).toFixed(1) + "%";
+            cells[2].textContent = floorRate(target.resistance(type) * 100);
             row = row.nextElementSibling;
         }
     }
-    level(elem) {
-        this.target.level = parseInt(elem.value);
-        this.defence(Table.List.damage.member);
+    level(status, input) {
+        this.target.level = parseInt(input.value);
+        this.defence(status);
     }
     defence(status) {
         let cell = this.html.querySelector("tbody").lastElementChild.cells[2];
@@ -1115,6 +1129,7 @@ class ApplyTable extends Table {
             }
             this.bonuses = bonuses;
         }
+        Table.List.enemy.rebuild(status);
     }
     status(status) {
         let clone = status.clone();
@@ -1124,6 +1139,15 @@ class ApplyTable extends Table {
             clone.addValues(bonus.applyRow(status, row));
         }
         return clone;
+    }
+    enemy(enemy) {
+        let row = this.html.rows[0];
+        for (let bonus of this.bonuses) {
+            row = row.nextElementSibling;
+            if (bonus.target === BonusTarget.Enemy) {
+                bonus.applyEnemy(enemy, row);
+            }
+        }
     }
 }
 const CONTACT_REACTION_LABEL = {
@@ -1194,7 +1218,6 @@ class DamageTable extends Table {
     }
     onRefresh() {
         let status = this.member;
-        Table.List.enemy.defence(status);
         Table.List.apply.rebuild(status);
         let html = this.html;
         for (let len = html.rows.length; 2 < len; --len) {

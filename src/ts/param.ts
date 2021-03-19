@@ -330,7 +330,7 @@ class Enemy {
     public name: string;
     public level: Integer;
     public resist: DeepReadonly<Resist>;
-    public reduct: Resist;
+    public reduct: Reduct;
 
     constructor(id: string) {
         const info = ENEMY_LIST[id];
@@ -347,6 +347,7 @@ class Enemy {
             cryo: 0,
             geo: 0,
             phys: 0,
+            defence: 0,
         };
     }
 
@@ -354,7 +355,7 @@ class Enemy {
     defence(level: Integer): Scale {
         const charaLevel = level + 100;
         const enemyLevel = this.level + 100;
-        return charaLevel / (enemyLevel + charaLevel);
+        return charaLevel / (enemyLevel + charaLevel) + (this.reduct.defence / 100);
     }
 
     // 耐性（小数）
