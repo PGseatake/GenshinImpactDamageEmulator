@@ -535,8 +535,8 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             // 5. 素晴らしい旅のスキルLv.3
             // 6. 素晴らしい旅エリア内の片手剣、両手剣、長柄武器キャラの炎ダメージ+15％、通常攻撃と重撃ダメージを炎ダメージに変換する。
             lv6: [
-                { items: ElementBonusType.Pyro, value: 15.0, limit: "元素爆発エリア内の片手剣・両手剣・長柄武器キャラ" },
-                { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発エリア内の片手剣・両手剣・長柄武器キャラ", target: BonusTarget.All },
+                { items: ElementBonusType.Pyro, value: 15.0, limit: "元素爆発エリア内の近接武器キャラ", target: BonusTarget.Melee },
+                { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発エリア内の近接武器キャラ", target: BonusTarget.Melee },
             ]
         }
     },
@@ -597,7 +597,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
         },
         passive: {
             // skill. 氷爆による寒気が重華積霜エリアになり、エリア内の片手剣、大剣、長柄武器キャラの通常攻撃、重撃と落下攻撃ダメージは氷元素ダメージになる。
-            skill: { extra: ExtraBonusType.Enchant, elem: ElementType.Cryo, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキルエリア内の片手剣・両手剣・長柄武器キャラ", target: BonusTarget.All },
+            skill: { extra: ExtraBonusType.Enchant, elem: ElementType.Cryo, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキルエリア内の近接武器キャラ", target: BonusTarget.Melee },
             // 4. 霊刃・重華積霜エリア内にいる時、片手剣、両手剣、長柄武器キャラの通常攻撃と攻撃速度が8%上昇する。
             // 5. 霊刃・重華積霜エリアが消えた時、自動的に付近の敵を攻撃する霊刃を召喚し、霊刃・重華積霜のスキルダメージ100%の氷範囲ダメージを与える。
             //    命中された敵の氷耐性が10%減少する、継続時間8秒。
@@ -674,7 +674,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
         },
         passive: {
             // burst. 武器に凝集した列焔により、ディルックの通常攻撃と重撃ダメージは炎ダメージに変わる。継続時間8秒。
-            burst: { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発発動後", times: 8, target: BonusTarget.Self },
+            burst: { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発発動後", times: 8 },
             // 4. 重撃のスタミナ消費-50%、最大継続時間+3秒。
             // 5. 黎明による炎元素バフの継続時間+4秒。さらに効果継続中にディルックの与える炎ダメージ+20%。
             lv5: { items: ElementBonusType.Pyro, value: 20.0, limit: "元素爆発の炎元素付与継続中", times: 12 },
@@ -980,7 +980,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             //        重撃は敵に血梅香効果を与える。胡桃の中断耐性が上昇する。
             skill: [
                 { extra: ExtraBonusType.Flat, dest: StatusBonusType.Atk, base: FlatBonusBase.Hp, scale: DamageScale.Xiao, value: 3.84, limit: "元素スキル発動後", times: 9 },
-                // { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキル発動後", times: 9 },
+                { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキル発動後", times: 9 },
             ],
             // 4. 蝶導来世による冥蝶の舞状態終了後、チーム全員(胡桃自身を除く)の会心率+12%、継続時間8秒。
             lv4: { items: CriticalBonusType.Rate, value: 12, limit: "元素スキル終了後", times: 8, target: BonusTarget.Other },
@@ -1202,6 +1202,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
         },
         passive: {
             // 4. 雷楔継続中に再び星辰帰位を発動すると、刻晴は雷元素バフを獲得する。継続時間5秒。
+            lv4: { extra: ExtraBonusType.Enchant, elem: ElementType.Elect, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "星辰帰位を発動後", times: 5 },
             // 5. 天街巡遊継続中、刻晴の会心率+15%、元素チャージ効率+15%、継続時間8秒。
             lv5: { items: [CriticalBonusType.Rate, StatusBonusType.EnRec], value: 15.0, limit: "元素爆発継続中", times: 8 },
         },

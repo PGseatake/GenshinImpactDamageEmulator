@@ -18,9 +18,9 @@ class BonusBase {
     public id: string;
     public valid: boolean;
     public limit: string;
-    public target: BonusTarget;
     protected times: Integer;
     protected stack: Integer;
+    protected target: BonusTarget;
     protected source: string;
     protected builders: Record<BonusCellType, (cell: HTMLCellElement, changes: EventListener[]) => void>;
 
@@ -140,18 +140,30 @@ class BonusBase {
         return [];
     }
 
-    private applicable(status: Status): boolean {
+    public applicable(status: Status): boolean {
         if (this.valid) {
             switch (this.target) {
                 case BonusTarget.Next:
                 case BonusTarget.Other:
                     return this.source !== status.chara.name;
+                case BonusTarget.Melee:
+                    switch (status.chara.weapon) {
+                        case WeaponType.Sword:
+                        case WeaponType.Claymore:
+                        case WeaponType.Polearm:
+                            return true;
+                    }
+                    return false;
                 case BonusTarget.Enemy:
                     return false;
             }
             return true;
         }
         return false;
+    }
+
+    public get IsEnemy() {
+        return this.target === BonusTarget.Enemy;
     }
 }
 
@@ -319,5 +331,26 @@ class ReductBonus extends BonusBase {
                 }
             }
         }
+    }
+}
+
+// 元素付与ボーナス
+class EnchantBonus extends BonusBase {
+    private elem: ElementType;
+    private dests: ReadonlyArray<CombatType>;
+
+    constructor(id: string, data: DeepReadonly<IEnchantBonus>, source: string) {
+        super(id, source);
+        this.elem = data.elem;
+        this.dests = data.dest;
+        this.limit = data.limit;
+        this.times = data.times ?? 0;
+        this.target = data.target ?? BonusTarget.Self;
+    }
+
+    // TODO:多言語対応
+    public get effect(): string {
+        const dests = this.dests.map(dest => COMBAT_LABEL[dest]).join("・");
+        return `${dests}に${ELEMENT_LABEL[this.elem]}付与`;
     }
 }

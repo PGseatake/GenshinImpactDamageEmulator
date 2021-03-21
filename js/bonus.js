@@ -122,12 +122,23 @@ class BonusBase {
                 case BonusTarget.Next:
                 case BonusTarget.Other:
                     return this.source !== status.chara.name;
+                case BonusTarget.Melee:
+                    switch (status.chara.weapon) {
+                        case WeaponType.Sword:
+                        case WeaponType.Claymore:
+                        case WeaponType.Polearm:
+                            return true;
+                    }
+                    return false;
                 case BonusTarget.Enemy:
                     return false;
             }
             return true;
         }
         return false;
+    }
+    get IsEnemy() {
+        return this.target === BonusTarget.Enemy;
     }
 }
 class BasicBonus extends BonusBase {
@@ -271,5 +282,20 @@ class ReductBonus extends BonusBase {
                 }
             }
         }
+    }
+}
+class EnchantBonus extends BonusBase {
+    constructor(id, data, source) {
+        var _a, _b;
+        super(id, source);
+        this.elem = data.elem;
+        this.dests = data.dest;
+        this.limit = data.limit;
+        this.times = (_a = data.times) !== null && _a !== void 0 ? _a : 0;
+        this.target = (_b = data.target) !== null && _b !== void 0 ? _b : BonusTarget.Self;
+    }
+    get effect() {
+        const dests = this.dests.map(dest => COMBAT_LABEL[dest]).join("・");
+        return `${dests}に${ELEMENT_LABEL[this.elem]}付与`;
     }
 }

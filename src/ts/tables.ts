@@ -1345,6 +1345,11 @@ class BonusTable extends Table implements IRefreshTable {
                 status.append(new ReductBonus(status.id, bonus, status.chara.name, _ => EnemyTable.update()));
                 break;
             case ExtraBonusType.Enchant:
+                if (!bonus.target || (bonus.target === BonusTarget.Self)) {
+                    status.append(new EnchantBonus(status.id, bonus, source));
+                } else {
+                    this.everyone.push(new EnchantBonus(status.id, bonus, status.chara.name));
+                }
                 break;
         }
     }
@@ -1410,7 +1415,7 @@ class BonusTable extends Table implements IRefreshTable {
             }
         }
         for (let bonus of this.everyone) {
-            if (bonus.valid) {
+            if (bonus.applicable(status)) {
                 bonuses.push(bonus);
             }
         }
@@ -1573,7 +1578,7 @@ class ApplyTable extends Table {
         let row = this.html.rows[0];
         for (let bonus of this.bonuses) {
             row = row.nextElementSibling as HTMLRowElement;
-            if (bonus.target === BonusTarget.Enemy) {
+            if (bonus.IsEnemy) {
                 (bonus as ReductBonus).applyEnemy(enemy, row);
             }
         }

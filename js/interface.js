@@ -130,6 +130,7 @@ const BonusTarget = {
     Self: "self",
     Next: "next",
     Other: "other",
+    Melee: "melee",
     Enemy: "enemy",
 };
 const CombatType = {

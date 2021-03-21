@@ -458,8 +458,8 @@ const CHARACTER = {
         conste: {
             lv2: { items: StatusBonusType.EnRec, value: 30.0, limit: "HPが70%以下の時" },
             lv6: [
-                { items: ElementBonusType.Pyro, value: 15.0, limit: "元素爆発エリア内の片手剣・両手剣・長柄武器キャラ" },
-                { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発エリア内の片手剣・両手剣・長柄武器キャラ", target: BonusTarget.All },
+                { items: ElementBonusType.Pyro, value: 15.0, limit: "元素爆発エリア内の近接武器キャラ", target: BonusTarget.Melee },
+                { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発エリア内の近接武器キャラ", target: BonusTarget.Melee },
             ]
         }
     },
@@ -519,7 +519,7 @@ const CHARACTER = {
             ]
         },
         passive: {
-            skill: { extra: ExtraBonusType.Enchant, elem: ElementType.Cryo, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキルエリア内の片手剣・両手剣・長柄武器キャラ", target: BonusTarget.All },
+            skill: { extra: ExtraBonusType.Enchant, elem: ElementType.Cryo, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキルエリア内の近接武器キャラ", target: BonusTarget.Melee },
             lv5: { extra: ExtraBonusType.Reduct, type: ElementType.Cryo, value: 10.0, limit: "元素スキルの霊刃が命中した敵", times: 8 },
         },
         conste: {
@@ -586,7 +586,7 @@ const CHARACTER = {
             ]
         },
         passive: {
-            burst: { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発発動後", times: 8, target: BonusTarget.Self },
+            burst: { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発発動後", times: 8 },
             lv5: { items: ElementBonusType.Pyro, value: 20.0, limit: "元素爆発の炎元素付与継続中", times: 12 },
         },
         conste: {
@@ -844,6 +844,7 @@ const CHARACTER = {
         passive: {
             skill: [
                 { extra: ExtraBonusType.Flat, dest: StatusBonusType.Atk, base: FlatBonusBase.Hp, scale: DamageScale.Xiao, value: 3.84, limit: "元素スキル発動後", times: 9 },
+                { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキル発動後", times: 9 },
             ],
             lv4: { items: CriticalBonusType.Rate, value: 12, limit: "元素スキル終了後", times: 8, target: BonusTarget.Other },
             lv5: { items: ElementBonusType.Pyro, value: 100 / 3, limit: "HPが50%以下の時" },
@@ -1033,6 +1034,7 @@ const CHARACTER = {
             ]
         },
         passive: {
+            lv4: { extra: ExtraBonusType.Enchant, elem: ElementType.Elect, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "星辰帰位を発動後", times: 5 },
             lv5: { items: [CriticalBonusType.Rate, StatusBonusType.EnRec], value: 15.0, limit: "元素爆発継続中", times: 8 },
         },
         conste: {
