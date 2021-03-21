@@ -182,8 +182,8 @@ class FlatBonus extends BonusBase {
         let str;
         switch (this.dest) {
             case FlatBonusDest.Combat:
-            case FlatBonusDest.NormalDmg:
-                str = "通常攻撃・重撃・落下ダメージ";
+            case FlatBonusDest.CombatDmg:
+                str = LABEL_TEXT.combat_dmg;
                 break;
             case FlatBonusDest.Skill:
             case FlatBonusDest.Burst:
@@ -232,6 +232,12 @@ class FlatBonus extends BonusBase {
             case FlatBonusDest.Skill:
             case FlatBonusDest.Burst:
                 return [{ flat: true, type: this.dest, value: value },];
+            case FlatBonusDest.CombatDmg:
+                return [
+                    { type: CombatBonusType.Normal, value: value },
+                    { type: CombatBonusType.Heavy, value: value },
+                    { type: CombatBonusType.Plunge, value: value },
+                ];
             default:
                 return [{ type: this.dest, value: value }];
         }

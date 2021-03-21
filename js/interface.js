@@ -161,9 +161,7 @@ const FlatBonusDest = {
     Combat: "combat",
     Skill: "skill",
     Burst: "burst",
-    NormalDmg: "normal_dmg",
-    SkillDmg: "skill_dmg",
-    BurstDmg: "burst_dmg",
+    CombatDmg: "combat_dmg",
     HydroDmg: "hydro_dmg",
 };
 const FlatBonusBase = {

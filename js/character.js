@@ -843,7 +843,7 @@ const CHARACTER = {
         },
         passive: {
             skill: [
-                { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk, base: FlatBonusBase.Hp, scale: DamageScale.Xiao, value: 3.84, limit: "元素スキル発動後", times: 9 },
+                { extra: ExtraBonusType.Flat, dest: StatusBonusType.Atk, base: FlatBonusBase.Hp, scale: DamageScale.Xiao, value: 3.84, limit: "元素スキル発動後", times: 9 },
             ],
             lv4: { items: CriticalBonusType.Rate, value: 12, limit: "元素スキル終了後", times: 8, target: BonusTarget.Other },
             lv5: { items: ElementBonusType.Pyro, value: 100 / 3, limit: "HPが50%以下の時" },
@@ -1799,7 +1799,7 @@ const CHARACTER = {
             burst: []
         },
         passive: {
-            burst: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Combat, base: FlatBonusBase.None, value: 58.5, scale: DamageScale.Xiao, limit: "元素爆発発動後", times: 15 },
+            burst: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.CombatDmg, base: FlatBonusBase.None, value: 58.5, scale: DamageScale.Xiao, limit: "元素爆発発動後", times: 15 },
             lv4: { items: StatusBonusType.AnyDmg, value: 5.0, limit: "元素爆発継続中3秒毎", stack: 5 },
             lv5: { items: CombatBonusType.Skill, value: 15.0, limit: "元素スキル発動後", times: 7, stack: 3 },
         },

@@ -979,7 +979,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             //        攻撃ダメージは炎元素ダメージとなり、元素付与によって他の元素に変化することはない。
             //        重撃は敵に血梅香効果を与える。胡桃の中断耐性が上昇する。
             skill: [
-                { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk, base: FlatBonusBase.Hp, scale: DamageScale.Xiao, value: 3.84, limit: "元素スキル発動後", times: 9 },
+                { extra: ExtraBonusType.Flat, dest: StatusBonusType.Atk, base: FlatBonusBase.Hp, scale: DamageScale.Xiao, value: 3.84, limit: "元素スキル発動後", times: 9 },
                 // { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキル発動後", times: 9 },
             ],
             // 4. 蝶導来世による冥蝶の舞状態終了後、チーム全員(胡桃自身を除く)の会心率+12%、継続時間8秒。
@@ -2090,7 +2090,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             // burst. 魈のジャンプ力が大幅にアップする。
             //        攻撃範囲が広がり、与えるダメージが上昇する。攻撃ダメージによって他の元素に変化することはない。
             //        この状態の魈は、HPが持続的に減少する。この効果は魈が退場する時に解除される。
-            burst: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Combat, base: FlatBonusBase.None, value: 58.5, scale: DamageScale.Xiao, limit: "元素爆発発動後", times: 15 },
+            burst: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.CombatDmg, base: FlatBonusBase.None, value: 58.5, scale: DamageScale.Xiao, limit: "元素爆発発動後", times: 15 },
             // 4. 靖妖儺舞状態の時、魈の与える全ダメージ+5%。また、スキル継続中、3秒毎に与える全ダメージが更に+5%。最大25％まで。
             lv4: { items: StatusBonusType.AnyDmg, value: 5.0, limit: "元素爆発継続中3秒毎", stack: 5 },
             // 5. 風輪両立発動後の7秒間、風輪両立によるダメージ+15%。継続時間7秒、最大3重まで、重複で発動すると継続時間がリセットされる。

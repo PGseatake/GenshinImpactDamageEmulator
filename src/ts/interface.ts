@@ -264,9 +264,7 @@ const FlatBonusDest = {
     Skill: "skill",
     Burst: "burst",
     // CombatBonusType 割合
-    NormalDmg: "normal_dmg",
-    SkillDmg: "skill_dmg",
-    BurstDmg: "burst_dmg",
+    CombatDmg: "combat_dmg",
     // ElementBonusType 割合
     HydroDmg: "hydro_dmg",
 } as const;

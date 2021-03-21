@@ -309,4 +309,5 @@ const LABEL_TEXT: Readonly<IMap<string>> = {
     rank: "錬成",
     resonance: "元素共鳴",
     second: "秒",
+    combat_dmg: "通常攻撃・重撃・落下ダメージ",
 } as const;
