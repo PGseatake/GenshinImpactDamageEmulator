@@ -228,3 +228,31 @@ function roundFloat(value) {
 function toScale(rate) {
     return (100.0 + rate) / 100.0;
 }
+const TableTypes = [
+    "chara",
+    "sword",
+    "claymore",
+    "polearm",
+    "bow",
+    "catalyst",
+    "flower",
+    "feather",
+    "sands",
+    "goblet",
+    "circlet",
+    "equip",
+    "team",
+    "bonus",
+    "enemy",
+    "apply",
+    "damage"
+];
+const TableType = {
+    Chara: "chara",
+    Equip: "equip",
+    Team: "team",
+    Bonus: "bonus",
+    Enemy: "enemy",
+    Apply: "apply",
+    Damage: "damage",
+};

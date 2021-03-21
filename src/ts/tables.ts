@@ -1,58 +1,6 @@
 const VERSION = "0.02";
 
-const TableTypes = [
-    "chara",
-    "sword",
-    "claymore",
-    "polearm",
-    "bow",
-    "catalyst",
-    "flower",
-    "feather",
-    "sands",
-    "goblet",
-    "circlet",
-    "equip",
-    "team",
-    "bonus",
-    "enemy",
-    "apply",
-    "damage"
-] as const;
-
-type TableType = typeof TableTypes[number];
-const TableType = {
-    Chara: "chara",
-    Equip: "equip",
-    Team: "team",
-    Bonus: "bonus",
-    Enemy: "enemy",
-    Apply: "apply",
-    Damage: "damage",
-} as const;
-
 type ItemTableType = "chara" | "equip" | WeaponType | ArtifactType;
-
-// TODO: 多言語対応
-const TABLE_LABEL: Record<TableType, string> = {
-    chara: "キャラクター",
-    sword: "片手剣",
-    claymore: "両手剣",
-    polearm: "長柄武器",
-    bow: "弓",
-    catalyst: "法器",
-    flower: "生の花",
-    feather: "死の羽",
-    sands: "時の砂",
-    goblet: "空の杯",
-    circlet: "理の冠",
-    equip: "装備",
-    team: "チーム",
-    bonus: "ボーナス",
-    enemy: "敵",
-    apply: "ボーナス",
-    damage: "ダメージ",
-} as const;
 
 interface ITableList extends Partial<Record<TableType, Table>> {
     chara?: CharaTable;
@@ -1544,7 +1492,7 @@ class EnemyTable extends Table {
             let resist = target.resist[type];
             let reduct = target.reduct[type];
             if (resist === Infinity) {
-                cells[1].textContent = LABEL_TEXT.invalid;
+                cells[1].textContent = LABEL_TEXT.immutable;
             } else {
                 cells[1].textContent = (resist - reduct) + "%";
             }
@@ -1631,25 +1579,6 @@ class ApplyTable extends Table {
         }
     }
 }
-
-const CONTACT_REACTION_LABEL: Record<ContactReactionType, string> = {
-    "": "-",
-    pyro: "火",
-    hydro: "水",
-    elect: "雷",
-    cryo: "氷"
-} as const;
-
-const REACTION_LABEL: Record<ReactionType, string> = {
-    // burning: "燃焼",
-    vaporize: "蒸発",
-    melt: "融解",
-    swirl: "拡散",
-    echarge: "感電",
-    shutter: "氷砕き",
-    conduct: "超電導",
-    overload: "過負荷"
-} as const;
 
 // ダメージテーブル
 class DamageTable extends Table implements IRefreshTable {
@@ -1793,7 +1722,7 @@ class DamageTable extends Table implements IRefreshTable {
             let row = html.insertRow();
             let cel = document.createElement("th");
             cel.colSpan = 6;
-            cel.textContent = `${LABEL_TEXT[type]} : Lv.${level}`;
+            cel.textContent = `${TALENT_LABEL[type]} : Lv.${level}`;
             row.appendChild(cel);
 
             let combats = status.chara.talent![type];

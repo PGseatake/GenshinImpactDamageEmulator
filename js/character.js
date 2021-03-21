@@ -2377,7 +2377,7 @@ const ENEMY_LIST = {
         },
     },
     GeovishapPyro: {
-        name: "ヴィシャップ・岩（元素変化・火）",
+        name: "ヴィシャップ・岩（元素変化・炎）",
         resist: {
             pyro: 30,
             hydro: 10,
@@ -2581,7 +2581,7 @@ const ENEMY_LIST = {
         },
     },
     PrimoGeovishapPyro: {
-        name: "エンシェントヴィシャップ・岩（火）",
+        name: "エンシェントヴィシャップ・岩（炎）",
         resist: {
             pyro: 30,
             hydro: 10,
@@ -2629,7 +2629,7 @@ const ENEMY_LIST = {
         },
     },
     PrimoGeovishapPyroDown: {
-        name: "エンシェントヴィシャップ・岩（火・ダウン）",
+        name: "エンシェントヴィシャップ・岩（炎・ダウン）",
         resist: {
             pyro: -20,
             hydro: -40,

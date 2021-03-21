@@ -1,17 +1,4 @@
 "use strict";
-const LABEL_TEXT = {
-    invalid: "無効",
-    weapon: "武器",
-    artifact: "聖遺物",
-    combat: "通常攻撃・重撃",
-    skill: "元素スキル",
-    burst: "元素爆発",
-    atk: "攻撃力",
-    def: "防御力",
-    rank: "錬成",
-    resonance: "元素共鳴",
-    second: "秒",
-};
 const REACTION_DAMAGE_SCALE = {
     pyro: {
         "vaporize": 1.5,

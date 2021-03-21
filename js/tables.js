@@ -1,52 +1,5 @@
 "use strict";
 const VERSION = "0.02";
-const TableTypes = [
-    "chara",
-    "sword",
-    "claymore",
-    "polearm",
-    "bow",
-    "catalyst",
-    "flower",
-    "feather",
-    "sands",
-    "goblet",
-    "circlet",
-    "equip",
-    "team",
-    "bonus",
-    "enemy",
-    "apply",
-    "damage"
-];
-const TableType = {
-    Chara: "chara",
-    Equip: "equip",
-    Team: "team",
-    Bonus: "bonus",
-    Enemy: "enemy",
-    Apply: "apply",
-    Damage: "damage",
-};
-const TABLE_LABEL = {
-    chara: "キャラクター",
-    sword: "片手剣",
-    claymore: "両手剣",
-    polearm: "長柄武器",
-    bow: "弓",
-    catalyst: "法器",
-    flower: "生の花",
-    feather: "死の羽",
-    sands: "時の砂",
-    goblet: "空の杯",
-    circlet: "理の冠",
-    equip: "装備",
-    team: "チーム",
-    bonus: "ボーナス",
-    enemy: "敵",
-    apply: "ボーナス",
-    damage: "ダメージ",
-};
 class Table {
     constructor(type) {
         this.type = type;
@@ -1084,7 +1037,7 @@ class EnemyTable extends Table {
             let resist = target.resist[type];
             let reduct = target.reduct[type];
             if (resist === Infinity) {
-                cells[1].textContent = LABEL_TEXT.invalid;
+                cells[1].textContent = LABEL_TEXT.immutable;
             }
             else {
                 cells[1].textContent = (resist - reduct) + "%";
@@ -1150,22 +1103,6 @@ class ApplyTable extends Table {
         }
     }
 }
-const CONTACT_REACTION_LABEL = {
-    "": "-",
-    pyro: "火",
-    hydro: "水",
-    elect: "雷",
-    cryo: "氷"
-};
-const REACTION_LABEL = {
-    vaporize: "蒸発",
-    melt: "融解",
-    swirl: "拡散",
-    echarge: "感電",
-    shutter: "氷砕き",
-    conduct: "超電導",
-    overload: "過負荷"
-};
 class DamageTable extends Table {
     constructor() {
         super(TableType.Damage);
@@ -1271,7 +1208,7 @@ class DamageTable extends Table {
             let row = html.insertRow();
             let cel = document.createElement("th");
             cel.colSpan = 6;
-            cel.textContent = `${LABEL_TEXT[type]} : Lv.${level}`;
+            cel.textContent = `${TALENT_LABEL[type]} : Lv.${level}`;
             row.appendChild(cel);
             let combats = status.chara.talent[type];
             for (let combat of combats) {

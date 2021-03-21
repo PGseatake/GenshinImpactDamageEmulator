@@ -1,18 +1,3 @@
-// TODO: 多言語対応
-const LABEL_TEXT: Readonly<IMap<string>> = {
-    invalid: "無効",
-    weapon: "武器",
-    artifact: "聖遺物",
-    combat: "通常攻撃・重撃",
-    skill: "元素スキル",
-    burst: "元素爆発",
-    atk: "攻撃力",
-    def: "防御力",
-    rank: "錬成",
-    resonance: "元素共鳴",
-    second: "秒",
-} as const;
-
 const REACTION_DAMAGE_SCALE: DeepReadonly<Partial<Record<ElementType, Partial<Record<ReactionType, Scale>>>>> = {
     pyro: {
         "vaporize": 1.5,
@@ -178,7 +163,7 @@ class Status {
         return this.elem_react * 60.0 / 9.0;
     }
 
-    // 攻撃力（実数）
+    // HP（実数）
     get hp(): Float {
         return this.base.hp + (this.base.hp * this.param.hp_buf / 100) + this.param.hp;
     }

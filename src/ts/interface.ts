@@ -482,3 +482,34 @@ function roundFloat(value: Float): string {
 function toScale(rate: Rate): Scale {
     return (100.0 + rate) / 100.0;
 }
+
+const TableTypes = [
+    "chara",
+    "sword",
+    "claymore",
+    "polearm",
+    "bow",
+    "catalyst",
+    "flower",
+    "feather",
+    "sands",
+    "goblet",
+    "circlet",
+    "equip",
+    "team",
+    "bonus",
+    "enemy",
+    "apply",
+    "damage"
+] as const;
+
+type TableType = typeof TableTypes[number];
+const TableType = {
+    Chara: "chara",
+    Equip: "equip",
+    Team: "team",
+    Bonus: "bonus",
+    Enemy: "enemy",
+    Apply: "apply",
+    Damage: "damage",
+} as const;

@@ -1866,6 +1866,7 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
         passive: {
             // 4. 断流効果の継続時間が8秒延長する。
             // 5. 魔王の武装・荒波の近接モード時、通常攻撃と重撃が会心を発生すると、命中した敵に断流効果を付与する。
+            // 6. チーム内の自身のキャラクター全員の通常攻撃Lv.+1
         },
         conste: {
             // 1. 魔王の武装・荒波のクールタイムが20%減少する。
@@ -2709,7 +2710,7 @@ const ENEMY_LIST: DeepReadonly<IMap<IEnemy>> = {
         },
     },
     GeovishapPyro: {
-        name: "ヴィシャップ・岩（元素変化・火）",
+        name: "ヴィシャップ・岩（元素変化・炎）",
         resist: {
             pyro: 30,
             hydro: 10,
@@ -2913,7 +2914,7 @@ const ENEMY_LIST: DeepReadonly<IMap<IEnemy>> = {
         },
     },
     PrimoGeovishapPyro: {
-        name: "エンシェントヴィシャップ・岩（火）",
+        name: "エンシェントヴィシャップ・岩（炎）",
         resist: {
             pyro: 30,
             hydro: 10,
@@ -2961,7 +2962,7 @@ const ENEMY_LIST: DeepReadonly<IMap<IEnemy>> = {
         },
     },
     PrimoGeovishapPyroDown: {
-        name: "エンシェントヴィシャップ・岩（火・ダウン）",
+        name: "エンシェントヴィシャップ・岩（炎・ダウン）",
         resist: {
             pyro: -20,
             hydro: -40,
