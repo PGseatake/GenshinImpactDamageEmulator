@@ -68,6 +68,7 @@ class Status {
     public base: StatusBase;
     public param: StatusParam;
     public flat: FlatDamage;
+    public enchant: Nullable<IEnchantBonusValue>;
 
     constructor(id: string) {
         this.id = id;
@@ -119,6 +120,7 @@ class Status {
             skill: 0.0,
             burst: 0.0
         };
+        this.enchant = null;
     }
 
     get level(): Integer {
@@ -128,24 +130,29 @@ class Status {
     // 元素反応のリストを取得
     get reactions(): ReactionType[] {
         const chara = this.chara;
-        const elem = chara.element;
-        const scales = REACTION_DAMAGE_SCALE[elem];
+        let elems = [chara.element];
+        if (this.enchant && (this.enchant.type !== chara.element)) {
+            elems.push(this.enchant.type);
+        }
 
         let types: ReactionType[] = [];
-        // 元素反応を追加
-        if (scales) {
-            for (const type in scales) {
-                types.push(type as ReactionType);
+        for (const elem of elems) {
+            const scales = REACTION_DAMAGE_SCALE[elem];
+            // 元素反応を追加
+            if (scales) {
+                for (const type in scales) {
+                    types.push(type as ReactionType);
+                }
+            }
+            // 氷砕きを追加
+            if (elem === ElementType.Geo) {
+                types.push(ReactionType.Shutter);
+            } else if (chara.weapon === WeaponType.Claymore) {
+                types.push(ReactionType.Shutter);
             }
         }
-        // 氷砕きを追加
-        if (elem === ElementType.Geo) {
-            types.push(ReactionType.Shutter);
-        } else if (chara.weapon === WeaponType.Claymore) {
-            types.push(ReactionType.Shutter);
-        }
 
-        return types;
+        return [...new Set(types)];
     }
 
     // 元素反応・ベース
@@ -261,23 +268,52 @@ class Status {
 
     // ボーナス値加算
     addValue(bonus: AnyBonusValue) {
-        if (bonus.flat) {
-            this.flat[bonus.type] += bonus.value;
-        } else {
-            if (bonus.type !== StatusBonusType.Other) {
-                this.param[bonus.type] += bonus.value;
-            }
+        switch (bonus.extra) {
+            case ExtraBonusType.Flat:
+                this.flat[bonus.type] += bonus.value;
+                break;
+            case ExtraBonusType.Enchant:
+                if (this.enchant) {
+                    if (bonus.self) {
+                        this.enchant = bonus;
+                    } else {
+                        // elect < cryo < pyro
+                        switch (this.enchant.type) {
+                            case ElementType.Elect:
+                                this.enchant = bonus;
+                                break;
+                            case ElementType.Cryo:
+                                if (bonus.type === ElementType.Pyro) {
+                                    this.enchant = bonus;
+                                }
+                                break;
+                        }
+                    }
+                } else {
+                    this.enchant = bonus;
+                }
+                break;
+            default:
+                if (bonus.type !== StatusBonusType.Other) {
+                    this.param[bonus.type] += bonus.value;
+                }
+                break;
         }
     }
 
     // ボーナス値減算
     subValue(bonus: AnyBonusValue) {
-        if (bonus.flat) {
-            this.flat[bonus.type] -= bonus.value;
-        } else {
-            if (bonus.type !== StatusBonusType.Other) {
-                this.param[bonus.type] -= bonus.value;
-            }
+        switch (bonus.extra) {
+            case ExtraBonusType.Flat:
+                this.flat[bonus.type] -= bonus.value;
+                break;
+            case ExtraBonusType.Enchant:
+                break;
+            default:
+                if (bonus.type !== StatusBonusType.Other) {
+                    this.param[bonus.type] -= bonus.value;
+                }
+                break;
         }
     }
 
@@ -306,6 +342,7 @@ class Status {
         status.base = { ...this.base };
         status.param = { ...this.param };
         status.flat = { ...this.flat };
+        status.enchant = null;
         return status;
     }
 }

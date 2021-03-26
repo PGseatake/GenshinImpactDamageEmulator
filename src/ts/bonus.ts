@@ -17,6 +17,7 @@ type BonusCellType = typeof BonusCellType[number];
 class BonusBase {
     public id: string;
     public valid: boolean;
+    public readonly extra: ExtraBonusType | undefined;
     public limit: string;
     protected times: Integer;
     protected stack: Integer;
@@ -24,9 +25,10 @@ class BonusBase {
     protected source: string;
     protected builders: Record<BonusCellType, (cell: HTMLCellElement, changes: EventListener[]) => void>;
 
-    constructor(id: string, source: string) {
+    constructor(id: string, source: string, extra?: ExtraBonusType) {
         this.id = id;
         this.valid = true;
+        this.extra = extra;
         this.limit = "";
         this.times = 0;
         this.stack = 0;
@@ -161,10 +163,6 @@ class BonusBase {
         }
         return false;
     }
-
-    public get IsEnemy() {
-        return this.target === BonusTarget.Enemy;
-    }
 }
 
 // ステータスボーナス
@@ -212,7 +210,7 @@ class FlatBonus extends BonusBase {
     private value: number;
 
     constructor(id: string, data: DeepReadonly<IBasicFlatBonus>, source: string, status: Status) {
-        super(id, source);
+        super(id, source, ExtraBonusType.Flat);
         const dest = data.dest;
         this.dest = dest;
         this.base = data.base;
@@ -276,13 +274,13 @@ class FlatBonus extends BonusBase {
         switch (this.dest) {
             case FlatBonusDest.Combat:
                 return [
-                    { flat: true, type: CombatType.Normal, value: value },
-                    { flat: true, type: CombatType.Heavy, value: value },
-                    { flat: true, type: CombatType.Plunge, value: value },
+                    { extra: ExtraBonusType.Flat, type: CombatType.Normal, value: value },
+                    { extra: ExtraBonusType.Flat, type: CombatType.Heavy, value: value },
+                    { extra: ExtraBonusType.Flat, type: CombatType.Plunge, value: value },
                 ];
             case FlatBonusDest.Skill:
             case FlatBonusDest.Burst:
-                return [{ flat: true, type: this.dest, value: value },];
+                return [{ extra: ExtraBonusType.Flat, type: this.dest, value: value },];
             case FlatBonusDest.CombatDmg:
                 return [
                     { type: CombatBonusType.Normal, value: value },
@@ -302,7 +300,7 @@ class ReductBonus extends BonusBase {
     private change: EventListener;
 
     constructor(id: string, data: DeepReadonly<IReductBonus>, source: string, change: EventListener) {
-        super(id, source);
+        super(id, source, ExtraBonusType.Reduct);
         const types = data.type;
         this.types = Array.isArray(types) ? types : [types];
         this.value = data.value;
@@ -336,13 +334,13 @@ class ReductBonus extends BonusBase {
 
 // 元素付与ボーナス
 class EnchantBonus extends BonusBase {
-    private elem: ElementType;
-    private dests: ReadonlyArray<CombatType>;
+    public readonly elem: ElementType;
+    private dest: ReadonlyArray<CombatType>;
 
     constructor(id: string, data: DeepReadonly<IEnchantBonus>, source: string) {
-        super(id, source);
+        super(id, source, ExtraBonusType.Enchant);
         this.elem = data.elem;
-        this.dests = data.dest;
+        this.dest = data.dest;
         this.limit = data.limit;
         this.times = data.times ?? 0;
         this.target = data.target ?? BonusTarget.Self;
@@ -350,7 +348,11 @@ class EnchantBonus extends BonusBase {
 
     // TODO:多言語対応
     public get effect(): string {
-        const dests = this.dests.map(dest => COMBAT_LABEL[dest]).join("・");
-        return `${dests}に${ELEMENT_LABEL[this.elem]}付与`;
+        const dest = this.dest.map(dest => COMBAT_LABEL[dest]).join("・");
+        return `${dest}に${ELEMENT_LABEL[this.elem]}付与`;
+    }
+
+    public apply(_: Status, __?: number): AnyBonusValue[] {
+        return [{ extra: ExtraBonusType.Enchant, type: this.elem, dest: this.dest, self: this.target === BonusTarget.Self }];
     }
 }

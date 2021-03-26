@@ -183,7 +183,6 @@ const TalentType = {
     Burst: "burst",
 };
 const CombatElementType = {
-    Switch: "switch",
     Contact: "contact"
 };
 const TypeToBonus = {

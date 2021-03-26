@@ -1578,7 +1578,7 @@ class ApplyTable extends Table {
         let row = this.html.rows[0];
         for (let bonus of this.bonuses) {
             row = row.nextElementSibling as HTMLRowElement;
-            if (bonus.IsEnemy) {
+            if (bonus.extra === ExtraBonusType.Reduct) {
                 (bonus as ReductBonus).applyEnemy(enemy, row);
             }
         }
@@ -1587,15 +1587,6 @@ class ApplyTable extends Table {
 
 // ダメージテーブル
 class DamageTable extends Table implements IRefreshTable {
-    // ダメージタイプ変更
-    static changeType(elem: HTMLSelectElement) {
-        let tbl = Table.List.damage!;
-        let member = tbl.member;
-        if (member) {
-            tbl.damageType(tbl.html, elem, member);
-        }
-    }
-
     // メンバー変更
     static changeMember() {
         Table.List.damage!.onRefresh();
@@ -1681,80 +1672,35 @@ class DamageTable extends Table implements IRefreshTable {
 
     // テーブル再構築
     private rebuild(html: HTMLTableElement, status: Status) {
-        // ダメージタイプ非表示
-        let damageType = html.querySelector("select#damage_type") as HTMLSelectElement;
-        damageType.className = "hide";
-
         // キャラレベル設定
         let rows = html.rows;
         rows[0].cells[0].lastChild!.textContent = "Lv." + status.level;
-
-        // 元素反応設定
-        {
-            let cell = rows[1].cells[4];
-            removeChildren(cell);
-
-            const reactions = status.reactions;
-            if (0 < reactions.length) {
-                let select = document.createElement("select");
-                select.id = "reaction_type";
-                // 反応なしを追加
-                {
-                    let opt = document.createElement("option");
-                    opt.value = "";
-                    opt.label = "-";
-                    select.appendChild(opt);
-                }
-                // 元素反応を追加
-                for (const type of reactions) {
-                    let opt = document.createElement("option");
-                    opt.value = type;
-                    opt.label = REACTION_LABEL[type];
-                    select.appendChild(opt);
-                }
-                select.addEventListener("change", _ => this.calculate());
-
-                cell.appendChild(select);
-            } else {
-                cell.appendChild(document.createTextNode("-"));
-            }
-        }
 
         let buildRow = (type: TalentType) => {
             let level = status.talent[type];
 
             // キャプション行追加
-            let row = html.insertRow();
-            let cel = document.createElement("th");
-            cel.colSpan = 6;
-            cel.textContent = `${TALENT_LABEL[type]} : Lv.${level}`;
-            row.appendChild(cel);
+            {
+                let row = html.insertRow();
+                let cel = document.createElement("th");
+                cel.colSpan = 6;
+                cel.textContent = `${TALENT_LABEL[type]} : Lv.${level}`;
+                row.appendChild(cel);
+            }
 
             let combats = status.chara.talent![type];
             for (let combat of combats) {
                 let attr = new CombatAttribute(combat, level);
                 let elem = attr.elem;
-
-                // ダメージタイプ
-                let className = "";
-                switch (elem) {
-                    case CombatElementType.Switch:
-                        damageType.className = ""; // ダメージタイプ表示
-                        className = ElementType.Phys;
-                        break;
-                    case CombatElementType.Contact:
-                        break;
-                    default:
-                        className = elem;
-                        break;
-                }
-
-                row = html.insertRow();
+                let className = elem as string;
+                let row = html.insertRow();
 
                 // 名前セル
-                cel = document.createElement("th");
+                let cel = document.createElement("th");
                 cel.appendChild(document.createTextNode(attr.name));
                 if (elem === CombatElementType.Contact) {
+                    className = "";
+
                     // 付加元素タイプ選択
                     let select = document.createElement("select");
                     select.id = "contact_type";
@@ -1795,45 +1741,6 @@ class DamageTable extends Table implements IRefreshTable {
         buildRow(TalentType.Combat);
         buildRow(TalentType.Skill);
         buildRow(TalentType.Burst);
-
-        // 属性切替が必要
-        if (!damageType.className) {
-            this.damageType(html, damageType, status);
-        } else {
-            this.calcDamage(html, status);
-        }
-    }
-
-    // ダメージタイプ設定
-    private damageType(html: HTMLTableElement, select: HTMLSelectElement, status: Status) {
-        let chara = status.chara;
-
-        // ダメージタイプ切替
-        let className = select.value;
-        if (className === "elem") {
-            className = chara.element;
-        }
-
-        let row = html.rows[2];
-        let rebuildRow = (type: TalentType) => {
-            row = row.nextElementSibling as HTMLRowElement; // キャプション行スキップ
-
-            let combat = chara.talent![type];
-            for (let i = 0, len = combat.length; i < len; ++i) {
-                // 元素付与されるものはセル色変更
-                if (combat[i].elem === CombatElementType.Switch) {
-                    let cells = row.cells;
-                    for (let i = 1; i <= 5; ++i) {
-                        cells[i].className = className;
-                    }
-                }
-                row = row.nextElementSibling as HTMLRowElement;
-            }
-        };
-
-        rebuildRow(TalentType.Combat);
-        rebuildRow(TalentType.Skill);
-        rebuildRow(TalentType.Burst);
 
         this.calcDamage(html, status);
     }
@@ -1876,23 +1783,94 @@ class DamageTable extends Table implements IRefreshTable {
         return undefined;
     }
 
+    // 元素反応リストの再設定
+    private listReaction(caption: HTMLRowElement, status: Status) {
+        let cell = caption.cells[4];
+        const prev = this.reactionType(cell);
+        removeChildren(cell);
+
+        const reactions = status.reactions;
+        if (0 < reactions.length) {
+            let select = document.createElement("select");
+            select.id = "reaction_type";
+            // 反応なしを追加
+            {
+                let opt = document.createElement("option");
+                opt.value = "";
+                opt.label = "-";
+                select.appendChild(opt);
+            }
+            // 元素反応を追加
+            for (const type of reactions) {
+                let opt = document.createElement("option");
+                opt.value = type;
+                opt.label = REACTION_LABEL[type];
+                opt.selected = (type === prev);
+                select.appendChild(opt);
+            }
+            select.addEventListener("change", _ => this.calculate());
+
+            cell.appendChild(select);
+        } else {
+            cell.appendChild(document.createTextNode("-"));
+        }
+    }
+
+    // 元素付与の適用
+    private applyEnchant(row: HTMLRowElement, status: Status) {
+        const elementType = (combat: ICombat, bonus: Nullable<IEnchantBonusValue>) => {
+            if (bonus && (combat.elem === ElementType.Phys)) {
+                const type = combat.type;
+                for (const dest of bonus.dest) {
+                    if (type === dest) {
+                        return bonus.type;
+                    }
+                }
+            }
+            return combat.elem;
+        };
+
+        const enchant = status.enchant;
+        const talent = status.chara!.talent!;
+        const rebuildRow = (type: TalentType) => {
+            row = row.nextElementSibling as HTMLRowElement;
+            for (const combat of talent[type]) {
+                const elem = elementType(combat, enchant);
+                let cells = Array.from(row.cells);
+                for (let i = 1; i <= 5; ++i) {
+                    cells[i].className = elem;
+                }
+                row = row.nextElementSibling as HTMLRowElement;
+            }
+        };
+
+        rebuildRow(TalentType.Combat);
+        // TODO: 元素付与されるのか検証
+        // rebuildRow(TalentType.Skill);
+        // rebuildRow(TalentType.Burst);
+    }
+
     // ダメージ計算
     private calcDamage(html: HTMLTableElement, status: Status) {
         status = Table.List.apply!.status(status);
 
-        // キャラ攻撃力設定
         let row = html.rows[1];
+        // 元素反応設定
+        this.listReaction(row, status);
+
+        // キャラ攻撃力設定
         let cells = Array.from(row.cells);
         const critical = status.critical();
         cells[2].textContent = status.attack.toFixed();
         cells[3].textContent = `+${floorRate(critical.damage)}(${floorRate(critical.rate)})`;
-
         const reaction = this.reactionType(cells[4]);
 
         row = row.nextElementSibling as HTMLRowElement;
-        let enemy = Table.List.enemy!.target!;
+        // 元素付与設定
+        this.applyEnchant(row, status);
 
-        let damageRow = (type: TalentType) => {
+        let enemy = Table.List.enemy!.target!;
+        const damageRow = (type: TalentType) => {
             row = row.nextElementSibling as HTMLRowElement; // キャプション行スキップ
 
             let level = status.talent[type];

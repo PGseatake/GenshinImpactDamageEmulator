@@ -12,9 +12,10 @@ const BonusCellType = [
     "times"
 ];
 class BonusBase {
-    constructor(id, source) {
+    constructor(id, source, extra) {
         this.id = id;
         this.valid = true;
+        this.extra = extra;
         this.limit = "";
         this.times = 0;
         this.stack = 0;
@@ -137,9 +138,6 @@ class BonusBase {
         }
         return false;
     }
-    get IsEnemy() {
-        return this.target === BonusTarget.Enemy;
-    }
 }
 class BasicBonus extends BonusBase {
     constructor(id, data, source) {
@@ -175,7 +173,7 @@ class BasicBonus extends BonusBase {
 class FlatBonus extends BonusBase {
     constructor(id, data, source, status) {
         var _a, _b, _c, _d;
-        super(id, source);
+        super(id, source, ExtraBonusType.Flat);
         const dest = data.dest;
         this.dest = dest;
         this.base = data.base;
@@ -236,13 +234,13 @@ class FlatBonus extends BonusBase {
         switch (this.dest) {
             case FlatBonusDest.Combat:
                 return [
-                    { flat: true, type: CombatType.Normal, value: value },
-                    { flat: true, type: CombatType.Heavy, value: value },
-                    { flat: true, type: CombatType.Plunge, value: value },
+                    { extra: ExtraBonusType.Flat, type: CombatType.Normal, value: value },
+                    { extra: ExtraBonusType.Flat, type: CombatType.Heavy, value: value },
+                    { extra: ExtraBonusType.Flat, type: CombatType.Plunge, value: value },
                 ];
             case FlatBonusDest.Skill:
             case FlatBonusDest.Burst:
-                return [{ flat: true, type: this.dest, value: value },];
+                return [{ extra: ExtraBonusType.Flat, type: this.dest, value: value },];
             case FlatBonusDest.CombatDmg:
                 return [
                     { type: CombatBonusType.Normal, value: value },
@@ -257,7 +255,7 @@ class FlatBonus extends BonusBase {
 class ReductBonus extends BonusBase {
     constructor(id, data, source, change) {
         var _a, _b;
-        super(id, source);
+        super(id, source, ExtraBonusType.Reduct);
         const types = data.type;
         this.types = Array.isArray(types) ? types : [types];
         this.value = data.value;
@@ -287,15 +285,18 @@ class ReductBonus extends BonusBase {
 class EnchantBonus extends BonusBase {
     constructor(id, data, source) {
         var _a, _b;
-        super(id, source);
+        super(id, source, ExtraBonusType.Enchant);
         this.elem = data.elem;
-        this.dests = data.dest;
+        this.dest = data.dest;
         this.limit = data.limit;
         this.times = (_a = data.times) !== null && _a !== void 0 ? _a : 0;
         this.target = (_b = data.target) !== null && _b !== void 0 ? _b : BonusTarget.Self;
     }
     get effect() {
-        const dests = this.dests.map(dest => COMBAT_LABEL[dest]).join("・");
-        return `${dests}に${ELEMENT_LABEL[this.elem]}付与`;
+        const dest = this.dest.map(dest => COMBAT_LABEL[dest]).join("・");
+        return `${dest}に${ELEMENT_LABEL[this.elem]}付与`;
+    }
+    apply(_, __) {
+        return [{ extra: ExtraBonusType.Enchant, type: this.elem, dest: this.dest, self: this.target === BonusTarget.Self }];
     }
 }

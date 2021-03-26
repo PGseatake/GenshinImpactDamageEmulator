@@ -459,7 +459,7 @@ const CHARACTER = {
             lv2: { items: StatusBonusType.EnRec, value: 30.0, limit: "HPが70%以下の時" },
             lv6: [
                 { items: ElementBonusType.Pyro, value: 15.0, limit: "元素爆発エリア内の近接武器キャラ", target: BonusTarget.Melee },
-                { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発エリア内の近接武器キャラ", target: BonusTarget.Melee },
+                { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素爆発エリア内の近接武器キャラ", target: BonusTarget.Melee },
             ]
         }
     },
@@ -501,12 +501,12 @@ const CHARACTER = {
         spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
-                { name: "1段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 70.0 },
-                { name: "2段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 63.1 },
-                { name: "3段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 80.3 },
-                { name: "4段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 101 },
-                { name: "連続重撃ダメージ", type: CombatType.Heavy, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 56.3 },
-                { name: "重撃終了ダメージ", type: CombatType.Heavy, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 102 },
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 70.0 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 63.1 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 80.3 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 101 },
+                { name: "連続重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 56.3 },
+                { name: "重撃終了ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 102 },
                 { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 74.6 },
                 { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 149 },
                 { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 186 },
@@ -564,12 +564,12 @@ const CHARACTER = {
         spvalue: [0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
         talent: {
             combat: [
-                { name: "1段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 89.7 },
-                { name: "2段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 87.6 },
-                { name: "3段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 98.8 },
-                { name: "4段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 134 },
-                { name: "連続重撃ダメージ", type: CombatType.Heavy, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 68.8 },
-                { name: "重撃終了ダメージ", type: CombatType.Heavy, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 125 },
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 89.7 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 87.6 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 98.8 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 134 },
+                { name: "連続重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 68.8 },
+                { name: "重撃終了ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 125 },
                 { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 89.5 },
                 { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 179 },
                 { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 224 },
@@ -586,7 +586,7 @@ const CHARACTER = {
             ]
         },
         passive: {
-            burst: { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy], limit: "元素爆発発動後", times: 8 },
+            burst: { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素爆発発動後", times: 8 },
             lv5: { items: ElementBonusType.Pyro, value: 20.0, limit: "元素爆発の炎元素付与継続中", times: 12 },
         },
         conste: {
@@ -824,16 +824,16 @@ const CHARACTER = {
         spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
         talent: {
             combat: [
-                { name: "1段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 46.9 },
-                { name: "2段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 48.3 },
-                { name: "3段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 61.1 },
-                { name: "4段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 65.6 },
-                { name: "5段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 33.3, value2: 35.2 },
-                { name: "6段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 86.0 },
-                { name: "重撃ダメージ", type: CombatType.Heavy, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 136 },
-                { name: "落下期間のダメージ", type: CombatType.Plunge, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 65.4 },
-                { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 131 },
-                { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: CombatElementType.Switch, scale: DamageScale.Hutao, value: 163 },
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Hutao, value: 46.9 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Hutao, value: 48.3 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Hutao, value: 61.1 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Hutao, value: 65.6 },
+                { name: "5段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Hutao, value: 33.3, value2: 35.2 },
+                { name: "6段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Hutao, value: 86.0 },
+                { name: "重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Hutao, value: 136 },
+                { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Hutao, value: 65.4 },
+                { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Hutao, value: 131 },
+                { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Hutao, value: 163 },
             ],
             skill: [],
             burst: [
@@ -1012,12 +1012,12 @@ const CHARACTER = {
         spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
         talent: {
             combat: [
-                { name: "1段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 41.0 },
-                { name: "2段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 41.0 },
-                { name: "3段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 54.4 },
-                { name: "4段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 31.5, value2: 34.4 },
-                { name: "5段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 67.0 },
-                { name: "重撃ダメージ", type: CombatType.Heavy, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 76.8, value2: 86.0 },
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 41.0 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 41.0 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 54.4 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 31.5, value2: 34.4 },
+                { name: "5段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 67.0 },
+                { name: "重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 76.8, value2: 86.0 },
                 { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 63.9 },
                 { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 128 },
                 { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 160 },
@@ -1328,12 +1328,12 @@ const CHARACTER = {
         spvalue: [0, 0, 7.5, 15.0, 15.0, 22.5, 30.0],
         talent: {
             combat: [
-                { name: "1段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 79.1 },
-                { name: "2段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 73.4 },
-                { name: "3段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 86.3 },
-                { name: "4段ダメージ", type: CombatType.Normal, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 113 },
-                { name: "連続重撃ダメージ", type: CombatType.Heavy, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 50.7 },
-                { name: "重撃終了ダメージ", type: CombatType.Heavy, elem: CombatElementType.Switch, scale: DamageScale.Phys, value: 90.5 },
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 79.1 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 73.4 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 86.3 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 113 },
+                { name: "連続重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 50.7 },
+                { name: "重撃終了ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 90.5 },
                 { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 74.6 },
                 { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 149 },
                 { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 186 },

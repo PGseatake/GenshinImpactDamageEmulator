@@ -330,18 +330,25 @@ interface IBonusValue {
 }
 
 interface IBasicBonusValue {
-    flat?: undefined;
+    extra?: undefined;
     type: AnyBonusType;
     value: Float | Rate;
 }
 
 interface IFlatBonusValue {
-    flat: true;
+    extra: "flat";
     type: CombatType;
     value: Float;
 }
 
-type AnyBonusValue = IBasicBonusValue | IFlatBonusValue;
+interface IEnchantBonusValue {
+    extra: "enchant";
+    type: ElementType;
+    dest: ReadonlyArray<CombatType>;
+    self: boolean;
+}
+
+type AnyBonusValue = IBasicBonusValue | IFlatBonusValue | IEnchantBonusValue;
 
 interface INameable {
     name: string;
@@ -375,7 +382,6 @@ const TalentType = {
 type TalentType = typeof TalentType[keyof typeof TalentType];
 
 const CombatElementType = {
-    Switch: "switch",
     Contact: "contact"
 } as const;
 type CombatElementType = ElementType | typeof CombatElementType[keyof typeof CombatElementType];

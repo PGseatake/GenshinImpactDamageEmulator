@@ -95,27 +95,33 @@ class Status {
             skill: 0.0,
             burst: 0.0
         };
+        this.enchant = null;
     }
     get level() {
         return parseInt(this.lv.replace("+", ""));
     }
     get reactions() {
         const chara = this.chara;
-        const elem = chara.element;
-        const scales = REACTION_DAMAGE_SCALE[elem];
+        let elems = [chara.element];
+        if (this.enchant && (this.enchant.type !== chara.element)) {
+            elems.push(this.enchant.type);
+        }
         let types = [];
-        if (scales) {
-            for (const type in scales) {
-                types.push(type);
+        for (const elem of elems) {
+            const scales = REACTION_DAMAGE_SCALE[elem];
+            if (scales) {
+                for (const type in scales) {
+                    types.push(type);
+                }
+            }
+            if (elem === ElementType.Geo) {
+                types.push(ReactionType.Shutter);
+            }
+            else if (chara.weapon === WeaponType.Claymore) {
+                types.push(ReactionType.Shutter);
             }
         }
-        if (elem === ElementType.Geo) {
-            types.push(ReactionType.Shutter);
-        }
-        else if (chara.weapon === WeaponType.Claymore) {
-            types.push(ReactionType.Shutter);
-        }
-        return types;
+        return [...new Set(types)];
     }
     get elem_react() {
         return this.param.elem / (1400 + this.param.elem) * 100;
@@ -204,23 +210,51 @@ class Status {
         this.bonus.push(bonus);
     }
     addValue(bonus) {
-        if (bonus.flat) {
-            this.flat[bonus.type] += bonus.value;
-        }
-        else {
-            if (bonus.type !== StatusBonusType.Other) {
-                this.param[bonus.type] += bonus.value;
-            }
+        switch (bonus.extra) {
+            case ExtraBonusType.Flat:
+                this.flat[bonus.type] += bonus.value;
+                break;
+            case ExtraBonusType.Enchant:
+                if (this.enchant) {
+                    if (bonus.self) {
+                        this.enchant = bonus;
+                    }
+                    else {
+                        switch (this.enchant.type) {
+                            case ElementType.Elect:
+                                this.enchant = bonus;
+                                break;
+                            case ElementType.Cryo:
+                                if (bonus.type === ElementType.Pyro) {
+                                    this.enchant = bonus;
+                                }
+                                break;
+                        }
+                    }
+                }
+                else {
+                    this.enchant = bonus;
+                }
+                break;
+            default:
+                if (bonus.type !== StatusBonusType.Other) {
+                    this.param[bonus.type] += bonus.value;
+                }
+                break;
         }
     }
     subValue(bonus) {
-        if (bonus.flat) {
-            this.flat[bonus.type] -= bonus.value;
-        }
-        else {
-            if (bonus.type !== StatusBonusType.Other) {
-                this.param[bonus.type] -= bonus.value;
-            }
+        switch (bonus.extra) {
+            case ExtraBonusType.Flat:
+                this.flat[bonus.type] -= bonus.value;
+                break;
+            case ExtraBonusType.Enchant:
+                break;
+            default:
+                if (bonus.type !== StatusBonusType.Other) {
+                    this.param[bonus.type] -= bonus.value;
+                }
+                break;
         }
     }
     addValues(values) {
@@ -243,6 +277,7 @@ class Status {
         status.base = Object.assign({}, this.base);
         status.param = Object.assign({}, this.param);
         status.flat = Object.assign({}, this.flat);
+        status.enchant = null;
         return status;
     }
 }

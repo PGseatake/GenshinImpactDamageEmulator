@@ -1103,7 +1103,7 @@ class ApplyTable extends Table {
         let row = this.html.rows[0];
         for (let bonus of this.bonuses) {
             row = row.nextElementSibling;
-            if (bonus.IsEnemy) {
+            if (bonus.extra === ExtraBonusType.Reduct) {
                 bonus.applyEnemy(enemy, row);
             }
         }
@@ -1113,13 +1113,6 @@ class DamageTable extends Table {
     constructor() {
         super(TableType.Damage);
         this.bridge = new TableBridge(Table.List.team);
-    }
-    static changeType(elem) {
-        let tbl = Table.List.damage;
-        let member = tbl.member;
-        if (member) {
-            tbl.damageType(tbl.html, elem, member);
-        }
     }
     static changeMember() {
         Table.List.damage.onRefresh();
@@ -1179,63 +1172,27 @@ class DamageTable extends Table {
         }
     }
     rebuild(html, status) {
-        let damageType = html.querySelector("select#damage_type");
-        damageType.className = "hide";
         let rows = html.rows;
         rows[0].cells[0].lastChild.textContent = "Lv." + status.level;
-        {
-            let cell = rows[1].cells[4];
-            removeChildren(cell);
-            const reactions = status.reactions;
-            if (0 < reactions.length) {
-                let select = document.createElement("select");
-                select.id = "reaction_type";
-                {
-                    let opt = document.createElement("option");
-                    opt.value = "";
-                    opt.label = "-";
-                    select.appendChild(opt);
-                }
-                for (const type of reactions) {
-                    let opt = document.createElement("option");
-                    opt.value = type;
-                    opt.label = REACTION_LABEL[type];
-                    select.appendChild(opt);
-                }
-                select.addEventListener("change", _ => this.calculate());
-                cell.appendChild(select);
-            }
-            else {
-                cell.appendChild(document.createTextNode("-"));
-            }
-        }
         let buildRow = (type) => {
             let level = status.talent[type];
-            let row = html.insertRow();
-            let cel = document.createElement("th");
-            cel.colSpan = 6;
-            cel.textContent = `${TALENT_LABEL[type]} : Lv.${level}`;
-            row.appendChild(cel);
+            {
+                let row = html.insertRow();
+                let cel = document.createElement("th");
+                cel.colSpan = 6;
+                cel.textContent = `${TALENT_LABEL[type]} : Lv.${level}`;
+                row.appendChild(cel);
+            }
             let combats = status.chara.talent[type];
             for (let combat of combats) {
                 let attr = new CombatAttribute(combat, level);
                 let elem = attr.elem;
-                let className = "";
-                switch (elem) {
-                    case CombatElementType.Switch:
-                        damageType.className = "";
-                        className = ElementType.Phys;
-                        break;
-                    case CombatElementType.Contact:
-                        break;
-                    default:
-                        className = elem;
-                        break;
-                }
-                row = html.insertRow();
-                cel = document.createElement("th");
+                let className = elem;
+                let row = html.insertRow();
+                let cel = document.createElement("th");
                 cel.appendChild(document.createTextNode(attr.name));
                 if (elem === CombatElementType.Contact) {
+                    className = "";
                     let select = document.createElement("select");
                     select.id = "contact_type";
                     for (let type of ContactReactionTypes) {
@@ -1268,36 +1225,6 @@ class DamageTable extends Table {
         buildRow(TalentType.Combat);
         buildRow(TalentType.Skill);
         buildRow(TalentType.Burst);
-        if (!damageType.className) {
-            this.damageType(html, damageType, status);
-        }
-        else {
-            this.calcDamage(html, status);
-        }
-    }
-    damageType(html, select, status) {
-        let chara = status.chara;
-        let className = select.value;
-        if (className === "elem") {
-            className = chara.element;
-        }
-        let row = html.rows[2];
-        let rebuildRow = (type) => {
-            row = row.nextElementSibling;
-            let combat = chara.talent[type];
-            for (let i = 0, len = combat.length; i < len; ++i) {
-                if (combat[i].elem === CombatElementType.Switch) {
-                    let cells = row.cells;
-                    for (let i = 1; i <= 5; ++i) {
-                        cells[i].className = className;
-                    }
-                }
-                row = row.nextElementSibling;
-            }
-        };
-        rebuildRow(TalentType.Combat);
-        rebuildRow(TalentType.Skill);
-        rebuildRow(TalentType.Burst);
         this.calcDamage(html, status);
     }
     contactType(select) {
@@ -1330,17 +1257,74 @@ class DamageTable extends Table {
         }
         return undefined;
     }
+    listReaction(caption, status) {
+        let cell = caption.cells[4];
+        const prev = this.reactionType(cell);
+        removeChildren(cell);
+        const reactions = status.reactions;
+        if (0 < reactions.length) {
+            let select = document.createElement("select");
+            select.id = "reaction_type";
+            {
+                let opt = document.createElement("option");
+                opt.value = "";
+                opt.label = "-";
+                select.appendChild(opt);
+            }
+            for (const type of reactions) {
+                let opt = document.createElement("option");
+                opt.value = type;
+                opt.label = REACTION_LABEL[type];
+                opt.selected = (type === prev);
+                select.appendChild(opt);
+            }
+            select.addEventListener("change", _ => this.calculate());
+            cell.appendChild(select);
+        }
+        else {
+            cell.appendChild(document.createTextNode("-"));
+        }
+    }
+    applyEnchant(row, status) {
+        const elementType = (combat, bonus) => {
+            if (bonus && (combat.elem === ElementType.Phys)) {
+                const type = combat.type;
+                for (const dest of bonus.dest) {
+                    if (type === dest) {
+                        return bonus.type;
+                    }
+                }
+            }
+            return combat.elem;
+        };
+        const enchant = status.enchant;
+        const talent = status.chara.talent;
+        const rebuildRow = (type) => {
+            row = row.nextElementSibling;
+            for (const combat of talent[type]) {
+                const elem = elementType(combat, enchant);
+                let cells = Array.from(row.cells);
+                for (let i = 1; i <= 5; ++i) {
+                    cells[i].className = elem;
+                }
+                row = row.nextElementSibling;
+            }
+        };
+        rebuildRow(TalentType.Combat);
+    }
     calcDamage(html, status) {
         status = Table.List.apply.status(status);
         let row = html.rows[1];
+        this.listReaction(row, status);
         let cells = Array.from(row.cells);
         const critical = status.critical();
         cells[2].textContent = status.attack.toFixed();
         cells[3].textContent = `+${floorRate(critical.damage)}(${floorRate(critical.rate)})`;
         const reaction = this.reactionType(cells[4]);
         row = row.nextElementSibling;
+        this.applyEnchant(row, status);
         let enemy = Table.List.enemy.target;
-        let damageRow = (type) => {
+        const damageRow = (type) => {
             row = row.nextElementSibling;
             let level = status.talent[type];
             let combats = status.chara.talent[type];
