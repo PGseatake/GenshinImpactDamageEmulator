@@ -5,19 +5,19 @@ const SWORD_LIST = {
         star: 1,
         second: StatusBonusType.Other,
     },
-    SkywardBlade: {
-        name: "天空の刃",
-        star: 5,
-        atk: WEAPON_ATK5[46],
-        second: StatusBonusType.EnRec,
-        passive: { items: CriticalBonusType.Rate, value: [4, 5, 6, 7, 8] },
-    },
     AquilaFavonia: {
         name: "風鷹剣",
         star: 5,
         atk: WEAPON_ATK5[48],
         second: ElementBonusType.Phys,
         passive: { items: StatusBonusType.AtkBuf, value: [20, 25, 30, 35, 40] },
+    },
+    SkywardBlade: {
+        name: "天空の刃",
+        star: 5,
+        atk: WEAPON_ATK5[46],
+        second: StatusBonusType.EnRec,
+        passive: { items: CriticalBonusType.Rate, value: [4, 5, 6, 7, 8] },
     },
     SummitShaper: {
         name: "斬山の刃",
@@ -45,12 +45,6 @@ const SWORD_LIST = {
         atk: WEAPON_ATK4[41],
         second: StatusBonusType.EnRec,
     },
-    TheFlute: {
-        name: "笛の剣",
-        star: 4,
-        atk: WEAPON_ATK4[42],
-        second: StatusBonusType.AtkBuf,
-    },
     SacrificialSword: {
         name: "祭礼の剣",
         star: 4,
@@ -64,12 +58,32 @@ const SWORD_LIST = {
         second: StatusBonusType.AtkBuf,
         passive: { items: StatusBonusType.AnyDmg, value: [20, 24, 28, 32, 36], limit: "炎、雷元素の影響を受けた敵" },
     },
+    TheFlute: {
+        name: "笛の剣",
+        star: 4,
+        atk: WEAPON_ATK4[42],
+        second: StatusBonusType.AtkBuf,
+    },
+    AlleyFlash: {
+        name: "ダークアレイの閃光",
+        star: 4,
+        atk: WEAPON_ATK4[45],
+        second: StatusBonusType.Elem,
+        passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24] },
+    },
     RoyalLongsword: {
         name: "旧貴族長剣",
         star: 4,
         atk: WEAPON_ATK4[42],
         second: StatusBonusType.AtkBuf,
         passive: { items: CriticalBonusType.Rate, value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 5 },
+    },
+    BlackcliffLongsword: {
+        name: "黒岩の長剣",
+        star: 4,
+        atk: WEAPON_ATK4[44],
+        second: CriticalBonusType.Damage,
+        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     PrototypeRancour: {
         name: "斬岩・試作",
@@ -85,12 +99,12 @@ const SWORD_LIST = {
         second: StatusBonusType.Elem,
         passive: { items: StatusBonusType.AnyDmg, value: [6, 7.5, 9, 10.5, 12], limit: "元素ダメージを与えた後", times: 6, stack: 2 },
     },
-    BlackcliffLongsword: {
-        name: "黒岩の長剣",
+    SwordDescension: {
+        name: "降臨の剣",
         star: 4,
-        atk: WEAPON_ATK4[44],
-        second: CriticalBonusType.Damage,
-        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
+        atk: WEAPON_ATK4[39],
+        second: StatusBonusType.AtkBuf,
+        passive: { items: StatusBonusType.Atk, value: [66, 66, 66, 66, 66], limit: "旅人が装備した時" },
     },
     BlackSword: {
         name: "黒剣",
@@ -98,13 +112,6 @@ const SWORD_LIST = {
         atk: WEAPON_ATK4[42],
         second: CriticalBonusType.Rate,
         passive: { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: [20, 25, 30, 35, 40] },
-    },
-    SwordDescension: {
-        name: "降臨の剣",
-        star: 4,
-        atk: WEAPON_ATK4[39],
-        second: StatusBonusType.AtkBuf,
-        passive: { items: StatusBonusType.Atk, value: [66, 66, 66, 66, 66], limit: "旅人が装備した時" },
     },
     FesteringDesire: {
         name: "腐植の剣",
@@ -116,18 +123,12 @@ const SWORD_LIST = {
             { items: CriticalBonusType.Skill, value: [6, 7.5, 9, 10.5, 12] },
         ]
     },
-    AlleyFlash: {
-        name: "ダークアレイの閃光",
-        star: 4,
-        atk: WEAPON_ATK4[45],
-        second: StatusBonusType.Elem,
-        passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24] },
-    },
-    TravelersSword: {
-        name: "旅道の剣",
+    SkyriderSword: {
+        name: "飛天御剣",
         star: 3,
-        atk: WEAPON_ATK3[40],
-        second: StatusBonusType.DefBuf,
+        atk: WEAPON_ATK3[38],
+        second: StatusBonusType.EnRec,
+        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 25], limit: "元素爆発後", times: 15 },
     },
     FilletBlade: {
         name: "チ虎魚の刀",
@@ -135,19 +136,11 @@ const SWORD_LIST = {
         atk: WEAPON_ATK3[39],
         second: StatusBonusType.AtkBuf,
     },
-    DarkIronSword: {
-        name: "暗鉄剣",
+    TravelersSword: {
+        name: "旅道の剣",
         star: 3,
-        atk: WEAPON_ATK3[39],
-        second: StatusBonusType.Elem,
-        passive: { items: StatusBonusType.AtkBuf, value: [20, 25, 30, 35, 40], limit: "過負荷、超電磁、感電または雷元素拡散が発生した時", times: 12 },
-    },
-    CoolSteel: {
-        name: "冷刃",
-        star: 3,
-        atk: WEAPON_ATK3[39],
-        second: StatusBonusType.AtkBuf,
-        passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24], limit: "水、氷元素の影響を受けた敵" },
+        atk: WEAPON_ATK3[40],
+        second: StatusBonusType.DefBuf,
     },
     HarbingerDawn: {
         name: "黎明の神剣",
@@ -156,12 +149,19 @@ const SWORD_LIST = {
         second: CriticalBonusType.Damage,
         passive: { items: CriticalBonusType.Rate, value: [14, 17.5, 21, 24.5, 28], limit: "HP90%以上の時" },
     },
-    SkyriderSword: {
-        name: "飛天御剣",
+    CoolSteel: {
+        name: "冷刃",
         star: 3,
-        atk: WEAPON_ATK3[38],
-        second: StatusBonusType.EnRec,
-        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 25], limit: "元素爆発後", times: 15 },
+        atk: WEAPON_ATK3[39],
+        second: StatusBonusType.AtkBuf,
+        passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24], limit: "水、氷元素の影響を受けた敵" },
+    },
+    DarkIronSword: {
+        name: "暗鉄剣",
+        star: 3,
+        atk: WEAPON_ATK3[39],
+        second: StatusBonusType.Elem,
+        passive: { items: StatusBonusType.AtkBuf, value: [20, 25, 30, 35, 40], limit: "過負荷、超電磁、感電または雷元素拡散が発生した時", times: 12 },
     },
 };
 const CLAYMORE_LIST = {
@@ -180,6 +180,13 @@ const CLAYMORE_LIST = {
             { items: StatusBonusType.AtkBuf, value: [40, 50, 60, 70, 80], limit: "HP30%以下の敵に命中した時", times: 12, target: BonusTarget.All },
         ],
     },
+    SkywardPride: {
+        name: "天空の傲",
+        star: 5,
+        atk: WEAPON_ATK5[48],
+        second: StatusBonusType.EnRec,
+        passive: { items: StatusBonusType.AnyDmg, value: [8, 10, 12, 14, 16] },
+    },
     TheUnforged: {
         name: "無工の剣",
         star: 5,
@@ -190,25 +197,11 @@ const CLAYMORE_LIST = {
             { items: StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "さらにシールド状態の時", times: 8, stack: 5 },
         ]
     },
-    SkywardPride: {
-        name: "天空の傲",
-        star: 5,
-        atk: WEAPON_ATK5[48],
-        second: StatusBonusType.EnRec,
-        passive: { items: StatusBonusType.AnyDmg, value: [8, 10, 12, 14, 16] },
-    },
     FavoniusGreatsword: {
         name: "西風大剣",
         star: 4,
         atk: WEAPON_ATK4[41],
         second: StatusBonusType.EnRec,
-    },
-    TheBell: {
-        name: "鐘の剣",
-        star: 4,
-        atk: WEAPON_ATK4[42],
-        second: StatusBonusType.HpBuf,
-        passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24], limit: "シールドが存在する時" },
     },
     SacrificialGreatsword: {
         name: "祭礼の大剣",
@@ -223,12 +216,36 @@ const CLAYMORE_LIST = {
         second: StatusBonusType.Elem,
         passive: { items: StatusBonusType.AnyDmg, value: [20, 24, 28, 32, 36], limit: "水、雷元素の影響を受けた敵" },
     },
+    TheBell: {
+        name: "鐘の剣",
+        star: 4,
+        atk: WEAPON_ATK4[42],
+        second: StatusBonusType.HpBuf,
+        passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24], limit: "シールドが存在する時" },
+    },
+    LithicBlade: {
+        name: "千岩古剣",
+        star: 4,
+        atk: WEAPON_ATK4[42],
+        second: StatusBonusType.AtkBuf,
+        passive: [
+            { items: StatusBonusType.AtkBuf, value: [7, 8, 9, 10, 11], limit: "チームに璃月出身のキャラクターが1人いる毎", stack: 4 },
+            { items: CriticalBonusType.Rate, value: [3, 4, 5, 6, 7], limit: "チームに璃月出身のキャラクターが1人いる毎", stack: 4 },
+        ]
+    },
     RoyalGreatsword: {
         name: "旧貴族大剣",
         star: 4,
         atk: WEAPON_ATK4[44],
         second: StatusBonusType.AtkBuf,
         passive: { items: CriticalBonusType.Rate, value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 5 },
+    },
+    BlackcliffSlasher: {
+        name: "黒岩の斬刀",
+        star: 4,
+        atk: WEAPON_ATK4[42],
+        second: CriticalBonusType.Damage,
+        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     PrototypeAminus: {
         name: "古華・試作",
@@ -243,13 +260,6 @@ const CLAYMORE_LIST = {
         second: StatusBonusType.DefBuf,
         passive: { items: [StatusBonusType.AtkBuf, StatusBonusType.DefBuf], value: [6, 7.5, 9, 10.5, 12], limit: "通常攻撃か重撃が命中した時", times: 6, stack: 4 },
     },
-    BlackcliffSlasher: {
-        name: "黒岩の斬刀",
-        star: 4,
-        atk: WEAPON_ATK4[42],
-        second: CriticalBonusType.Damage,
-        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
-    },
     SerpentSpine: {
         name: "螭龍の剣",
         star: 4,
@@ -263,16 +273,6 @@ const CLAYMORE_LIST = {
         atk: WEAPON_ATK4[44],
         second: ElementBonusType.Phys,
     },
-    LithicBlade: {
-        name: "千岩古剣",
-        star: 4,
-        atk: WEAPON_ATK4[42],
-        second: StatusBonusType.AtkBuf,
-        passive: [
-            { items: StatusBonusType.AtkBuf, value: [7, 8, 9, 10, 11], limit: "チームに璃月出身のキャラクターが1人いる毎", stack: 4 },
-            { items: CriticalBonusType.Rate, value: [3, 4, 5, 6, 7], limit: "チームに璃月出身のキャラクターが1人いる毎", stack: 4 },
-        ]
-    },
     SkyriderGreatsword: {
         name: "飛天大御剣",
         star: 3,
@@ -280,18 +280,17 @@ const CLAYMORE_LIST = {
         second: ElementBonusType.Phys,
         passive: { items: StatusBonusType.AtkBuf, value: [6, 7, 8, 9, 10], limit: "通常攻撃か重撃が命中した時", times: 6, stack: 4 },
     },
+    DebateClub: {
+        name: "理屈責め",
+        star: 3,
+        atk: WEAPON_ATK3[39],
+        second: StatusBonusType.AtkBuf,
+    },
     WhiteGreatsword: {
         name: "白鉄の大剣",
         star: 3,
         atk: WEAPON_ATK3[39],
         second: StatusBonusType.DefBuf,
-    },
-    FerrousShadow: {
-        name: "鉄影段平",
-        star: 3,
-        atk: WEAPON_ATK3[39],
-        second: StatusBonusType.HpBuf,
-        passive: { items: CombatBonusType.Heavy, value: [30, 35, 40, 45, 50], limit: "HPが一定値以下の時" },
     },
     BloodtaintedGreatsword: {
         name: "龍血を浴びた剣",
@@ -300,11 +299,12 @@ const CLAYMORE_LIST = {
         second: StatusBonusType.Elem,
         passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24], limit: "炎、雷元素の影響を受けた敵" },
     },
-    DebateClub: {
-        name: "理屈責め",
+    FerrousShadow: {
+        name: "鉄影段平",
         star: 3,
         atk: WEAPON_ATK3[39],
-        second: StatusBonusType.AtkBuf,
+        second: StatusBonusType.HpBuf,
+        passive: { items: CombatBonusType.Heavy, value: [30, 35, 40, 45, 50], limit: "HPが一定値以下の時" },
     },
 };
 const POLEARM_LIST = {
@@ -351,6 +351,12 @@ const POLEARM_LIST = {
             { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk, base: FlatBonusBase.Hp, value: [1.0, 1.2, 1.4, 1.6, 1.8], limit: "HPが50未満の時" },
         ]
     },
+    FavoniusLance: {
+        name: "西風長槍",
+        star: 4,
+        atk: WEAPON_ATK4[44],
+        second: StatusBonusType.EnRec,
+    },
     DragonsBane: {
         name: "匣中滅龍",
         star: 4,
@@ -358,11 +364,29 @@ const POLEARM_LIST = {
         second: StatusBonusType.Elem,
         passive: { items: StatusBonusType.AnyDmg, value: [20, 24, 28, 32, 36], limit: "水、炎元素の影響を受けた敵" },
     },
-    FavoniusLance: {
-        name: "西風長槍",
+    LithicSpear: {
+        name: "千岩長槍",
         star: 4,
         atk: WEAPON_ATK4[44],
-        second: StatusBonusType.EnRec,
+        second: StatusBonusType.AtkBuf,
+        passive: [
+            { items: StatusBonusType.AtkBuf, value: [7, 8, 9, 10, 11], limit: "チームに璃月出身のキャラクターが1人いる毎", stack: 4 },
+            { items: CriticalBonusType.Rate, value: [3, 4, 5, 6, 7], limit: "チームに璃月出身のキャラクターが1人いる毎", stack: 4 },
+        ]
+    },
+    RoyalSpear: {
+        name: "旧貴族猟槍",
+        star: 4,
+        atk: WEAPON_ATK4[44],
+        second: StatusBonusType.AtkBuf,
+        passive: { items: CriticalBonusType.Rate, value: [8, 10, 12, 14, 16], limit: "敵にダメージを与えた時", stack: 5 },
+    },
+    BlackcliffPole: {
+        name: "黒岩の突槍",
+        star: 4,
+        atk: WEAPON_ATK4[42],
+        second: CriticalBonusType.Damage,
+        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     PrototypeGrudge: {
         name: "星鎌・試作",
@@ -376,13 +400,6 @@ const POLEARM_LIST = {
         star: 4,
         atk: WEAPON_ATK4[44],
         second: ElementBonusType.Phys,
-    },
-    BlackcliffPole: {
-        name: "黒岩の突槍",
-        star: 4,
-        atk: WEAPON_ATK4[42],
-        second: CriticalBonusType.Damage,
-        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     Deathmatch: {
         name: "死闘の槍",
@@ -400,6 +417,13 @@ const POLEARM_LIST = {
         atk: WEAPON_ATK4[41],
         second: ElementBonusType.Phys,
     },
+    BlackTassel: {
+        name: "黒纓槍",
+        star: 3,
+        atk: WEAPON_ATK3[38],
+        second: StatusBonusType.HpBuf,
+        passive: { items: StatusBonusType.AnyDmg, value: [40, 50, 60, 70, 80], limit: "スライムタイプの敵" },
+    },
     Halberd: {
         name: "鉾槍",
         star: 3,
@@ -413,26 +437,12 @@ const POLEARM_LIST = {
         second: CriticalBonusType.Rate,
         passive: { items: CombatBonusType.Normal, value: [24, 30, 36, 42, 48] },
     },
-    BlackTassel: {
-        name: "黒纓槍",
-        star: 3,
-        atk: WEAPON_ATK3[38],
-        second: StatusBonusType.HpBuf,
-        passive: { items: StatusBonusType.AnyDmg, value: [40, 50, 60, 70, 80], limit: "スライムタイプの敵" },
-    },
 };
 const BOW_LIST = {
     other: {
         name: "-",
         star: 1,
         second: StatusBonusType.Other,
-    },
-    SkywardHarp: {
-        name: "天空の翼",
-        star: 5,
-        atk: WEAPON_ATK5[48],
-        second: CriticalBonusType.Rate,
-        passive: { items: CriticalBonusType.Damage, value: [20, 25, 30, 35, 40] },
     },
     AmosBow: {
         name: "アモスの弓",
@@ -443,6 +453,13 @@ const BOW_LIST = {
             { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: [12, 15, 18, 21, 24] },
             { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: [8, 10, 12, 14, 16], limit: "矢を放った後0.1秒毎", stack: 5 },
         ]
+    },
+    SkywardHarp: {
+        name: "天空の翼",
+        star: 5,
+        atk: WEAPON_ATK5[48],
+        second: CriticalBonusType.Rate,
+        passive: { items: CriticalBonusType.Damage, value: [20, 25, 30, 35, 40] },
     },
     ElegyForTheEnd: {
         name: "終焉を嘆く詩",
@@ -461,13 +478,6 @@ const BOW_LIST = {
         atk: WEAPON_ATK4[41],
         second: StatusBonusType.EnRec,
     },
-    Stringless: {
-        name: "絶弦",
-        star: 4,
-        atk: WEAPON_ATK4[42],
-        second: StatusBonusType.Elem,
-        passive: { items: [CombatBonusType.Skill, CombatBonusType.Burst], value: [24, 30, 36, 42, 48] },
-    },
     SacrificialBow: {
         name: "祭礼の弓",
         star: 4,
@@ -484,12 +494,26 @@ const BOW_LIST = {
             { items: CombatBonusType.Heavy, value: [-10, -10, -10, -10, -10] },
         ],
     },
+    Stringless: {
+        name: "絶弦",
+        star: 4,
+        atk: WEAPON_ATK4[42],
+        second: StatusBonusType.Elem,
+        passive: { items: [CombatBonusType.Skill, CombatBonusType.Burst], value: [24, 30, 36, 42, 48] },
+    },
     RoyalBow: {
         name: "旧貴族長弓",
         star: 4,
         atk: WEAPON_ATK4[42],
         second: StatusBonusType.AtkBuf,
         passive: { items: CriticalBonusType.Rate, value: [8, 10, 12, 14, 16], limit: "敵にダメージを与えた時", stack: 5 },
+    },
+    BlackcliffWarbow: {
+        name: "黒岩の戦弓",
+        star: 4,
+        atk: WEAPON_ATK4[44],
+        second: CriticalBonusType.Damage,
+        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     PrototypeCrescent: {
         name: "澹月・試作",
@@ -505,18 +529,42 @@ const BOW_LIST = {
         second: ElementBonusType.Phys,
         passive: { items: StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "通常攻撃と狙い撃ちが命中した時", times: 6, stack: 4 },
     },
-    BlackcliffWarbow: {
-        name: "黒岩の戦弓",
-        star: 4,
-        atk: WEAPON_ATK4[44],
-        second: CriticalBonusType.Damage,
-        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
-    },
     ViridescentHunt: {
         name: "蒼翠の狩猟弓",
         star: 4,
         atk: WEAPON_ATK4[42],
         second: CriticalBonusType.Rate,
+    },
+    WindblumeOde: {
+        name: "風花の頌歌",
+        star: 4,
+        atk: WEAPON_ATK4[42],
+        second: StatusBonusType.Elem,
+        passive: { items: StatusBonusType.AtkBuf, value: [16, 20, 24, 28, 32], limit: "元素スキルを発動した後", times: 6 },
+    },
+    SharpshootersOath: {
+        name: "シャープシューターの誓い",
+        star: 3,
+        atk: WEAPON_ATK3[39],
+        second: CriticalBonusType.Damage,
+        passive: { items: StatusBonusType.AnyDmg, value: [24, 30, 36, 42, 48], limit: "弱点" },
+    },
+    RavenBow: {
+        name: "鴉羽の弓",
+        star: 3,
+        atk: WEAPON_ATK3[40],
+        second: StatusBonusType.Elem,
+        passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24], limit: "水、炎元素の影響を受けた敵" },
+    },
+    Slingshot: {
+        name: "弾弓",
+        star: 3,
+        atk: WEAPON_ATK3[38],
+        second: CriticalBonusType.Rate,
+        passive: [
+            { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: [36, 42, 48, 54, 60], limit: "矢が発射後0.3秒以内に敵に命中した時" },
+            { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: [-10, -10, -10, -10, -10], limit: "矢が発射後0.3秒より長く敵に命中した時" }
+        ]
     },
     Messenger: {
         name: "文使い",
@@ -529,30 +577,6 @@ const BOW_LIST = {
         star: 3,
         atk: WEAPON_ATK3[38],
         second: StatusBonusType.HpBuf,
-    },
-    RavenBow: {
-        name: "鴉羽の弓",
-        star: 3,
-        atk: WEAPON_ATK3[40],
-        second: StatusBonusType.Elem,
-        passive: { items: StatusBonusType.AnyDmg, value: [12, 15, 18, 21, 24], limit: "水、炎元素の影響を受けた敵" },
-    },
-    SharpshootersOath: {
-        name: "シャープシューターの誓い",
-        star: 3,
-        atk: WEAPON_ATK3[39],
-        second: CriticalBonusType.Damage,
-        passive: { items: StatusBonusType.AnyDmg, value: [24, 30, 36, 42, 48], limit: "弱点" },
-    },
-    Slingshot: {
-        name: "弾弓",
-        star: 3,
-        atk: WEAPON_ATK3[38],
-        second: CriticalBonusType.Rate,
-        passive: [
-            { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: [36, 42, 48, 54, 60], limit: "矢が発射後0.3秒以内に敵に命中した時" },
-            { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: [-10, -10, -10, -10, -10], limit: "矢が発射後0.3秒より長く敵に命中した時" }
-        ]
     },
 };
 const CATALYST_LIST = {
@@ -591,17 +615,6 @@ const CATALYST_LIST = {
         atk: WEAPON_ATK4[42],
         second: StatusBonusType.EnRec,
     },
-    TheWidsith: {
-        name: "流浪楽章",
-        star: 4,
-        atk: WEAPON_ATK4[42],
-        second: CriticalBonusType.Damage,
-        passive: [
-            { items: StatusBonusType.AtkBuf, value: [60, 75, 90, 105, 120], limit: "叙唱：キャラ登場時", times: 10 },
-            { items: ElementBonusType.Any, value: [48, 60, 72, 84, 96], limit: "詠唱：キャラ登場時", times: 10 },
-            { items: StatusBonusType.Elem, value: [240, 300, 360, 420, 480], limit: "間奏曲：キャラ登場時", times: 10 },
-        ],
-    },
     SacrificialFragments: {
         name: "祭礼の断片",
         star: 4,
@@ -614,6 +627,24 @@ const CATALYST_LIST = {
         atk: WEAPON_ATK4[41],
         second: StatusBonusType.AtkBuf,
     },
+    TheWidsith: {
+        name: "流浪楽章",
+        star: 4,
+        atk: WEAPON_ATK4[42],
+        second: CriticalBonusType.Damage,
+        passive: [
+            { items: StatusBonusType.AtkBuf, value: [60, 75, 90, 105, 120], limit: "叙唱：キャラ登場時", times: 10 },
+            { items: ElementBonusType.Any, value: [48, 60, 72, 84, 96], limit: "詠唱：キャラ登場時", times: 10 },
+            { items: StatusBonusType.Elem, value: [240, 300, 360, 420, 480], limit: "間奏曲：キャラ登場時", times: 10 },
+        ],
+    },
+    WineAndSong: {
+        name: "ダークアレイの酒と詩",
+        star: 4,
+        atk: WEAPON_ATK4[44],
+        second: StatusBonusType.EnRec,
+        passive: { items: StatusBonusType.AtkBuf, value: [25, 30, 35, 40, 45], limit: "ダッシュまたはダッシュを代替する能力を使用した時", times: 5 },
+    },
     RoyalGrimoire: {
         name: "旧貴族秘法録",
         star: 4,
@@ -621,15 +652,12 @@ const CATALYST_LIST = {
         second: StatusBonusType.AtkBuf,
         passive: { items: CriticalBonusType.Rate, value: [8, 10, 12, 14, 16], limit: "ダメージを与えた時", stack: 6 },
     },
-    SolarPearl: {
-        name: "匣中日月",
+    BlackcliffAmulet: {
+        name: "黒岩の緋玉",
         star: 4,
         atk: WEAPON_ATK4[42],
-        second: CriticalBonusType.Rate,
-        passive: [
-            { items: [CombatBonusType.Skill, CombatBonusType.Burst], value: [20, 25, 30, 35, 40], limit: "通常攻撃が命中した時", times: 6 },
-            { items: CombatBonusType.Normal, value: [20, 25, 30, 35, 40], limit: "元素スキルか元素爆発が命中した時", times: 6 },
-        ],
+        second: CriticalBonusType.Damage,
+        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
     },
     PrototypeMalice: {
         name: "金珀・試作",
@@ -644,12 +672,15 @@ const CATALYST_LIST = {
         second: StatusBonusType.Elem,
         passive: { items: ElementBonusType.Any, value: [8, 10, 12, 14, 16], limit: "元素反応を起こした後", times: 10, stack: 2 },
     },
-    BlackcliffAmulet: {
-        name: "黒岩の緋玉",
+    SolarPearl: {
+        name: "匣中日月",
         star: 4,
         atk: WEAPON_ATK4[42],
-        second: CriticalBonusType.Damage,
-        passive: { items: StatusBonusType.AtkBuf, value: [12, 15, 18, 21, 24], limit: "敵を倒した後", times: 30, stack: 3 },
+        second: CriticalBonusType.Rate,
+        passive: [
+            { items: [CombatBonusType.Skill, CombatBonusType.Burst], value: [20, 25, 30, 35, 40], limit: "通常攻撃が命中した時", times: 6 },
+            { items: CombatBonusType.Normal, value: [20, 25, 30, 35, 40], limit: "元素スキルか元素爆発が命中した時", times: 6 },
+        ],
     },
     Frostbearer: {
         name: "冬忍びの実",
@@ -657,25 +688,12 @@ const CATALYST_LIST = {
         atk: WEAPON_ATK4[42],
         second: StatusBonusType.AtkBuf,
     },
-    WineAndSong: {
-        name: "ダークアレイの酒と詩",
-        star: 4,
-        atk: WEAPON_ATK4[44],
-        second: StatusBonusType.EnRec,
-        passive: { items: StatusBonusType.AtkBuf, value: [25, 30, 35, 40, 45], limit: "ダッシュまたはダッシュを代替する能力を使用した時", times: 5 },
-    },
-    TwinNephrite: {
-        name: "特級の宝玉",
+    AmberCatalyst: {
+        name: "翡玉法珠",
         star: 3,
         atk: WEAPON_ATK3[40],
-        second: CriticalBonusType.Rate,
-        passive: { items: StatusBonusType.AtkBuf, value: [12, 14, 16, 18, 20], limit: "敵を倒した後", times: 15 },
-    },
-    OtherworldlyStory: {
-        name: "異世界旅行記",
-        star: 3,
-        atk: WEAPON_ATK3[39],
-        second: StatusBonusType.EnRec,
+        second: StatusBonusType.Elem,
+        passive: { items: StatusBonusType.AtkBuf, value: [20, 25, 30, 35, 40], limit: "蒸発、感電、凍結、または水元素拡散反応後", times: 12 },
     },
     MagicGuide: {
         name: "魔導緒論",
@@ -691,12 +709,18 @@ const CATALYST_LIST = {
         second: StatusBonusType.HpBuf,
         passive: { items: StatusBonusType.AtkBuf, value: [24, 30, 36, 42, 48], limit: "次に登場するキャラ", times: 10, target: BonusTarget.Next },
     },
-    AmberCatalyst: {
-        name: "翡玉法珠",
+    OtherworldlyStory: {
+        name: "異世界旅行記",
+        star: 3,
+        atk: WEAPON_ATK3[39],
+        second: StatusBonusType.EnRec,
+    },
+    TwinNephrite: {
+        name: "特級の宝玉",
         star: 3,
         atk: WEAPON_ATK3[40],
-        second: StatusBonusType.Elem,
-        passive: { items: StatusBonusType.AtkBuf, value: [20, 25, 30, 35, 40], limit: "蒸発、感電、凍結、または水元素拡散反応後", times: 12 },
+        second: CriticalBonusType.Rate,
+        passive: { items: StatusBonusType.AtkBuf, value: [12, 14, 16, 18, 20], limit: "敵を倒した後", times: 15 },
     },
 };
 const WEAPON_LIST = {
