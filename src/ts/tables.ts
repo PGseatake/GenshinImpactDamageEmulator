@@ -519,9 +519,9 @@ class WeaponTable extends ItemTable {
         const cells: IWeaponCellList = {
             index: new IndexCell(),
             name: new NameCell(list, { change: ev => this.changeName(ev) }),
-            level: new AscensionLevelCell(listeners),
+            level: new AscensionLevelCell({ change: ev => this.changeLevel(ev) }),
             rank: new RangeCell(1, WEAPON_RANK_MAX, listeners),
-            atk: new IntCell(listeners),
+            atk: new WeaponAtkCell(list, listeners),
             second: new SecondBonusCell(list, listeners),
         };
         this.cells = cells;
@@ -541,11 +541,27 @@ class WeaponTable extends ItemTable {
     // 名前の変更
     private changeName(ev: Event) {
         let select = ev.target as HTMLSelectElement;
-        const bonus = select.value;
+        const name = select.value;
         let row = select.parentElement!.parentElement as HTMLRowElement;
+        let cells = this.cells;
 
+        // 攻撃力変更
+        Table.updateCell(row, cells, "atk", name, Table.cellValue(row, cells, "level"));
         // 追加効果変更
-        Table.updateCell(row, this.cells, "second", bonus);
+        Table.updateCell(row, cells, "second", name);
+
+        this.onChange(ev);
+    }
+
+    // レベルの変更
+    private changeLevel(ev: Event) {
+        let select = ev.target as HTMLSelectElement;
+        const level = select.value;
+        let row = select.parentElement!.parentElement as HTMLRowElement;
+        let cells = this.cells;
+
+        // 攻撃力変更
+        Table.updateCell(row, cells, "atk", Table.cellValue(row, cells, "name"), level);
 
         this.onChange(ev);
     }

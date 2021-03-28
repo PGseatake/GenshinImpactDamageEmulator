@@ -318,9 +318,9 @@ class WeaponTable extends ItemTable {
         const cells = {
             index: new IndexCell(),
             name: new NameCell(list, { change: ev => this.changeName(ev) }),
-            level: new AscensionLevelCell(listeners),
+            level: new AscensionLevelCell({ change: ev => this.changeLevel(ev) }),
             rank: new RangeCell(1, WEAPON_RANK_MAX, listeners),
-            atk: new IntCell(listeners),
+            atk: new WeaponAtkCell(list, listeners),
             second: new SecondBonusCell(list, listeners),
         };
         this.cells = cells;
@@ -335,9 +335,19 @@ class WeaponTable extends ItemTable {
     }
     changeName(ev) {
         let select = ev.target;
-        const bonus = select.value;
+        const name = select.value;
         let row = select.parentElement.parentElement;
-        Table.updateCell(row, this.cells, "second", bonus);
+        let cells = this.cells;
+        Table.updateCell(row, cells, "atk", name, Table.cellValue(row, cells, "level"));
+        Table.updateCell(row, cells, "second", name);
+        this.onChange(ev);
+    }
+    changeLevel(ev) {
+        let select = ev.target;
+        const level = select.value;
+        let row = select.parentElement.parentElement;
+        let cells = this.cells;
+        Table.updateCell(row, cells, "atk", Table.cellValue(row, cells, "name"), level);
         this.onChange(ev);
     }
 }

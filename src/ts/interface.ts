@@ -19,6 +19,9 @@ interface IPair<TKey, TValue> {
 interface IMap<T> {
     [key: string]: T;
 }
+interface INumMap<T> {
+    [key: number]: T;
+}
 
 type Rate = number;
 type Scale = number;
@@ -214,13 +217,6 @@ interface IWeaponBonus extends IBonus {
     value: Array<Integer | Rate>;
 }
 
-type AnyWeaponBonus = Arrayable<IWeaponBonus | IWeaponFlatBonus>;
-
-interface IRankedWeaponBonus {
-    bonus: AnyWeaponBonus | undefined;
-    rank: Integer;
-}
-
 const CombatType = {
     Normal: "normal",
     Heavy: "heavy",
@@ -324,6 +320,13 @@ interface IEnchantBonus extends IExtraBonus {
 
 type AnyExtraBonus = IBasicBonus | IBasicFlatBonus | IReductBonus | IEnchantBonus;
 
+type AnyWeaponBonus = Arrayable<IWeaponBonus | IWeaponFlatBonus>;
+
+interface IRankedWeaponBonus {
+    bonus?: AnyWeaponBonus;
+    rank: Integer;
+}
+
 interface IBonusValue {
     type: BonusValueType;
     value: Integer | Rate;
@@ -354,8 +357,11 @@ interface INameable {
     name: string;
 }
 
+type AscensionParam = ReadonlyArray<Integer>;
+
 interface IWeapon extends INameable {
     star: Integer;
+    atk?: AscensionParam;
     second: BonusValueType;
     passive?: Arrayable<IWeaponBonus | IWeaponFlatBonus>;
 }
@@ -398,7 +404,7 @@ interface ICombat {
 }
 
 type CharaStatusType = "hp" | "atk" | "def";
-type CharaStatus = Record<CharaStatusType, Integer[]>;
+type CharaStatus = Record<CharaStatusType, AscensionParam>;
 type CharaTalent = Record<TalentType, ICombat[]>;
 
 interface IPassive {

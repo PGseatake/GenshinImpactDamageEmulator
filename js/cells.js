@@ -202,24 +202,25 @@ class CharaStatusCell extends IntCell {
         const status = CHARACTER[name].status;
         if (status) {
             const param = status[cell.id];
-            const bound = [ASCENSION_LV_MIN].concat(ASCENSION_LV_STEP, ASCENSION_LV_MAX);
-            const step = AscensionLevelCell.step(level);
-            const min = bound[step.index];
-            const max = bound[step.index + 1];
-            const lower = param[step.index * 2];
-            const upper = param[step.index * 2 + 1];
-            let value;
-            if (step.level === min) {
-                value = lower;
-            }
-            else if (step.level === max) {
-                value = upper;
-            }
-            else {
-                value = Math.ceil((upper - lower) / (max - min) * (step.level - min) + lower);
-            }
+            const value = AscensionLevelCell.calc(level, param);
             let input = cell.firstElementChild;
-            input.value = value.toFixed();
+            input.value = Math.ceil(value).toFixed();
+            input.truth = value;
+        }
+    }
+}
+class WeaponAtkCell extends IntCell {
+    constructor(list, listeners) {
+        super(listeners);
+        this.list = list;
+    }
+    update(cell, name, level) {
+        var _a;
+        const param = (_a = this.list[name]) === null || _a === void 0 ? void 0 : _a.atk;
+        if (param) {
+            const value = AscensionLevelCell.calc(level, param);
+            let input = cell.firstElementChild;
+            input.value = Math.ceil(value).toFixed();
             input.truth = value;
         }
     }
@@ -232,13 +233,28 @@ class AscensionLevelCell extends Cell {
         }
         else {
             const lv = parseInt(level);
-            for (let i = 0; i < ASCENSION_LV_STEP.length; ++i) {
+            for (let i = 0, len = ASCENSION_LV_STEP.length; i < len; ++i) {
                 if (lv <= ASCENSION_LV_STEP[i]) {
                     return { level: lv, index: i };
                 }
             }
             return { level: lv, index: ASCENSION_LV_STEP.length };
         }
+    }
+    static calc(level, param) {
+        const bound = ASCENSION_LV_RANGE;
+        const step = AscensionLevelCell.step(level);
+        const min = bound[step.index];
+        const max = bound[step.index + 1];
+        const lower = param[step.index * 2];
+        const upper = param[step.index * 2 + 1];
+        if (step.level === min) {
+            return lower;
+        }
+        if (step.level === max) {
+            return upper;
+        }
+        return (upper - lower) / (max - min) * (step.level - min) + lower;
     }
     get initial() {
         return "1";
