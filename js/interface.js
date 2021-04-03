@@ -99,6 +99,16 @@ const StatusBonusType = {
     EnRec: "en_rec",
     AnyDmg: "any_dmg",
 };
+const ItemBonusType = {
+    HpBuf: "hp_buf",
+    AtkBuf: "atk_buf",
+    DefBuf: "def_buf",
+    Elem: "elem",
+    EnRec: "en_rec",
+    CriDmg: "cri_dmg",
+    CriRate: "cri_rate",
+    PhysDmg: "phys_dmg",
+};
 const CombatBonusType = {
     Normal: "normal_dmg",
     Heavy: "heavy_dmg",

@@ -154,6 +154,18 @@ const StatusBonusType = {
 } as const;
 type StatusBonusType = typeof StatusBonusType[keyof typeof StatusBonusType] | CriticalBonusType;
 
+const ItemBonusType = {
+    HpBuf: "hp_buf",
+    AtkBuf: "atk_buf",
+    DefBuf: "def_buf",
+    Elem: "elem",
+    EnRec: "en_rec",
+    CriDmg: "cri_dmg",
+    CriRate: "cri_rate",
+    PhysDmg: "phys_dmg",
+} as const;
+type ItemBonusType = typeof ItemBonusType[keyof typeof ItemBonusType];
+
 const CombatBonusType = {
     Normal: "normal_dmg",
     Heavy: "heavy_dmg",
@@ -357,12 +369,13 @@ interface INameable {
     name: string;
 }
 
-type AscensionParam = ReadonlyArray<Integer>;
+type AscensionParam = ReadonlyArray<number>;
 
 interface IWeapon extends INameable {
     star: Integer;
     atk?: AscensionParam;
     second: BonusValueType;
+    secval?: AscensionParam;
     passive?: Arrayable<IWeaponBonus | IWeaponFlatBonus>;
 }
 

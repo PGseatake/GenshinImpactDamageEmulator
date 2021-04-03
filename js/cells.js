@@ -622,17 +622,47 @@ class SecondBonusCell extends BonusValueCell {
     constructor(items, listeners = null) {
         super([items.other.second], listeners);
         this.items = items;
+        this.step = undefined;
     }
     load(cell, id, values) {
         let name = values.name;
         if (!(name in this.items)) {
             name = "other";
         }
-        this.list = [this.items[name].second];
+        const item = this.items[name];
+        this.list = [item.second];
+        this.step = item.secval;
         return super.load(cell, id, values);
     }
+    calc(level) {
+        const param = this.step;
+        const bound = ASCENSION_LV_RANGE;
+        const step = AscensionLevelCell.step(level);
+        const min = bound[step.index];
+        const max = bound[step.index + 1];
+        const lower = param[step.index];
+        const upper = param[step.index + 1];
+        if (step.level === min) {
+            return lower;
+        }
+        if (step.level === max) {
+            return upper;
+        }
+        return (upper - lower) / (max - min) * (step.level - min) + lower;
+    }
+    build(cell, type, value) {
+        if (this.step) {
+            let row = cell.parentElement;
+            let cel = row.querySelector("td#level");
+            let select = cel.firstElementChild;
+            return super.build(cell, type, this.calc(select.value));
+        }
+        return super.build(cell, type, value);
+    }
     update(cell, name) {
-        this.list = [this.items[name].second];
+        const item = this.items[name];
+        this.list = [item.second];
+        this.step = item.secval;
         const initial = this.initial;
         removeChildren(cell);
         this.build(cell, initial[0], initial[1]);

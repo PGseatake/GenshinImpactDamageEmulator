@@ -559,9 +559,12 @@ class WeaponTable extends ItemTable {
         const level = select.value;
         let row = select.parentElement!.parentElement as HTMLRowElement;
         let cells = this.cells;
+        const name = Table.cellValue(row, cells, "name");
 
         // 攻撃力変更
-        Table.updateCell(row, cells, "atk", Table.cellValue(row, cells, "name"), level);
+        Table.updateCell(row, cells, "atk", name, level);
+        // 追加効果変更
+        Table.updateCell(row, cells, "second", name);
 
         this.onChange(ev);
     }
