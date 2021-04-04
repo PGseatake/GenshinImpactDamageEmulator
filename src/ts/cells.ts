@@ -661,8 +661,8 @@ class BonusCell extends Cell {
 
 // キャラクター追加効果セル
 class CharaSpecialCell extends BonusCell {
-    constructor() {
-        super([]);
+    constructor(listeners: EventListenerList) {
+        super([], listeners);
     }
 
     load(cell: HTMLCellElement, _: string, values: IMap<string>): null {
@@ -687,8 +687,8 @@ class CharaSpecialCell extends BonusCell {
             value = chara.spvalue[AscensionLevelCell.step(level).index];
         }
 
-        let builder = BonusValueList[bonus].cell(null);
-        builder.build(cell, value).disabled = true;
+        let builder = BonusValueList[bonus].cell(this.listeners);
+        builder.build(cell, value);
     }
 }
 
@@ -700,7 +700,7 @@ class BonusListCell extends BonusCell {
         let select = cell.firstElementChild as HTMLSelectElement;
         let bonus = select.value as BonusValueType;
         let builder = BonusValueList[bonus].cell(this.listeners);
-        builder.build(cell, this.param(star, level, bonus)).disabled = true;
+        builder.build(cell, this.param(star, level, bonus));
     }
 
     protected build(cell: HTMLCellElement, astar: string, alevel: string, bonus: BonusValueType): HTMLSelectElement {
@@ -716,7 +716,7 @@ class BonusListCell extends BonusCell {
         }
 
         let builder = BonusValueList[bonus].cell(this.listeners);
-        builder.build(cell, this.param(star, level, bonus)).disabled = true;
+        builder.build(cell, this.param(star, level, bonus));
 
         return child;
     }
@@ -739,10 +739,7 @@ class SingleBonusCell extends BonusListCell {
     load(cell: HTMLCellElement, _: string, values: IMap<string>): HTMLSelectElement {
         cell.className = "bonus";
 
-        let child = this.build(cell, values.star, values.level, this.list[0]);
-        child.disabled = true;
-
-        return child;
+        return this.build(cell, values.star, values.level, this.list[0]);
     }
 }
 

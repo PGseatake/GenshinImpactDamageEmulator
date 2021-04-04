@@ -436,7 +436,7 @@ class CharaTable extends ItemTable {
             hp: new CharaStatusCell(listeners),
             atk: new CharaStatusCell(listeners),
             def: new CharaStatusCell(listeners),
-            special: new CharaSpecialCell(),
+            special: new CharaSpecialCell(listeners),
             combat: new TalentCell(1, TALENT_LV_MAX, listeners),
             skill: new TalentCell(1, TALENT_LV_MAX, listeners),
             burst: new TalentCell(1, TALENT_LV_MAX, listeners),

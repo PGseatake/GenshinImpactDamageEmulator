@@ -497,8 +497,8 @@ class BonusCell extends Cell {
     }
 }
 class CharaSpecialCell extends BonusCell {
-    constructor() {
-        super([]);
+    constructor(listeners) {
+        super([], listeners);
     }
     load(cell, _, values) {
         cell.className = "bonus";
@@ -518,8 +518,8 @@ class CharaSpecialCell extends BonusCell {
         if (chara.spvalue) {
             value = chara.spvalue[AscensionLevelCell.step(level).index];
         }
-        let builder = BonusValueList[bonus].cell(null);
-        builder.build(cell, value).disabled = true;
+        let builder = BonusValueList[bonus].cell(this.listeners);
+        builder.build(cell, value);
     }
 }
 class BonusListCell extends BonusCell {
@@ -528,7 +528,7 @@ class BonusListCell extends BonusCell {
         let select = cell.firstElementChild;
         let bonus = select.value;
         let builder = BonusValueList[bonus].cell(this.listeners);
-        builder.build(cell, this.param(star, level, bonus)).disabled = true;
+        builder.build(cell, this.param(star, level, bonus));
     }
     build(cell, astar, alevel, bonus) {
         let child = this.listen(cell, this.select(bonus));
@@ -541,7 +541,7 @@ class BonusListCell extends BonusCell {
             level = 0;
         }
         let builder = BonusValueList[bonus].cell(this.listeners);
-        builder.build(cell, this.param(star, level, bonus)).disabled = true;
+        builder.build(cell, this.param(star, level, bonus));
         return child;
     }
     param(star, level, bonus) {
@@ -558,9 +558,7 @@ class SingleBonusCell extends BonusListCell {
     }
     load(cell, _, values) {
         cell.className = "bonus";
-        let child = this.build(cell, values.star, values.level, this.list[0]);
-        child.disabled = true;
-        return child;
+        return this.build(cell, values.star, values.level, this.list[0]);
     }
 }
 class MultiBonusCell extends BonusListCell {
