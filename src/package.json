@@ -1,0 +1,14 @@
+{
+    "name": "gide",
+    "version": "1.0.0",
+    "description": "",
+    "main": "",
+    "scripts": {
+        "tsc": "tsc --newLine LF"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "typescript": "^4.1.3"
+    }
+}
