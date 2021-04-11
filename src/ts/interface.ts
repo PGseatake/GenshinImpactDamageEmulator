@@ -272,6 +272,8 @@ const FlatBonusDest = {
     Combat: "combat",
     Skill: "skill",
     Burst: "burst",
+    // StatusType 割合
+    CriRate: "cri_rate",
     // CombatBonusType 割合
     CombatDmg: "combat_dmg",
     // ElementBonusType 割合
@@ -286,14 +288,21 @@ const FlatBonusBase = {
     Def: "def", // 最終値
     Elem: "elem",
     EnRec: "en_rec",
+    CriRate: "cri_rate", // 最終値
 } as const;
 type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
+
+interface IFlatBonusMax {
+    base: FlatBonusBase;
+    value: Float;
+}
 
 interface IFlatBonus extends IExtraBonus {
     extra: "flat";
     dest: FlatBonusDest;
     base: FlatBonusBase;
-    value: Arrayable<Rate>;
+    value: Arrayable<Float>;
+    max?: IFlatBonusMax;
     scale?: DamageScale;
     limit?: string;
     times?: Integer;

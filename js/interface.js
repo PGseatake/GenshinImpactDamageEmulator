@@ -172,6 +172,7 @@ const FlatBonusDest = {
     Combat: "combat",
     Skill: "skill",
     Burst: "burst",
+    CriRate: "cri_rate",
     CombatDmg: "combat_dmg",
     HydroDmg: "hydro_dmg",
 };
@@ -182,6 +183,7 @@ const FlatBonusBase = {
     Def: "def",
     Elem: "elem",
     EnRec: "en_rec",
+    CriRate: "cri_rate",
 };
 const ReductBonusType = {
     Defence: "defence",
