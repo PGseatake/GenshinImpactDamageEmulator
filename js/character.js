@@ -843,7 +843,16 @@ const CHARACTER = {
         },
         passive: {
             skill: [
-                { extra: ExtraBonusType.Flat, dest: StatusBonusType.Atk, base: FlatBonusBase.Hp, scale: DamageScale.Xiao, value: 3.84, limit: "元素スキル発動後", times: 9 },
+                {
+                    extra: ExtraBonusType.Flat,
+                    dest: StatusBonusType.Atk,
+                    base: FlatBonusBase.Hp,
+                    max: { base: FlatBonusBase.Atk, value: 400 },
+                    scale: DamageScale.Xiao,
+                    value: 3.84,
+                    limit: "元素スキル発動後",
+                    times: 9
+                },
                 { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキル発動後", times: 9 },
             ],
             lv4: { items: CriticalBonusType.Rate, value: 12, limit: "元素スキル終了後", times: 8, target: BonusTarget.Other },
@@ -1476,6 +1485,80 @@ const CHARACTER = {
             lv1: { items: StatusBonusType.AnyDmg, value: 10.0, limit: "元素オーブまたは元素粒子を獲得した時", times: 8 },
             lv2: { items: CriticalBonusType.Rate, value: 10.0, limit: "HPが30％以下の敵を攻撃する時" },
             lv4: { extra: ExtraBonusType.Reduct, type: ReductBonusType.Defence, value: 15.0, limit: "元素スキル一回押しで攻撃した時", times: 7 },
+        }
+    },
+    Rosaria: {
+        name: "ロサリア",
+        star: 4,
+        element: ElementType.Cryo,
+        weapon: WeaponType.Polearm,
+        status: {
+            hp: [
+                1030, 2647,
+                3417, 5118,
+                5665, 6516,
+                7245, 8096,
+                8643, 9493,
+                10040, 10891,
+                11438, 12289
+            ],
+            atk: [
+                20, 52,
+                67, 100,
+                111, 127,
+                141, 158,
+                169, 185,
+                196, 213,
+                223, 240
+            ],
+            def: [
+                60, 153,
+                197, 296,
+                327, 376,
+                418, 468,
+                499, 548,
+                580, 629,
+                661, 710
+            ]
+        },
+        special: StatusBonusType.AtkBuf,
+        spvalue: [0, 0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 52.5 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 51.6 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 31.8, multi: 2 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 69.7 },
+                { name: "5段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 41.6, value2: 43.0 },
+                { name: "重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 137 },
+                { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 63.9 },
+                { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 128 },
+                { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 160 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 58.0, value2: 136 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 104, value2: 152 },
+                { name: "氷槍継続ダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 132 },
+            ]
+        },
+        passive: {
+            lv4: { items: CriticalBonusType.Rate, value: 12.0, limit: "元素スキルで背後から攻撃した時", times: 5 },
+            lv5: {
+                extra: ExtraBonusType.Flat,
+                dest: CriticalBonusType.Rate,
+                base: CriticalBonusType.Rate,
+                value: 15.0,
+                max: { base: FlatBonusBase.CriRate, value: 15.0 },
+                limit: "元素爆発発動後",
+                times: 10,
+                target: BonusTarget.Other
+            },
+        },
+        conste: {
+            lv1: { items: CombatBonusType.Normal, value: 10.0, limit: "会心発生時", times: 4 },
+            lv6: { extra: ExtraBonusType.Reduct, type: ElementType.Phys, value: 20.0, limit: "元素爆発発動後", times: 10 },
         }
     },
     Sucrose: {

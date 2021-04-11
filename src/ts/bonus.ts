@@ -208,6 +208,7 @@ class FlatBonus extends BonusBase {
     private dest: FlatBonusDest;
     private base: FlatBonusBase;
     private value: number;
+    private max: Nullable<IFlatBonusMax>;
 
     constructor(id: string, data: DeepReadonly<IBasicFlatBonus>, source: string, status: Status) {
         super(id, source, ExtraBonusType.Flat);
@@ -218,6 +219,7 @@ class FlatBonus extends BonusBase {
         if (data.scale) {
             this.value *= DAMAGE_SCALE[data.scale][status.talent.burst - 1] / 100; // TODO: 元素爆発固定
         }
+        this.max = data.max ?? null;
         this.limit = data.limit ?? "";
         this.times = data.times ?? 0;
         this.stack = data.stack ?? 0;
@@ -267,10 +269,31 @@ class FlatBonus extends BonusBase {
                 value = status.defence * value / 100;
                 break;
             default:
-                value = status.param[this.base] * value / 100;
+                value = status.param[this.base] * value / 100; // TODO: 会心基礎値5%が乗らない
                 break;
         }
         value *= stack;
+
+        // 最大値チェック
+        if (this.max) {
+            const max = this.max;
+            switch (max.base) {
+                // 直値
+                case FlatBonusBase.None:
+                    if (max.value < value) {
+                        value = max.value;
+                    }
+                    break;
+                // 基礎攻撃力の倍率
+                case FlatBonusBase.Atk:
+                    const atk = status.base.atk * max.value / 100;
+                    if (atk < value) {
+                        value = atk;
+                    }
+                    break;
+            }
+        }
+
         switch (this.dest) {
             case FlatBonusDest.Combat:
                 return [

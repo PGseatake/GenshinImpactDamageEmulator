@@ -172,7 +172,7 @@ class BasicBonus extends BonusBase {
 }
 class FlatBonus extends BonusBase {
     constructor(id, data, source, status) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         super(id, source, ExtraBonusType.Flat);
         const dest = data.dest;
         this.dest = dest;
@@ -181,10 +181,11 @@ class FlatBonus extends BonusBase {
         if (data.scale) {
             this.value *= DAMAGE_SCALE[data.scale][status.talent.burst - 1] / 100;
         }
-        this.limit = (_a = data.limit) !== null && _a !== void 0 ? _a : "";
-        this.times = (_b = data.times) !== null && _b !== void 0 ? _b : 0;
-        this.stack = (_c = data.stack) !== null && _c !== void 0 ? _c : 0;
-        this.target = (_d = data.target) !== null && _d !== void 0 ? _d : BonusTarget.Self;
+        this.max = (_a = data.max) !== null && _a !== void 0 ? _a : null;
+        this.limit = (_b = data.limit) !== null && _b !== void 0 ? _b : "";
+        this.times = (_c = data.times) !== null && _c !== void 0 ? _c : 0;
+        this.stack = (_d = data.stack) !== null && _d !== void 0 ? _d : 0;
+        this.target = (_e = data.target) !== null && _e !== void 0 ? _e : BonusTarget.Self;
     }
     get effect() {
         const labels = BONUS_LABEL;
@@ -231,6 +232,22 @@ class FlatBonus extends BonusBase {
                 break;
         }
         value *= stack;
+        if (this.max) {
+            const max = this.max;
+            switch (max.base) {
+                case FlatBonusBase.None:
+                    if (max.value < value) {
+                        value = max.value;
+                    }
+                    break;
+                case FlatBonusBase.Atk:
+                    const atk = status.base.atk * max.value / 100;
+                    if (atk < value) {
+                        value = atk;
+                    }
+                    break;
+            }
+        }
         switch (this.dest) {
             case FlatBonusDest.Combat:
                 return [

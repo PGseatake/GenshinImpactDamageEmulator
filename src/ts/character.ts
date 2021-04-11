@@ -979,7 +979,16 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             //        攻撃ダメージは炎元素ダメージとなり、元素付与によって他の元素に変化することはない。
             //        重撃は敵に血梅香効果を与える。胡桃の中断耐性が上昇する。
             skill: [
-                { extra: ExtraBonusType.Flat, dest: StatusBonusType.Atk, base: FlatBonusBase.Hp, scale: DamageScale.Xiao, value: 3.84, limit: "元素スキル発動後", times: 9 },
+                {
+                    extra: ExtraBonusType.Flat,
+                    dest: StatusBonusType.Atk,
+                    base: FlatBonusBase.Hp,
+                    max: { base: FlatBonusBase.Atk, value: 400 },
+                    scale: DamageScale.Xiao,
+                    value: 3.84,
+                    limit: "元素スキル発動後",
+                    times: 9
+                },
                 { extra: ExtraBonusType.Enchant, elem: ElementType.Pyro, dest: [CombatType.Normal, CombatType.Heavy, CombatType.Plunge], limit: "元素スキル発動後", times: 9 },
             ],
             // 4. 蝶導来世による冥蝶の舞状態終了後、チーム全員(胡桃自身を除く)の会心率+12%、継続時間8秒。
@@ -1722,6 +1731,89 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             // 5. 鋭い爪と蒼雷のスキルLv.+3
             // 6. 10秒毎に、レザーの大剣が自動的にエネルギーを溜め、次の通常攻撃に落雷を引き起こし、攻撃力の100％の雷ダメージを与える。
             //    雷牙状態でない時、落雷が敵に命中すると、レザーに鋭い爪と蒼雷の雷の印を1重付与する。
+        }
+    },
+    Rosaria: {
+        name: "ロサリア",
+        star: 4,
+        element: ElementType.Cryo,
+        weapon: WeaponType.Polearm,
+        status: {
+            hp: [
+                1030, 2647,
+                3417, 5118,
+                5665, 6516,
+                7245, 8096,
+                8643, 9493,
+                10040, 10891,
+                11438, 12289
+            ],
+            atk: [
+                20, 52,
+                67, 100,
+                111, 127,
+                141, 158,
+                169, 185,
+                196, 213,
+                223, 240
+            ],
+            def: [
+                60, 153,
+                197, 296,
+                327, 376,
+                418, 468,
+                499, 548,
+                580, 629,
+                661, 710
+            ]
+        },
+        special: StatusBonusType.AtkBuf,
+        spvalue: [0, 0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 52.5 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 51.6 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 31.8, multi: 2 },
+                { name: "4段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 69.7 },
+                { name: "5段ダメージ", type: CombatType.Normal, elem: ElementType.Phys, scale: DamageScale.Phys, value: 41.6, value2: 43.0 },
+                { name: "重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Phys, scale: DamageScale.Phys, value: 137 },
+                { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 63.9 },
+                { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 128 },
+                { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Phys, scale: DamageScale.Phys, value: 160 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 58.0, value2: 136 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 104, value2: 152 },
+                { name: "氷槍継続ダメージ", type: CombatType.Burst, elem: ElementType.Cryo, scale: DamageScale.Elem, value: 132 },
+            ]
+        },
+        passive: {
+            // 4. 罪喰いの懺悔で敵の背後から攻撃すると、ロサリアの会心率+12%、継続時間5秒。
+            lv4: { items: CriticalBonusType.Rate, value: 12.0, limit: "元素スキルで背後から攻撃した時", times: 5 },
+            // 5. 臨終の聖礼発動時、自身の会心率の15%分、チーム全員(ロサリア自身を除く)の会心率をアップさせる、継続時間10秒。
+            //    この方法で獲得できる会心率アップ効果は、最大15%まで。
+            lv5: {
+                extra: ExtraBonusType.Flat,
+                dest: CriticalBonusType.Rate,
+                base: CriticalBonusType.Rate,
+                value: 15.0,
+                max: { base: FlatBonusBase.CriRate, value: 15.0 },
+                limit: "元素爆発発動後",
+                times: 10,
+                target: BonusTarget.Other
+            },
+        },
+        conste: {
+            // 1. ロサリアの攻撃で会心が発生すると、攻撃速度+10%、通常攻撃のダメージ+10%、継続時間4秒。
+            lv1: { items: CombatBonusType.Normal, value: 10.0, limit: "会心発生時", times: 4 },
+            // 2. 臨終の聖礼で創られる氷槍の継続時間+4秒。
+            // 3. 罪喰いの懺悔のスキルLv.+3。
+            // 4. 罪喰いの懺悔で会心が発生すると、ロサリア自身の元素エネルギーが5回復する。この効果は、1回の罪喰いの懺悔で1度のみ発動可能。
+            // 5. 臨終の聖礼のスキルLv.+3。
+            // 6. 臨終の聖礼を発動すると、敵の物理耐性-20%、継続時間10秒。
+            lv6: { extra: ExtraBonusType.Reduct, type: ElementType.Phys, value: 20.0, limit: "元素爆発発動後", times: 10 },
         }
     },
     Sucrose: {
