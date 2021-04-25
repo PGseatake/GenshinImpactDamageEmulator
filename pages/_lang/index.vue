@@ -9,21 +9,25 @@
           Welcome to the Vuetify + Nuxt.js template
         </v-card-title>
         <v-card-text>
-          <p>{{ $t('sample1') }}</p>
+          <p>{{ $t("sample1") }}</p>
           <p>
-            For more information on Vuetify, check out the <a
+            For more information on Vuetify, check out the
+            <a
               href="https://vuetifyjs.com"
               target="_blank"
               rel="noopener noreferrer"
             >
-              documentation
-            </a>.
+              documentation </a
+            >.
           </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
+          <p>
+            Thank you for developing with Vuetify and I look forward to bringing
+            more exciting features in the future.
+          </p>
           <div class="text-xs-right">
             <em><small>&mdash; John Leider</small></em>
           </div>
-          <hr class="my-3">
+          <hr class="my-3" />
           <a
             href="https://nuxtjs.org/"
             target="_blank"
@@ -31,7 +35,7 @@
           >
             Nuxt Documentation
           </a>
-          <br>
+          <br />
           <a
             href="https://github.com/nuxt/nuxt.js"
             target="_blank"
@@ -42,25 +46,19 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
+          <v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
   </v-row>
 </template>
 
-<script>
-import Logo from '~/components/Logo.vue'
+<script lang="ts">
+import Logo from "~/components/Logo.vue";
 
 export default {
   components: {
-    Logo
-  }
-}
+    Logo,
+  },
+};
 </script>
