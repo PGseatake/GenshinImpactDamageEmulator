@@ -3,7 +3,7 @@ export default function ({ isHMR, app, store, route, params, error, redirect }) 
 
     if (isHMR) { return }
 
-    const locale = params.lang || defaultLocale
+    const locale = params.lang || app.i18n.locale || defaultLocale
     if (!store.state.locales.includes(locale)) {
         return error({ message: 'This page could not be found.', statusCode: 404 })
     }
@@ -11,8 +11,8 @@ export default function ({ isHMR, app, store, route, params, error, redirect }) 
     store.commit('SET_LANG', locale)
     app.i18n.locale = store.state.locale
 
-    if (locale === defaultLocale && route.fullPath.indexOf('/' + defaultLocale) === 0) {
-        const toReplace = '^/' + defaultLocale + (route.fullPath.indexOf('/' + defaultLocale + '/') === 0 ? '/' : '')
+    if (route.fullPath.indexOf('/' + locale) === 0) {
+        const toReplace = '^/' + locale + (route.fullPath.indexOf('/' + locale + '/') === 0 ? '/' : '')
         const re = new RegExp(toReplace)
         return redirect(
             route.fullPath.replace(re, '/')
