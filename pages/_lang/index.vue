@@ -46,9 +46,16 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
+          <v-btn color="primary" nuxt to="/releasenote"> Continue </v-btn>
         </v-card-actions>
       </v-card>
+      <v-sheet
+        id="scrolling-techniques-4"
+        class="overflow-y-auto"
+        max-height="600"
+      >
+        <v-container style="height: 1000px"></v-container>
+      </v-sheet>
     </v-col>
   </v-row>
 </template>

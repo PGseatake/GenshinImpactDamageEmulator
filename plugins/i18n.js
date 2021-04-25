@@ -8,12 +8,8 @@ export default ({ app, store }) => {
         locale: store.state.locale,
         fallbackLocale: 'ja',
         messages: {
-            ja: require('~/locales/ja.json'),
-            en: require('~/locales/en.json')
+            ja: { ...require('~/locales/ja/message.json'), ...require('~/locales/ja/releasenote.json') },
+            en: { ...require('~/locales/en/message.json'), ...require('~/locales/ja/releasenote.json') },
         }
     })
-
-    app.i18n.path = (link) => {
-        return `/${link}`
-    }
 }
