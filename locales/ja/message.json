@@ -2,7 +2,35 @@
     "menu": {
         "title": "メニュー",
         "home": "ホーム",
-        "releasenote": "リリースノート"
+        "releasenote": "リリースノート",
+        "artifact": "聖遺物"
+    },
+    "bonus": {
+        "none": "なし",
+        "other": "その他",
+        "hp": "HP",
+        "hp_buf": "HP(%)",
+        "atk": "攻撃力",
+        "atk_buf": "攻撃力(%)",
+        "def": "防御力",
+        "def_buf": "防御力(%)",
+        "elem": "元素熟知",
+        "en_rec": "元素チャージ効率",
+        "heal_buf": "与える治療効果",
+        "cri_dmg": "会心ダメージ",
+        "cri_rate": "会心率",
+        "heavy_cri": "重撃会心率",
+        "skill_cri": "スキル会心率",
+        "pyro_dmg": "炎ダメージ",
+        "hydro_dmg": "水ダメージ",
+        "dendro_dmg": "草ダメージ",
+        "elect_dmg": "雷ダメージ",
+        "anemo_dmg": "風ダメージ",
+        "cryo_dmg": "氷ダメージ",
+        "geo_dmg": "岩ダメージ",
+        "phys_dmg": "物理ダメージ",
+        "elem_dmg": "元素ダメージ",
+        "any_dmg": "与ダメージ"
     },
     "sample1": "サンプル!!!!!"
 }

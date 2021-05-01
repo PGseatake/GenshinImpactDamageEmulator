@@ -2,7 +2,32 @@
     "menu": {
         "title": "Menu",
         "mhome": "Home",
-        "releasenote": "Release note"
+        "releasenote": "Release note",
+        "artifact": "Artifact"
+    },
+    "bonus": {
+        "none": "None",
+        "hp": "HP",
+        "hp_buf": "HP(%)",
+        "atk": "Attack",
+        "atk_buf": "Attack(%)",
+        "def": "Defence",
+        "def_buf": "Defence(%)",
+        "elem": "ElementalMaster",
+        "en_rec": "EnergyRecharge",
+        "cri_dmg": "CriticalDamage",
+        "cri_rate": "CriticalRate",
+        "heavy_cri": "HeavyCriRate",
+        "skill_cri": "SkillCriRate",
+        "any_dmg": "AnyDamage",
+        "pyro_dmg": "PyroDamage",
+        "hydro_dmg": "HydroDamage",
+        "dendro_dmg": "DendroDamage",
+        "elect_dmg": "ElectroDamage",
+        "anemo_dmg": "AnemoDamage",
+        "cryo_dmg": "CryoDamage",
+        "geo_dmg": "GeoDamage",
+        "phys_dmg": "PhysicalDamage"
     },
     "sample1": "Hello sample!!!!!"
 }

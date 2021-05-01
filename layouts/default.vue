@@ -78,6 +78,11 @@ export default {
           title: this.$t("menu.releasenote"),
           to: "/releasenote",
         },
+        {
+          icon: "mdi-chart-bubble",
+          title: this.$t("menu.artifact"),
+          to: "/artifact",
+        },
       ],
     };
   },
