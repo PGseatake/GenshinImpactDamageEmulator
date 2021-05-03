@@ -19,6 +19,7 @@
             v-for="(type, index) in types"
             :key="index"
             :disabled="!selectable"
+            dense
             link
             @click="selected = index"
           >
