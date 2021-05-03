@@ -20,14 +20,12 @@
 
       <v-divider></v-divider>
 
-      <v-list dense>
+      <v-list>
         <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-          @click.stop="title = item.title"
+          v-for="(item, index) in items"
+          :key="index"
+          link
+          @click="(title = item.title), (page = item.page)"
         >
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
@@ -46,7 +44,9 @@
 
     <v-main>
       <v-container>
-        <nuxt />
+        <page-index v-show="page === 'index'" />
+        <page-release-note v-show="page === 'releasenote'" />
+        <page-artifact v-show="page === 'artifact'" />
       </v-container>
     </v-main>
 
@@ -59,9 +59,15 @@
 </template>
 
 <script>
+import PageIndex from "~/components/PageIndex.vue";
+const PageReleaseNote = () => import("~/components/PageReleaseNote.vue");
+const PageArtifact = () => import("~/components/PageArtifact.vue");
+
 export default {
+  components: { PageIndex, PageReleaseNote, PageArtifact },
   data() {
     return {
+      page: "index",
       fixed: false,
       title: this.$t("menu.home"),
       drawer: false,
@@ -70,18 +76,18 @@ export default {
       items: [
         {
           icon: "mdi-apps",
+          page: "index",
           title: this.$t("menu.home"),
-          to: "/",
         },
         {
           icon: "mdi-chart-bubble",
+          page: "releasenote",
           title: this.$t("menu.releasenote"),
-          to: "/releasenote",
         },
         {
           icon: "mdi-chart-bubble",
+          page: "artifact",
           title: this.$t("menu.artifact"),
-          to: "/artifact",
         },
       ],
     };
