@@ -1,3 +1,44 @@
+export const ElementType = {
+    Pyro: "pyro",
+    Hydro: "hydro",
+    Dendro: "dendro",
+    Elect: "elect",
+    Anemo: "anemo",
+    Cryo: "cryo",
+    Geo: "geo",
+    Phys: "phys",
+} as const;
+export type ElementType = typeof ElementType[keyof typeof ElementType];
+
+export const WeaponType = {
+    Sword: "sword",
+    Claymore: "claymore",
+    Polearm: "polearm",
+    Bow: "bow",
+    Catalyst: "catalyst"
+} as const;
+export type WeaponType = typeof WeaponType[keyof typeof WeaponType];
+
+export const ArtifactType = {
+    Flower: "flower",
+    Feather: "feather",
+    Sands: "sands",
+    Goblet: "goblet",
+    Circlet: "circlet"
+} as const;
+export type ArtifactType = typeof ArtifactType[keyof typeof ArtifactType];
+
+export const ReactionType = {
+    Burning: "burning",
+    Vaporize: "vaporize",
+    Melt: "melt",
+    Swirl: "swirl",
+    Echarge: "echarge",
+    Shutter: "shutter",
+    Conduct: "conduct",
+    Overload: "overload",
+} as const;
+export type ReactionType = typeof ReactionType[keyof typeof ReactionType];
 
 export const StatusBonusType = {
     Hp: "hp",
@@ -71,6 +112,16 @@ export const BonusType = {
 } as const;
 export type BonusType = AnyStatusBonusType | CriticalBonusType | AnyElementBonusType | CombatBonusType | ReactionBonusType;
 export type AnyBonusType = BonusType | "none";
+
+export const BonusTarget = {
+    All: "all", // 全員
+    Self: "self", // 自キャラ
+    Next: "next", // 次キャラ
+    Other: "other", // 自キャラ以外
+    Melee: "melee", // 片手剣・両手剣・長柄武器キャラ
+    Enemy: "enemy", // 敵
+} as const;
+export type BonusTarget = typeof BonusTarget[keyof typeof BonusTarget];
 
 export type BonusDisplayInfo = {
     icon?: string;
