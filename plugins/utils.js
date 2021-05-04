@@ -1,8 +1,9 @@
 import Vue from 'vue';
+import Vuetify from 'vuetify/lib'
 
 // TODO: とりあえず
 export let gideData = {
-    artifact: [{
+    flower: [{
             id: "aesciugb",
             name: "Adventurer",
             comment: "長めのコメント",
@@ -111,6 +112,10 @@ export let gideData = {
             sub4: { type: "cri_rate", value: 2.5 },
         },
     ],
+    feather: [],
+    sands: [],
+    goblet: [],
+    circlet: []
 }
 
 const utils = {
@@ -130,3 +135,12 @@ const utils = {
 };
 
 Vue.use(utils);
+Vue.use(Vuetify)
+
+export default new Vuetify({
+    icons: {
+        iconfont: 'mdi',
+    },
+})
+
+Vue.config.devtools = true

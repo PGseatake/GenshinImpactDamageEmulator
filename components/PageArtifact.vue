@@ -1,30 +1,31 @@
 <template>
-  <v-artifact-data :types="sands()" :items="$gideData.artifact" />
+  <v-tabs-items v-model="selectedTab">
+    <v-tab-item v-for="(value, key) of info()" :key="key">
+      <v-artifact-data :types="value" :items="$gideData[key]" />
+    </v-tab-item>
+  </v-tabs-items>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import VArtifactData from "~/components/VArtifactData.vue";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { ArtifactMain } from "~/src/const";
+const VArtifactData = () => import("~/components/VArtifactData.vue");
 
-export default Vue.component("Artifact", {
+@Component({
   components: { VArtifactData },
-  methods: {
-    flower() {
-      return ArtifactMain.flower;
-    },
-    feather() {
-      return ArtifactMain.feather;
-    },
-    sands() {
-      return ArtifactMain.sands;
-    },
-    goblet() {
-      return ArtifactMain.goblet;
-    },
-    circlet() {
-      return ArtifactMain.circlet;
-    },
-  },
-});
+})
+export default class PageArtifact extends Vue {
+  @Prop({ required: true }) tab!: number;
+
+  get selectedTab() {
+    return this.tab;
+  }
+  set selectedTab(value: number) {
+    this.$emit("update:tab", value);
+  }
+
+  info() {
+    return ArtifactMain;
+  }
+}
 </script>

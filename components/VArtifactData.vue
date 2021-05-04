@@ -37,10 +37,10 @@
 <script lang="ts">
 import Vue from "vue";
 import { VDataTable } from "vuetify/lib";
-import VNameComment from "~/components/VNameComment.vue";
-import VBonusValue from "~/components/VBonusValue.vue";
 import { ArtifactSub } from "~/src/const";
 import { ArtifactList } from "~/src/equip";
+const VNameComment = () => import("~/components/VNameComment.vue");
+const VBonusValue = () => import("~/components/VBonusValue.vue");
 
 export default Vue.extend({
   name: "VArtifactData",

@@ -43,8 +43,9 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import VNumberField from "./VNumberField.vue";
 import { BonusType, BonusDisplayInfo, BonusDisplayType } from "~/src/const";
+import { mdiMinus } from "@mdi/js";
+const VNumberField = () => import("./VNumberField.vue");
 
 export type BonusValue = {
   type: BonusDisplayType;

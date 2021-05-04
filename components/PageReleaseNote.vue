@@ -7,8 +7,10 @@
 </template>
 
 <script>
-import ReleaseRoot from "~/components/ReleaseRoot.vue";
+const ReleaseRoot = () => import("~/components/ReleaseRoot.vue");
+
 export default {
+  name: "VPageReleaseNote",
   components: { ReleaseRoot },
   data() {
     return {

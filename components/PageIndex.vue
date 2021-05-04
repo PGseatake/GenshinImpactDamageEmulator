@@ -44,10 +44,6 @@
             Nuxt GitHub
           </a>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" nuxt to="/releasenote"> Continue </v-btn>
-        </v-card-actions>
       </v-card>
       <v-sheet
         id="scrolling-techniques-4"

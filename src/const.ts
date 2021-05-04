@@ -19,6 +19,13 @@ export const WeaponType = {
 } as const;
 export type WeaponType = typeof WeaponType[keyof typeof WeaponType];
 
+export const ArtifactTypes = [
+    "flower",
+    "feather",
+    "sands",
+    "goblet",
+    "circlet"
+] as const;
 export const ArtifactType = {
     Flower: "flower",
     Feather: "feather",

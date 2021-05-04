@@ -5,6 +5,13 @@
         "releasenote": "リリースノート",
         "artifact": "聖遺物"
     },
+    "tab": {
+        "flower": "生の花",
+        "feather": "死の羽",
+        "sands": "時の砂",
+        "goblet": "空の杯",
+        "circlet": "理の冠"
+    },
     "general": {
         "name": "名前",
         "comment": "コメント",

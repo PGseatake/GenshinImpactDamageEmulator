@@ -10,7 +10,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - GenshinImpactDamageEmulator',
-    title: 'GenshinImpactDamageEmulator',
+    title: 'G.I.D.E.',
     htmlAttrs: {
       lang: 'en'
     },
