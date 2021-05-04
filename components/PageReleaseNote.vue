@@ -1,9 +1,11 @@
 <template>
-  <v-list expand>
-    <template v-for="(item, key) in items">
-      <release-root :key="key" :version="key" :root="item" />
-    </template>
-  </v-list>
+  <v-container>
+    <v-list expand>
+      <template v-for="(item, key) in items">
+        <release-root :key="key" :version="key" :root="item" />
+      </template>
+    </v-list>
+  </v-container>
 </template>
 
 <script>

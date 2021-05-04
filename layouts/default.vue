@@ -53,6 +53,7 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>{{ $t("menu." + page) }}</v-toolbar-title>
+      <!--
       <template v-if="tabs[page]" v-slot:extension>
         <v-tabs v-model="selectedTab" centered align-with-title>
           <v-tab v-for="tab in tabs[page]" :key="tab">
@@ -60,14 +61,11 @@
           </v-tab>
         </v-tabs>
       </template>
+      -->
     </v-app-bar>
 
     <v-main>
-      <v-container>
-        <page-index v-show="page === 'home'" />
-        <page-artifact v-show="page === 'artifact'" :tab.sync="selectedTab" />
-        <page-release-note v-show="page === 'releasenote'" />
-      </v-container>
+      <router-view />
     </v-main>
 
     <!--
@@ -87,14 +85,10 @@ import {
   mdiChevronLeft,
   mdiChevronRight,
 } from "@mdi/js";
-import PageIndex from "~/components/PageIndex.vue";
 import { ArtifactTypes } from "~/src/const";
-const PageArtifact = () => import("~/components/PageArtifact.vue");
-const PageReleaseNote = () => import("~/components/PageReleaseNote.vue");
 
 export default {
   name: "default",
-  components: { PageIndex, PageArtifact, PageReleaseNote },
   data() {
     return {
       fixed: false,
@@ -107,9 +101,9 @@ export default {
         releasenote: null,
       },
       lists: [
-        { icon: "mdi-apps", page: "home" },
-        { icon: "mdi-creation", page: "artifact" },
-        { icon: "mdi-note-plus", page: "releasenote" },
+        { icon: "mdi-apps", page: "home", to: "/" },
+        { icon: "mdi-creation", page: "artifact", to: "/artifact" },
+        { icon: "mdi-note-plus", page: "releasenote", to: "/releasenote" },
       ],
       selectedTab: 0,
       selectedList: 0,
@@ -120,6 +114,11 @@ export default {
       get() {
         return this.lists[this.selectedList].page;
       },
+    },
+  },
+  methods: {
+    change() {
+      this.$router.push(this.lists[this.selectedList].to);
     },
   },
 };
