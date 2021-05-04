@@ -1,67 +1,36 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <div class="text-center">
-        <logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>{{ $t("sample1") }}</p>
-          <p>
-            For more information on Vuetify, check out the
-            <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation </a
-            >.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3" />
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br />
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-      </v-card>
-      <v-sheet
-        id="scrolling-techniques-4"
-        class="overflow-y-auto"
-        max-height="600"
-      >
-        <v-container style="height: 1000px"></v-container>
-      </v-sheet>
-    </v-col>
-  </v-row>
+  <v-container>
+    <h2>Genshin Impact Damage Emulator</h2>
+    <h3>使い方</h3>
+    <ol>
+      <li>[キャラクター]～[武器]タブで各種値を設定します。</li>
+      <li>[装備]タブでキャラクターの装備を選択します。</li>
+      <li>[チーム]タブでチームメンバー選びます。</li>
+      <li>
+        [ダメージ]タブで敵キャラ/レベル・メンバーを選んで、ダメージを算出します。
+      </li>
+    </ol>
+    <ul>
+      <li>「保存」ボタンを押してデータを保存してください。</li>
+      <li>
+        「エクスポート」ボタンを押して、外部ファイルにデータを保存可能です。
+      </li>
+      <li>
+        「インポート」ボタンを押して、外部ファイルのデータを読み込み可能です。
+      </li>
+      <li>
+        聖遺物の名前の下の数値は、サブ効果をオリジナルの点数付けしたものです。
+      </li>
+    </ul>
+    <h3>注意点</h3>
+    <ul>
+      <li>このページの利用は自己責任でお願いします。</li>
+      <li>外部とのデータ送受信はありません。</li>
+      <li>一部のパラメーターは、ゲーム内の数値と若干の誤差があります。</li>
+    </ul>
+  </v-container>
 </template>
 
 <script lang="ts">
-import Logo from "~/components/Logo.vue";
-
-export default {
-  components: {
-    Logo,
-  },
-};
+export default {};
 </script>
