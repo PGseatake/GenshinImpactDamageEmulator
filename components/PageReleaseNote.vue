@@ -8,14 +8,16 @@
   </v-container>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
   name: "PageReleaseNote",
   components: { VReleaseRoot: () => import("~/components/VReleaseRoot.vue") },
-  methods: {
-    items() {
-      return this.$t("releasenote");
-    },
-  },
-};
+})
+export default class PageReleaseNote extends Vue {
+  items() {
+    return this.$t("releasenote");
+  }
+}
 </script>

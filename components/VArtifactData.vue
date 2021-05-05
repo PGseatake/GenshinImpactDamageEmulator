@@ -42,69 +42,66 @@
 </style>
 
 <script lang="ts">
-import Vue from "vue";
-import { VDataTable } from "vuetify/lib";
-import { ArtifactSub } from "~/src/const";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { AnyBonusType, ArtifactSub } from "~/src/const";
+import { IArtifactData } from "~/src/interface";
 import { ArtifactList } from "~/src/equip";
+import { DataTableHeader } from "~/node_modules/vuetify/types";
 
-export default Vue.extend({
+@Component({
   name: "VArtifactData",
   components: {
-    VDataTable,
     VNameComment: () => import("~/components/VNameComment.vue"),
     VBonusValue: () => import("~/components/VBonusValue.vue"),
   },
   inheritAttrs: false,
-  props: {
-    types: { type: Array, required: true },
-    items: { type: Array, required: true },
-  },
-  data() {
-    return {
-      headers: [
-        { text: this.$t("general.name"), value: "name" },
-        { text: this.$t("general.star"), value: "star" },
-        { text: this.$t("general.level"), value: "level" },
-        {
-          text: this.$t("general.main"),
-          value: "main",
-          sortable: false,
-          width: "130px",
-        },
-        {
-          text: this.$t("general.sub1"),
-          value: "sub1",
-          sortable: false,
-          width: "130px",
-        },
-        {
-          text: this.$t("general.sub2"),
-          value: "sub2",
-          sortable: false,
-          width: "130px",
-        },
-        {
-          text: this.$t("general.sub3"),
-          value: "sub3",
-          sortable: false,
-          width: "130px",
-        },
-        {
-          text: this.$t("general.sub4"),
-          value: "sub4",
-          sortable: false,
-          width: "130px",
-        },
-      ],
-    };
-  },
-  methods: {
-    names() {
-      return ArtifactList;
+})
+export default class VArtifactData extends Vue {
+  @Prop({ required: true }) types!: ReadonlyArray<AnyBonusType>;
+  @Prop({ required: true }) items!: Array<IArtifactData>;
+
+  readonly headers: ReadonlyArray<DataTableHeader> = [
+    { text: this.$t("general.name") as string, value: "name" },
+    { text: this.$t("general.star") as string, value: "star" },
+    { text: this.$t("general.level") as string, value: "level" },
+    {
+      text: this.$t("general.main") as string,
+      value: "main",
+      sortable: false,
+      width: "120px",
     },
-    sub() {
-      return ArtifactSub;
+    {
+      text: this.$t("general.sub1") as string,
+      value: "sub1",
+      sortable: false,
+      width: "120px",
     },
-  },
-});
+    {
+      text: this.$t("general.sub2") as string,
+      value: "sub2",
+      sortable: false,
+      width: "120px",
+    },
+    {
+      text: this.$t("general.sub3") as string,
+      value: "sub3",
+      sortable: false,
+      width: "120px",
+    },
+    {
+      text: this.$t("general.sub4") as string,
+      value: "sub4",
+      sortable: false,
+      width: "120px",
+    },
+  ];
+
+  names() {
+    return ArtifactList;
+  }
+
+  sub() {
+    return ArtifactSub;
+  }
+}
 </script>

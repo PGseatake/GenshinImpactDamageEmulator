@@ -28,7 +28,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { VSelect, VTextField } from "vuetify/lib";
 
 export type NameComment = {
   name: string;
@@ -40,9 +39,7 @@ type ArtifactName = {
   value: string;
 };
 
-@Component({
-  components: { VSelect, VTextField },
-})
+@Component({ name: "VNameComment" })
 export default class VNameComment extends Vue {
   @Prop({ required: true }) names!: ReadonlyArray<string>;
   @Prop({ required: true }) item!: NameComment;

@@ -16,10 +16,10 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { ArtifactMain } from "~/src/const";
-const VArtifactData = () => import("~/components/VArtifactData.vue");
 
 @Component({
-  components: { VArtifactData },
+  name: "PageArtifact",
+  components: { VArtifactData: () => import("~/components/VArtifactData.vue") },
 })
 export default class PageArtifact extends Vue {
   tab: number = 0;

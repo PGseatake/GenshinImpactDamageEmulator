@@ -14,31 +14,23 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { VTextField } from "vuetify/lib";
 
-export default Vue.extend({
+@Component({
   name: "VNumberField",
   components: { VTextField },
   inheritAttrs: false,
-  props: {
-    precision: {
-      type: Number,
-      default: 1,
-    },
-  },
-  data() {
-    return {
-      // TODO: 値削除時に自動で有効な値に変える
-      rule: (value: string) => !!value || "Input number.",
-    };
-  },
-  computed: {
-    step: {
-      get(): number {
-        return Math.pow(0.1, this.precision);
-      },
-    },
-  },
-});
+})
+export default class VNumberField extends Vue {
+  @Prop({ default: 1 }) precision!: number;
+
+  rule(value: string): boolean | string {
+    return !!value || "Input number.";
+  }
+
+  get step(): number {
+    return Math.pow(0.1, this.precision);
+  }
+}
 </script>

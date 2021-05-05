@@ -63,6 +63,7 @@ export type BonusValue = {
 };
 
 @Component({
+  name: "VBonusValue",
   components: { VNumberField: () => import("./VNumberField.vue") },
 })
 export default class VBonusValue extends Vue {
