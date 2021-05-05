@@ -1,23 +1,21 @@
 <template>
   <v-container>
     <v-list expand>
-      <template v-for="(item, key) in items">
-        <release-root :key="key" :version="key" :root="item" />
+      <template v-for="(item, key) in items()">
+        <v-release-root :key="key" :version="key" :root="item" />
       </template>
     </v-list>
   </v-container>
 </template>
 
 <script>
-const ReleaseRoot = () => import("~/components/ReleaseRoot.vue");
-
 export default {
-  name: "VPageReleaseNote",
-  components: { ReleaseRoot },
-  data() {
-    return {
-      items: this.$t("releasenote"),
-    };
+  name: "PageReleaseNote",
+  components: { VReleaseRoot: () => import("~/components/VReleaseRoot.vue") },
+  methods: {
+    items() {
+      return this.$t("releasenote");
+    },
   },
 };
 </script>
