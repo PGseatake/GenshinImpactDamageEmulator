@@ -4,12 +4,13 @@
     v-on="$listeners"
     :headers="headers"
     :items="items"
-    hide-default-footer
     show-select
     single-select
+    hide-default-footer
+    class="data-table-padding"
   >
     <template v-slot:[`header.data-table-select`]="{}">
-      <v-btn fab light x-small>
+      <v-btn fab x-small>
         <v-icon>mdi-trash-can-outline</v-icon>
       </v-btn>
     </template>
@@ -34,17 +35,25 @@
   </v-data-table>
 </template>
 
+<style scoped>
+.data-table-padding >>> .text-start {
+  padding: 0 8px;
+}
+</style>
+
 <script lang="ts">
 import Vue from "vue";
 import { VDataTable } from "vuetify/lib";
 import { ArtifactSub } from "~/src/const";
 import { ArtifactList } from "~/src/equip";
-const VNameComment = () => import("~/components/VNameComment.vue");
-const VBonusValue = () => import("~/components/VBonusValue.vue");
 
 export default Vue.extend({
   name: "VArtifactData",
-  components: { VDataTable, VNameComment, VBonusValue },
+  components: {
+    VDataTable,
+    VNameComment: () => import("~/components/VNameComment.vue"),
+    VBonusValue: () => import("~/components/VBonusValue.vue"),
+  },
   inheritAttrs: false,
   props: {
     types: { type: Array, required: true },
@@ -56,11 +65,36 @@ export default Vue.extend({
         { text: this.$t("general.name"), value: "name" },
         { text: this.$t("general.star"), value: "star" },
         { text: this.$t("general.level"), value: "level" },
-        { text: this.$t("general.main"), value: "main", sortable: false },
-        { text: this.$t("general.sub1"), value: "sub1", sortable: false },
-        { text: this.$t("general.sub2"), value: "sub2", sortable: false },
-        { text: this.$t("general.sub3"), value: "sub3", sortable: false },
-        { text: this.$t("general.sub4"), value: "sub4", sortable: false },
+        {
+          text: this.$t("general.main"),
+          value: "main",
+          sortable: false,
+          width: "130px",
+        },
+        {
+          text: this.$t("general.sub1"),
+          value: "sub1",
+          sortable: false,
+          width: "130px",
+        },
+        {
+          text: this.$t("general.sub2"),
+          value: "sub2",
+          sortable: false,
+          width: "130px",
+        },
+        {
+          text: this.$t("general.sub3"),
+          value: "sub3",
+          sortable: false,
+          width: "130px",
+        },
+        {
+          text: this.$t("general.sub4"),
+          value: "sub4",
+          sortable: false,
+          width: "130px",
+        },
       ],
     };
   },

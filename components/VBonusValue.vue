@@ -1,15 +1,15 @@
 <template>
   <v-row dense>
-    <v-col md="auto">
+    <v-col align-self="center" md="auto" class="pa-0">
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             v-bind="attrs"
             v-on="on"
+            :disabled="!selectable"
             fab
             dark
             x-small
-            :disabled="!selectable"
           >
             <v-icon dark> {{ icon }} </v-icon>
           </v-btn>
@@ -19,9 +19,9 @@
             v-for="(type, index) in types"
             :key="index"
             :disabled="!selectable"
-            dense
             link
-            @click="selected = index"
+            dense
+            @click="change(index)"
           >
             <v-list-item-title>{{ $t("bonus." + type) }}</v-list-item-title>
           </v-list-item>
@@ -30,7 +30,7 @@
     </v-col>
     <v-col>
       <v-number-field
-        :refer="bonus"
+        v-model="bonus.value"
         :label="label"
         :precision="precision"
         :disabled="!editable"
@@ -44,8 +44,18 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { BonusType, BonusDisplayInfo, BonusDisplayType } from "~/src/const";
-import { mdiMinus } from "@mdi/js";
-const VNumberField = () => import("./VNumberField.vue");
+// import {
+//   mdiMinus,
+//   mdiWaterOutline,
+//   mdiWaterPercent,
+//   mdiSword,
+//   mdiSwordCross,
+//   mdiShieldOutline,
+//   mdiShieldHalfFull,
+//   mdiGoogleCirclesExtended,
+//   mdiRestore,
+//   mdiStarFourPoints,
+// } from "@mdi/js";
 
 export type BonusValue = {
   type: BonusDisplayType;
@@ -53,28 +63,13 @@ export type BonusValue = {
 };
 
 @Component({
-  components: { VNumberField },
+  components: { VNumberField: () => import("./VNumberField.vue") },
 })
 export default class VBonusValue extends Vue {
   @Prop({ required: true }) types!: ReadonlyArray<BonusDisplayType>;
   @Prop({ required: true }) bonus!: BonusValue;
 
   selectedItem: number = 0;
-
-  get selected() {
-    return this.selectedItem;
-  }
-  set selected(num: number) {
-    const types = this.types;
-    if (0 <= num && num < types.length) {
-      this.selectedItem = num;
-      this.bonus.type = types[num];
-    } else {
-      this.selectedItem = -1;
-      this.bonus.type = BonusType.None;
-    }
-    this.bonus.value = 0;
-  }
 
   get icon(): string {
     return BonusDisplayInfo[this.bonus.type].icon!;
@@ -105,17 +100,13 @@ export default class VBonusValue extends Vue {
   }
 
   mounted() {
-    const types = this.types;
-    if (types.length <= 1) {
-      this.bonus.type = types[0];
-      this.selectedItem = 0;
-    } else {
-      const idx = types.indexOf(this.bonus.type);
-      if (idx < 0) {
-        this.bonus.type = BonusType.None;
-      }
-      this.selectedItem = idx;
-    }
+    this.selectedItem = this.types.indexOf(this.bonus.type);
+  }
+
+  change(index: number) {
+    this.selectedItem = index;
+    this.$set(this.bonus, "type", this.types[index]);
+    this.$set(this.bonus, "value", "0");
   }
 }
 </script>
