@@ -2348,6 +2348,81 @@ const CHARACTER: DeepReadonly<IMap<ICharacter>> = {
             // TODO: lv6: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk/*for Heavy*/, base: FlatBonusBase.Def, value: 50.0 },
         }
     },
+    Yanfei: {
+        name: "煙緋",
+        star: 4,
+        element: ElementType.Pyro,
+        weapon: WeaponType.Catalyst,
+        status: {
+            hp: [
+                784, 2014,
+                2600, 3895,
+                4311, 4959,
+                5514, 6161,
+                6578, 7225,
+                7641, 8289,
+                8705, 9352
+            ],
+            atk: [
+                20, 52,
+                67, 100,
+                111, 127,
+                141, 158,
+                169, 185,
+                196, 213,
+                223, 240
+            ],
+            def: [
+                49, 126,
+                163, 244,
+                271, 311,
+                346, 387,
+                413, 453,
+                480, 520,
+                546, 587
+            ]
+        },
+        special: ElementBonusType.Pyro,
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 58.0 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 52.0 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 76.0 },
+                { name: "重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 98.0 },
+                { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Pyro, scale: DamageScale.Phys, value: 56.8 },
+                { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Pyro, scale: DamageScale.Phys, value: 114 },
+                { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Pyro, scale: DamageScale.Phys, value: 142 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 170 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 182 },
+            ]
+        },
+        passive: {
+            // burst: 烈焔を引き起こし、周囲の敵を襲う。炎元素範囲ダメージを与え、煙緋に最大数の丹火の印と灼灼効果を付与する。
+            //        重撃ダメージをアップする。
+            burst: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.HeavyDmg, base: FlatBonusBase.None, value: 33.0, scale: DamageScale.Elem, limit: "元素爆発発動後", times: 15 },
+            // 4. 煙緋が重撃で丹火の印を消費した時、丹火の印1枚につき炎元素ダメージ+5%、継続時間6秒。
+            //    効果持続中に再び重撃を放つと、既存の効果が先にクリアされる。
+            lv4: { items: ElementBonusType.Pyro, value: 5.0, limit: "重撃で丹火の印を消費した時", times: 6, stack: 6 },
+            // 5. 煙緋が自ら発動した重撃が敵に対して会心した時、追加で自身の攻撃力80%分の炎元素範囲ダメージを与える。
+            //    このダメージは重撃によるダメージとみなされる。
+        },
+        conste: {
+            // 1. 煙緋が丹火の印を1枚所持するごとに、重撃を詠唱している間の中断耐性がアップ、さらに重撃のスタミナ消費-10%。
+            // 2. 煙緋の重撃がHP50%未満の敵に対して、会心率+20%。
+            lv2: { items: CriticalBonusType.Rate, value: 20.0, limit: "HP50%未満の敵に重撃が命中した時" },
+            // 3. 丹書契約のスキルLv.+3
+            // 4. 契約成立を発動した時、下記の効果を発動する。
+            //    ダメージ吸収量がHP上限の45% に相当するシールドを生成する。持続時間15秒。
+            //    このシールドは炎元素ダメージに対して250% の吸収効果がある。
+            // 5. 契約成立のスキルLv.+3
+            // 6. 煙緋が所持できる丹火の印の最大枚数+1
+        }
+    },
     Zhongli: {
         name: "鍾離",
         star: 5,
@@ -2946,6 +3021,18 @@ const ENEMY_LIST: DeepReadonly<IMap<IEnemy>> = {
             phys: 10
         },
     },
+    HypostasisCryo: {
+        name: "無相の氷",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: Infinity,
+            geo: 10,
+            phys: 10
+        },
+    },
     Oceanid: {
         name: "純水精霊",
         resist: {
@@ -3196,6 +3283,42 @@ const ENEMY_LIST: DeepReadonly<IMap<IEnemy>> = {
             cryo: 0,
             geo: 0,
             phys: 0
+        },
+    },
+    AzhdahaP1: {
+        name: "若陀龍王・第1段階",
+        resist: {
+            pyro: 40,
+            hydro: 40,
+            elect: 40,
+            anemo: 40,
+            cryo: 40,
+            geo: 100,
+            phys: 10
+        },
+    },
+    AzhdahaP2: {
+        name: "若陀龍王・第2段階（いずれかの元素耐性を強化）",
+        resist: {
+            pyro: 100,
+            hydro: 100,
+            elect: 100,
+            anemo: 40,
+            cryo: 100,
+            geo: 100,
+            phys: 10
+        },
+    },
+    AzhdahaP3: {
+        name: "若陀龍王・第3段階（別の元素耐性を追加で強化）",
+        resist: {
+            pyro: 90,
+            hydro: 90,
+            elect: 90,
+            anemo: 40,
+            cryo: 90,
+            geo: 100,
+            phys: 10
         },
     },
 } as const;

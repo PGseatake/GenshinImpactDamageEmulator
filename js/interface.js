@@ -174,6 +174,7 @@ const FlatBonusDest = {
     Burst: "burst",
     CriRate: "cri_rate",
     CombatDmg: "combat_dmg",
+    HeavyDmg: "heavy_dmg",
     HydroDmg: "hydro_dmg",
 };
 const FlatBonusBase = {

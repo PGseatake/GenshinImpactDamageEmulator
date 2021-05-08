@@ -2020,6 +2020,67 @@ const CHARACTER = {
             lv4: { extra: ExtraBonusType.Reduct, type: ElementType.Phys, value: 15.0, limit: "元素スキルのダメージを受けた敵", times: 12 },
         }
     },
+    Yanfei: {
+        name: "煙緋",
+        star: 4,
+        element: ElementType.Pyro,
+        weapon: WeaponType.Catalyst,
+        status: {
+            hp: [
+                784, 2014,
+                2600, 3895,
+                4311, 4959,
+                5514, 6161,
+                6578, 7225,
+                7641, 8289,
+                8705, 9352
+            ],
+            atk: [
+                20, 52,
+                67, 100,
+                111, 127,
+                141, 158,
+                169, 185,
+                196, 213,
+                223, 240
+            ],
+            def: [
+                49, 126,
+                163, 244,
+                271, 311,
+                346, 387,
+                413, 453,
+                480, 520,
+                546, 587
+            ]
+        },
+        special: ElementBonusType.Pyro,
+        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: CombatType.Normal, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 58.0 },
+                { name: "2段ダメージ", type: CombatType.Normal, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 52.0 },
+                { name: "3段ダメージ", type: CombatType.Normal, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 76.0 },
+                { name: "重撃ダメージ", type: CombatType.Heavy, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 98.0 },
+                { name: "落下期間のダメージ", type: CombatType.Plunge, elem: ElementType.Pyro, scale: DamageScale.Phys, value: 56.8 },
+                { name: "低空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Pyro, scale: DamageScale.Phys, value: 114 },
+                { name: "高空落下攻撃ダメージ", type: CombatType.Plunge, elem: ElementType.Pyro, scale: DamageScale.Phys, value: 142 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: CombatType.Skill, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 170 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: CombatType.Burst, elem: ElementType.Pyro, scale: DamageScale.Elem, value: 182 },
+            ]
+        },
+        passive: {
+            burst: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.HeavyDmg, base: FlatBonusBase.None, value: 33.0, scale: DamageScale.Elem, limit: "元素爆発発動後", times: 15 },
+            lv4: { items: ElementBonusType.Pyro, value: 5.0, limit: "重撃で丹火の印を消費した時", times: 6, stack: 6 },
+        },
+        conste: {
+            lv2: { items: CriticalBonusType.Rate, value: 20.0, limit: "HP50%未満の敵に重撃が命中した時" },
+        }
+    },
     Zhongli: {
         name: "鍾離",
         star: 5,
@@ -2605,6 +2666,18 @@ const ENEMY_LIST = {
             phys: 10
         },
     },
+    HypostasisCryo: {
+        name: "無相の氷",
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: Infinity,
+            geo: 10,
+            phys: 10
+        },
+    },
     Oceanid: {
         name: "純水精霊",
         resist: {
@@ -2855,6 +2928,42 @@ const ENEMY_LIST = {
             cryo: 0,
             geo: 0,
             phys: 0
+        },
+    },
+    AzhdahaP1: {
+        name: "若陀龍王・第1段階",
+        resist: {
+            pyro: 40,
+            hydro: 40,
+            elect: 40,
+            anemo: 40,
+            cryo: 40,
+            geo: 100,
+            phys: 10
+        },
+    },
+    AzhdahaP2: {
+        name: "若陀龍王・第2段階（いずれかの元素耐性を強化）",
+        resist: {
+            pyro: 100,
+            hydro: 100,
+            elect: 100,
+            anemo: 40,
+            cryo: 100,
+            geo: 100,
+            phys: 10
+        },
+    },
+    AzhdahaP3: {
+        name: "若陀龍王・第3段階（別の元素耐性を追加で強化）",
+        resist: {
+            pyro: 90,
+            hydro: 90,
+            elect: 90,
+            anemo: 40,
+            cryo: 90,
+            geo: 100,
+            phys: 10
         },
     },
 };

@@ -132,6 +132,19 @@ const ARTIFACT_SET: DeepReadonly<IMap<IArtifactSet>> = {
         set2: { items: ElementBonusType.Hydro, value: 15 },
         set4: { items: [CombatBonusType.Normal, CombatBonusType.Heavy], value: 30, limit: "元素スキルを発動後", times: 15 }
     },
+    PaleFlame: {
+        name: "蒼白の炎",
+        set2: { items: ElementBonusType.Phys, value: 25 },
+        set4: [
+            { items: StatusBonusType.AtkBuf, value: 9, limit: "元素スキルが命中した時", times: 7, stack: 2 },
+            { items: ElementBonusType.Phys, value: 25, limit: "ボーナスを2重に重ねた時", times: 7 }
+        ]
+    },
+    TenacityMillelith: {
+        name: "千岩牢固",
+        set2: { items: StatusBonusType.HpBuf, value: 20 },
+        set4: { items: StatusBonusType.AtkBuf, value: 20, limit: "元素スキルが命中した時", times: 3, target: BonusTarget.All },
+    },
 } as const;
 
 const FLOWER_LIST: DeepReadonly<IMap<string>> = {
@@ -163,6 +176,8 @@ const FLOWER_LIST: DeepReadonly<IMap<string>> = {
     Bolide: "夏祭りの花",
     Icebreaker: "吹雪の中の思い",
     OceanConqueror: "金メッキのコサージュ",
+    PaleFlame: "無垢の花",
+    TenacityMillelith: "偉勲の花",
 } as const;
 
 const FEATHER_LIST: DeepReadonly<IMap<string>> = {
@@ -194,6 +209,8 @@ const FEATHER_LIST: DeepReadonly<IMap<string>> = {
     Bolide: "夏祭りの終わり",
     Icebreaker: "氷を砕く執念",
     OceanConqueror: "追憶の風",
+    PaleFlame: "良医の羽",
+    TenacityMillelith: "昭武の羽根",
 } as const;
 
 const SANDS_LIST: DeepReadonly<IMap<string>> = {
@@ -225,6 +242,8 @@ const SANDS_LIST: DeepReadonly<IMap<string>> = {
     Bolide: "夏祭りの刻",
     Icebreaker: "雪覆う故郷の最後",
     OceanConqueror: "堅い銅のコンパス",
+    PaleFlame: "停頓の時",
+    TenacityMillelith: "金銅の日時計",
 } as const;
 
 const GOBLET_LIST: DeepReadonly<IMap<string>> = {
@@ -256,6 +275,8 @@ const GOBLET_LIST: DeepReadonly<IMap<string>> = {
     Bolide: "夏祭りの水風船",
     Icebreaker: "霜を纏った気骨",
     OceanConqueror: "浮沈の杯",
+    PaleFlame: "超越の杯",
+    TenacityMillelith: "誓いの金杯",
 } as const;
 
 const CIRCLET_LIST: DeepReadonly<IMap<string>> = {
@@ -287,4 +308,6 @@ const CIRCLET_LIST: DeepReadonly<IMap<string>> = {
     Bolide: "夏祭りの仮面",
     Icebreaker: "氷雪を踏む音",
     OceanConqueror: "酒に漬けた帽子",
+    PaleFlame: "嗤笑の面",
+    TenacityMillelith: "将師の兜",
 } as const;

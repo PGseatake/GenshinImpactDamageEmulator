@@ -276,6 +276,7 @@ const FlatBonusDest = {
     CriRate: "cri_rate",
     // CombatBonusType 割合
     CombatDmg: "combat_dmg",
+    HeavyDmg: "heavy_dmg",
     // ElementBonusType 割合
     HydroDmg: "hydro_dmg",
 } as const;
