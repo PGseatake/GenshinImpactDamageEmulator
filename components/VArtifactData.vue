@@ -4,18 +4,16 @@
     v-on="$listeners"
     :headers="headers"
     :items="items"
-    show-select
-    single-select
     hide-default-footer
-    class="data-table-padding"
   >
-    <template v-slot:[`header.data-table-select`]="{}">
-      <v-btn fab x-small>
-        <v-icon>mdi-trash-can-outline</v-icon>
-      </v-btn>
-    </template>
     <template v-slot:[`item.name`]="{ item }">
       <v-name-comment :names="names()" :item="item" />
+    </template>
+    <template v-slot:[`item.star`]="{ item }">
+      <v-select-range v-model="item.star" :min="3" :max="5" />
+    </template>
+    <template v-slot:[`item.level`]="{ item }">
+      <v-ascension-level v-model="item.level" />
     </template>
     <template v-slot:[`item.main`]="{ item }">
       <v-bonus-value :types="types" :bonus="item.main" />
@@ -32,12 +30,34 @@
     <template v-slot:[`item.sub4`]="{ item }">
       <v-bonus-value :types="sub()" :bonus="item.sub4" />
     </template>
+    <template v-slot:[`item.delete`]="{ item }">
+      <v-btn fab x-small @click="deleteItem(item)">
+        <v-icon> mdi-delete </v-icon>
+      </v-btn>
+    </template>
   </v-data-table>
 </template>
 
-<style scoped>
-.data-table-padding >>> .text-start {
-  padding: 0 8px;
+<style lang="scss" scoped>
+.v-data-table ::v-deep {
+  table {
+    table-layout: auto;
+  }
+  .text-start {
+    padding: 0 8px;
+  }
+  td.text-start:nth-of-type(1) {
+    min-width: 160px;
+    max-width: 250px;
+  }
+  td.text-start:nth-of-type(2) {
+    min-width: 60px;
+    max-width: 80px;
+  }
+  td.text-start:nth-of-type(3) {
+    min-width: 60px;
+    max-width: 80px;
+  }
 }
 </style>
 
@@ -52,6 +72,8 @@ import { DataTableHeader } from "~/node_modules/vuetify/types";
   name: "VArtifactData",
   components: {
     VNameComment: () => import("~/components/VNameComment.vue"),
+    VSelectRange: () => import("~/components/VSelectRange.vue"),
+    VAscensionLevel: () => import("~/components/VAscensionLevel.vue"),
     VBonusValue: () => import("~/components/VBonusValue.vue"),
   },
   inheritAttrs: false,
@@ -68,31 +90,37 @@ export default class VArtifactData extends Vue {
       text: this.$t("general.main") as string,
       value: "main",
       sortable: false,
-      width: "120px",
+      width: "105px",
     },
     {
       text: this.$t("general.sub1") as string,
       value: "sub1",
       sortable: false,
-      width: "120px",
+      width: "105px",
     },
     {
       text: this.$t("general.sub2") as string,
       value: "sub2",
       sortable: false,
-      width: "120px",
+      width: "105px",
     },
     {
       text: this.$t("general.sub3") as string,
       value: "sub3",
       sortable: false,
-      width: "120px",
+      width: "105px",
     },
     {
       text: this.$t("general.sub4") as string,
       value: "sub4",
       sortable: false,
-      width: "120px",
+      width: "105px",
+    },
+    {
+      text: this.$t("general.delete") as string,
+      value: "delete",
+      sortable: false,
+      width: "50px",
     },
   ];
 
@@ -102,6 +130,10 @@ export default class VArtifactData extends Vue {
 
   sub() {
     return ArtifactSub;
+  }
+
+  deleteItem(item: IArtifactData) {
+    console.log(item);
   }
 }
 </script>

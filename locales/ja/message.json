@@ -13,6 +13,7 @@
         "circlet": "理の冠"
     },
     "general": {
+        "delete": "削除",
         "name": "名前",
         "comment": "コメント",
         "level": "Lv",

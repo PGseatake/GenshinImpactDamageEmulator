@@ -76,6 +76,16 @@
   </v-app>
 </template>
 
+<style lang="scss" scoped>
+::v-deep .v-select-list {
+  .v-list-item {
+    .v-list-item__content {
+      padding: 0;
+    }
+  }
+}
+</style>
+
 <script>
 import {
   mdiApps,
