@@ -16,19 +16,19 @@
       <v-ascension-level v-model="item.level" />
     </template>
     <template v-slot:[`item.main`]="{ item }">
-      <v-bonus-value :types="types" :bonus="item.main" />
+      <v-bonus-value :types="types" v-bind.sync="item.main" />
     </template>
     <template v-slot:[`item.sub1`]="{ item }">
-      <v-bonus-value :types="sub()" :bonus="item.sub1" />
+      <v-bonus-value :types="sub()" v-bind.sync="item.sub1" />
     </template>
     <template v-slot:[`item.sub2`]="{ item }">
-      <v-bonus-value :types="sub()" :bonus="item.sub2" />
+      <v-bonus-value :types="sub()" v-bind.sync="item.sub2" />
     </template>
     <template v-slot:[`item.sub3`]="{ item }">
-      <v-bonus-value :types="sub()" :bonus="item.sub3" />
+      <v-bonus-value :types="sub()" v-bind.sync="item.sub3" />
     </template>
     <template v-slot:[`item.sub4`]="{ item }">
-      <v-bonus-value :types="sub()" :bonus="item.sub4" />
+      <v-bonus-value :types="sub()" v-bind.sync="item.sub4" />
     </template>
     <template v-slot:[`item.delete`]="{ item }">
       <v-btn fab x-small @click="deleteItem(item)">

@@ -30,11 +30,11 @@
     </v-col>
     <v-col>
       <v-number-field
-        v-model="bonus.value"
+        :value.sync="refValue"
         :label="label"
-        :precision="precision"
-        :disabled="!editable"
         :suffix="suffix"
+        :disabled="!editable"
+        :precision="precision"
         hide-details="auto"
       />
     </v-col>
@@ -68,12 +68,13 @@ export type BonusValue = {
 })
 export default class VBonusValue extends Vue {
   @Prop({ required: true }) types!: ReadonlyArray<BonusDisplayType>;
-  @Prop({ required: true }) bonus!: BonusValue;
+  @Prop({ required: true }) type!: BonusDisplayType;
+  @Prop({ required: true }) value!: number;
 
   selectedItem: number = 0;
 
   get icon(): string {
-    return BonusDisplayInfo[this.bonus.type].icon!;
+    return BonusDisplayInfo[this.type].icon!;
   }
 
   get label() {
@@ -89,25 +90,32 @@ export default class VBonusValue extends Vue {
   }
 
   get precision() {
-    return BonusDisplayInfo[this.bonus.type].suffix ? 1 : 0;
+    return BonusDisplayInfo[this.type].suffix ? 1 : 0;
   }
 
   get editable() {
-    return this.bonus.type !== BonusType.None;
+    return this.type !== BonusType.None;
   }
 
   get suffix() {
-    return BonusDisplayInfo[this.bonus.type].suffix ?? "";
+    return BonusDisplayInfo[this.type].suffix ?? "";
+  }
+
+  get refValue() {
+    return this.value;
+  }
+  set refValue(num: number) {
+    this.$emit("update:value", num);
   }
 
   mounted() {
-    this.selectedItem = this.types.indexOf(this.bonus.type);
+    this.selectedItem = this.types.indexOf(this.type);
   }
 
   change(index: number) {
     this.selectedItem = index;
-    this.$set(this.bonus, "type", this.types[index]);
-    this.$set(this.bonus, "value", "0");
+    this.$emit("update:type", this.types[index]);
+    this.$emit("update:value", 0);
   }
 }
 </script>
