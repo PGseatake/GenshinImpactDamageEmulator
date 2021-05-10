@@ -7,7 +7,7 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="(value, key) of info()" :key="key">
-        <v-artifact-data :types="value" :items="$gideData[key]" />
+        <v-artifact-data :type="key" :types="value" :items="$gideData[key]" />
       </v-tab-item>
     </v-tabs-items>
   </v-container>

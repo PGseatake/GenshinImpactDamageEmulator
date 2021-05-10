@@ -7,7 +7,11 @@
     hide-default-footer
   >
     <template v-slot:[`item.name`]="{ item }">
-      <v-name-comment :names="names()" :item="item" />
+      <v-name-comment
+        :names="names()"
+        :name.sync="item.name"
+        :comment.sync="item.comment"
+      />
     </template>
     <template v-slot:[`item.star`]="{ item }">
       <v-select-range v-model="item.star" :min="3" :max="5" />
@@ -63,7 +67,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { AnyBonusType, ArtifactSub } from "~/src/const";
+import { AnyBonusType, ArtifactType, ArtifactSub } from "~/src/const";
 import { IArtifactData } from "~/src/interface";
 import { ArtifactList } from "~/src/equip";
 import { DataTableHeader } from "~/node_modules/vuetify/types";
@@ -79,6 +83,7 @@ import { DataTableHeader } from "~/node_modules/vuetify/types";
   inheritAttrs: false,
 })
 export default class VArtifactData extends Vue {
+  @Prop({ required: true }) type!: ArtifactType;
   @Prop({ required: true }) types!: ReadonlyArray<AnyBonusType>;
   @Prop({ required: true }) items!: Array<IArtifactData>;
 
@@ -125,7 +130,10 @@ export default class VArtifactData extends Vue {
   ];
 
   names() {
-    return ArtifactList;
+    return ArtifactList.map((name) => ({
+      text: this.$t(["artifact", this.type, name].join(".")),
+      value: name,
+    }));
   }
 
   sub() {
