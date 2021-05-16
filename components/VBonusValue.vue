@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { BonusType, BonusDisplayInfo, BonusDisplayType } from "~/src/const";
 // import {
 //   mdiMinus,
@@ -109,6 +109,11 @@ export default class VBonusValue extends Vue {
   }
 
   mounted() {
+    this.selectedItem = this.types.indexOf(this.type);
+  }
+
+  @Watch("type")
+  onChangeType() {
     this.selectedItem = this.types.indexOf(this.type);
   }
 

@@ -1,13 +1,11 @@
 <template>
   <v-container>
     <v-tabs v-model="tab" centered>
-      <v-tab v-for="(_, key) of info()" :key="key">{{
-        $t("tab." + key)
-      }}</v-tab>
+      <v-tab v-for="type of types()" :key="type">{{ $t("tab." + type) }}</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
-      <v-tab-item v-for="(value, key) of info()" :key="key">
-        <v-artifact-data :type="key" :types="value" :items="$gideData[key]" />
+      <v-tab-item v-for="type of types()" :key="type">
+        <v-artifact-data :type="type" :items="$gideData[type]" />
       </v-tab-item>
     </v-tabs-items>
   </v-container>
@@ -15,7 +13,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { ArtifactMain } from "~/src/const";
+import { ArtifactTypes } from "~/src/const";
 
 @Component({
   name: "PageArtifact",
@@ -24,8 +22,8 @@ import { ArtifactMain } from "~/src/const";
 export default class PageArtifact extends Vue {
   tab: number = 0;
 
-  info() {
-    return ArtifactMain;
+  types() {
+    return ArtifactTypes;
   }
 }
 </script>

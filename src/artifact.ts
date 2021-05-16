@@ -1,4 +1,6 @@
 import {
+    ArtifactType,
+    BonusType,
     StatusBonusType,
     CriticalBonusType,
     CombatBonusType,
@@ -9,7 +11,58 @@ import {
 } from "~/src/const";
 import { IArtifactSet } from "~/src/interface";
 
-export const ArtifactList = [
+export const ArtifactMain: Record<ArtifactType, ReadonlyArray<AnyBonusType>> = {
+    "flower": [StatusBonusType.Hp],
+    "feather": [StatusBonusType.Atk],
+    "sands": [
+        BonusType.None,
+        StatusBonusType.HpBuf,
+        StatusBonusType.AtkBuf,
+        StatusBonusType.DefBuf,
+        StatusBonusType.Elem,
+        StatusBonusType.EnRec,
+    ],
+    "goblet": [
+        BonusType.None,
+        StatusBonusType.HpBuf,
+        StatusBonusType.AtkBuf,
+        StatusBonusType.DefBuf,
+        StatusBonusType.Elem,
+        ElementBonusType.Pyro,
+        ElementBonusType.Hydro,
+        ElementBonusType.Elect,
+        ElementBonusType.Anemo,
+        ElementBonusType.Cryo,
+        ElementBonusType.Geo,
+        ElementBonusType.Phys,
+    ],
+    "circlet": [
+        BonusType.None,
+        StatusBonusType.HpBuf,
+        StatusBonusType.AtkBuf,
+        StatusBonusType.DefBuf,
+        StatusBonusType.Elem,
+        StatusBonusType.HealBuf,
+        CriticalBonusType.Rate,
+        CriticalBonusType.Damage,
+    ]
+} as const;
+
+export const ArtifactSub: ReadonlyArray<AnyBonusType> = [
+    BonusType.None,
+    StatusBonusType.Hp,
+    StatusBonusType.HpBuf,
+    StatusBonusType.Atk,
+    StatusBonusType.AtkBuf,
+    StatusBonusType.Def,
+    StatusBonusType.DefBuf,
+    StatusBonusType.Elem,
+    StatusBonusType.EnRec,
+    CriticalBonusType.Rate,
+    CriticalBonusType.Damage,
+] as const;
+
+export const ArtifactNames = [
     "Adventurer",
     "LuckyDog",
     "Doctor",
@@ -38,10 +91,9 @@ export const ArtifactList = [
     "Icebreaker",
     "OceanConqueror",
 ] as const;
-export type Artifact = typeof ArtifactList[number];
 
 // TODO: limitを多言語対応
-export const ArtifactSet: Record<Artifact, IArtifactSet> = {
+export const ArtifactSet: Record<typeof ArtifactNames[number], IArtifactSet> = {
     Adventurer: {
         set2: { items: StatusBonusType.Hp, value: 1000 }, // TODO: hp_buf が係るのか検証
         // set4: null,

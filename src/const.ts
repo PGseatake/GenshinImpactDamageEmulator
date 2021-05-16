@@ -108,16 +108,16 @@ export const ReactionBonusType = {
 } as const;
 export type ReactionBonusType = typeof ReactionBonusType[keyof typeof ReactionBonusType];
 
-export const AnyBonusType = {
-    Damage: "any_dmg",
-    Element: "elem_dmg",
-} as const;
-
 export const BonusType = {
     None: "none",
     Other: "other",
 } as const;
 export type BonusType = AnyStatusBonusType | CriticalBonusType | AnyElementBonusType | CombatBonusType | ReactionBonusType;
+
+export const AnyBonusType = {
+    Damage: "any_dmg",
+    Element: "elem_dmg",
+} as const;
 export type AnyBonusType = BonusType | "none";
 
 export const BonusTarget = {
@@ -136,7 +136,7 @@ export type BonusDisplayInfo = {
 };
 export type BonusDisplayType = "none" | StatusBonusType | ElementBonusType;
 
-export const BonusDisplayInfo: Record<BonusDisplayType, BonusDisplayInfo> = {
+export const BonusDisplayInfo: ReadonlyRecord<BonusDisplayType, BonusDisplayInfo> = {
     "none": { icon: "mdi-minus" },
     "hp": { icon: "mdi-water-outline" },
     "hp_buf": { icon: "mdi-water-percent", suffix: "%" },
@@ -158,54 +158,3 @@ export const BonusDisplayInfo: Record<BonusDisplayType, BonusDisplayInfo> = {
     "geo_dmg": { icon: "mdi-zodiac-capricorn", suffix: "%" },
     "phys_dmg": { icon: "mdi-zodiac-aries", suffix: "%" },
 };
-
-export const ArtifactMain: Record<ArtifactType, ReadonlyArray<AnyBonusType>> = {
-    "flower": [StatusBonusType.Hp],
-    "feather": [StatusBonusType.Atk],
-    "sands": [
-        BonusType.None,
-        StatusBonusType.HpBuf,
-        StatusBonusType.AtkBuf,
-        StatusBonusType.DefBuf,
-        StatusBonusType.Elem,
-        StatusBonusType.EnRec,
-    ],
-    "goblet": [
-        BonusType.None,
-        StatusBonusType.HpBuf,
-        StatusBonusType.AtkBuf,
-        StatusBonusType.DefBuf,
-        StatusBonusType.Elem,
-        ElementBonusType.Pyro,
-        ElementBonusType.Hydro,
-        ElementBonusType.Elect,
-        ElementBonusType.Anemo,
-        ElementBonusType.Cryo,
-        ElementBonusType.Geo,
-        ElementBonusType.Phys,
-    ],
-    "circlet": [
-        BonusType.None,
-        StatusBonusType.HpBuf,
-        StatusBonusType.AtkBuf,
-        StatusBonusType.DefBuf,
-        StatusBonusType.Elem,
-        StatusBonusType.HealBuf,
-        CriticalBonusType.Rate,
-        CriticalBonusType.Damage,
-    ]
-} as const;
-
-export const ArtifactSub: ReadonlyArray<AnyBonusType> = [
-    BonusType.None,
-    StatusBonusType.Hp,
-    StatusBonusType.HpBuf,
-    StatusBonusType.Atk,
-    StatusBonusType.AtkBuf,
-    StatusBonusType.Def,
-    StatusBonusType.DefBuf,
-    StatusBonusType.Elem,
-    StatusBonusType.EnRec,
-    CriticalBonusType.Rate,
-    CriticalBonusType.Damage,
-] as const;

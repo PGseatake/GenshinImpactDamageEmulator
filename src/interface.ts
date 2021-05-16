@@ -4,24 +4,15 @@ import {
     AnyBonusType,
 } from "~/src/const";
 
-export interface IMap<T> {
-    [key: string]: T;
-}
-
-export interface IReadonlyMap<T> {
-    readonly [key: string]: T;
-}
-
 export interface IBonus {
     readonly extra?: undefined;
-    readonly items: BonusType | ReadonlyArray<BonusType>;
-    readonly value: number | ReadonlyArray<number>;
+    readonly items: ReadonlyArrayable<BonusType>;
+    readonly value: ReadonlyArrayable<number>;
     readonly limit?: string;
     readonly times?: number;
     readonly stack?: number;
     readonly target?: BonusTarget;
 }
-
 export interface IBasicBonus extends IBonus {
     readonly value: number;
 }
@@ -31,7 +22,7 @@ export interface IWeaponBonus extends IBonus {
 
 export interface IArtifactSet {
     readonly set2?: IBasicBonus;
-    readonly set4?: IBasicBonus | ReadonlyArray<IBasicBonus>;
+    readonly set4?: ReadonlyArrayable<IBasicBonus>;
 }
 
 export interface IValueData {

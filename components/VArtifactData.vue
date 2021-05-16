@@ -20,7 +20,7 @@
       <v-ascension-level v-model="item.level" />
     </template>
     <template v-slot:[`item.main`]="{ item }">
-      <v-bonus-value :types="types" v-bind.sync="item.main" />
+      <v-bonus-value :types="main()" v-bind.sync="item.main" />
     </template>
     <template v-slot:[`item.sub1`]="{ item }">
       <v-bonus-value :types="sub()" v-bind.sync="item.sub1" />
@@ -67,9 +67,9 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { AnyBonusType, ArtifactType, ArtifactSub } from "~/src/const";
+import { ArtifactType } from "~/src/const";
+import { ArtifactNames, ArtifactMain, ArtifactSub } from "~/src/artifact";
 import { IArtifactData } from "~/src/interface";
-import { ArtifactList } from "~/src/equip";
 import { DataTableHeader } from "~/node_modules/vuetify/types";
 
 @Component({
@@ -84,7 +84,6 @@ import { DataTableHeader } from "~/node_modules/vuetify/types";
 })
 export default class VArtifactData extends Vue {
   @Prop({ required: true }) type!: ArtifactType;
-  @Prop({ required: true }) types!: ReadonlyArray<AnyBonusType>;
   @Prop({ required: true }) items!: Array<IArtifactData>;
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
@@ -130,10 +129,14 @@ export default class VArtifactData extends Vue {
   ];
 
   names() {
-    return ArtifactList.map((name) => ({
+    return ArtifactNames.map((name) => ({
       text: this.$t(["artifact", this.type, name].join(".")),
       value: name,
     }));
+  }
+
+  main() {
+    return ArtifactMain[this.type];
   }
 
   sub() {

@@ -38,7 +38,7 @@ import { VTextField } from "vuetify/lib";
 })
 export default class VNumberField extends Vue {
   @Prop({ required: true }) value!: number;
-  @Prop({ required: true }) suffix!: string;
+  @Prop({ default: "" }) suffix!: string;
   @Prop({ default: 1 }) precision!: number;
 
   blurable: boolean = false;
