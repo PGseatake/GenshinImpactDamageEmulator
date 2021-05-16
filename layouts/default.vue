@@ -95,7 +95,7 @@ import {
   mdiChevronLeft,
   mdiChevronRight,
 } from "@mdi/js";
-import { ArtifactTypes } from "~/src/const";
+import { WeaponTypes, ArtifactTypes } from "~/src/const";
 
 export default {
   name: "default",
@@ -108,11 +108,13 @@ export default {
       tabs: {
         home: null,
         artifact: ArtifactTypes,
+        weapon: WeaponTypes,
         releasenote: null,
       },
       lists: [
-        { icon: "mdi-apps", page: "home", to: "/" },
-        { icon: "mdi-creation", page: "artifact", to: "/artifact" },
+        { icon: "mdi-home", page: "home", to: "/" },
+        { icon: "mdi-sword", page: "weapon", to: "/weapon" },
+        { icon: "mdi-ring", page: "artifact", to: "/artifact" },
         { icon: "mdi-note-plus", page: "releasenote", to: "/releasenote" },
       ],
       selectedTab: 0,

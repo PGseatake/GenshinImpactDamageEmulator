@@ -13,6 +13,12 @@ export default ({ app }) => {
                     import ("~/components/PageIndex.vue"),
             },
             {
+                path: "/weapon",
+                name: "weapon",
+                component: () =>
+                    import ("~/components/PageWeapon.vue"),
+            },
+            {
                 path: "/artifact",
                 name: "artifact",
                 component: () =>

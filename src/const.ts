@@ -10,6 +10,13 @@ export const ElementType = {
 } as const;
 export type ElementType = typeof ElementType[keyof typeof ElementType];
 
+export const WeaponTypes = [
+    "sword",
+    "claymore",
+    "polearm",
+    "bow",
+    "catalyst"
+] as const;
 export const WeaponType = {
     Sword: "sword",
     Claymore: "claymore",
@@ -120,6 +127,18 @@ export const AnyBonusType = {
 } as const;
 export type AnyBonusType = BonusType | "none";
 
+export const ItemBonusType = {
+    HpBuf: "hp_buf",
+    AtkBuf: "atk_buf",
+    DefBuf: "def_buf",
+    Elem: "elem",
+    EnRec: "en_rec",
+    CriDmg: "cri_dmg",
+    CriRate: "cri_rate",
+    PhysDmg: "phys_dmg",
+} as const;
+export type ItemBonusType = typeof ItemBonusType[keyof typeof ItemBonusType];
+
 export const BonusTarget = {
     All: "all", // 全員
     Self: "self", // 自キャラ
@@ -158,3 +177,69 @@ export const BonusDisplayInfo: ReadonlyRecord<BonusDisplayType, BonusDisplayInfo
     "geo_dmg": { icon: "mdi-zodiac-capricorn", suffix: "%" },
     "phys_dmg": { icon: "mdi-zodiac-aries", suffix: "%" },
 };
+
+export const CombatType = {
+    Normal: "normal",
+    Heavy: "heavy",
+    Plunge: "plunge",
+    Skill: "skill",
+    Burst: "burst",
+} as const;
+export type CombatType = typeof CombatType[keyof typeof CombatType];
+
+export const DamageScale = {
+    Phys: "phys",
+    Elem: "elem",
+    Xiao: "xiao",
+    Hutao: "hutao",
+    Zhongli: "zhongli",
+} as const;
+export type DamageScale = typeof DamageScale[keyof typeof DamageScale];
+
+export const DamageBased = {
+    Atk: "atk",
+    Def: "def"
+} as const;
+export type DamageBased = typeof DamageBased[keyof typeof DamageBased];
+
+export const ExtraBonusType = {
+    Flat: "flat",
+    Reduct: "reduct",
+    Enchant: "enchant",
+} as const;
+export type ExtraBonusType = typeof ExtraBonusType[keyof typeof ExtraBonusType];
+
+export const FlatBonusDest = {
+    // StatusType 実数
+    Atk: "atk",
+    Elem: "elem",
+    // CombatType 実数
+    Combat: "combat",
+    Skill: "skill",
+    Burst: "burst",
+    // StatusType 割合
+    CriRate: "cri_rate",
+    // CombatBonusType 割合
+    CombatDmg: "combat_dmg",
+    HeavyDmg: "heavy_dmg",
+    // ElementBonusType 割合
+    HydroDmg: "hydro_dmg",
+} as const;
+export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
+
+export const FlatBonusBase = {
+    None: "none",
+    Hp: "hp", // 最終値
+    Atk: "atk", // 基礎値
+    Def: "def", // 最終値
+    Elem: "elem",
+    EnRec: "en_rec",
+    CriRate: "cri_rate", // 最終値
+} as const;
+export type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
+
+export const ReductBonusType = {
+    Defence: "defence",
+    Contact: "contact"
+} as const;
+export type ReductBonusType = ElementType | typeof ReductBonusType[keyof typeof ReductBonusType];
