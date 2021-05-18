@@ -1,24 +1,13 @@
-import {
-    CombatType,
-    ElementType,
-    BonusType,
-    AnyBonusType,
-    ExtraBonusType,
-    BonusTarget,
-    DamageScale,
-    FlatBonusBase,
-    FlatBonusDest,
-    ReductBonusType,
-} from "~/src/const";
+import * as konst from "~/src/const";
 
 export interface IBonus {
     readonly extra?: undefined;
-    readonly items: ReadonlyArrayable<BonusType>;
+    readonly items: ReadonlyArrayable<konst.BonusType>;
     readonly value: ReadonlyArrayable<number>;
     readonly limit?: string;
     readonly times?: number;
     readonly stack?: number;
-    readonly target?: BonusTarget;
+    readonly target?: konst.BonusTarget;
 }
 export interface IBasicBonus extends IBonus {
     readonly value: number;
@@ -28,25 +17,25 @@ export interface IWeaponBonus extends IBonus {
 }
 
 export interface IExtraBonus {
-    readonly extra?: ExtraBonusType;
+    readonly extra?: konst.ExtraBonusType;
 }
 
 export interface IFlatBonusMax {
-    readonly base: FlatBonusBase;
+    readonly base: konst.FlatBonusBase;
     readonly value: number;
 }
 
 export interface IFlatBonus extends IExtraBonus {
     readonly extra: "flat";
-    readonly dest: FlatBonusDest;
-    readonly base: FlatBonusBase;
+    readonly dest: konst.FlatBonusDest;
+    readonly base: konst.FlatBonusBase;
     readonly value: ReadonlyArrayable<number>;
     readonly max?: IFlatBonusMax;
-    readonly scale?: DamageScale;
+    readonly scale?: konst.DamageScale;
     readonly limit?: string;
     readonly times?: number;
     readonly stack?: number;
-    readonly target?: BonusTarget;
+    readonly target?: konst.BonusTarget;
 }
 export interface IBasicFlatBonus extends IFlatBonus {
     readonly value: number;
@@ -57,7 +46,7 @@ export interface IWeaponFlatBonus extends IFlatBonus {
 
 export interface IReductBonus extends IExtraBonus {
     readonly extra: "reduct";
-    readonly type: ReadonlyArrayable<ReductBonusType>;
+    readonly type: ReadonlyArrayable<konst.ReductBonusType>;
     readonly value: number;
     readonly limit?: string;
     readonly times?: number;
@@ -65,11 +54,58 @@ export interface IReductBonus extends IExtraBonus {
 
 export interface IEnchantBonus extends IExtraBonus {
     readonly extra: "enchant";
-    readonly elem: ElementType;
-    readonly dest: ReadonlyArray<CombatType>;
+    readonly elem: konst.ElementType;
+    readonly dest: ReadonlyArray<konst.CombatType>;
     readonly limit: string;
     readonly times?: number;
-    readonly target?: BonusTarget;
+    readonly target?: konst.BonusTarget;
+}
+
+export type AnyExtraBonus = IBasicBonus | IBasicFlatBonus | IReductBonus | IEnchantBonus;
+
+export const CombatElementType = {
+    Contact: "contact"
+} as const;
+export type CombatElementType = konst.ElementType | typeof CombatElementType[keyof typeof CombatElementType];
+
+export interface ICombat {
+    readonly name: string;
+    readonly type: konst.CombatType;
+    readonly elem: CombatElementType;
+    readonly scale: konst.DamageScale;
+    readonly value: ReadonlyArrayable<number>;
+    readonly multi?: number;
+    readonly based?: konst.DamageBased;
+}
+
+export type CharaStatusType = "hp" | "atk" | "def";
+export type CharaStatus = ReadonlyRecord<CharaStatusType, ReadonlyArray<number>>;
+export type CharaTalent = ReadonlyRecord<konst.TalentType, ReadonlyArray<ICombat>>;
+
+export interface IPassive {
+    readonly skill?: ReadonlyArrayable<AnyExtraBonus>;
+    readonly burst?: ReadonlyArrayable<AnyExtraBonus>;
+    readonly lv4?: ReadonlyArrayable<AnyExtraBonus>;
+    readonly lv5?: ReadonlyArrayable<AnyExtraBonus>;
+}
+
+export interface IConste {
+    readonly lv1?: ReadonlyArrayable<AnyExtraBonus>;
+    readonly lv2?: ReadonlyArrayable<AnyExtraBonus>;
+    readonly lv4?: ReadonlyArrayable<AnyExtraBonus>;
+    readonly lv6?: ReadonlyArrayable<AnyExtraBonus>;
+}
+
+export interface ICharacter {
+    readonly star: number;
+    readonly element: konst.ElementType;
+    readonly weapon: konst.WeaponType;
+    readonly status: CharaStatus;
+    readonly special: konst.StatusBonusType | konst.ElementBonusType;
+    readonly spvalue: ReadonlyArray<number>;
+    readonly talent: CharaTalent;
+    readonly passive: IPassive;
+    readonly conste: IConste;
 }
 
 export interface IArtifactSet {
@@ -80,7 +116,7 @@ export interface IArtifactSet {
 export interface IWeapon {
     readonly star: number;
     readonly atk?: ReadonlyArray<number>;
-    readonly second: AnyBonusType;
+    readonly second: konst.AnyBonusType;
     readonly secval?: ReadonlyArray<number>;
     readonly passive?: ReadonlyArrayable<IWeaponBonus | IWeaponFlatBonus>;
 }
@@ -97,7 +133,18 @@ export interface IEquipData {
 }
 
 export interface IBonusValueData extends IValueData {
-    type: AnyBonusType;
+    type: konst.AnyBonusType;
+}
+
+export interface ICharaData extends IEquipData {
+    conste: number;
+    hp: number;
+    atk: number;
+    def: number;
+    special: IValueData;
+    combat: number;
+    skill: number;
+    burst: number;
 }
 
 export interface IWeaponData extends IEquipData {

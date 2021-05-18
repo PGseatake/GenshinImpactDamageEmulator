@@ -3,6 +3,31 @@ import Vuetify from 'vuetify/lib'
 
 // TODO: とりあえず
 export let gideData = {
+    "chara": [{
+            name: "Klee",
+            conste: 1,
+            level: "80+",
+            hp: 9563,
+            atk: 289,
+            def: 572,
+            special: { type: "pyro_dmg", value: 15 },
+            combat: 7,
+            skill: 6,
+            burst: 7
+        },
+        {
+            name: "Fischl",
+            conste: 0,
+            level: "1",
+            hp: 770,
+            atk: 21,
+            def: 50,
+            special: { type: "atk_buf", value: 10 },
+            combat: 1,
+            skill: 1,
+            burst: 1
+        },
+    ],
     sword: [{
             id: "4g94y4hie",
             name: "AquilaFavonia",

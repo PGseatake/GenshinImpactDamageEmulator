@@ -113,6 +113,7 @@ export default {
       },
       lists: [
         { icon: "mdi-home", page: "home", to: "/" },
+        { icon: "mdi-account", page: "chara", to: "/chara" },
         { icon: "mdi-sword", page: "weapon", to: "/weapon" },
         { icon: "mdi-ring", page: "artifact", to: "/artifact" },
         { icon: "mdi-note-plus", page: "releasenote", to: "/releasenote" },

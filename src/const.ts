@@ -178,6 +178,13 @@ export const BonusDisplayInfo: ReadonlyRecord<BonusDisplayType, BonusDisplayInfo
     "phys_dmg": { icon: "mdi-zodiac-aries", suffix: "%" },
 };
 
+export const TalentType = {
+    Combat: "combat",
+    Skill: "skill",
+    Burst: "burst",
+} as const;
+export type TalentType = typeof TalentType[keyof typeof TalentType];
+
 export const CombatType = {
     Normal: "normal",
     Heavy: "heavy",
@@ -186,6 +193,11 @@ export const CombatType = {
     Burst: "burst",
 } as const;
 export type CombatType = typeof CombatType[keyof typeof CombatType];
+
+export const CombatElementType = {
+    Contact: "contact"
+} as const;
+export type CombatElementType = ElementType | typeof CombatElementType[keyof typeof CombatElementType];
 
 export const DamageScale = {
     Phys: "phys",
@@ -243,3 +255,14 @@ export const ReductBonusType = {
     Contact: "contact"
 } as const;
 export type ReductBonusType = ElementType | typeof ReductBonusType[keyof typeof ReductBonusType];
+
+const DAMAGE_SCALE: ReadonlyRecord<DamageScale, ReadonlyArray<number>> = {
+    //    [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
+    phys: [100.0, 108.0, 116.0, 127.5, 135.0, 145.0, 157.5, 170.0, 182.5, 197.5, 211.5, 225.5, 239.5, 253.5, 267.5],
+    elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0, 212.5, 225.0, 237.5],
+    xiao: [100.0, 106.0, 112.0, 119.5, 125.5, 131.5, 139.5, 147.0, 155.0, 162.5, 170.5, 178.0, 186.0, 193.5, 201.0],
+    //     [    1,      2,     3,      4,     5,     6,      7,     8,      9,    10,     11,    12,     13,    14,     15]
+    hutao: [100.0, 106.75, 113.5, 122.75, 129.5, 137.5, 147.75, 158.0, 168.25, 178.5, 188.75, 199.0, 209.25, 219.5, 229.75],
+    //       [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
+    zhongli: [100.0, 110.5, 121.5, 135.0, 147.0, 159.5, 175.5, 192.0, 208.0, 224.0, 240.5, 256.5, 270.0, 283.5, 297.0],
+} as const;
