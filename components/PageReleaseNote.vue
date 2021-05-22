@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-list expand>
+    <v-list expand :class="$vuetify.breakpoint.xs ? '' : 'px-2'">
       <template v-for="(item, key) in items()">
         <v-release-root :key="key" :version="key" :root="item" />
       </template>

@@ -4,11 +4,13 @@
     v-on="$listeners"
     :headers="headers"
     :items="items"
+    :class="myClass"
+    fixed-header
     hide-default-footer
   >
     <template v-slot:[`item.name`]="{ item }">
       <v-name-comment
-        :names="names()"
+        :names="names"
         :name.sync="item.name"
         :comment.sync="item.comment"
       />
@@ -20,21 +22,17 @@
       <v-ascension-level v-model="item.level" />
     </template>
     <template v-slot:[`item.atk`]="{ item }">
-      <v-number-field
-        :value.sync="item.atk"
-        :precision="0"
-        hide-details="auto"
-      />
+      <v-number-field :value.sync="item.atk" hide-label="true" />
     </template>
     <template v-slot:[`item.second`]="{ item }">
       <v-weapon-second
-        :list="list()"
+        :list="list"
         :name="item.name"
         v-bind.sync="item.second"
       />
     </template>
     <template v-slot:[`item.delete`]="{ item }">
-      <v-btn fab x-small @click="deleteItem(item)">
+      <v-btn fab x-small class="my-1" @click="deleteItem(item)">
         <v-icon> mdi-delete </v-icon>
       </v-btn>
     </template>
@@ -42,32 +40,61 @@
 </template>
 
 <style lang="scss" scoped>
-.v-data-table ::v-deep {
-  table {
-    table-layout: auto;
+.pc-data-table ::v-deep {
+  tr:hover {
+    background: inherit !important;
   }
-  td.text-start {
-    padding: 0 8px;
+  .text-start {
+    padding: 0 6px;
 
+    // 名前
     &:nth-of-type(1) {
-      min-width: 160px;
-      max-width: 250px;
+      min-width: 200px;
+      max-width: 350px;
     }
+    // 凸
     &:nth-of-type(2) {
       min-width: 60px;
       max-width: 80px;
     }
+    // Lv
     &:nth-of-type(3) {
       min-width: 60px;
       max-width: 80px;
     }
+    // 攻撃力
     &:nth-of-type(4) {
-      min-width: 40px;
-      max-width: 60px;
-    }
-    &:nth-of-type(5) {
       min-width: 70px;
       max-width: 90px;
+    }
+    // 追加効果
+    &:nth-of-type(5) {
+      min-width: 100px;
+      max-width: 120px;
+    }
+  }
+}
+
+.mb-data-table ::v-deep {
+  td {
+    // 名前
+    &:nth-of-type(1) .v-data-table__mobile-row__cell {
+      min-width: 150;
+      max-width: 70%;
+    }
+    // 凸
+    // &:nth-of-type(2) .v-data-table__mobile-row__cell {}
+    // Lv
+    // &:nth-of-type(3) .v-data-table__mobile-row__cell {}
+    // 攻撃力
+    &:nth-of-type(4) .v-data-table__mobile-row__cell {
+      min-width: 80px;
+      max-width: 40%;
+    }
+    // 追加効果
+    &:nth-of-type(5) .v-data-table__mobile-row__cell {
+      min-width: 110px;
+      max-width: 50%;
     }
   }
 }
@@ -75,10 +102,10 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { DataTableHeader } from "~/node_modules/vuetify/types";
 import { WeaponType } from "~/src/const";
 import { WeaponNames, WeaponList } from "~/src/weapon";
 import { IWeaponData } from "~/src/interface";
-import { DataTableHeader } from "~/node_modules/vuetify/types";
 
 @Component({
   name: "VWeaponData",
@@ -97,8 +124,8 @@ export default class VWeaponData extends Vue {
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("general.name") as string, value: "name" },
-    { text: this.$t("general.level") as string, value: "level" },
     { text: this.$t("general.rank") as string, value: "rank" },
+    { text: this.$t("general.level") as string, value: "level" },
     { text: this.$t("bonus.atk") as string, value: "atk" },
     {
       text: this.$t("general.second") as string,
@@ -113,14 +140,18 @@ export default class VWeaponData extends Vue {
     },
   ];
 
-  names() {
+  get myClass() {
+    return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get names() {
     return WeaponNames[this.type].map((name) => ({
       text: this.$t(["weapon", this.type, name].join(".")),
       value: name,
     }));
   }
 
-  list() {
+  get list() {
     return WeaponList[this.type];
   }
 

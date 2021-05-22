@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-tabs v-model="tab" centered>
+  <v-container class="container">
+    <v-tabs v-model="tab" centered center-active show-arrows>
       <v-tab v-for="type of types()" :key="type">{{ $t("tab." + type) }}</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
@@ -10,6 +10,12 @@
     </v-tabs-items>
   </v-container>
 </template>
+
+<style lang="scss" scoped>
+.container {
+  max-width: 800px;
+}
+</style>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";

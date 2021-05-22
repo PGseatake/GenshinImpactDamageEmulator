@@ -3,19 +3,16 @@
     v-bind="$attrs"
     v-on="$listeners"
     :items="items()"
-    item-text="value"
     dense
     single-line
     hide-details
-    class="select-input-auto"
+    item-text="value"
   />
 </template>
 
 <style lang="scss" scoped>
-::v-deep .v-select__selections {
-  input {
-    display: none;
-  }
+::v-deep .v-select__selections input {
+  display: none;
 }
 .v-input ::v-deep .v-input__append-inner {
   padding: 0;
@@ -32,7 +29,9 @@ const AscensionLvStep = [20, 40, 50, 60, 70, 80] as const;
 const AscensionLvRange = [1, 20, 40, 50, 60, 70, 80, 90] as const;
 const AscensionLvItems = (() => {
   const make = (min: number, max: number) => {
-    return Array.from({ length: max - min }, (_, i): { value: string } => {
+    return Array.from({ length: max - min }, (_, i): {
+      readonly value: string;
+    } => {
       return { value: `${min + i + 1}` };
     });
   };

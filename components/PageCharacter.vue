@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
     <v-character-data :items="$gideData.chara" />
   </v-container>
 </template>

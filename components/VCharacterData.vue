@@ -4,11 +4,13 @@
     v-on="$listeners"
     :headers="headers"
     :items="items"
+    :class="myClass"
+    fixed-header
     hide-default-footer
   >
     <template v-slot:[`item.name`]="{ item }">
       <v-name-comment
-        :names="names()"
+        :names="names"
         :name.sync="item.name"
         :comment.sync="item.comment"
       />
@@ -20,25 +22,13 @@
       <v-ascension-level v-model="item.level" />
     </template>
     <template v-slot:[`item.hp`]="{ item }">
-      <v-number-field
-        :value.sync="item.hp"
-        :precision="0"
-        hide-details="auto"
-      />
+      <v-number-field :value.sync="item.hp" hide-label="true" />
     </template>
     <template v-slot:[`item.atk`]="{ item }">
-      <v-number-field
-        :value.sync="item.atk"
-        :precision="0"
-        hide-details="auto"
-      />
+      <v-number-field :value.sync="item.atk" hide-label="true" />
     </template>
     <template v-slot:[`item.def`]="{ item }">
-      <v-number-field
-        :value.sync="item.def"
-        :precision="0"
-        hide-details="auto"
-      />
+      <v-number-field :value.sync="item.def" hide-label="true" />
     </template>
     <template v-slot:[`item.special`]="{ item }">
       <v-chara-special :name="item.name" v-bind.sync="item.special" />
@@ -53,7 +43,7 @@
       <v-select-range v-model="item.burst" :min="1" :max="15" />
     </template>
     <template v-slot:[`item.delete`]="{ item }">
-      <v-btn fab x-small @click="deleteItem(item)">
+      <v-btn fab x-small class="my-1" @click="deleteItem(item)">
         <v-icon> mdi-delete </v-icon>
       </v-btn>
     </template>
@@ -61,53 +51,99 @@
 </template>
 
 <style lang="scss" scoped>
-.v-data-table ::v-deep {
-  table {
-    table-layout: auto;
+.pc-data-table ::v-deep {
+  tr:hover {
+    background: inherit !important;
   }
   .text-start {
-    padding: 0 8px;
+    padding: 0 6px;
 
-    // &:nth-of-type(1) {
-    //   min-width: 160px;
-    //   max-width: 250px;
-    // }
+    // 名前
+    &:nth-of-type(1) {
+      min-width: 200px;
+      max-width: 350px;
+    }
+    // 星座
     &:nth-of-type(2) {
       min-width: 60px;
       max-width: 80px;
     }
+    // Lv
     &:nth-of-type(3) {
       min-width: 60px;
       max-width: 80px;
     }
+    // HP
     &:nth-of-type(4) {
       min-width: 80px;
       max-width: 100px;
     }
+    // 攻撃力
     &:nth-of-type(5) {
       min-width: 70px;
       max-width: 90px;
     }
+    // 防御力
     &:nth-of-type(6) {
       min-width: 70px;
       max-width: 90px;
     }
+    // 固有ステータス
     &:nth-of-type(7) {
       min-width: 100px;
       max-width: 120px;
     }
+    // 天賦
     &:nth-of-type(8) {
       min-width: 60px;
-      max-width: 80px;
+      max-width: 70px;
     }
     &:nth-of-type(9) {
       min-width: 60px;
-      max-width: 80px;
+      max-width: 70px;
     }
     &:nth-of-type(10) {
       min-width: 60px;
-      max-width: 80px;
+      max-width: 70px;
     }
+  }
+}
+
+.mb-data-table ::v-deep {
+  td {
+    // 名前
+    &:nth-of-type(1) .v-data-table__mobile-row__cell {
+      min-width: 150;
+      max-width: 70%;
+    }
+    // 星座
+    // &:nth-of-type(2) .v-data-table__mobile-row__cell {}
+    // Lv
+    // &:nth-of-type(3) .v-data-table__mobile-row__cell {}
+    // HP
+    &:nth-of-type(4) .v-data-table__mobile-row__cell {
+      min-width: 80px;
+      max-width: 40%;
+    }
+    // 攻撃力
+    &:nth-of-type(5) .v-data-table__mobile-row__cell {
+      min-width: 80px;
+      max-width: 40%;
+    }
+    // 防御力
+    &:nth-of-type(6) .v-data-table__mobile-row__cell {
+      min-width: 80px;
+      max-width: 40%;
+    }
+    // 固有ステータス
+    &:nth-of-type(7) .v-data-table__mobile-row__cell {
+      min-width: 110px;
+      max-width: 50%;
+    }
+    // 天賦
+    // &:nth-of-type(8) .v-data-table__mobile-row__cell {}
+    // &:nth-of-type(9) .v-data-table__mobile-row__cell {}
+    // &:nth-of-type(10) .v-data-table__mobile-row__cell {}
   }
 }
 </style>
@@ -115,8 +151,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { DataTableHeader } from "~/node_modules/vuetify/types";
-import { ICharaData } from "~/src/interface";
 import { CharaNames } from "~/src/character";
+import { ICharaData } from "~/src/interface";
 
 @Component({
   name: "VCharacterData",
@@ -163,7 +199,11 @@ export default class VCharacterData extends Vue {
     },
   ];
 
-  names() {
+  get myClass() {
+    return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get names() {
     return CharaNames.map((name) => ({
       text: this.$t("chara." + name),
       value: name,

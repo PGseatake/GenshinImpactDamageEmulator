@@ -274,10 +274,6 @@ const utils = {
         // TODO: とりあえず
         Vue.prototype.$gideData = gideData;
 
-        Vue.prototype.$isReleaseLeaf = function(obj) {
-            return typeof obj === "string";
-        };
-
         Vue.prototype.$uniqueId = function() {
             return Date.now().toString(16) +
                 Math.floor(0xFFFF * Math.random()).toString(16);

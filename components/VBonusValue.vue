@@ -1,6 +1,6 @@
 <template>
   <v-row dense>
-    <v-col align-self="center" md="auto" class="pa-0">
+    <v-col align-self="center" class="pa-0" cols="auto">
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -15,16 +15,17 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item
-            v-for="(type, index) in types"
-            :key="index"
-            :disabled="!selectable"
-            link
-            dense
-            @click="change(index)"
-          >
-            <v-list-item-title>{{ $t("bonus." + type) }}</v-list-item-title>
-          </v-list-item>
+          <v-list-item-group v-model="selectedItem" color="primary" mandatory>
+            <v-list-item
+              v-for="(type, index) in types"
+              :key="index"
+              :disabled="!selectable"
+              link
+              dense
+            >
+              <v-list-item-title>{{ $t("bonus." + type) }}</v-list-item-title>
+            </v-list-item>
+          </v-list-item-group>
         </v-list>
       </v-menu>
     </v-col>
@@ -35,14 +36,13 @@
         :suffix="suffix"
         :disabled="!editable"
         :precision="precision"
-        hide-details="auto"
       />
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { BonusType, BonusDisplayInfo, BonusDisplayType } from "~/src/const";
 // import {
 //   mdiMinus,
@@ -71,34 +71,31 @@ export default class VBonusValue extends Vue {
   @Prop({ required: true }) type!: BonusDisplayType;
   @Prop({ required: true }) value!: number;
 
-  selectedItem: number = 0;
-
-  get icon(): string {
-    return BonusDisplayInfo[this.type].icon!;
-  }
-
-  get label() {
-    const idx = this.selectedItem;
-    if (idx < 0) {
-      return this.$t("bonus.none");
-    }
-    return this.$t("bonus." + this.types[idx]);
-  }
-
   get selectable() {
     return 1 < this.types.length;
-  }
-
-  get precision() {
-    return BonusDisplayInfo[this.type].suffix ? 1 : 0;
   }
 
   get editable() {
     return this.type !== BonusType.None;
   }
 
+  get icon() {
+    return BonusDisplayInfo[this.type].icon!;
+  }
+
+  get label() {
+    if (this.types.indexOf(this.type) < 0) {
+      return this.$t("bonus.none");
+    }
+    return this.$t("bonus." + this.type);
+  }
+
   get suffix() {
     return BonusDisplayInfo[this.type].suffix ?? "";
+  }
+
+  get precision() {
+    return BonusDisplayInfo[this.type].suffix ? 1 : 0;
   }
 
   get refValue() {
@@ -108,18 +105,11 @@ export default class VBonusValue extends Vue {
     this.$emit("update:value", num);
   }
 
-  mounted() {
-    this.selectedItem = this.types.indexOf(this.type);
+  get selectedItem() {
+    return this.types.indexOf(this.type);
   }
-
-  @Watch("type")
-  onChangeType() {
-    this.selectedItem = this.types.indexOf(this.type);
-  }
-
-  change(index: number) {
-    this.selectedItem = index;
-    this.$emit("update:type", this.types[index]);
+  set selectedItem(item: number) {
+    this.$emit("update:type", this.types[item]);
     this.$emit("update:value", 0);
   }
 }

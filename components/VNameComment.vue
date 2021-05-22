@@ -1,25 +1,26 @@
 <template>
-  <v-container class="pa-0 mb-1">
-    <v-row no-gutters>
-      <v-col>
-        <v-select v-model="refName" :items="names" dense hide-details="true" />
-      </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col>
-        <v-text-field
-          v-model="refComment"
-          :placeholder="$t('general.comment')"
-          dense
-          single-line
-          class="caption"
-          height="1.5em"
-          hide-details="true"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div class="pb-1">
+    <v-select v-model="refName" :items="names" dense hide-details />
+    <v-text-field
+      v-model="refComment"
+      :placeholder="$t('general.comment')"
+      dense
+      single-line
+      hide-details
+      class="caption"
+      height="1.5em"
+    />
+  </div>
 </template>
+
+<style lang="scss" scoped>
+::v-deep .v-select__selections input {
+  width: 1em;
+}
+.v-input ::v-deep .v-input__append-inner {
+  padding: 0;
+}
+</style>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";

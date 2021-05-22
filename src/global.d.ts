@@ -31,7 +31,6 @@ export type GideData = {
 
 declare module "vue/types/vue" {
     interface Vue {
-        $isReleaseLeaf: (obj: any) => boolean;
         $uniqueId: () => string;
         $gideData: GideData;
     }

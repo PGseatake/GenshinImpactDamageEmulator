@@ -4,11 +4,13 @@
     v-on="$listeners"
     :headers="headers"
     :items="items"
+    :class="myClass"
+    fixed-header
     hide-default-footer
   >
     <template v-slot:[`item.name`]="{ item }">
       <v-name-comment
-        :names="names()"
+        :names="names"
         :name.sync="item.name"
         :comment.sync="item.comment"
       />
@@ -35,7 +37,7 @@
       <v-bonus-value :types="sub()" v-bind.sync="item.sub4" />
     </template>
     <template v-slot:[`item.delete`]="{ item }">
-      <v-btn fab x-small @click="deleteItem(item)">
+      <v-btn fab x-small class="my-1" @click="deleteItem(item)">
         <v-icon> mdi-delete </v-icon>
       </v-btn>
     </template>
@@ -43,34 +45,96 @@
 </template>
 
 <style lang="scss" scoped>
-.v-data-table ::v-deep {
-  table {
-    table-layout: auto;
+.pc-data-table ::v-deep {
+  tr:hover {
+    background: inherit !important;
   }
   .text-start {
-    padding: 0 8px;
+    padding: 0 6px;
+
+    // 名前
+    &:nth-of-type(1) {
+      min-width: 200px;
+      max-width: 350px;
+    }
+    // ☆
+    &:nth-of-type(2) {
+      min-width: 50px;
+      max-width: 80px;
+    }
+    // Lv
+    &:nth-of-type(3) {
+      min-width: 60px;
+      max-width: 80px;
+    }
+    // メイン効果
+    &:nth-of-type(4) {
+      min-width: 100px;
+      max-width: 120px;
+    }
+    // サブ効果
+    &:nth-of-type(5) {
+      min-width: 100px;
+      max-width: 120px;
+    }
+    &:nth-of-type(6) {
+      min-width: 100px;
+      max-width: 120px;
+    }
+    &:nth-of-type(7) {
+      min-width: 100px;
+      max-width: 120px;
+    }
+    &:nth-of-type(8) {
+      min-width: 100px;
+      max-width: 120px;
+    }
   }
-  td.text-start:nth-of-type(1) {
-    min-width: 160px;
-    max-width: 250px;
-  }
-  td.text-start:nth-of-type(2) {
-    min-width: 60px;
-    max-width: 80px;
-  }
-  td.text-start:nth-of-type(3) {
-    min-width: 60px;
-    max-width: 80px;
+}
+
+.mb-data-table ::v-deep {
+  td {
+    // 名前
+    &:nth-of-type(1) .v-data-table__mobile-row__cell {
+      min-width: 150;
+      max-width: 70%;
+    }
+    // ☆
+    // &:nth-of-type(2) .v-data-table__mobile-row__cell {}
+    // Lv
+    // &:nth-of-type(3) .v-data-table__mobile-row__cell {}
+    // メイン効果
+    &:nth-of-type(4) .v-data-table__mobile-row__cell {
+      min-width: 110px;
+      max-width: 50%;
+    }
+    // サブ効果
+    &:nth-of-type(5) .v-data-table__mobile-row__cell {
+      min-width: 110px;
+      max-width: 50%;
+    }
+    &:nth-of-type(6) .v-data-table__mobile-row__cell {
+      min-width: 110px;
+      max-width: 50%;
+    }
+    &:nth-of-type(7) .v-data-table__mobile-row__cell {
+      min-width: 110px;
+      max-width: 50%;
+    }
+    &:nth-of-type(8) .v-data-table__mobile-row__cell {
+      min-width: 110px;
+      max-width: 50%;
+    }
   }
 }
 </style>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { DataTableHeader } from "~/node_modules/vuetify/types";
 import { ArtifactType } from "~/src/const";
 import { ArtifactNames, ArtifactMain, ArtifactSub } from "~/src/artifact";
 import { IArtifactData } from "~/src/interface";
-import { DataTableHeader } from "~/node_modules/vuetify/types";
 
 @Component({
   name: "VArtifactData",
@@ -90,36 +154,11 @@ export default class VArtifactData extends Vue {
     { text: this.$t("general.name") as string, value: "name" },
     { text: this.$t("general.star") as string, value: "star" },
     { text: this.$t("general.level") as string, value: "level" },
-    {
-      text: this.$t("general.main") as string,
-      value: "main",
-      sortable: false,
-      width: "105px",
-    },
-    {
-      text: this.$t("general.sub1") as string,
-      value: "sub1",
-      sortable: false,
-      width: "105px",
-    },
-    {
-      text: this.$t("general.sub2") as string,
-      value: "sub2",
-      sortable: false,
-      width: "105px",
-    },
-    {
-      text: this.$t("general.sub3") as string,
-      value: "sub3",
-      sortable: false,
-      width: "105px",
-    },
-    {
-      text: this.$t("general.sub4") as string,
-      value: "sub4",
-      sortable: false,
-      width: "105px",
-    },
+    { text: this.$t("general.main") as string, value: "main", sortable: false },
+    { text: this.$t("general.sub1") as string, value: "sub1", sortable: false },
+    { text: this.$t("general.sub2") as string, value: "sub2", sortable: false },
+    { text: this.$t("general.sub3") as string, value: "sub3", sortable: false },
+    { text: this.$t("general.sub4") as string, value: "sub4", sortable: false },
     {
       text: this.$t("general.delete") as string,
       value: "delete",
@@ -128,7 +167,11 @@ export default class VArtifactData extends Vue {
     },
   ];
 
-  names() {
+  get myClass() {
+    return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get names() {
     return ArtifactNames.map((name) => ({
       text: this.$t(["artifact", this.type, name].join(".")),
       value: name,

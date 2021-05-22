@@ -1,10 +1,16 @@
 // Ref: https://github.com/nuxt-community/vuetify-module#customvariables
 //
 // The variables you want to modify
-// $font-size-root: 20px;
 $list-item-min-height: 36px;
 $list-dense-min-height: 30px;
 $list-item-icon-margin: 6px 0;
 $list-dense-icon-margin: 3px;
+$list-item-icon-margin: 0;
+$list-group-sub-group-child-margin: 0;
+$list-group-sub-group-header-margin: 16px;
+$list-group-no-action-item-padding: 28px;
+$list-group-no-action-sub-group-item-padding :52px;
 $text-field-padding: 4px 0 4px;
 $text-field-dense-padding: 2px 0 2px;
+$data-table-mobile-row-min-height: 38px;
+$tabs-bar-height: 38px;

@@ -12,7 +12,7 @@ export default {
     titleTemplate: '%s - GenshinImpactDamageEmulator',
     title: 'G.I.D.E.',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'ja'
     },
     meta: [
       { charset: 'utf-8' },

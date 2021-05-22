@@ -29,6 +29,7 @@
         <v-list-item-group
           v-model="selectedList"
           color="primary"
+          mandatory
           @change="change"
         >
           <v-list-item v-for="(list, index) in lists" :key="index" link>
