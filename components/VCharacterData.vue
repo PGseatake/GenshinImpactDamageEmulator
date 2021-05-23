@@ -44,7 +44,7 @@
     </template>
     <template v-slot:[`item.delete`]="{ item }">
       <v-btn fab x-small class="my-1" @click="deleteItem(item)">
-        <v-icon> mdi-delete </v-icon>
+        <v-icon>{{ deleteIcon() }}</v-icon>
       </v-btn>
     </template>
   </v-data-table>
@@ -153,6 +153,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { DataTableHeader } from "~/node_modules/vuetify/types";
 import { CharaNames } from "~/src/character";
 import { ICharaData } from "~/src/interface";
+import { mdiDelete } from "@mdi/js";
 
 @Component({
   name: "VCharacterData",
@@ -208,6 +209,10 @@ export default class VCharacterData extends Vue {
       text: this.$t("chara." + name),
       value: name,
     }));
+  }
+
+  deleteIcon() {
+    return mdiDelete;
   }
 
   deleteItem(item: ICharaData) {

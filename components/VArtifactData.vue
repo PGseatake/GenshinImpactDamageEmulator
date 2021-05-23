@@ -38,7 +38,7 @@
     </template>
     <template v-slot:[`item.delete`]="{ item }">
       <v-btn fab x-small class="my-1" @click="deleteItem(item)">
-        <v-icon> mdi-delete </v-icon>
+        <v-icon>{{ deleteIcon() }}</v-icon>
       </v-btn>
     </template>
   </v-data-table>
@@ -135,6 +135,7 @@ import { DataTableHeader } from "~/node_modules/vuetify/types";
 import { ArtifactType } from "~/src/const";
 import { ArtifactNames, ArtifactMain, ArtifactSub } from "~/src/artifact";
 import { IArtifactData } from "~/src/interface";
+import { mdiDelete } from "@mdi/js";
 
 @Component({
   name: "VArtifactData",
@@ -184,6 +185,10 @@ export default class VArtifactData extends Vue {
 
   sub() {
     return ArtifactSub;
+  }
+
+  deleteIcon() {
+    return mdiDelete;
   }
 
   deleteItem(item: IArtifactData) {

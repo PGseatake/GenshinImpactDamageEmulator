@@ -2,7 +2,6 @@
   <v-app dark>
     <v-navigation-drawer
       v-model="drawer"
-      :mini-variant.sync="miniVariant"
       :clipped="clipped"
       :temporary="$vuetify.breakpoint.name === 'xs'"
       fixed
@@ -10,17 +9,9 @@
     >
       <v-list-item class="px-2">
         <v-list-item-avatar>
-          <v-icon v-show="miniVariant">mdi-chevron-right</v-icon>
-          <v-icon v-show="!miniVariant">mdi-menu</v-icon>
+          <v-icon size="34px">{{ menuIcon() }}</v-icon>
         </v-list-item-avatar>
         <v-list-item-title>{{ $t("menu.title") }}</v-list-item-title>
-        <v-btn
-          v-if="$vuetify.breakpoint.name !== 'xs'"
-          icon
-          @click.stop="miniVariant = !miniVariant"
-        >
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
       </v-list-item>
 
       <v-divider></v-divider>
@@ -52,17 +43,14 @@
       fixed
       dense
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer">
+        <template v-slot:default>
+          <v-btn icon>
+            <v-icon>{{ menuIcon() }}</v-icon>
+          </v-btn>
+        </template>
+      </v-app-bar-nav-icon>
       <v-toolbar-title>{{ $t("menu." + page) }}</v-toolbar-title>
-      <!--
-      <template v-if="tabs[page]" v-slot:extension>
-        <v-tabs v-model="selectedTab" centered align-with-title>
-          <v-tab v-for="tab in tabs[page]" :key="tab">
-            {{ $t("tab." + tab) }}
-          </v-tab>
-        </v-tabs>
-      </template>
-      -->
     </v-app-bar>
 
     <v-main>
@@ -89,12 +77,12 @@
 
 <script>
 import {
-  mdiApps,
   mdiMenu,
-  mdiCreation,
   mdiNotePlus,
-  mdiChevronLeft,
-  mdiChevronRight,
+  mdiHome,
+  mdiAccount,
+  mdiSword,
+  mdiRing,
 } from "@mdi/js";
 import { WeaponTypes, ArtifactTypes } from "~/src/const";
 
@@ -105,7 +93,6 @@ export default {
       fixed: false,
       drawer: false,
       clipped: false,
-      miniVariant: false,
       tabs: {
         home: null,
         artifact: ArtifactTypes,
@@ -113,11 +100,11 @@ export default {
         releasenote: null,
       },
       lists: [
-        { icon: "mdi-home", page: "home", to: "/" },
-        { icon: "mdi-account", page: "chara", to: "/chara" },
-        { icon: "mdi-sword", page: "weapon", to: "/weapon" },
-        { icon: "mdi-ring", page: "artifact", to: "/artifact" },
-        { icon: "mdi-note-plus", page: "releasenote", to: "/releasenote" },
+        { icon: mdiHome, page: "home", to: "/" },
+        { icon: mdiAccount, page: "chara", to: "/chara" },
+        { icon: mdiSword, page: "weapon", to: "/weapon" },
+        { icon: mdiRing, page: "artifact", to: "/artifact" },
+        { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
       ],
       selectedTab: 0,
       selectedList: 0,
@@ -133,6 +120,9 @@ export default {
   methods: {
     change() {
       this.$router.push(this.lists[this.selectedList].to);
+    },
+    menuIcon() {
+      return mdiMenu;
     },
   },
 };

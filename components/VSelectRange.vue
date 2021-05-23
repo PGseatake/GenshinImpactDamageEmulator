@@ -3,6 +3,7 @@
     v-bind="$attrs"
     v-on="$listeners"
     :items="items"
+    :append-icon="icon()"
     item-text="value"
     dense
     single-line
@@ -23,6 +24,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { VSelect } from "vuetify/lib";
+import { mdiMenuDown } from "@mdi/js";
 
 @Component({
   name: "VSelectRange",
@@ -39,6 +41,10 @@ export default class VSelectRange extends Vue {
     return Array.from({ length: max - min + 1 }, (_, i): { value: number } => ({
       value: min + i,
     }));
+  }
+
+  icon() {
+    return mdiMenuDown;
   }
 }
 </script>

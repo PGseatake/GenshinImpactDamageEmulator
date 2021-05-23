@@ -43,19 +43,55 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { BonusType, BonusDisplayInfo, BonusDisplayType } from "~/src/const";
-// import {
-//   mdiMinus,
-//   mdiWaterOutline,
-//   mdiWaterPercent,
-//   mdiSword,
-//   mdiSwordCross,
-//   mdiShieldOutline,
-//   mdiShieldHalfFull,
-//   mdiGoogleCirclesExtended,
-//   mdiRestore,
-//   mdiStarFourPoints,
-// } from "@mdi/js";
+import {
+  mdiAlphaACircleOutline,
+  mdiAlphaCCircleOutline,
+  mdiAlphaDCircleOutline,
+  mdiAlphaECircleOutline,
+  mdiAlphaGCircleOutline,
+  mdiAlphaHCircleOutline,
+  mdiAlphaPCircleOutline,
+  mdiBoxingGlove,
+  mdiGoogleCirclesExtended,
+  mdiMinus,
+  mdiRestore,
+  mdiShieldHalfFull,
+  mdiShieldOutline,
+  mdiStarFourPoints,
+  mdiSword,
+  mdiSwordCross,
+  mdiWaterOutline,
+  mdiWaterPercent,
+} from "@mdi/js";
+import { BonusType, BonusDisplayType } from "~/src/const";
+
+type BonusDisplayInfo = {
+  icon: string;
+  suffix?: string;
+};
+
+const BonusDisplayInfo: ReadonlyRecord<BonusDisplayType, BonusDisplayInfo> = {
+  none: { icon: mdiMinus },
+  hp: { icon: mdiWaterOutline },
+  hp_buf: { icon: mdiWaterPercent, suffix: "%" },
+  atk: { icon: mdiSword },
+  atk_buf: { icon: mdiSwordCross, suffix: "%" },
+  def: { icon: mdiShieldOutline },
+  def_buf: { icon: mdiShieldHalfFull, suffix: "%" },
+  elem: { icon: mdiGoogleCirclesExtended },
+  en_rec: { icon: mdiRestore, suffix: "%" },
+  heal_buf: { icon: mdiRestore, suffix: "%" },
+  cri_dmg: { icon: mdiStarFourPoints, suffix: "%" },
+  cri_rate: { icon: mdiStarFourPoints, suffix: "%" },
+  pyro_dmg: { icon: mdiAlphaPCircleOutline, suffix: "%" },
+  hydro_dmg: { icon: mdiAlphaHCircleOutline, suffix: "%" },
+  dendro_dmg: { icon: mdiAlphaDCircleOutline, suffix: "%" },
+  elect_dmg: { icon: mdiAlphaECircleOutline, suffix: "%" },
+  anemo_dmg: { icon: mdiAlphaACircleOutline, suffix: "%" },
+  cryo_dmg: { icon: mdiAlphaCCircleOutline, suffix: "%" },
+  geo_dmg: { icon: mdiAlphaGCircleOutline, suffix: "%" },
+  phys_dmg: { icon: mdiBoxingGlove, suffix: "%" },
+};
 
 export type BonusValue = {
   type: BonusDisplayType;

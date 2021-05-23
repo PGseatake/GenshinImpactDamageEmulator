@@ -33,7 +33,7 @@
     </template>
     <template v-slot:[`item.delete`]="{ item }">
       <v-btn fab x-small class="my-1" @click="deleteItem(item)">
-        <v-icon> mdi-delete </v-icon>
+        <v-icon>{{ deleteIcon() }}</v-icon>
       </v-btn>
     </template>
   </v-data-table>
@@ -106,6 +106,7 @@ import { DataTableHeader } from "~/node_modules/vuetify/types";
 import { WeaponType } from "~/src/const";
 import { WeaponNames, WeaponList } from "~/src/weapon";
 import { IWeaponData } from "~/src/interface";
+import { mdiDelete } from "@mdi/js";
 
 @Component({
   name: "VWeaponData",
@@ -153,6 +154,10 @@ export default class VWeaponData extends Vue {
 
   get list() {
     return WeaponList[this.type];
+  }
+
+  deleteIcon() {
+    return mdiDelete;
   }
 
   deleteItem(item: IWeaponData) {

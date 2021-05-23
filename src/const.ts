@@ -149,34 +149,7 @@ export const BonusTarget = {
 } as const;
 export type BonusTarget = typeof BonusTarget[keyof typeof BonusTarget];
 
-export type BonusDisplayInfo = {
-    icon?: string;
-    suffix?: string;
-};
 export type BonusDisplayType = "none" | StatusBonusType | ElementBonusType;
-
-export const BonusDisplayInfo: ReadonlyRecord<BonusDisplayType, BonusDisplayInfo> = {
-    "none": { icon: "mdi-minus" },
-    "hp": { icon: "mdi-water-outline" },
-    "hp_buf": { icon: "mdi-water-percent", suffix: "%" },
-    "atk": { icon: "mdi-sword" },
-    "atk_buf": { icon: "mdi-sword-cross", suffix: "%" },
-    "def": { icon: "mdi-shield-outline" },
-    "def_buf": { icon: "mdi-shield-half-full", suffix: "%" },
-    "elem": { icon: "mdi-google-circles-extended" },
-    "en_rec": { icon: "mdi-restore", suffix: "%" },
-    "heal_buf": { icon: "mdi-restore", suffix: "%" },
-    "cri_dmg": { icon: "mdi-star-four-points", suffix: "%" },
-    "cri_rate": { icon: "mdi-star-four-points", suffix: "%" },
-    "pyro_dmg": { icon: "mdi-zodiac-taurus", suffix: "%" },
-    "hydro_dmg": { icon: "mdi-zodiac-virgo", suffix: "%" },
-    "dendro_dmg": { icon: "mdi-zodiac-cancer", suffix: "%" },
-    "elect_dmg": { icon: "mdi-zodiac-gemini", suffix: "%" },
-    "anemo_dmg": { icon: "mdi-zodiac-pisces", suffix: "%" },
-    "cryo_dmg": { icon: "mdi-zodiac-sagittarius", suffix: "%" },
-    "geo_dmg": { icon: "mdi-zodiac-capricorn", suffix: "%" },
-    "phys_dmg": { icon: "mdi-zodiac-aries", suffix: "%" },
-};
 
 export const TalentType = {
     Combat: "combat",

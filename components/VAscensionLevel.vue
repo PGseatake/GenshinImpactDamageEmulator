@@ -3,6 +3,7 @@
     v-bind="$attrs"
     v-on="$listeners"
     :items="items()"
+    :append-icon="icon()"
     dense
     single-line
     hide-details
@@ -22,6 +23,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { VSelect } from "vuetify/lib";
+import { mdiMenuDown } from "@mdi/js";
 
 const AscensionLvMin = 1;
 const AscensionLvMax = 90;
@@ -54,6 +56,10 @@ const AscensionLvItems = (() => {
 export default class VAscensionLevel extends Vue {
   items() {
     return AscensionLvItems;
+  }
+
+  icon() {
+    return mdiMenuDown;
   }
 }
 </script>

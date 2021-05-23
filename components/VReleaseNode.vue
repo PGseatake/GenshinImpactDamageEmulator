@@ -1,5 +1,11 @@
 <template>
-  <v-list-group v-bind="$attrs" no-action :sub-group="group">
+  <v-list-group
+    v-bind="$attrs"
+    no-action
+    :sub-group="group"
+    :append-icon="appendIcon()"
+    :prepend-icon="prependIcon()"
+  >
     <template v-slot:activator>
       <v-list-item :dense="group">
         <v-list-item-content class="py-0">
@@ -55,6 +61,7 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from "vue-property-decorator";
+import { mdiChevronDown, mdiMenuDown } from "@mdi/js";
 
 export type ReleaseLeaf = string | ReadonlyArray<string | ReleaseNode>;
 export type ReleaseNode = { readonly [key in string]: ReleaseLeaf };
@@ -67,5 +74,13 @@ export default class VReleaseNode extends Vue {
   @Prop({ required: true }) title!: string;
   @Prop({ required: true }) items!: ReleaseLeaf;
   @Prop({ default: false }) group!: boolean;
+
+  appendIcon() {
+    return this.group ? "" : mdiChevronDown;
+  }
+
+  prependIcon() {
+    return this.group ? mdiMenuDown : "";
+  }
 }
 </script>
