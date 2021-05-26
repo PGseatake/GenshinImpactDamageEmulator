@@ -1,53 +1,71 @@
 <template>
-  <v-data-table
-    v-bind="$attrs"
-    v-on="$listeners"
-    :headers="headers"
-    :items="items"
-    :class="myClass"
-    fixed-header
-    hide-default-footer
-  >
-    <template v-slot:[`item.name`]="{ item }">
-      <v-name-comment
-        :names="names"
-        :name.sync="item.name"
-        :comment.sync="item.comment"
-      />
-    </template>
-    <template v-slot:[`item.conste`]="{ item }">
-      <v-select-range v-model="item.conste" :min="0" :max="6" />
-    </template>
-    <template v-slot:[`item.level`]="{ item }">
-      <v-ascension-level v-model="item.level" />
-    </template>
-    <template v-slot:[`item.hp`]="{ item }">
-      <v-number-field :value.sync="item.hp" hide-label="true" />
-    </template>
-    <template v-slot:[`item.atk`]="{ item }">
-      <v-number-field :value.sync="item.atk" hide-label="true" />
-    </template>
-    <template v-slot:[`item.def`]="{ item }">
-      <v-number-field :value.sync="item.def" hide-label="true" />
-    </template>
-    <template v-slot:[`item.special`]="{ item }">
-      <v-chara-special :name="item.name" v-bind.sync="item.special" />
-    </template>
-    <template v-slot:[`item.combat`]="{ item }">
-      <v-select-range v-model="item.combat" :min="1" :max="15" />
-    </template>
-    <template v-slot:[`item.skill`]="{ item }">
-      <v-select-range v-model="item.skill" :min="1" :max="15" />
-    </template>
-    <template v-slot:[`item.burst`]="{ item }">
-      <v-select-range v-model="item.burst" :min="1" :max="15" />
-    </template>
-    <template v-slot:[`item.delete`]="{ item }">
-      <v-btn fab x-small class="my-1" @click="deleteItem(item)">
-        <v-icon>{{ deleteIcon() }}</v-icon>
-      </v-btn>
-    </template>
-  </v-data-table>
+  <div>
+    <v-data-table
+      v-bind="$attrs"
+      v-on="$listeners"
+      :headers="headers"
+      :items="items"
+      :class="myClass"
+      fixed-header
+      hide-default-footer
+    >
+      <template v-slot:[`item.name`]="{ item }">
+        <v-name-comment
+          :names="names"
+          :name.sync="item.name"
+          :comment.sync="item.comment"
+        />
+      </template>
+      <template v-slot:[`item.conste`]="{ item }">
+        <v-select-range v-model="item.conste" :min="0" :max="6" />
+      </template>
+      <template v-slot:[`item.level`]="{ item }">
+        <v-ascension-level v-model="item.level" />
+      </template>
+      <template v-slot:[`item.hp`]="{ item }">
+        <v-number-field :value.sync="item.hp" hide-label="true" />
+      </template>
+      <template v-slot:[`item.atk`]="{ item }">
+        <v-number-field :value.sync="item.atk" hide-label="true" />
+      </template>
+      <template v-slot:[`item.def`]="{ item }">
+        <v-number-field :value.sync="item.def" hide-label="true" />
+      </template>
+      <template v-slot:[`item.special`]="{ item }">
+        <v-chara-special :name="item.name" v-bind.sync="item.special" />
+      </template>
+      <template v-slot:[`item.combat`]="{ item }">
+        <v-select-range v-model="item.combat" :min="1" :max="15" />
+      </template>
+      <template v-slot:[`item.skill`]="{ item }">
+        <v-select-range v-model="item.skill" :min="1" :max="15" />
+      </template>
+      <template v-slot:[`item.burst`]="{ item }">
+        <v-select-range v-model="item.burst" :min="1" :max="15" />
+      </template>
+      <template v-slot:[`item.delete`]="{ item }">
+        <v-btn fab x-small class="my-1" @click="deleteItem(item)">
+          <v-icon>{{ icons.delete }}</v-icon>
+        </v-btn>
+      </template>
+    </v-data-table>
+
+    <v-dialog :value="isDialog" :fullscreen="$vuetify.breakpoint.xs" persistent>
+      <v-card>
+        <v-card-title>キャラ追加</v-card-title>
+        <v-card-text>とりま</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="secondary" outlined @click="isDialog = false">
+            Cancel
+          </v-btn>
+          <v-btn color="primary" outlined @click="isDialog = false">
+            Append
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -168,6 +186,7 @@ import { mdiDelete } from "@mdi/js";
 })
 export default class VCharacterData extends Vue {
   @Prop({ required: true }) items!: Array<ICharaData>;
+  @Prop({ default: false }) append!: boolean;
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("general.name") as string, value: "name" },
@@ -200,6 +219,10 @@ export default class VCharacterData extends Vue {
     },
   ];
 
+  readonly icons: IReadonlyMap<string> = {
+    delete: mdiDelete,
+  };
+
   get myClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
   }
@@ -211,8 +234,11 @@ export default class VCharacterData extends Vue {
     }));
   }
 
-  deleteIcon() {
-    return mdiDelete;
+  get isDialog() {
+    return this.append;
+  }
+  set isDialog(value: boolean) {
+    this.$store.commit("appendData", value);
   }
 
   deleteItem(item: ICharaData) {

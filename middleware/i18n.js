@@ -1,4 +1,5 @@
-export default function ({ isHMR, app, store, route, params, error, redirect }) {
+export default function({ isHMR, app, store, route, params, error, redirect }) {
+    console.log(route.fullPath);
     const defaultLocale = app.i18n.fallbackLocale
 
     if (isHMR) { return }
@@ -8,7 +9,7 @@ export default function ({ isHMR, app, store, route, params, error, redirect }) 
         return error({ message: 'This page could not be found.', statusCode: 404 })
     }
 
-    store.commit('SET_LANG', locale)
+    store.commit('setLang', locale)
     app.i18n.locale = store.state.locale
 
     if (route.fullPath.indexOf('/' + locale) === 0) {

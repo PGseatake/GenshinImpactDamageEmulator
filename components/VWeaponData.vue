@@ -1,42 +1,60 @@
 <template>
-  <v-data-table
-    v-bind="$attrs"
-    v-on="$listeners"
-    :headers="headers"
-    :items="items"
-    :class="myClass"
-    fixed-header
-    hide-default-footer
-  >
-    <template v-slot:[`item.name`]="{ item }">
-      <v-name-comment
-        :names="names"
-        :name.sync="item.name"
-        :comment.sync="item.comment"
-      />
-    </template>
-    <template v-slot:[`item.rank`]="{ item }">
-      <v-select-range v-model="item.rank" :min="1" :max="5" />
-    </template>
-    <template v-slot:[`item.level`]="{ item }">
-      <v-ascension-level v-model="item.level" />
-    </template>
-    <template v-slot:[`item.atk`]="{ item }">
-      <v-number-field :value.sync="item.atk" hide-label="true" />
-    </template>
-    <template v-slot:[`item.second`]="{ item }">
-      <v-weapon-second
-        :list="list"
-        :name="item.name"
-        v-bind.sync="item.second"
-      />
-    </template>
-    <template v-slot:[`item.delete`]="{ item }">
-      <v-btn fab x-small class="my-1" @click="deleteItem(item)">
-        <v-icon>{{ deleteIcon() }}</v-icon>
-      </v-btn>
-    </template>
-  </v-data-table>
+  <div>
+    <v-data-table
+      v-bind="$attrs"
+      v-on="$listeners"
+      :headers="headers"
+      :items="items"
+      :class="myClass"
+      fixed-header
+      hide-default-footer
+    >
+      <template v-slot:[`item.name`]="{ item }">
+        <v-name-comment
+          :names="names"
+          :name.sync="item.name"
+          :comment.sync="item.comment"
+        />
+      </template>
+      <template v-slot:[`item.rank`]="{ item }">
+        <v-select-range v-model="item.rank" :min="1" :max="5" />
+      </template>
+      <template v-slot:[`item.level`]="{ item }">
+        <v-ascension-level v-model="item.level" />
+      </template>
+      <template v-slot:[`item.atk`]="{ item }">
+        <v-number-field :value.sync="item.atk" hide-label="true" />
+      </template>
+      <template v-slot:[`item.second`]="{ item }">
+        <v-weapon-second
+          :list="list"
+          :name="item.name"
+          v-bind.sync="item.second"
+        />
+      </template>
+      <template v-slot:[`item.delete`]="{ item }">
+        <v-btn fab x-small class="my-1" @click="deleteItem(item)">
+          <v-icon>{{ icons.delete }}</v-icon>
+        </v-btn>
+      </template>
+    </v-data-table>
+
+    <v-dialog :value="isDialog" :fullscreen="$vuetify.breakpoint.xs" persistent>
+      <v-card>
+        <v-card-title>{{ $t("tab." + type) }}追加</v-card-title>
+        <v-card-text>とりま</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="secondary" outlined @click="isDialog = false">
+            Cancel
+          </v-btn>
+          <v-btn color="primary" outlined @click="isDialog = false">
+            Append
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -122,6 +140,7 @@ import { mdiDelete } from "@mdi/js";
 export default class VWeaponData extends Vue {
   @Prop({ required: true }) type!: WeaponType;
   @Prop({ required: true }) items!: Array<IWeaponData>;
+  @Prop({ required: true }) append!: string;
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("general.name") as string, value: "name" },
@@ -141,6 +160,10 @@ export default class VWeaponData extends Vue {
     },
   ];
 
+  readonly icons: IReadonlyMap<string> = {
+    delete: mdiDelete,
+  };
+
   get myClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
   }
@@ -156,8 +179,11 @@ export default class VWeaponData extends Vue {
     return WeaponList[this.type];
   }
 
-  deleteIcon() {
-    return mdiDelete;
+  get isDialog() {
+    return this.append === this.type;
+  }
+  set isDialog(value: boolean) {
+    this.$store.commit("appendData", value);
   }
 
   deleteItem(item: IWeaponData) {

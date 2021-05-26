@@ -9,7 +9,7 @@
     >
       <v-list-item class="px-2">
         <v-list-item-avatar>
-          <v-icon size="34px">{{ menuIcon() }}</v-icon>
+          <v-icon size="34px">{{ icons.menu }}</v-icon>
         </v-list-item-avatar>
         <v-list-item-title>{{ $t("menu.title") }}</v-list-item-title>
       </v-list-item>
@@ -21,7 +21,7 @@
           v-model="selectedList"
           color="primary"
           mandatory
-          @change="change"
+          @change="onChange"
         >
           <v-list-item v-for="(list, index) in lists" :key="index" link>
             <v-list-item-action>
@@ -38,19 +38,31 @@
     <v-app-bar
       :clipped-left="clipped"
       :hide-on-scroll="true"
+      :dense="$vuetify.breakpoint.xs"
       extension-height="36"
       app
       fixed
-      dense
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer">
         <template v-slot:default>
           <v-btn icon>
-            <v-icon>{{ menuIcon() }}</v-icon>
+            <v-icon>{{ icons.menu }}</v-icon>
           </v-btn>
         </template>
       </v-app-bar-nav-icon>
       <v-toolbar-title>{{ $t("menu." + page) }}</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-btn fab small @click="onAppend" class="mx-1">
+        <v-icon>{{ icons.append }}</v-icon>
+      </v-btn>
+      <v-btn fab small @click="onExport" class="mx-1">
+        <v-icon>{{ icons.export }}</v-icon>
+      </v-btn>
+      <v-btn fab small @click="onImport" class="mx-1">
+        <v-icon>{{ icons.import }}</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-main>
@@ -77,12 +89,15 @@
 
 <script>
 import {
+  mdiAccount,
+  mdiExport,
+  mdiHome,
+  mdiImport,
   mdiMenu,
   mdiNotePlus,
-  mdiHome,
-  mdiAccount,
-  mdiSword,
+  mdiPlaylistPlus,
   mdiRing,
+  mdiSword,
 } from "@mdi/js";
 import { WeaponTypes, ArtifactTypes } from "~/src/const";
 
@@ -108,6 +123,12 @@ export default {
       ],
       selectedTab: 0,
       selectedList: 0,
+      icons: {
+        menu: mdiMenu,
+        append: mdiPlaylistPlus,
+        import: mdiImport,
+        export: mdiExport,
+      },
     };
   },
   computed: {
@@ -117,13 +138,16 @@ export default {
       },
     },
   },
+  mounted() {},
   methods: {
-    change() {
+    onChange() {
       this.$router.push(this.lists[this.selectedList].to);
     },
-    menuIcon() {
-      return mdiMenu;
+    onAppend() {
+      this.$store.commit("appendData", true);
     },
+    onImport() {},
+    onExport() {},
   },
 };
 </script>

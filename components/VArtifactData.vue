@@ -1,47 +1,65 @@
 <template>
-  <v-data-table
-    v-bind="$attrs"
-    v-on="$listeners"
-    :headers="headers"
-    :items="items"
-    :class="myClass"
-    fixed-header
-    hide-default-footer
-  >
-    <template v-slot:[`item.name`]="{ item }">
-      <v-name-comment
-        :names="names"
-        :name.sync="item.name"
-        :comment.sync="item.comment"
-      />
-    </template>
-    <template v-slot:[`item.star`]="{ item }">
-      <v-select-range v-model="item.star" :min="3" :max="5" />
-    </template>
-    <template v-slot:[`item.level`]="{ item }">
-      <v-ascension-level v-model="item.level" />
-    </template>
-    <template v-slot:[`item.main`]="{ item }">
-      <v-bonus-value :types="main()" v-bind.sync="item.main" />
-    </template>
-    <template v-slot:[`item.sub1`]="{ item }">
-      <v-bonus-value :types="sub()" v-bind.sync="item.sub1" />
-    </template>
-    <template v-slot:[`item.sub2`]="{ item }">
-      <v-bonus-value :types="sub()" v-bind.sync="item.sub2" />
-    </template>
-    <template v-slot:[`item.sub3`]="{ item }">
-      <v-bonus-value :types="sub()" v-bind.sync="item.sub3" />
-    </template>
-    <template v-slot:[`item.sub4`]="{ item }">
-      <v-bonus-value :types="sub()" v-bind.sync="item.sub4" />
-    </template>
-    <template v-slot:[`item.delete`]="{ item }">
-      <v-btn fab x-small class="my-1" @click="deleteItem(item)">
-        <v-icon>{{ deleteIcon() }}</v-icon>
-      </v-btn>
-    </template>
-  </v-data-table>
+  <div>
+    <v-data-table
+      v-bind="$attrs"
+      v-on="$listeners"
+      :headers="headers"
+      :items="items"
+      :class="myClass"
+      fixed-header
+      hide-default-footer
+    >
+      <template v-slot:[`item.name`]="{ item }">
+        <v-name-comment
+          :names="names"
+          :name.sync="item.name"
+          :comment.sync="item.comment"
+        />
+      </template>
+      <template v-slot:[`item.star`]="{ item }">
+        <v-select-range v-model="item.star" :min="3" :max="5" />
+      </template>
+      <template v-slot:[`item.level`]="{ item }">
+        <v-ascension-level v-model="item.level" />
+      </template>
+      <template v-slot:[`item.main`]="{ item }">
+        <v-bonus-value :types="mains" v-bind.sync="item.main" />
+      </template>
+      <template v-slot:[`item.sub1`]="{ item }">
+        <v-bonus-value :types="subs" v-bind.sync="item.sub1" />
+      </template>
+      <template v-slot:[`item.sub2`]="{ item }">
+        <v-bonus-value :types="subs" v-bind.sync="item.sub2" />
+      </template>
+      <template v-slot:[`item.sub3`]="{ item }">
+        <v-bonus-value :types="subs" v-bind.sync="item.sub3" />
+      </template>
+      <template v-slot:[`item.sub4`]="{ item }">
+        <v-bonus-value :types="subs" v-bind.sync="item.sub4" />
+      </template>
+      <template v-slot:[`item.delete`]="{ item }">
+        <v-btn fab x-small class="my-1" @click="deleteItem(item)">
+          <v-icon>{{ icons.delete }}</v-icon>
+        </v-btn>
+      </template>
+    </v-data-table>
+
+    <v-dialog :value="isDialog" :fullscreen="$vuetify.breakpoint.xs" persistent>
+      <v-card>
+        <v-card-title>{{ $t("tab." + type) }}追加</v-card-title>
+        <v-card-text>とりま</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="secondary" outlined @click="isDialog = false">
+            Cancel
+          </v-btn>
+          <v-btn color="primary" outlined @click="isDialog = false">
+            Append
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -150,6 +168,7 @@ import { mdiDelete } from "@mdi/js";
 export default class VArtifactData extends Vue {
   @Prop({ required: true }) type!: ArtifactType;
   @Prop({ required: true }) items!: Array<IArtifactData>;
+  @Prop({ required: true }) append!: string;
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("general.name") as string, value: "name" },
@@ -168,8 +187,17 @@ export default class VArtifactData extends Vue {
     },
   ];
 
+  readonly subs = ArtifactSub;
+  readonly icons: IReadonlyMap<string> = {
+    delete: mdiDelete,
+  };
+
   get myClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get mains() {
+    return ArtifactMain[this.type];
   }
 
   get names() {
@@ -179,16 +207,11 @@ export default class VArtifactData extends Vue {
     }));
   }
 
-  main() {
-    return ArtifactMain[this.type];
+  get isDialog() {
+    return this.append === this.type;
   }
-
-  sub() {
-    return ArtifactSub;
-  }
-
-  deleteIcon() {
-    return mdiDelete;
+  set isDialog(value: boolean) {
+    this.$store.commit("appendData", value);
   }
 
   deleteItem(item: IArtifactData) {

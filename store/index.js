@@ -1,15 +1,21 @@
 export const state = () => ({
     locales: ['en', 'ja'],
-    locale: 'ja'
+    locale: 'ja',
+    append: false,
 })
 
 export const mutations = {
     toggleSidebar(state) {
         state.sidebar = !state.sidebar
     },
-    SET_LANG(state, locale) {
+
+    setLang(state, locale) {
         if (state.locales.includes(locale)) {
             state.locale = locale
         }
-    }
+    },
+
+    appendData(state, value) {
+        state.append = value;
+    },
 }
