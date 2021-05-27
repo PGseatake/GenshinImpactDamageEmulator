@@ -100,6 +100,5 @@ export default {
   },
 
   generate: {
-    //routes: ['/', '/ja']
   }
 };
