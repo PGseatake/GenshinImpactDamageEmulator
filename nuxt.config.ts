@@ -2,7 +2,7 @@ import colors from 'vuetify/es5/util/colors';
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
+  ssr: true,
 
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
@@ -30,9 +30,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '~/plugins/i18n.js',
     '~/plugins/utils.js',
-    '~/plugins/router.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -48,6 +46,21 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    ['nuxt-i18n',
+      {
+        locales: [
+          { code: 'ja', name: '日本語', iso: 'ja_JP', file: 'ja.json' },
+          { code: 'en', name: 'English', iso: 'en-US', file: 'en.json' }
+        ],
+        defaultLocale: 'ja',
+        langDir: 'locales/',
+        strategy: 'prefix_and_default',
+        vueI18n: {
+          fallbackLocale: 'ja'
+        },
+        vueI18nLoader: true,
+        lazy: true
+      }]
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -83,10 +96,10 @@ export default {
 
   router: {
     base: "/GenshinImpactDamageEmulatorV2/",
-    middleware: 'i18n'
+    //middleware: 'i18n'
   },
 
   generate: {
-    routes: ['/', '/ja']
+    //routes: ['/', '/ja']
   }
 };

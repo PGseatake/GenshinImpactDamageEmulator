@@ -1,22 +1,22 @@
-export default function({ isHMR, app, store, route, params, error, redirect }) {
-    console.log(route.fullPath);
-    const defaultLocale = app.i18n.fallbackLocale
+// export default function({ isHMR, app, store, route, params, error, redirect }) {
+//     const defaultLocale = app.i18n.fallbackLocale
 
-    if (isHMR) { return }
+//     if (isHMR) { return }
 
-    const locale = params.lang || app.i18n.locale || defaultLocale
-    if (!store.state.locales.includes(locale)) {
-        return error({ message: 'This page could not be found.', statusCode: 404 })
-    }
+//     const locale = params.lang || defaultLocale
+//     if (!store.state.locales.includes(locale)) {
+//         return error({ message: 'This page could not be found.', statusCode: 404 })
+//     }
 
-    store.commit('setLang', locale)
-    app.i18n.locale = store.state.locale
+//     store.commit('setLang', locale)
+//     app.i18n.locale = store.state.locale
 
-    if (route.fullPath.indexOf('/' + locale) === 0) {
-        const toReplace = '^/' + locale + (route.fullPath.indexOf('/' + locale + '/') === 0 ? '/' : '')
-        const re = new RegExp(toReplace)
-        return redirect(
-            route.fullPath.replace(re, '/')
-        )
-    }
-}
+//     if (locale === defaultLocale && route.fullPath.indexOf('/' + defaultLocale) === 0) {
+//         const toReplace = '^/' + defaultLocale + (route.fullPath.indexOf('/' + defaultLocale + '/') === 0 ? '/' : '')
+//         const re = new RegExp(toReplace)
+//         console.log(route.fullPath.replace(re, '/'));
+//         return redirect(
+//             route.fullPath.replace(re, '/')
+//         )
+//     }
+// }

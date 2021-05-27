@@ -17,13 +17,14 @@
       <v-divider></v-divider>
 
       <v-list>
-        <v-list-item-group
-          v-model="selectedList"
-          color="primary"
-          mandatory
-          @change="onChange"
-        >
-          <v-list-item v-for="(list, index) in lists" :key="index" link>
+        <v-list-item-group v-model="selectedList" color="primary" mandatory>
+          <v-list-item
+            v-for="(list, index) in lists"
+            :key="index"
+            :to="list.to"
+            router
+            exact
+          >
             <v-list-item-action>
               <v-icon>{{ list.icon }}</v-icon>
             </v-list-item-action>
@@ -66,7 +67,7 @@
     </v-app-bar>
 
     <v-main>
-      <router-view />
+      <nuxt />
     </v-main>
 
     <!--
@@ -115,8 +116,8 @@ export default {
         releasenote: null,
       },
       lists: [
-        { icon: mdiHome, page: "home", to: "/" },
-        { icon: mdiAccount, page: "chara", to: "/chara" },
+        { icon: mdiHome, page: "index", to: "/" },
+        { icon: mdiAccount, page: "character", to: "/character" },
         { icon: mdiSword, page: "weapon", to: "/weapon" },
         { icon: mdiRing, page: "artifact", to: "/artifact" },
         { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
@@ -132,17 +133,15 @@ export default {
     };
   },
   computed: {
-    page: {
-      get() {
-        return this.lists[this.selectedList].page;
-      },
+    page() {
+      return this.lists[this.selectedList].page;
     },
+    // availableLocales() {
+    //   return this.$i18n.locales.filter((i) => i.code !== this.$i18n.locale);
+    // },
   },
   mounted() {},
   methods: {
-    onChange() {
-      this.$router.push(this.lists[this.selectedList].to);
-    },
     onAppend() {
       this.$store.commit("appendData", true);
     },

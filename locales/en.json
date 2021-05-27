@@ -1,9 +1,11 @@
 {
     "menu": {
         "title": "Menu",
-        "mhome": "Home",
-        "releasenote": "Release note",
-        "artifact": "Artifact"
+        "index": "Home",
+        "character": "Character",
+        "weapon": "Weapon",
+        "artifact": "Artifact",
+        "releasenote": "Release note"
     },
     "bonus": {
         "none": "None",
