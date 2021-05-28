@@ -22,8 +22,7 @@
             <v-list-item
               v-for="(list, index) in lists"
               :key="index"
-              :to="list.to"
-              router
+              :to="localePath(list.to)"
               exact
             >
               <v-list-item-action>
@@ -65,6 +64,9 @@
         <v-btn fab small @click="onImport" class="mx-1">
           <v-icon>{{ icons.import }}</v-icon>
         </v-btn>
+        <span class="mx-1">
+          <locale-select fab small />
+        </span>
       </v-app-bar>
 
       <v-main>
@@ -102,7 +104,7 @@ import {
   mdiRing,
   mdiSword,
 } from "@mdi/js";
-import { WeaponTypes, ArtifactTypes } from "~/src/const";
+// import { WeaponTypes, ArtifactTypes } from "~/src/const";
 
 export default {
   name: "default",
@@ -111,12 +113,12 @@ export default {
       fixed: false,
       drawer: false,
       clipped: false,
-      tabs: {
-        home: null,
-        artifact: ArtifactTypes,
-        weapon: WeaponTypes,
-        releasenote: null,
-      },
+      // tabs: {
+      //   home: null,
+      //   artifact: ArtifactTypes,
+      //   weapon: WeaponTypes,
+      //   releasenote: null,
+      // },
       lists: [
         { icon: mdiHome, page: "index", to: "/" },
         { icon: mdiAccount, page: "character", to: "/character" },
@@ -124,7 +126,6 @@ export default {
         { icon: mdiRing, page: "artifact", to: "/artifact" },
         { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
       ],
-      selectedTab: 0,
       selectedList: 0,
       icons: {
         menu: mdiMenu,
@@ -138,11 +139,13 @@ export default {
     page() {
       return this.lists[this.selectedList].page;
     },
-    // availableLocales() {
-    //   return this.$i18n.locales.filter((i) => i.code !== this.$i18n.locale);
-    // },
   },
-  mounted() {},
+  created() {
+    const index = this.lists.findIndex(
+      (list) => list.page === this.$store.state.page
+    );
+    this.selectedList = index < 0 ? 0 : index;
+  },
   methods: {
     onAppend() {
       this.$store.commit("appendData", true);

@@ -11,9 +11,6 @@ export default {
   head: {
     titleTemplate: '%s - GenshinImpactDamageEmulator',
     title: 'G.I.D.E.',
-    htmlAttrs: {
-      lang: 'ja'
-    },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -96,7 +93,7 @@ export default {
 
   router: {
     base: "/GenshinImpactDamageEmulatorV2/",
-    //middleware: 'i18n'
+    middleware: 'route'
   },
 
   generate: {
