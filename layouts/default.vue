@@ -113,12 +113,6 @@ export default {
       fixed: false,
       drawer: false,
       clipped: false,
-      // tabs: {
-      //   home: null,
-      //   artifact: ArtifactTypes,
-      //   weapon: WeaponTypes,
-      //   releasenote: null,
-      // },
       lists: [
         { icon: mdiHome, page: "index", to: "/" },
         { icon: mdiAccount, page: "character", to: "/character" },
@@ -148,7 +142,7 @@ export default {
   },
   methods: {
     onAppend() {
-      this.$store.commit("appendData", true);
+      this.$store.commit("setAppend", true);
     },
     onImport() {},
     onExport() {},

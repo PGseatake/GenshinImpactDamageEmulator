@@ -211,7 +211,7 @@ export default class VArtifactData extends Vue {
     return this.append === this.type;
   }
   set isDialog(value: boolean) {
-    this.$store.commit("appendData", value);
+    this.$store.commit("setAppend", value);
   }
 
   deleteItem(item: IArtifactData) {

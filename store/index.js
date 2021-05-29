@@ -8,7 +8,11 @@ export const mutations = {
         state.sidebar = !state.sidebar
     },
 
-    appendData(state, value) {
+    setPage(state, value) {
+        state.page = value;
+    },
+
+    setAppend(state, value) {
         state.append = value;
     },
 }

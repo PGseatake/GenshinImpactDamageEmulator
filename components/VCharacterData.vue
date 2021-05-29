@@ -238,7 +238,7 @@ export default class VCharacterData extends Vue {
     return this.append;
   }
   set isDialog(value: boolean) {
-    this.$store.commit("appendData", value);
+    this.$store.commit("setAppend", value);
   }
 
   deleteItem(item: ICharaData) {

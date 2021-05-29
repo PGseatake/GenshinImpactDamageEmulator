@@ -46,7 +46,7 @@ export default class PageWeapon extends Vue {
   }
 
   onAppend() {
-    this.$store.commit("appendData", true);
+    this.$store.commit("setAppend", true);
   }
 }
 </script>

@@ -9,7 +9,7 @@ export default function({ store, route }) {
     const path = route.fullPath + "/";
     for (const page of pages) {
         if (path.includes(`/${page}/`)) {
-            store.page = page;
+            store.commit("setPage", page);
             break;
         }
     }
