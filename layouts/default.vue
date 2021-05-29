@@ -1,32 +1,37 @@
 <template>
   <client-only>
     <v-app dark>
+      <!-- メインメニュー -->
       <v-navigation-drawer
-        v-model="drawer"
-        :clipped="clipped"
-        :temporary="$vuetify.breakpoint.name === 'xs'"
-        fixed
+        v-model="pageOpened"
         app
+        fixed
+        clipped
+        :mini-variant="desktop"
+        :expand-on-hover="desktop"
+        :temporary="mobile"
       >
-        <v-list-item class="px-2">
-          <v-list-item-avatar>
-            <v-icon size="34px">{{ icons.menu }}</v-icon>
-          </v-list-item-avatar>
-          <v-list-item-title>{{ $t("menu.title") }}</v-list-item-title>
-        </v-list-item>
-
-        <v-divider></v-divider>
+        <v-list v-if="!desktop">
+          <v-list-item>
+            <v-list-item-avatar size="32px" class="my-0 mr-4">
+              <v-icon v-text="icons.menu" />
+            </v-list-item-avatar>
+            <v-list-item-title v-text="$t('menu.title')" />
+          </v-list-item>
+        </v-list>
+        <v-divider v-if="!desktop" />
 
         <v-list>
-          <v-list-item-group v-model="selectedList" color="primary" mandatory>
+          <v-list-item-group v-model="selectedPage" mandatory color="primary">
             <v-list-item
-              v-for="(list, index) in lists"
-              :key="index"
-              :to="localePath(list.to)"
+              v-for="(list, index) in pageList"
               exact
+              :key="index"
+              :ripple="false"
+              :to="localePath(list.to)"
             >
               <v-list-item-action>
-                <v-icon>{{ list.icon }}</v-icon>
+                <v-icon v-text="list.icon" />
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title v-text="$t('menu.' + list.page)" />
@@ -36,51 +41,105 @@
         </v-list>
       </v-navigation-drawer>
 
+      <!-- ツールバー -->
       <v-app-bar
-        :clipped-left="clipped"
-        :hide-on-scroll="true"
-        :dense="$vuetify.breakpoint.xs"
-        extension-height="36"
         app
         fixed
+        extension-height="36"
+        :dense="mobile"
+        :clipped-left="desktop"
+        :clipped-right="desktop"
+        :hide-on-scroll="!desktop"
       >
-        <v-app-bar-nav-icon @click.stop="drawer = !drawer">
-          <template v-slot:default>
-            <v-btn icon>
-              <v-icon>{{ icons.menu }}</v-icon>
-            </v-btn>
-          </template>
+        <v-app-bar-nav-icon
+          large
+          :small="!desktop"
+          @click.stop="pageOpened = !pageOpened"
+        >
+          <v-icon v-text="icons.menu" />
         </v-app-bar-nav-icon>
-        <v-toolbar-title>{{ $t("menu." + page) }}</v-toolbar-title>
+        <v-toolbar-title v-text="$t('menu.' + page)" />
+        <v-spacer />
 
-        <v-spacer></v-spacer>
-
-        <v-btn fab small @click="onAppend" class="mx-1">
-          <v-icon>{{ icons.append }}</v-icon>
-        </v-btn>
-        <v-btn fab small @click="onExport" class="mx-1">
-          <v-icon>{{ icons.export }}</v-icon>
-        </v-btn>
-        <v-btn fab small @click="onImport" class="mx-1">
-          <v-icon>{{ icons.import }}</v-icon>
-        </v-btn>
-        <span class="mx-1">
-          <locale-select fab small />
-        </span>
+        <template v-if="mobile">
+          <v-btn fab icon :small="!desktop" @click="toolOpened = !toolOpened">
+            <v-icon v-text="icons.tool" />
+          </v-btn>
+        </template>
+        <template v-else>
+          <span v-for="(list, index) in toolList" :key="index">
+            <template v-if="list.type === 'locale-select'">
+              <locale-select fab icon>
+                <v-icon v-text="list.icon" />
+              </locale-select>
+            </template>
+            <template v-else>
+              <v-btn fab icon out @click="list.func">
+                <v-icon v-text="list.icon" />
+              </v-btn>
+            </template>
+          </span>
+        </template>
       </v-app-bar>
+
+      <!-- サブメニュー -->
+      <v-navigation-drawer
+        v-if="mobile"
+        v-model="toolOpened"
+        app
+        fixed
+        right
+        clipped
+        temporary
+        mini-variant
+      >
+        <v-list>
+          <v-list-item>
+            <v-list-item-action class="ma-0">
+              <v-icon v-text="icons.tool" />
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
+        <v-divider />
+
+        <v-list nav class="px-0">
+          <v-list-item
+            v-for="(list, index) in toolList"
+            :key="index"
+            class="ma-0"
+          >
+            <v-list-item-icon>
+              <template v-if="list.type === 'locale-select'">
+                <locale-select fab icon small>
+                  <v-icon v-text="list.icon" />
+                </locale-select>
+              </template>
+              <template v-else>
+                <v-btn fab icon small @click="list.func">
+                  <v-icon v-text="list.icon" />
+                </v-btn>
+              </template>
+            </v-list-item-icon>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
 
       <v-main>
         <nuxt />
       </v-main>
 
-      <!--
-    <v-footer :absolute="!fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer>
-    -->
+      <v-footer class="justify-end">
+        <span>Ver. 2.0.0</span>
+      </v-footer>
     </v-app>
   </client-only>
 </template>
+
+<style>
+html {
+  overflow-y: auto !important;
+}
+</style>
 
 <style lang="scss" scoped>
 ::v-deep .v-select-list {
@@ -92,7 +151,8 @@
 }
 </style>
 
-<script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import {
   mdiAccount,
   mdiExport,
@@ -103,49 +163,81 @@ import {
   mdiPlaylistPlus,
   mdiRing,
   mdiSword,
+  mdiTools,
+  mdiTranslate,
 } from "@mdi/js";
-// import { WeaponTypes, ArtifactTypes } from "~/src/const";
 
-export default {
-  name: "default",
-  data() {
-    return {
-      fixed: false,
-      drawer: false,
-      clipped: false,
-      lists: [
-        { icon: mdiHome, page: "index", to: "/" },
-        { icon: mdiAccount, page: "character", to: "/character" },
-        { icon: mdiSword, page: "weapon", to: "/weapon" },
-        { icon: mdiRing, page: "artifact", to: "/artifact" },
-        { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
-      ],
-      selectedList: 0,
-      icons: {
-        menu: mdiMenu,
-        append: mdiPlaylistPlus,
-        import: mdiImport,
-        export: mdiExport,
-      },
-    };
-  },
-  computed: {
-    page() {
-      return this.lists[this.selectedList].page;
-    },
-  },
+interface IPage {
+  icon: string;
+  page: string;
+  to: string;
+}
+
+interface ITool {
+  icon: string;
+  type?: string;
+  func?: Function;
+}
+
+@Component({ name: "default" })
+export default class Default extends Vue {
+  fixed = false;
+  clipped = false;
+  pageOpened = false;
+  toolOpened = false;
+  selectedPage = 0;
+  readonly pageList: IPage[] = [
+    { icon: mdiHome, page: "index", to: "/" },
+    { icon: mdiAccount, page: "character", to: "/character" },
+    { icon: mdiSword, page: "weapon", to: "/weapon" },
+    { icon: mdiRing, page: "artifact", to: "/artifact" },
+    { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
+  ];
+  toolList: ITool[] = [
+    { icon: mdiPlaylistPlus, func: undefined },
+    { icon: mdiImport, func: undefined },
+    { icon: mdiExport, func: undefined },
+    { icon: mdiTranslate, type: "locale-select" },
+  ];
+  readonly icons = {
+    menu: mdiMenu,
+    tool: mdiTools,
+  };
+
+  get mobile() {
+    return this.$vuetify.breakpoint.xs;
+  }
+
+  get desktop() {
+    const bp = this.$vuetify.breakpoint;
+    return bp.lg || bp.xl;
+  }
+
+  get page() {
+    return this.pageList[this.selectedPage].page;
+  }
+
   created() {
-    const index = this.lists.findIndex(
+    this.toolList[0].func = this.onAppend;
+    this.toolList[1].func = this.onImport;
+    this.toolList[2].func = this.onExport;
+
+    const index = this.pageList.findIndex(
       (list) => list.page === this.$store.state.page
     );
-    this.selectedList = index < 0 ? 0 : index;
-  },
-  methods: {
-    onAppend() {
-      this.$store.commit("setAppend", true);
-    },
-    onImport() {},
-    onExport() {},
-  },
-};
+    this.selectedPage = index < 0 ? 0 : index;
+  }
+
+  onAppend() {
+    this.$store.commit("setAppend", true);
+  }
+
+  onImport() {
+    console.log("import");
+  }
+
+  onExport() {
+    console.log("export");
+  }
+}
 </script>

@@ -2,7 +2,7 @@
   <v-menu offset-y open-on-hover>
     <template v-slot:activator="{ on, attrs }">
       <v-btn v-bind="{ ...attrs, ...$attrs }" v-on="on">
-        <v-icon>{{ icon }}</v-icon>
+        <slot></slot>
       </v-btn>
     </template>
     <v-list>
@@ -19,23 +19,15 @@
   </v-menu>
 </template>
 
-<style lang="scss" scoped>
-</style>
-
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { VSelect } from "vuetify/lib";
 import { LocaleObject } from "nuxt-i18n";
-import { mdiTranslate } from "@mdi/js";
 
 @Component({
   name: "VNumberField",
-  components: { VSelect },
   inheritAttrs: false,
 })
 export default class LocaleSelect extends Vue {
-  readonly icon = mdiTranslate;
-
   get locales(): LocaleObject[] {
     return this.$i18n.locales as LocaleObject[];
   }
