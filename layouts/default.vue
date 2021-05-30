@@ -74,7 +74,7 @@
               </v-locale-select>
             </template>
             <template v-else>
-              <v-btn fab icon out @click="list.func">
+              <v-btn fab icon @click="list.func">
                 <v-icon v-text="list.icon" />
               </v-btn>
             </template>
@@ -131,6 +131,12 @@
       <v-footer class="justify-end">
         <span>Ver. 2.0.0</span>
       </v-footer>
+
+      <v-import-dialog
+        width="400px"
+        :show.sync="importDialog"
+        @input="onImport"
+      />
     </v-app>
   </client-only>
 </template>
@@ -183,11 +189,13 @@ interface ITool {
   name: "default",
   components: {
     VLocaleSelect: () => import("~/components/VLocaleSelect.vue"),
+    VImportDialog: () => import("~/components/VImportDialog.vue"),
   },
 })
 export default class Default extends Vue {
   fixed = false;
   clipped = false;
+  importDialog = false;
   pageOpened = false;
   toolOpened = false;
   selectedPage = 0;
@@ -224,7 +232,7 @@ export default class Default extends Vue {
 
   created() {
     this.toolList[0].func = this.onAppend;
-    this.toolList[1].func = this.onImport;
+    this.toolList[1].func = () => (this.importDialog = true);
     this.toolList[2].func = this.onExport;
 
     const index = this.pageList.findIndex(
@@ -237,8 +245,20 @@ export default class Default extends Vue {
     this.$store.commit("setAppend", true);
   }
 
-  onImport() {
-    console.log("import");
+  onImport(file: File | null) {
+    if (file) {
+      // jsonファイル読み込み
+      let reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = () => {
+        let json = reader.result as string;
+        if (json) {
+          let data = JSON.parse(json);
+          // TODO: コンバート
+          this.$store.commit("setData", data);
+        }
+      };
+    }
   }
 
   onExport() {

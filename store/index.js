@@ -1,11 +1,25 @@
 export const state = () => ({
+    data: {
+        chara: [],
+        sword: [],
+        claymore: [],
+        polearm: [],
+        polearm: [],
+        bow: [],
+        catalyst: [],
+        flower: [],
+        feather: [],
+        sands: [],
+        goblet: [],
+        circlet: [],
+    },
     page: "",
     append: false,
 })
 
 export const mutations = {
-    toggleSidebar(state) {
-        state.sidebar = !state.sidebar
+    setData(state, data) {
+        state.data = data;
     },
 
     setPage(state, value) {
