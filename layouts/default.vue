@@ -69,9 +69,9 @@
         <template v-else>
           <span v-for="(list, index) in toolList" :key="index">
             <template v-if="list.type === 'locale-select'">
-              <locale-select fab icon>
+              <v-locale-select fab icon>
                 <v-icon v-text="list.icon" />
-              </locale-select>
+              </v-locale-select>
             </template>
             <template v-else>
               <v-btn fab icon out @click="list.func">
@@ -110,9 +110,9 @@
           >
             <v-list-item-icon>
               <template v-if="list.type === 'locale-select'">
-                <locale-select fab icon small>
+                <v-locale-select fab icon small>
                   <v-icon v-text="list.icon" />
-                </locale-select>
+                </v-locale-select>
               </template>
               <template v-else>
                 <v-btn fab icon small @click="list.func">
@@ -179,7 +179,12 @@ interface ITool {
   func?: Function;
 }
 
-@Component({ name: "default" })
+@Component({
+  name: "default",
+  components: {
+    VLocaleSelect: () => import("~/components/VLocaleSelect.vue"),
+  },
+})
 export default class Default extends Vue {
   fixed = false;
   clipped = false;

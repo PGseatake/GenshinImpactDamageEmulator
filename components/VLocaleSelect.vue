@@ -24,10 +24,10 @@ import { Vue, Component } from "vue-property-decorator";
 import { LocaleObject } from "nuxt-i18n";
 
 @Component({
-  name: "VNumberField",
+  name: "VLocaleSelect",
   inheritAttrs: false,
 })
-export default class LocaleSelect extends Vue {
+export default class VLocaleSelect extends Vue {
   get locales(): LocaleObject[] {
     return this.$i18n.locales as LocaleObject[];
   }
