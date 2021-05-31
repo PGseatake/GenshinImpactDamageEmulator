@@ -1,6 +1,6 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <v-character-data :items="$gideData.chara" :append="append" />
+    <v-character-data :items="charas" :append="append" />
 
     <v-btn fab small @click="onAppend" class="ma-1">
       <v-icon>{{ icons.append }}</v-icon>
@@ -22,6 +22,10 @@ export default class PageCharacter extends Vue {
   readonly icons: IReadonlyMap<string> = {
     append: mdiPlaylistPlus,
   };
+
+  get charas() {
+    return this.$store.state.data.chara;
+  }
 
   get append() {
     return this.$store.state.append;

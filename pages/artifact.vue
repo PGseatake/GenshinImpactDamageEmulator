@@ -4,12 +4,20 @@
       <v-tab v-for="type of types" :key="type">{{ $t("tab." + type) }}</v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
-      <v-tab-item v-for="type of types" :key="type">
-        <v-artifact-data
-          :type="type"
-          :items="$gideData[type]"
-          :append="append"
-        />
+      <v-tab-item key="flower">
+        <v-artifact-data type="flower" :items="flowers" :append="append" />
+      </v-tab-item>
+      <v-tab-item key="feather">
+        <v-artifact-data type="feather" :items="feathers" :append="append" />
+      </v-tab-item>
+      <v-tab-item key="sands">
+        <v-artifact-data type="sands" :items="sands" :append="append" />
+      </v-tab-item>
+      <v-tab-item key="goblet">
+        <v-artifact-data type="goblet" :items="goblets" :append="append" />
+      </v-tab-item>
+      <v-tab-item key="circlet">
+        <v-artifact-data type="circlet" :items="circlets" :append="append" />
       </v-tab-item>
     </v-tabs-items>
 
@@ -35,6 +43,26 @@ export default class PageArtifact extends Vue {
   readonly icons: IReadonlyMap<string> = {
     append: mdiPlaylistPlus,
   };
+
+  get flowers() {
+    return this.$store.state.data.flower;
+  }
+
+  get feathers() {
+    return this.$store.state.data.feather;
+  }
+
+  get sands() {
+    return this.$store.state.data.sands;
+  }
+
+  get goblets() {
+    return this.$store.state.data.goblet;
+  }
+
+  get circlets() {
+    return this.$store.state.data.circlet;
+  }
 
   get append() {
     if (this.$store.state.append) {

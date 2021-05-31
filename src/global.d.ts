@@ -25,13 +25,8 @@ declare global {
     }
 }
 
-export type GideData = {
-    artifact: IArtifactData[];
-};
-
 declare module "vue/types/vue" {
     interface Vue {
         $uniqueId: () => string;
-        $gideData: GideData;
     }
 }
