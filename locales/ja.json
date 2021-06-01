@@ -8,6 +8,7 @@
         "releasenote": "リリースノート"
     },
     "tab": {
+        "character": "キャラクター",
         "sword": "片手剣",
         "claymore": "両手剣",
         "polearm": "長柄武器",
@@ -43,6 +44,8 @@
         "no": "いいえ",
         "ok": "OK",
         "cancel": "キャンセル",
+        "append": "追加",
+        "delete": "削除",
         "import": "インポート",
         "import_text": "すべてのページの内容が上書きされます。",
         "export": "エクスポート"

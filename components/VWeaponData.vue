@@ -38,22 +38,6 @@
         </v-btn>
       </template>
     </v-data-table>
-
-    <v-dialog :value="isDialog" :fullscreen="$vuetify.breakpoint.xs" persistent>
-      <v-card>
-        <v-card-title>{{ $t("tab." + type) }}追加</v-card-title>
-        <v-card-text>とりま</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="secondary" outlined @click="isDialog = false">
-            Cancel
-          </v-btn>
-          <v-btn color="primary" outlined @click="isDialog = false">
-            Append
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
@@ -140,7 +124,6 @@ import { mdiDelete } from "@mdi/js";
 export default class VWeaponData extends Vue {
   @Prop({ required: true }) type!: WeaponType;
   @Prop({ required: true }) items!: Array<IWeaponData>;
-  @Prop({ required: true }) append!: string;
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("general.name") as string, value: "name" },
@@ -177,13 +160,6 @@ export default class VWeaponData extends Vue {
 
   get list() {
     return WeaponList[this.type];
-  }
-
-  get isDialog() {
-    return this.append === this.type;
-  }
-  set isDialog(value: boolean) {
-    this.$store.commit("setAppend", value);
   }
 
   deleteItem(item: IWeaponData) {

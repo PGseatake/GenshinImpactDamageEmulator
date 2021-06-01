@@ -44,27 +44,11 @@
         <v-select-range v-model="item.burst" :min="1" :max="15" />
       </template>
       <template v-slot:[`item.delete`]="{ item }">
-        <v-btn fab x-small class="my-1" @click="deleteItem(item)">
+        <v-btn fab x-small class="my-1" @click="onDelete(item)">
           <v-icon>{{ icons.delete }}</v-icon>
         </v-btn>
       </template>
     </v-data-table>
-
-    <v-dialog :value="isDialog" :fullscreen="$vuetify.breakpoint.xs" persistent>
-      <v-card>
-        <v-card-title>キャラ追加</v-card-title>
-        <v-card-text>とりま</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="secondary" outlined @click="isDialog = false">
-            Cancel
-          </v-btn>
-          <v-btn color="primary" outlined @click="isDialog = false">
-            Append
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
@@ -186,7 +170,6 @@ import { mdiDelete } from "@mdi/js";
 })
 export default class VCharacterData extends Vue {
   @Prop({ required: true }) items!: Array<ICharaData>;
-  @Prop({ default: false }) append!: boolean;
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("general.name") as string, value: "name" },
@@ -234,15 +217,8 @@ export default class VCharacterData extends Vue {
     }));
   }
 
-  get isDialog() {
-    return this.append;
-  }
-  set isDialog(value: boolean) {
-    this.$store.commit("setAppend", value);
-  }
-
-  deleteItem(item: ICharaData) {
-    console.log(item);
+  onDelete(item: ICharaData) {
+    this.$store.commit("deleteData", { type: "chara", id: item.id });
   }
 }
 </script>

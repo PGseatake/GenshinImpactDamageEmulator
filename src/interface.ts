@@ -115,9 +115,9 @@ export interface IArtifactSet {
 
 export interface IWeapon {
     readonly star: number;
-    readonly atk?: ReadonlyArray<number>;
+    readonly atk: ReadonlyArray<number>;
     readonly second: konst.AnyBonusType;
-    readonly secval?: ReadonlyArray<number>;
+    readonly secval: ReadonlyArray<number>;
     readonly passive?: ReadonlyArrayable<IWeaponBonus | IWeaponFlatBonus>;
 }
 
@@ -141,7 +141,7 @@ export interface ICharaData extends IEquipData {
     hp: number;
     atk: number;
     def: number;
-    special: IValueData;
+    special: IBonusValueData;
     combat: number;
     skill: number;
     burst: number;
@@ -149,6 +149,7 @@ export interface ICharaData extends IEquipData {
 
 export interface IWeaponData extends IEquipData {
     rank: number;
+    atk: number;
     second: IBonusValueData;
 }
 

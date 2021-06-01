@@ -4,7 +4,6 @@ export const state = () => ({
         sword: [],
         claymore: [],
         polearm: [],
-        polearm: [],
         bow: [],
         catalyst: [],
         flower: [],
@@ -21,11 +20,18 @@ export const mutations = {
     setData(state, data) {
         state.data = data;
     },
-
+    appendData(state, { type, data }) {
+        state.data[type].push(data);
+    },
+    deleteData(state, { type, id }) {
+        const idx = state.data[type].findIndex((val) => val.id === id);
+        if (0 <= idx) {
+            state.data[type].splice(idx, 1);
+        }
+    },
     setPage(state, value) {
         state.page = value;
     },
-
     setAppend(state, value) {
         state.append = value;
     },

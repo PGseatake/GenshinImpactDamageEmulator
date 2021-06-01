@@ -27,6 +27,6 @@ declare global {
 
 declare module "vue/types/vue" {
     interface Vue {
-        $uniqueId: () => string;
+        $makeUniqueId: () => string;
     }
 }
