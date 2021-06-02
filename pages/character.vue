@@ -1,6 +1,6 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <v-character-data :items="charas" />
+    <v-character-data :items="charas" @remove="onRemove" />
 
     <v-btn fab small @click="onBeforeAppend" class="ma-1">
       <v-icon>{{ icons.append }}</v-icon>
@@ -70,6 +70,10 @@ export default class PageCharacter extends Vue {
       },
     };
     this.$store.commit("appendData", store);
+  }
+
+  onRemove(item: ICharaData) {
+    this.$store.commit("removeData", { type: "chara", id: item.id });
   }
 }
 </script>

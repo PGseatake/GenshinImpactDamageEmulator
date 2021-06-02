@@ -43,9 +43,9 @@
       <template v-slot:[`item.burst`]="{ item }">
         <v-select-range v-model="item.burst" :min="1" :max="15" />
       </template>
-      <template v-slot:[`item.delete`]="{ item }">
-        <v-btn fab x-small class="my-1" @click="onDelete(item)">
-          <v-icon>{{ icons.delete }}</v-icon>
+      <template v-slot:[`item.remove`]="{ item }">
+        <v-btn fab x-small class="my-1" @click="onRemove(item)">
+          <v-icon>{{ icons.remove }}</v-icon>
         </v-btn>
       </template>
     </v-data-table>
@@ -151,7 +151,7 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "~/node_modules/vuetify/types";
 import { CharaNames } from "~/src/character";
 import { ICharaData } from "~/src/interface";
@@ -170,6 +170,9 @@ import { mdiDelete } from "@mdi/js";
 })
 export default class VCharacterData extends Vue {
   @Prop({ required: true }) items!: Array<ICharaData>;
+
+  @Emit("remove")
+  onRemove(item: ICharaData) {}
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("general.name") as string, value: "name" },
@@ -195,15 +198,15 @@ export default class VCharacterData extends Vue {
       sortable: false,
     },
     {
-      text: this.$t("general.delete") as string,
-      value: "delete",
+      text: this.$t("dialog.remove") as string,
+      value: "remove",
       sortable: false,
       width: "50px",
     },
   ];
 
   readonly icons: IReadonlyMap<string> = {
-    delete: mdiDelete,
+    remove: mdiDelete,
   };
 
   get myClass() {
@@ -215,10 +218,6 @@ export default class VCharacterData extends Vue {
       text: this.$t("chara." + name),
       value: name,
     }));
-  }
-
-  onDelete(item: ICharaData) {
-    this.$store.commit("deleteData", { type: "chara", id: item.id });
   }
 }
 </script>

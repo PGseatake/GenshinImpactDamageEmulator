@@ -23,7 +23,7 @@ export const mutations = {
     appendData(state, { type, data }) {
         state.data[type].push(data);
     },
-    deleteData(state, { type, id }) {
+    removeData(state, { type, id }) {
         const idx = state.data[type].findIndex((val) => val.id === id);
         if (0 <= idx) {
             state.data[type].splice(idx, 1);
