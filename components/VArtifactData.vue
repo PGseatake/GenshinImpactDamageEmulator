@@ -37,9 +37,9 @@
       <template v-slot:[`item.sub4`]="{ item }">
         <v-bonus-value :types="subs" v-bind.sync="item.sub4" />
       </template>
-      <template v-slot:[`item.delete`]="{ item }">
-        <v-btn fab x-small class="my-1" @click="deleteItem(item)">
-          <v-icon>{{ icons.delete }}</v-icon>
+      <template v-slot:[`item.remove`]="{ item }">
+        <v-btn fab x-small class="my-1" @click="onRemove(item)">
+          <v-icon>{{ icons.remove }}</v-icon>
         </v-btn>
       </template>
     </v-data-table>
@@ -132,7 +132,7 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "~/node_modules/vuetify/types";
 import { ArtifactType } from "~/src/const";
 import { ArtifactNames, ArtifactMain, ArtifactSub } from "~/src/artifact";
@@ -153,6 +153,9 @@ export default class VArtifactData extends Vue {
   @Prop({ required: true }) type!: ArtifactType;
   @Prop({ required: true }) items!: Array<IArtifactData>;
 
+  @Emit("remove")
+  onRemove(item: IArtifactData) {}
+
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("general.name") as string, value: "name" },
     { text: this.$t("general.star") as string, value: "star" },
@@ -163,8 +166,8 @@ export default class VArtifactData extends Vue {
     { text: this.$t("general.sub3") as string, value: "sub3", sortable: false },
     { text: this.$t("general.sub4") as string, value: "sub4", sortable: false },
     {
-      text: this.$t("general.delete") as string,
-      value: "delete",
+      text: this.$t("dialog.remove") as string,
+      value: "remove",
       sortable: false,
       width: "50px",
     },
@@ -172,7 +175,7 @@ export default class VArtifactData extends Vue {
 
   readonly subs = ArtifactSub;
   readonly icons: IReadonlyMap<string> = {
-    delete: mdiDelete,
+    remove: mdiDelete,
   };
 
   get myClass() {
@@ -188,10 +191,6 @@ export default class VArtifactData extends Vue {
       text: this.$t(["artifact", this.type, name].join(".")),
       value: name,
     }));
-  }
-
-  deleteItem(item: IArtifactData) {
-    console.log(item);
   }
 }
 </script>

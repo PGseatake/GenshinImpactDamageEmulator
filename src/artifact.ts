@@ -5,7 +5,6 @@ export const ArtifactMain: Record<konst.ArtifactType, ReadonlyArray<konst.AnyBon
     "flower": [konst.StatusBonusType.Hp],
     "feather": [konst.StatusBonusType.Atk],
     "sands": [
-        konst.BonusType.None,
         konst.StatusBonusType.HpBuf,
         konst.StatusBonusType.AtkBuf,
         konst.StatusBonusType.DefBuf,
@@ -13,7 +12,6 @@ export const ArtifactMain: Record<konst.ArtifactType, ReadonlyArray<konst.AnyBon
         konst.StatusBonusType.EnRec,
     ],
     "goblet": [
-        konst.BonusType.None,
         konst.StatusBonusType.HpBuf,
         konst.StatusBonusType.AtkBuf,
         konst.StatusBonusType.DefBuf,
@@ -27,7 +25,6 @@ export const ArtifactMain: Record<konst.ArtifactType, ReadonlyArray<konst.AnyBon
         konst.ElementBonusType.Phys,
     ],
     "circlet": [
-        konst.BonusType.None,
         konst.StatusBonusType.HpBuf,
         konst.StatusBonusType.AtkBuf,
         konst.StatusBonusType.DefBuf,

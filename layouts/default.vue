@@ -172,6 +172,7 @@ import {
   mdiTools,
   mdiTranslate,
 } from "@mdi/js";
+import { GlobalDataTypes } from "~/src/interface";
 
 interface IPage {
   icon: string;
@@ -255,7 +256,9 @@ export default class Default extends Vue {
         if (json) {
           let data = JSON.parse(json);
           // TODO: コンバート
-          this.$store.commit("setData", data);
+          for (const type of GlobalDataTypes) {
+            this.$set(this.$globals, type, data[type]);
+          }
         }
       };
     }

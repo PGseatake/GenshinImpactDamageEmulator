@@ -121,12 +121,15 @@ export interface IWeapon {
     readonly passive?: ReadonlyArrayable<IWeaponBonus | IWeaponFlatBonus>;
 }
 
+export interface IIdentify {
+    id: string;
+}
+
 export interface IValueData {
     value: number;
 }
 
-export interface IEquipData {
-    id: string;
+export interface IEquipData extends IIdentify {
     name: string;
     comment: string;
     level: string;
@@ -161,3 +164,12 @@ export interface IArtifactData extends IEquipData {
     sub3: IBonusValueData;
     sub4: IBonusValueData;
 }
+
+export type GlobalCharaData = { chara: ICharaData[]; };
+export type GlobalWeaponData = Record<konst.WeaponType, IWeaponData[]>;
+export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;
+
+export type GlobalData =
+    GlobalCharaData & GlobalWeaponData & GlobalArtifactData;
+
+export const GlobalDataTypes: string[] = ["chara", ...konst.WeaponTypes, ...konst.ArtifactTypes];

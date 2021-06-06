@@ -1,4 +1,4 @@
-import { IArtifactData } from "~/src/interface";
+import { GlobalData, IIdentify } from "~/src/interface";
 
 export { };
 
@@ -27,6 +27,9 @@ declare global {
 
 declare module "vue/types/vue" {
     interface Vue {
+        $globals: GlobalData;
         $makeUniqueId: () => string;
+        $appendData: (data: IIdentify[], item: IIdentify) => void;
+        $removeData: (data: IIdentify[], item: IIdentify) => void;
     }
 }

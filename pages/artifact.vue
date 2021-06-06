@@ -5,19 +5,19 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item key="flower">
-        <v-artifact-data type="flower" :items="flowers" />
+        <v-artifact-data type="flower" :items="flower" @remove="onRemove" />
       </v-tab-item>
       <v-tab-item key="feather">
-        <v-artifact-data type="feather" :items="feathers" />
+        <v-artifact-data type="feather" :items="feather" @remove="onRemove" />
       </v-tab-item>
       <v-tab-item key="sands">
-        <v-artifact-data type="sands" :items="sands" />
+        <v-artifact-data type="sands" :items="sands" @remove="onRemove" />
       </v-tab-item>
       <v-tab-item key="goblet">
-        <v-artifact-data type="goblet" :items="goblets" />
+        <v-artifact-data type="goblet" :items="goblet" @remove="onRemove" />
       </v-tab-item>
       <v-tab-item key="circlet">
-        <v-artifact-data type="circlet" :items="circlets" />
+        <v-artifact-data type="circlet" :items="circlet" @remove="onRemove" />
       </v-tab-item>
     </v-tabs-items>
 
@@ -37,15 +37,22 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiPlaylistPlus } from "@mdi/js";
-import { IArtifactData } from "~/src/interface";
+import { GlobalArtifactData, IArtifactData } from "~/src/interface";
 import { ArtifactTypes, BonusType } from "~/src/const";
-import { ArtifactNames } from "~/src/artifact";
+import { ArtifactMain, ArtifactNames } from "~/src/artifact";
 
 @Component({
   name: "PageArtifact",
   components: { VArtifactData: () => import("~/components/VArtifactData.vue") },
 })
 export default class PageArtifact extends Vue {
+  globals: GlobalArtifactData = {
+    flower: [],
+    feather: [],
+    sands: [],
+    goblet: [],
+    circlet: [],
+  };
   tab: number = 0;
 
   readonly types = ArtifactTypes;
@@ -64,24 +71,28 @@ export default class PageArtifact extends Vue {
     }));
   }
 
-  get flowers() {
-    return this.$store.state.data.flower;
+  get flower() {
+    return this.globals.flower;
   }
 
-  get feathers() {
-    return this.$store.state.data.feather;
+  get feather() {
+    return this.globals.feather;
   }
 
   get sands() {
-    return this.$store.state.data.sands;
+    return this.globals.sands;
   }
 
-  get goblets() {
-    return this.$store.state.data.goblet;
+  get goblet() {
+    return this.globals.goblet;
   }
 
-  get circlets() {
-    return this.$store.state.data.circlet;
+  get circlet() {
+    return this.globals.circlet;
+  }
+
+  created() {
+    this.globals = this.$globals;
   }
 
   onBeforeAppend() {
@@ -89,37 +100,39 @@ export default class PageArtifact extends Vue {
   }
 
   onAppend(name: string) {
-    const store: { type: string; data: IArtifactData } = {
-      type: this.type,
-      data: {
-        id: this.$makeUniqueId(),
-        name: name,
-        comment: "",
-        star: 3,
-        level: "0",
-        main: {
-          type: BonusType.None,
-          value: 0,
-        },
-        sub1: {
-          type: BonusType.None,
-          value: 0,
-        },
-        sub2: {
-          type: BonusType.None,
-          value: 0,
-        },
-        sub3: {
-          type: BonusType.None,
-          value: 0,
-        },
-        sub4: {
-          type: BonusType.None,
-          value: 0,
-        },
+    const mains = ArtifactMain[this.type];
+    const item: IArtifactData = {
+      id: this.$makeUniqueId(),
+      name: name,
+      comment: "",
+      star: 3,
+      level: "0",
+      main: {
+        type: mains[0],
+        value: 0,
+      },
+      sub1: {
+        type: BonusType.None,
+        value: 0,
+      },
+      sub2: {
+        type: BonusType.None,
+        value: 0,
+      },
+      sub3: {
+        type: BonusType.None,
+        value: 0,
+      },
+      sub4: {
+        type: BonusType.None,
+        value: 0,
       },
     };
-    this.$store.commit("appendData", store);
+    this.$appendData(this.globals[this.type], item);
+  }
+
+  onRemove(item: IArtifactData) {
+    this.$removeData(this.globals[this.type], item);
   }
 }
 </script>

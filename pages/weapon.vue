@@ -5,19 +5,19 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item key="sword">
-        <v-weapon-data type="sword" :items="swords" />
+        <v-weapon-data type="sword" :items="sword" @remove="onRemove" />
       </v-tab-item>
       <v-tab-item key="claymore">
-        <v-weapon-data type="claymore" :items="claymores" />
+        <v-weapon-data type="claymore" :items="claymore" @remove="onRemove" />
       </v-tab-item>
       <v-tab-item key="polearm">
-        <v-weapon-data type="polearm" :items="polearms" />
+        <v-weapon-data type="polearm" :items="polearm" @remove="onRemove" />
       </v-tab-item>
       <v-tab-item key="bow">
-        <v-weapon-data type="bow" :items="bows" />
+        <v-weapon-data type="bow" :items="bow" @remove="onRemove" />
       </v-tab-item>
       <v-tab-item key="catalyst">
-        <v-weapon-data type="catalyst" :items="catalysts" />
+        <v-weapon-data type="catalyst" :items="catalyst" @remove="onRemove" />
       </v-tab-item>
     </v-tabs-items>
 
@@ -43,7 +43,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiPlaylistPlus } from "@mdi/js";
-import { IWeaponData } from "~/src/interface";
+import { GlobalWeaponData, IWeaponData } from "~/src/interface";
 import { WeaponTypes } from "~/src/const";
 import { WeaponList, WeaponNames } from "~/src/weapon";
 
@@ -52,6 +52,13 @@ import { WeaponList, WeaponNames } from "~/src/weapon";
   components: { VWeaponData: () => import("~/components/VWeaponData.vue") },
 })
 export default class PageWeapon extends Vue {
+  globals: GlobalWeaponData = {
+    sword: [],
+    claymore: [],
+    polearm: [],
+    bow: [],
+    catalyst: [],
+  };
   tab: number = 0;
 
   readonly types = WeaponTypes;
@@ -70,24 +77,28 @@ export default class PageWeapon extends Vue {
     }));
   }
 
-  get swords() {
-    return this.$store.state.data.sword;
+  get sword() {
+    return this.globals.sword;
   }
 
-  get claymores() {
-    return this.$store.state.data.claymore;
+  get claymore() {
+    return this.globals.claymore;
   }
 
-  get polearms() {
-    return this.$store.state.data.polearm;
+  get polearm() {
+    return this.globals.polearm;
   }
 
-  get bows() {
-    return this.$store.state.data.bow;
+  get bow() {
+    return this.globals.bow;
   }
 
-  get catalysts() {
-    return this.$store.state.data.catalyst;
+  get catalyst() {
+    return this.globals.catalyst;
+  }
+
+  created() {
+    this.globals = this.$globals;
   }
 
   onBeforeAppend() {
@@ -96,22 +107,23 @@ export default class PageWeapon extends Vue {
 
   onAppend(name: string) {
     const konst = WeaponList[this.type][name];
-    const store: { type: string; data: IWeaponData } = {
-      type: this.type,
-      data: {
-        id: this.$makeUniqueId(),
-        name: name,
-        comment: "",
-        rank: 1,
-        level: "1",
-        atk: konst.atk[0],
-        second: {
-          type: konst.second,
-          value: konst.secval[0],
-        },
+    const item: IWeaponData = {
+      id: this.$makeUniqueId(),
+      name: name,
+      comment: "",
+      rank: 1,
+      level: "1",
+      atk: konst.atk[0],
+      second: {
+        type: konst.second,
+        value: konst.secval[0],
       },
     };
-    this.$store.commit("appendData", store);
+    this.$appendData(this.globals[this.type], item);
+  }
+
+  onRemove(item: IWeaponData) {
+    this.$removeData(this.globals[this.type], item);
   }
 }
 </script>

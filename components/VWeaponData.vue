@@ -32,9 +32,9 @@
           v-bind.sync="item.second"
         />
       </template>
-      <template v-slot:[`item.delete`]="{ item }">
-        <v-btn fab x-small class="my-1" @click="deleteItem(item)">
-          <v-icon>{{ icons.delete }}</v-icon>
+      <template v-slot:[`item.remove`]="{ item }">
+        <v-btn fab x-small class="my-1" @click="onRemove(item)">
+          <v-icon>{{ icons.remove }}</v-icon>
         </v-btn>
       </template>
     </v-data-table>
@@ -103,7 +103,7 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "~/node_modules/vuetify/types";
 import { WeaponType } from "~/src/const";
 import { WeaponNames, WeaponList } from "~/src/weapon";
@@ -125,6 +125,9 @@ export default class VWeaponData extends Vue {
   @Prop({ required: true }) type!: WeaponType;
   @Prop({ required: true }) items!: Array<IWeaponData>;
 
+  @Emit("remove")
+  onRemove(item: IWeaponData) {}
+
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("general.name") as string, value: "name" },
     { text: this.$t("general.rank") as string, value: "rank" },
@@ -136,15 +139,15 @@ export default class VWeaponData extends Vue {
       sortable: false,
     },
     {
-      text: this.$t("general.delete") as string,
-      value: "delete",
+      text: this.$t("dialog.remove") as string,
+      value: "remove",
       sortable: false,
       width: "50px",
     },
   ];
 
   readonly icons: IReadonlyMap<string> = {
-    delete: mdiDelete,
+    remove: mdiDelete,
   };
 
   get myClass() {
@@ -160,10 +163,6 @@ export default class VWeaponData extends Vue {
 
   get list() {
     return WeaponList[this.type];
-  }
-
-  deleteItem(item: IWeaponData) {
-    console.log(item);
   }
 }
 </script>

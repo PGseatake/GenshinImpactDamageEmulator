@@ -18,8 +18,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiPlaylistPlus } from "@mdi/js";
+import { GlobalCharaData, ICharaData } from "~/src/interface";
 import { CharaList, CharaName, CharaNames } from "~/src/character";
-import { ICharaData } from "~/src/interface";
 
 @Component({
   name: "PageCharacter",
@@ -28,6 +28,8 @@ import { ICharaData } from "~/src/interface";
   },
 })
 export default class PageCharacter extends Vue {
+  globals: GlobalCharaData = { chara: [] };
+
   readonly icons: IReadonlyMap<string> = {
     append: mdiPlaylistPlus,
   };
@@ -40,7 +42,11 @@ export default class PageCharacter extends Vue {
   }
 
   get charas() {
-    return this.$store.state.data.chara;
+    return this.globals.chara;
+  }
+
+  created() {
+    this.globals = this.$globals;
   }
 
   onBeforeAppend() {
@@ -49,31 +55,28 @@ export default class PageCharacter extends Vue {
 
   onAppend(name: string) {
     const konst = CharaList[name as CharaName];
-    const store: { type: string; data: ICharaData } = {
-      type: "chara",
-      data: {
-        id: this.$makeUniqueId(),
-        name: name,
-        comment: "",
-        conste: 0,
-        level: "1",
-        hp: konst.status.hp[0],
-        atk: konst.status.atk[0],
-        def: konst.status.def[0],
-        special: {
-          type: konst.special,
-          value: 0,
-        },
-        combat: 1,
-        skill: 1,
-        burst: 1,
+    const item: ICharaData = {
+      id: this.$makeUniqueId(),
+      name: name,
+      comment: "",
+      conste: 0,
+      level: "1",
+      hp: konst.status.hp[0],
+      atk: konst.status.atk[0],
+      def: konst.status.def[0],
+      special: {
+        type: konst.special,
+        value: konst.spvalue[0],
       },
+      combat: 1,
+      skill: 1,
+      burst: 1,
     };
-    this.$store.commit("appendData", store);
+    this.$appendData(this.globals.chara, item);
   }
 
   onRemove(item: ICharaData) {
-    this.$store.commit("removeData", { type: "chara", id: item.id });
+    this.$removeData(this.globals.chara, item);
   }
 }
 </script>
