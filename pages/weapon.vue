@@ -49,7 +49,10 @@ import { WeaponList, WeaponNames } from "~/src/weapon";
 
 @Component({
   name: "PageWeapon",
-  components: { VWeaponData: () => import("~/components/VWeaponData.vue") },
+  components: {
+    VWeaponData: () => import("~/components/VWeaponData.vue"),
+    VAppendDialog: () => import("~/components/VAppendDialog.vue"),
+  },
 })
 export default class PageWeapon extends Vue {
   globals: GlobalWeaponData = {

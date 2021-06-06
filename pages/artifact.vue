@@ -43,7 +43,10 @@ import { ArtifactMain, ArtifactNames } from "~/src/artifact";
 
 @Component({
   name: "PageArtifact",
-  components: { VArtifactData: () => import("~/components/VArtifactData.vue") },
+  components: {
+    VArtifactData: () => import("~/components/VArtifactData.vue"),
+    VAppendDialog: () => import("~/components/VAppendDialog.vue"),
+  },
 })
 export default class PageArtifact extends Vue {
   globals: GlobalArtifactData = {

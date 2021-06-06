@@ -25,6 +25,7 @@ import { CharaList, CharaName, CharaNames } from "~/src/character";
   name: "PageCharacter",
   components: {
     VCharacterData: () => import("~/components/VCharacterData.vue"),
+    VAppendDialog: () => import("~/components/VAppendDialog.vue"),
   },
 })
 export default class PageCharacter extends Vue {

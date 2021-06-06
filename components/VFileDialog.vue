@@ -1,16 +1,10 @@
 <template>
   <v-dialog v-bind="$attrs" v-on="$listeners" v-model="refShow">
     <v-card>
-      <v-card-title v-text="$t('dialog.import')" />
+      <v-card-title v-text="label" />
       <v-card-text>
-        <v-file-input
-          v-model="file"
-          clearable
-          accept="application/json"
-          :clear-icon="icons.clear"
-          :prepend-icon="icons.file"
-        />
-        <div v-text="$t('dialog.import_text')" style="text-align: center" />
+        <slot></slot>
+        <div v-html="detail" :style="textStyle" />
       </v-card-text>
       <v-card-actions class="justify-end">
         <v-btn
@@ -34,24 +28,20 @@
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { VDialog } from "vuetify/lib";
-import { mdiClose, mdiPaperclip } from "@mdi/js";
 
 @Component({
-  name: "VImportDialog",
+  name: "VFileDialog",
   components: { VDialog },
   inheritAttrs: false,
 })
-export default class VImportDialog extends Vue {
+export default class VFileDialog extends Vue {
   @Prop({ required: true }) show!: boolean;
+  @Prop({ required: true }) file!: string | File | null;
+  @Prop({ default: "" }) label!: string;
+  @Prop({ default: "" }) detail!: string;
 
-  @Emit("input")
-  onInput(value: File | null) {}
-
-  readonly icons = {
-    clear: mdiClose,
-    file: mdiPaperclip,
-  };
-  file: File | null = null;
+  @Emit("accept")
+  onAccept() {}
 
   get refShow() {
     return this.show;
@@ -60,10 +50,16 @@ export default class VImportDialog extends Vue {
     this.$emit("update:show", value);
   }
 
+  get textStyle() {
+    if (this.$vuetify.breakpoint.xs) {
+      return "";
+    }
+    return "text-align: center";
+  }
+
   onChange() {
     this.refShow = false;
-    this.onInput(this.file);
-    this.file = null;
+    this.onAccept();
   }
 }
 </script>

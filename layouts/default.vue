@@ -132,11 +132,41 @@
         <span>Ver. 2.0.0</span>
       </v-footer>
 
-      <v-import-dialog
-        width="400px"
-        :show.sync="importDialog"
-        @input="onImport"
-      />
+      <v-file-dialog
+        width="450px"
+        :file="importFile"
+        :show.sync="importShow"
+        :label="$t('dialog.import')"
+        :detail="$t('dialog.import_text')"
+        @accept="onImport"
+      >
+        <template v-slot:default>
+          <v-file-input
+            v-model="importFile"
+            clearable
+            accept="application/json"
+            :clear-icon="icons.clear"
+            :prepend-icon="icons.file"
+          />
+        </template>
+      </v-file-dialog>
+      <v-file-dialog
+        width="450px"
+        :file="exportFile"
+        :show.sync="exportShow"
+        :label="$t('dialog.export')"
+        :detail="$t('dialog.export_text')"
+        @accept="onExport"
+      >
+        <template v-slot:default>
+          <v-text-field
+            v-model="exportFile"
+            clearable
+            :clear-icon="icons.clear"
+            :prepend-icon="icons.file"
+          />
+        </template>
+      </v-file-dialog>
     </v-app>
   </client-only>
 </template>
@@ -161,11 +191,13 @@ html {
 import { Vue, Component } from "vue-property-decorator";
 import {
   mdiAccount,
+  mdiClose,
   mdiExport,
   mdiHome,
   mdiImport,
   mdiMenu,
   mdiNotePlus,
+  mdiPaperclip,
   mdiPlaylistPlus,
   mdiRing,
   mdiSword,
@@ -190,13 +222,16 @@ interface ITool {
   name: "default",
   components: {
     VLocaleSelect: () => import("~/components/VLocaleSelect.vue"),
-    VImportDialog: () => import("~/components/VImportDialog.vue"),
+    VFileDialog: () => import("~/components/VFileDialog.vue"),
   },
 })
 export default class Default extends Vue {
   fixed = false;
   clipped = false;
-  importDialog = false;
+  importShow = false;
+  importFile: File | null = null;
+  exportShow = false;
+  exportFile: string | null = "GIDE.json";
   pageOpened = false;
   toolOpened = false;
   selectedPage = 0;
@@ -216,6 +251,8 @@ export default class Default extends Vue {
   readonly icons = {
     menu: mdiMenu,
     tool: mdiTools,
+    clear: mdiClose,
+    file: mdiPaperclip,
   };
 
   get mobile() {
@@ -232,9 +269,9 @@ export default class Default extends Vue {
   }
 
   created() {
-    this.toolList[0].func = this.onAppend;
-    this.toolList[1].func = () => (this.importDialog = true);
-    this.toolList[2].func = this.onExport;
+    this.toolList[0].func = () => this.$store.commit("setAppend", true);
+    this.toolList[1].func = () => (this.importShow = true);
+    this.toolList[2].func = () => (this.exportShow = true);
 
     const index = this.pageList.findIndex(
       (list) => list.page === this.$store.state.page
@@ -242,15 +279,11 @@ export default class Default extends Vue {
     this.selectedPage = index < 0 ? 0 : index;
   }
 
-  onAppend() {
-    this.$store.commit("setAppend", true);
-  }
-
-  onImport(file: File | null) {
-    if (file) {
+  onImport() {
+    if (this.importFile) {
       // jsonファイル読み込み
       let reader = new FileReader();
-      reader.readAsText(file);
+      reader.readAsText(this.importFile);
       reader.onload = () => {
         let json = reader.result as string;
         if (json) {
@@ -265,7 +298,20 @@ export default class Default extends Vue {
   }
 
   onExport() {
-    console.log("export");
+    if (this.exportFile) {
+      // バージョン情報を付加してひとまとめにする
+      let data = { version: "2.0", ...this.$globals };
+      // downloadフォルダに保存
+      let blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+      let link = document.createElement("a");
+      document.body.appendChild(link);
+      let url = URL.createObjectURL(blob);
+      link.href = url;
+      link.download = this.exportFile;
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
   }
 }
 </script>
