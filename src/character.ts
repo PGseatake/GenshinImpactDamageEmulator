@@ -73,7 +73,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.AtkBuf,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 44.5 },
@@ -150,7 +150,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.AtkBuf,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 44.5 },
@@ -219,7 +219,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.ElementBonusType.Geo,
-        spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
+        spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 36.7 },
@@ -296,7 +296,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.AtkBuf,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 36.1 },
@@ -368,7 +368,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.HpBuf,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 37.8 },
@@ -436,7 +436,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.ElementBonusType.Elect,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 71.1 },
@@ -511,7 +511,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.EnRec,
-        spvalue: [0.0, 0.0, 20.0 / 3, 40.0 / 3, 40.0 / 3, 20.0, 80.0 / 3],
+        spvalue: [0.0, 0.0, 0.0, 20.0 / 3, 40.0 / 3, 40.0 / 3, 20.0, 80.0 / 3],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 44.5 },
@@ -591,7 +591,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.AtkBuf,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 70.0 },
@@ -663,7 +663,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.CriticalBonusType.Rate,
-        spvalue: [0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
+        spvalue: [0.0, 0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 89.7 },
@@ -741,7 +741,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.ElementBonusType.Cryo,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 36.1 },
@@ -815,7 +815,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.AtkBuf,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 44.1 },
@@ -887,7 +887,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.CriticalBonusType.Damage,
-        spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
+        spvalue: [0.0, 0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 31.7 },
@@ -965,7 +965,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.CriticalBonusType.Damage,
-        spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
+        spvalue: [0.0, 0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Hutao, value: 46.9 },
@@ -1052,7 +1052,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.HealBuf,
-        spvalue: [0.0, 0.0, 5.55, 11.1, 11.1, 16.65, 22.2],
+        spvalue: [0.0, 0.0, 0.0, 5.55, 11.1, 11.1, 16.65, 22.2],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 48.3 },
@@ -1122,7 +1122,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.EnRec,
-        spvalue: [0.0, 0.0, 20.0 / 3, 40.0 / 3, 40.0 / 3, 20.0, 80.0 / 3],
+        spvalue: [0.0, 0.0, 0.0, 20.0 / 3, 40.0 / 3, 40.0 / 3, 20.0, 80.0 / 3],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 53.8 },
@@ -1193,7 +1193,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.CriticalBonusType.Damage,
-        spvalue: [0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
+        spvalue: [0.0, 0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 41.0 },
@@ -1269,7 +1269,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.ElementBonusType.Pyro,
-        spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
+        spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 72.2 },
@@ -1340,7 +1340,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.Elem,
-        spvalue: [0, 0, 24, 48, 48, 72, 96],
+        spvalue: [0, 0, 0, 24, 48, 48, 72, 96],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 39.6 },
@@ -1414,7 +1414,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.EnRec,
-        spvalue: [0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
+        spvalue: [0.0, 0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 37.6 },
@@ -1487,7 +1487,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.ElementBonusType.Geo,
-        spvalue: [0, 0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0, 0, 0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "通常攻撃ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 28.0 },
@@ -1552,7 +1552,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.DefBuf,
-        spvalue: [0, 0, 7.5, 15.0, 15.0, 22.5, 30.0],
+        spvalue: [0.0, 0.0, 0.0, 7.5, 15.0, 15.0, 22.5, 30.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 79.1 },
@@ -1625,7 +1625,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.HealBuf,
-        spvalue: [0.0, 0.0, 5.55, 11.1, 11.1, 16.65, 22.2],
+        spvalue: [0.0, 0.0, 0.0, 5.55, 11.1, 11.1, 16.65, 22.2],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 37.8 },
@@ -1695,7 +1695,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.ElementBonusType.Phys,
-        spvalue: [0, 0, 7.5, 15.0, 15.0, 22.5, 30.0],
+        spvalue: [0.0, 0.0, 0.0, 7.5, 15.0, 15.0, 22.5, 30.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 95.9 },
@@ -1768,7 +1768,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.AtkBuf,
-        spvalue: [0, 0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 52.5 },
@@ -1850,7 +1850,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.ElementBonusType.Anemo,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 33.5 },
@@ -1920,7 +1920,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.ElementBonusType.Hydro,
-        spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
+        spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 41.3 },
@@ -2003,7 +2003,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.EnRec,
-        spvalue: [0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
+        spvalue: [0.0, 0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [20.4, 20.4] },
@@ -2082,7 +2082,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.Elem,
-        spvalue: [0, 0, 24, 48, 48, 72, 96],
+        spvalue: [0, 0, 0, 24, 48, 48, 72, 96],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 42.1 },
@@ -2155,7 +2155,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.CriticalBonusType.Rate,
-        spvalue: [0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
+        spvalue: [0.0, 0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [27.5, 27.5] },
@@ -2230,7 +2230,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.AtkBuf,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 46.6 },
@@ -2300,7 +2300,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.StatusBonusType.AtkBuf,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 76.5 },
@@ -2375,7 +2375,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.ElementBonusType.Pyro,
-        spvalue: [0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 58.0 },
@@ -2449,7 +2449,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             ]
         },
         special: konst.ElementBonusType.Geo,
-        spvalue: [0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
+        spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         talent: {
             combat: [
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 30.8 },

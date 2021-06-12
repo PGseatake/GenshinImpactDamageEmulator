@@ -2,8 +2,8 @@
   <v-select
     v-bind="$attrs"
     v-on="$listeners"
-    :items="items()"
-    :append-icon="icon()"
+    :items="items"
+    :append-icon="icon"
     dense
     single-line
     hide-details
@@ -24,27 +24,24 @@
 import { Vue, Component } from "vue-property-decorator";
 import { VSelect } from "vuetify/lib";
 import { mdiMenuDown } from "@mdi/js";
+import * as Ascension from "~/src/ascension";
 
-const AscensionLvMin = 1;
-const AscensionLvMax = 90;
-const AscensionLvStep = [20, 40, 50, 60, 70, 80] as const;
-const AscensionLvRange = [1, 20, 40, 50, 60, 70, 80, 90] as const;
-const AscensionLvItems = (() => {
+type LevelText = { readonly value: string };
+
+const levelTexts = (() => {
   const make = (min: number, max: number) => {
-    return Array.from({ length: max - min }, (_, i): {
-      readonly value: string;
-    } => {
+    return Array.from({ length: max - min }, (_, i): LevelText => {
       return { value: `${min + i + 1}` };
     });
   };
   let ret: ReturnType<typeof make> = [];
   let min = 0;
-  for (const max of AscensionLvStep) {
+  for (const max of Ascension.LevelStep) {
     ret.push(...make(min, max));
     ret.push({ value: `${max}+` });
     min = max;
   }
-  ret.push(...make(min, AscensionLvMax));
+  ret.push(...make(min, Ascension.LevelMax));
   return ret;
 })();
 
@@ -54,12 +51,7 @@ const AscensionLvItems = (() => {
   inheritAttrs: false,
 })
 export default class VAscensionLevel extends Vue {
-  items() {
-    return AscensionLvItems;
-  }
-
-  icon() {
-    return mdiMenuDown;
-  }
+  readonly items = levelTexts;
+  readonly icon = mdiMenuDown;
 }
 </script>

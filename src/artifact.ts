@@ -78,6 +78,7 @@ export const ArtifactNames = [
     "Icebreaker",
     "OceanConqueror",
 ] as const;
+export type ArtifactName = typeof ArtifactNames[number];
 
 // TODO: limitを多言語対応
 export const ArtifactSet: Record<typeof ArtifactNames[number], IArtifactSet> = {
@@ -192,3 +193,108 @@ export const ArtifactSet: Record<typeof ArtifactNames[number], IArtifactSet> = {
         set4: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 30, limit: "元素スキルを発動後", times: 15 }
     },
 } as const;
+
+const ArtifactLevel = [12, 16, 20];
+
+interface IArtifactParam {
+    readonly intercept: number;
+    readonly slope: number;
+    readonly substep?: number;
+}
+
+type ArtifactParamType = "hp" | "atk" | "def" | "atk_buf" | "def_buf" | "en_rec" | "cri_rate" | "cri_dmg";
+type ArtifactParamData = ReadonlyRecord<ArtifactParamType, IArtifactParam>;
+
+// TODO: 値を見直す
+const ArtifactParamList: Readonly<ArtifactParamData[]> = [
+    // ☆☆☆
+    {
+        hp: { intercept: 430, slope: 121.8846154 }, // HP
+        atk: { intercept: 28, slope: 7.89010989 }, // 攻撃力
+        def: { intercept: 21, slope: 5.917582418 }, // 防御力,元素熟知
+        atk_buf: { intercept: 5.2, slope: 1.488461538 }, // HP(%),攻撃力(%),元素ダメージ
+        def_buf: { intercept: 6.6, slope: 1.854945055 }, // 防御力(%),物理ダメージ
+        en_rec: { intercept: 5.8, slope: 1.65 }, // 元素チャージ効率
+        cri_rate: { intercept: 3.5, slope: 0.989010989 }, // 会心率
+        cri_dmg: { intercept: 7.0, slope: 1.980769231 }, // 会心ダメージ
+    },
+    // ☆☆☆☆
+    {
+        hp: { intercept: 645, slope: 182.8529412, substep: 23.9 },
+        atk: { intercept: 42, slope: 11.8995098, substep: 1.6 },
+        def: { intercept: 25, slope: 7.137254902, substep: 1.9 },
+        atk_buf: { intercept: 6.3, slope: 1.782352941, substep: 0.47 },
+        def_buf: { intercept: 7.9, slope: 2.22745098, substep: 0.58 },
+        en_rec: { intercept: 7.0, slope: 1.980882353, substep: 0.52 },
+        cri_rate: { intercept: 4.2, slope: 1.1875, substep: 0.31 },
+        cri_dmg: { intercept: 8.4, slope: 2.377696078, substep: 0.62 },
+    },
+    // ☆☆☆☆☆
+    {
+        hp: { intercept: 717, slope: 203.1597403, substep: 29.9 },
+        atk: { intercept: 47, slope: 13.22597403, substep: 1.9 },
+        def: { intercept: 28, slope: 7.932467532, substep: 2.3 },
+        atk_buf: { intercept: 7, slope: 1.980909091, substep: 0.58 },
+        def_buf: { intercept: 8.7, slope: 2.477402597, substep: 0.73 },
+        en_rec: { intercept: 7.8, slope: 2.2, substep: 0.65 },
+        cri_rate: { intercept: 4.7, slope: 1.330779221, substep: 0.39 },
+        cri_dmg: { intercept: 9.3, slope: 2.644805195, substep: 0.78 },
+    }
+] as const;
+
+function getArtifactParam(type: konst.AnyBonusType, star: number, level: number): IArtifactParam | null {
+    // ☆を正規化
+    if (star < 3 || 5 < star) {
+        return null;
+    }
+    star -= 3;
+    // levelを正規化
+    if (level < 0 || ArtifactLevel[star] < level) {
+        return null;
+    }
+
+    const param = ArtifactParamList[star];
+    switch (type) {
+        case konst.StatusBonusType.Hp:
+        case konst.StatusBonusType.Atk:
+        case konst.StatusBonusType.Def:
+        case konst.StatusBonusType.AtkBuf:
+        case konst.StatusBonusType.DefBuf:
+        case konst.StatusBonusType.EnRec:
+        case konst.CriticalBonusType.Rate:
+        case konst.CriticalBonusType.Damage:
+            return param[type];
+
+        case konst.StatusBonusType.Elem:
+            return param.def;
+
+        case konst.StatusBonusType.HpBuf:
+        case konst.ElementBonusType.Anemo:
+        case konst.ElementBonusType.Geo:
+        case konst.ElementBonusType.Elect:
+        case konst.ElementBonusType.Hydro:
+        case konst.ElementBonusType.Pyro:
+        case konst.ElementBonusType.Cryo:
+            return param.atk_buf;
+
+        case konst.ElementBonusType.Phys:
+            return param.def_buf;
+    }
+    return null;
+}
+
+export function calcMain(type: konst.AnyBonusType, star: number, level: number): number {
+    const param = getArtifactParam(type, star, level);
+    if (param) {
+        return param.intercept + level * param.slope;
+    }
+    return 0;
+}
+
+export function calcScore(type: konst.AnyBonusType, star: number, level: number, value: number): number {
+    const param = getArtifactParam(type, star, level);
+    if (param?.substep) {
+        return Math.round(value / param.substep);
+    }
+    return 0;
+}

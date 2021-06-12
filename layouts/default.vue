@@ -205,6 +205,7 @@ import {
   mdiTranslate,
 } from "@mdi/js";
 import { GlobalDataTypes } from "~/src/interface";
+import { convert } from "~/src/convert";
 
 interface IPage {
   icon: string;
@@ -287,8 +288,7 @@ export default class Default extends Vue {
       reader.onload = () => {
         let json = reader.result as string;
         if (json) {
-          let data = JSON.parse(json);
-          // TODO: コンバート
+          let data = convert(JSON.parse(json)) as IMap<any>;
           for (const type of GlobalDataTypes) {
             this.$set(this.$globals, type, data[type]);
           }
@@ -300,7 +300,7 @@ export default class Default extends Vue {
   onExport() {
     if (this.exportFile) {
       // バージョン情報を付加してひとまとめにする
-      let data = { version: "2.0", ...this.$globals };
+      let data = this.$globals;
       // downloadフォルダに保存
       let blob = new Blob([JSON.stringify(data)], { type: "application/json" });
       let link = document.createElement("a");

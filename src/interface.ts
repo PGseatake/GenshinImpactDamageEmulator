@@ -165,11 +165,12 @@ export interface IArtifactData extends IEquipData {
     sub4: IBonusValueData;
 }
 
+export type GlobalVersion = { version: "1.0"; };
 export type GlobalCharaData = { chara: ICharaData[]; };
 export type GlobalWeaponData = Record<konst.WeaponType, IWeaponData[]>;
 export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;
 
-export type GlobalData =
+export type GlobalData = GlobalVersion &
     GlobalCharaData & GlobalWeaponData & GlobalArtifactData;
 
 export const GlobalDataTypes: string[] = ["chara", ...konst.WeaponTypes, ...konst.ArtifactTypes];

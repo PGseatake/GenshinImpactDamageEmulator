@@ -117,7 +117,6 @@ export type ReactionBonusType = typeof ReactionBonusType[keyof typeof ReactionBo
 
 export const BonusType = {
     None: "none",
-    Other: "other",
 } as const;
 export type BonusType = AnyStatusBonusType | CriticalBonusType | AnyElementBonusType | CombatBonusType | ReactionBonusType;
 
