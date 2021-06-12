@@ -280,6 +280,13 @@ export default class Default extends Vue {
     this.selectedPage = index < 0 ? 0 : index;
   }
 
+  mounted() {
+    window.addEventListener("beforeunload", (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    });
+  }
+
   onImport() {
     if (this.importFile) {
       // jsonファイル読み込み
