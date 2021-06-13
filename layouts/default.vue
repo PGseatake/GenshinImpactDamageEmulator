@@ -128,10 +128,18 @@
         <nuxt />
       </v-main>
 
-      <v-footer class="justify-end">
+      <v-snackbar
+        app
+        v-model="popupShow"
+        timeout="3000"
+        content-class="text-center"
+        >{{ popupText }}</v-snackbar
+      >
+      <v-footer app class="justify-end">
         <span>Ver. 2.0.0</span>
       </v-footer>
 
+      <!-- インポートダイアログ -->
       <v-file-dialog
         width="450px"
         :file="importFile"
@@ -140,16 +148,18 @@
         :detail="$t('dialog.import_text')"
         @accept="onImport"
       >
-        <template v-slot:default>
+        <template v-slot>
           <v-file-input
             v-model="importFile"
             clearable
+            truncate-length="40"
             accept="application/json"
             :clear-icon="icons.clear"
             :prepend-icon="icons.file"
           />
         </template>
       </v-file-dialog>
+      <!-- エクスポートダイアログ -->
       <v-file-dialog
         width="450px"
         :file="exportFile"
@@ -158,7 +168,7 @@
         :detail="$t('dialog.export_text')"
         @accept="onExport"
       >
-        <template v-slot:default>
+        <template v-slot>
           <v-text-field
             v-model="exportFile"
             clearable
@@ -188,10 +198,11 @@ html {
 </style>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import {
   mdiAccount,
   mdiClose,
+  mdiContentSave,
   mdiExport,
   mdiHome,
   mdiImport,
@@ -222,13 +233,15 @@ interface ITool {
 @Component({
   name: "default",
   components: {
-    VLocaleSelect: () => import("~/components/VLocaleSelect.vue"),
     VFileDialog: () => import("~/components/VFileDialog.vue"),
+    VLocaleSelect: () => import("~/components/VLocaleSelect.vue"),
   },
 })
 export default class Default extends Vue {
   fixed = false;
   clipped = false;
+  popupShow = false;
+  popupText = "";
   importShow = false;
   importFile: File | null = null;
   exportShow = false;
@@ -245,6 +258,7 @@ export default class Default extends Vue {
   ];
   toolList: ITool[] = [
     { icon: mdiPlaylistPlus, func: undefined },
+    { icon: mdiContentSave, func: undefined },
     { icon: mdiImport, func: undefined },
     { icon: mdiExport, func: undefined },
     { icon: mdiTranslate, type: "locale-select" },
@@ -269,10 +283,24 @@ export default class Default extends Vue {
     return this.pageList[this.selectedPage].page;
   }
 
+  get storePopup() {
+    return this.$store.state.popupText;
+  }
+
+  @Watch("storePopup")
+  onChangeStorePopup(value: string) {
+    if (value) {
+      this.popupText = value;
+      this.popupShow = true;
+      this.$store.commit("setPopupText", "");
+    }
+  }
+
   created() {
     this.toolList[0].func = () => this.$store.commit("setAppend", true);
-    this.toolList[1].func = () => (this.importShow = true);
-    this.toolList[2].func = () => (this.exportShow = true);
+    this.toolList[1].func = this.onSave;
+    this.toolList[2].func = () => (this.importShow = true);
+    this.toolList[3].func = () => (this.exportShow = true);
 
     const index = this.pageList.findIndex(
       (list) => list.page === this.$store.state.page
@@ -285,6 +313,31 @@ export default class Default extends Vue {
       event.preventDefault();
       event.returnValue = "";
     });
+
+    this.reflect(localStorage.getItem("global_data"));
+  }
+
+  reflect(json: string | null) {
+    if (json) {
+      let data = convert(JSON.parse(json));
+      for (const type of GlobalDataTypes) {
+        this.$set(this.$globals, type, data[type]);
+      }
+    }
+  }
+
+  save() {
+    localStorage.setItem("global_data", JSON.stringify(this.$globals));
+  }
+
+  popup(label: string) {
+    this.$store.commit("setPopupText", this.$t("popup." + label));
+  }
+
+  onSave() {
+    this.save();
+    this.popup("save");
+    this.toolOpened = false;
   }
 
   onImport() {
@@ -293,23 +346,18 @@ export default class Default extends Vue {
       let reader = new FileReader();
       reader.readAsText(this.importFile);
       reader.onload = () => {
-        let json = reader.result as string;
-        if (json) {
-          let data = convert(JSON.parse(json)) as IMap<any>;
-          for (const type of GlobalDataTypes) {
-            this.$set(this.$globals, type, data[type]);
-          }
-        }
+        this.reflect(reader.result as string);
+        this.save();
+        this.popup("import");
       };
     }
   }
 
   onExport() {
     if (this.exportFile) {
-      // バージョン情報を付加してひとまとめにする
-      let data = this.$globals;
-      // downloadフォルダに保存
-      let blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+      let blob = new Blob([JSON.stringify(this.$globals)], {
+        type: "application/json",
+      });
       let link = document.createElement("a");
       document.body.appendChild(link);
       let url = URL.createObjectURL(blob);
@@ -318,6 +366,7 @@ export default class Default extends Vue {
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
+      this.popup("export");
     }
   }
 }

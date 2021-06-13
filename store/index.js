@@ -1,6 +1,7 @@
 export const state = () => ({
     page: "",
     append: false,
+    popupText: "",
 })
 
 export const mutations = {
@@ -9,5 +10,8 @@ export const mutations = {
     },
     setAppend(state, value) {
         state.append = value;
+    },
+    setPopupText(state, value) {
+        state.popupText = value;
     },
 }

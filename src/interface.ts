@@ -175,4 +175,4 @@ export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;
 export type GlobalData = GlobalVersion &
     GlobalCharaData & GlobalWeaponData & GlobalArtifactData;
 
-export const GlobalDataTypes: string[] = ["chara", ...konst.WeaponTypes, ...konst.ArtifactTypes];
+export const GlobalDataTypes = ["chara", ...konst.WeaponTypes, ...konst.ArtifactTypes] as const;
