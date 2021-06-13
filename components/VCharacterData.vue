@@ -14,13 +14,14 @@
           :names="names"
           :name.sync="item.name"
           :comment.sync="item.comment"
+          @change="onChangeName(item)"
         />
       </template>
       <template v-slot:[`item.conste`]="{ item }">
         <v-select-range v-model="item.conste" :min="0" :max="6" />
       </template>
       <template v-slot:[`item.level`]="{ item }">
-        <v-ascension-level v-model="item.level" />
+        <v-ascension-level v-model="item.level" @change="onChangeLevel(item)" />
       </template>
       <template v-slot:[`item.hp`]="{ item }">
         <v-number-field :value.sync="item.hp" hide-label="true" />
@@ -152,10 +153,11 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { DataTableHeader } from "~/node_modules/vuetify/types";
-import { CharaNames } from "~/src/character";
-import { ICharaData } from "~/src/interface";
+import { DataTableHeader } from "vuetify/types";
 import { mdiDelete } from "@mdi/js";
+import * as ascension from "~/src/ascension";
+import { ICharaData } from "~/src/interface";
+import { CharaList, CharaName, CharaNames } from "~/src/character";
 
 @Component({
   name: "VCharacterData",
@@ -163,8 +165,8 @@ import { mdiDelete } from "@mdi/js";
     VNameComment: () => import("~/components/VNameComment.vue"),
     VNumberField: () => import("~/components/VNumberField.vue"),
     VSelectRange: () => import("~/components/VSelectRange.vue"),
-    VAscensionLevel: () => import("~/components/VAscensionLevel.vue"),
     VCharaSpecial: () => import("~/components/VCharaSpecial.vue"),
+    VAscensionLevel: () => import("~/components/VAscensionLevel.vue"),
   },
   inheritAttrs: false,
 })
@@ -218,6 +220,26 @@ export default class VCharacterData extends Vue {
       text: this.$t("chara." + name),
       value: name,
     }));
+  }
+
+  onChangeName(item: ICharaData) {
+    const { special } = CharaList[item.name as CharaName];
+    item.conste = 0;
+    item.level = "1";
+    item.special = { type: special, value: 0 };
+    item.combat = 1;
+    item.skill = 1;
+    item.burst = 1;
+    this.onChangeLevel(item);
+  }
+
+  onChangeLevel(item: ICharaData) {
+    const { status, spvalue } = CharaList[item.name as CharaName];
+    const level = item.level;
+    item.hp = ascension.calc14(level, status.hp);
+    item.atk = ascension.calc14(level, status.atk);
+    item.def = ascension.calc14(level, status.def);
+    item.special.value = ascension.calc8(level, spvalue);
   }
 }
 </script>

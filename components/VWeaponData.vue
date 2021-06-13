@@ -14,13 +14,14 @@
           :names="names"
           :name.sync="item.name"
           :comment.sync="item.comment"
+          @change="onChangeName(item)"
         />
       </template>
       <template v-slot:[`item.rank`]="{ item }">
         <v-select-range v-model="item.rank" :min="1" :max="5" />
       </template>
       <template v-slot:[`item.level`]="{ item }">
-        <v-ascension-level v-model="item.level" />
+        <v-ascension-level v-model="item.level" @change="onChangeLevel(item)" />
       </template>
       <template v-slot:[`item.atk`]="{ item }">
         <v-number-field :value.sync="item.atk" hide-label="true" />
@@ -104,11 +105,12 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { DataTableHeader } from "~/node_modules/vuetify/types";
+import { DataTableHeader } from "vuetify/types";
+import { mdiDelete } from "@mdi/js";
+import * as ascension from "~/src/ascension";
+import { IWeaponData } from "~/src/interface";
 import { WeaponType } from "~/src/const";
 import { WeaponNames, WeaponList } from "~/src/weapon";
-import { IWeaponData } from "~/src/interface";
-import { mdiDelete } from "@mdi/js";
 
 @Component({
   name: "VWeaponData",
@@ -116,8 +118,8 @@ import { mdiDelete } from "@mdi/js";
     VNameComment: () => import("~/components/VNameComment.vue"),
     VNumberField: () => import("~/components/VNumberField.vue"),
     VSelectRange: () => import("~/components/VSelectRange.vue"),
-    VAscensionLevel: () => import("~/components/VAscensionLevel.vue"),
     VWeaponSecond: () => import("~/components/VWeaponSecond.vue"),
+    VAscensionLevel: () => import("~/components/VAscensionLevel.vue"),
   },
   inheritAttrs: false,
 })
@@ -146,7 +148,7 @@ export default class VWeaponData extends Vue {
     },
   ];
 
-  readonly icons: IReadonlyMap<string> = {
+  readonly icons = {
     remove: mdiDelete,
   };
 
@@ -163,6 +165,20 @@ export default class VWeaponData extends Vue {
 
   get list() {
     return WeaponList[this.type];
+  }
+
+  onChangeName(item: IWeaponData) {
+    const weapon = WeaponList[this.type][item.name];
+    item.rank = 0;
+    item.level = "1";
+    item.second = { type: weapon.second, value: 0 };
+    this.onChangeLevel(item);
+  }
+
+  onChangeLevel(item: IWeaponData) {
+    const weapon = WeaponList[this.type][item.name];
+    item.atk = ascension.calc14(item.level, weapon.atk);
+    item.second.value = ascension.calc8(item.level, weapon.secval);
   }
 }
 </script>

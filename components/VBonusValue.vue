@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import {
   mdiAlphaACircleOutline,
   mdiAlphaCCircleOutline,
@@ -107,6 +107,9 @@ export default class VBonusValue extends Vue {
   @Prop({ required: true }) type!: BonusDisplayType;
   @Prop({ required: true }) value!: number;
 
+  @Emit("change")
+  onChange() {}
+
   get selectable() {
     return 1 < this.types.length;
   }
@@ -139,6 +142,7 @@ export default class VBonusValue extends Vue {
   }
   set refValue(num: number) {
     this.$emit("update:value", num);
+    this.onChange();
   }
 
   get selectedItem() {
@@ -147,6 +151,7 @@ export default class VBonusValue extends Vue {
   set selectedItem(item: number) {
     this.$emit("update:type", this.types[item]);
     this.$emit("update:value", 0);
+    this.onChange();
   }
 }
 </script>

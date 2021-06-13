@@ -3,12 +3,12 @@
     v-bind="$attrs"
     v-on="$listeners"
     :items="items"
-    :append-icon="icon()"
+    :append-icon="icon"
+    type="number"
     item-text="value"
     dense
     single-line
     hide-details
-    type="number"
   />
 </template>
 
@@ -35,16 +35,14 @@ export default class VSelectRange extends Vue {
   @Prop({ required: true }) min!: number;
   @Prop({ required: true }) max!: number;
 
+  readonly icon = mdiMenuDown;
+
   get items() {
     const min = this.min;
     const max = this.max;
     return Array.from({ length: max - min + 1 }, (_, i): { value: number } => ({
       value: min + i,
     }));
-  }
-
-  icon() {
-    return mdiMenuDown;
   }
 }
 </script>

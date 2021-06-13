@@ -132,7 +132,6 @@ export interface IValueData {
 export interface IEquipData extends IIdentify {
     name: string;
     comment: string;
-    level: string;
 }
 
 export interface IBonusValueData extends IValueData {
@@ -141,6 +140,7 @@ export interface IBonusValueData extends IValueData {
 
 export interface ICharaData extends IEquipData {
     conste: number;
+    level: string;
     hp: number;
     atk: number;
     def: number;
@@ -152,12 +152,14 @@ export interface ICharaData extends IEquipData {
 
 export interface IWeaponData extends IEquipData {
     rank: number;
+    level: string;
     atk: number;
     second: IBonusValueData;
 }
 
 export interface IArtifactData extends IEquipData {
     star: number;
+    level: number;
     main: IBonusValueData;
     sub1: IBonusValueData;
     sub2: IBonusValueData;

@@ -17,13 +17,27 @@
         />
       </template>
       <template v-slot:[`item.star`]="{ item }">
-        <v-select-range v-model="item.star" :min="3" :max="5" />
+        <v-select-range
+          v-model="item.star"
+          :min="3"
+          :max="5"
+          @change="onChangeStar(item)"
+        />
       </template>
       <template v-slot:[`item.level`]="{ item }">
-        <v-ascension-level v-model="item.level" />
+        <v-select-range
+          v-model="item.level"
+          :min="0"
+          :max="item.star * 4"
+          @change="onChangeLevel(item)"
+        />
       </template>
       <template v-slot:[`item.main`]="{ item }">
-        <v-bonus-value :types="mains" v-bind.sync="item.main" />
+        <v-bonus-value
+          :types="mains"
+          v-bind.sync="item.main"
+          @change="onChangeMain(item)"
+        />
       </template>
       <template v-slot:[`item.sub1`]="{ item }">
         <v-bonus-value :types="subs" v-bind.sync="item.sub1" />
@@ -133,19 +147,24 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { DataTableHeader } from "~/node_modules/vuetify/types";
-import { ArtifactType } from "~/src/const";
-import { ArtifactNames, ArtifactMain, ArtifactSub } from "~/src/artifact";
-import { IArtifactData } from "~/src/interface";
+import { DataTableHeader } from "vuetify/types";
 import { mdiDelete } from "@mdi/js";
+import { ArtifactType } from "~/src/const";
+import { IArtifactData } from "~/src/interface";
+import {
+  ArtifactNames,
+  ArtifactMain,
+  ArtifactSub,
+  calcMain,
+} from "~/src/artifact";
 
 @Component({
   name: "VArtifactData",
   components: {
+    VBonusValue: () => import("~/components/VBonusValue.vue"),
     VNameComment: () => import("~/components/VNameComment.vue"),
     VSelectRange: () => import("~/components/VSelectRange.vue"),
     VAscensionLevel: () => import("~/components/VAscensionLevel.vue"),
-    VBonusValue: () => import("~/components/VBonusValue.vue"),
   },
   inheritAttrs: false,
 })
@@ -174,7 +193,7 @@ export default class VArtifactData extends Vue {
   ];
 
   readonly subs = ArtifactSub;
-  readonly icons: IReadonlyMap<string> = {
+  readonly icons = {
     remove: mdiDelete,
   };
 
@@ -191,6 +210,25 @@ export default class VArtifactData extends Vue {
       text: this.$t(["artifact", this.type, name].join(".")),
       value: name,
     }));
+  }
+
+  onChangeStar(item: IArtifactData) {
+    if (item.star * 4 < item.level) {
+      item.level = item.star * 4;
+    }
+    this.updateMain(item);
+  }
+
+  onChangeLevel(item: IArtifactData) {
+    this.updateMain(item);
+  }
+
+  onChangeMain(item: IArtifactData) {
+    this.updateMain(item);
+  }
+
+  updateMain(item: IArtifactData) {
+    item.main.value = calcMain(item.main.type, item.star, item.level);
   }
 }
 </script>

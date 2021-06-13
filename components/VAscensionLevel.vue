@@ -4,10 +4,10 @@
     v-on="$listeners"
     :items="items"
     :append-icon="icon"
+    item-text="value"
     dense
     single-line
     hide-details
-    item-text="value"
   />
 </template>
 

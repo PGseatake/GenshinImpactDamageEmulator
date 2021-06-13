@@ -109,7 +109,7 @@ export default class PageArtifact extends Vue {
       name: name,
       comment: "",
       star: 3,
-      level: "0",
+      level: 0,
       main: {
         type: mains[0],
         value: 0,

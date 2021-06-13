@@ -1,6 +1,13 @@
 <template>
   <div class="pb-1">
-    <v-select v-model="refName" :items="names" dense hide-details />
+    <v-select
+      v-bind="$attrs"
+      v-on="$listeners"
+      v-model="refName"
+      :items="names"
+      dense
+      hide-details
+    />
     <v-text-field
       v-model="refComment"
       :placeholder="$t('general.comment')"

@@ -67,14 +67,19 @@ function tryParseFloat(val: string) {
 
 const ver002 = {
     main(type: ArtifactType, { main, star, level }: IArtifactV002): IBonusValueData {
+        const s = tryParseFloat(star);
+        const l = tryParseFloat(level.replace("+", ""));
         const artifactMain = ArtifactMain[type];
         if (artifactMain.includes(main)) {
             return {
                 type: main,
-                value: calcMain(main, tryParseFloat(star), tryParseFloat(level.replace("+", "")))
+                value: calcMain(main, s, l)
             };
         }
-        return { type: artifactMain[0], value: 0 };
+        return {
+            type: artifactMain[0],
+            value: calcMain(artifactMain[0], s, l)
+        };
     },
     sub([type, value]: [BonusType, string]): IBonusValueData {
         if (ArtifactSub.includes(type)) {
@@ -135,7 +140,7 @@ function Ver002toVer100(data: GlobalDataV002): GlobalData {
                     name: artifact.name,
                     comment: "",
                     star: tryParseFloat(artifact.star),
-                    level: artifact.level,
+                    level: tryParseFloat(artifact.level),
                     main: ver002.main(type, artifact),
                     sub1: ver002.sub(artifact.sub1),
                     sub2: ver002.sub(artifact.sub2),
