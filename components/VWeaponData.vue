@@ -11,7 +11,7 @@
     >
       <template v-slot:[`item.name`]="{ item }">
         <v-name-comment
-          :names="names"
+          :items="names"
           :name.sync="item.name"
           :comment.sync="item.comment"
           @change="onChangeName(item)"

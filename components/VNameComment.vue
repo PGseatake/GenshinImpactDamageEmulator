@@ -4,17 +4,18 @@
       v-bind="$attrs"
       v-on="$listeners"
       v-model="refName"
-      :items="names"
-      dense
+      :items="items"
+      :dense="dense"
       hide-details
     />
     <v-text-field
       v-model="refComment"
       :placeholder="$t('general.comment')"
-      dense
+      :disabled="!commentable"
+      :dense="dense"
+      :class="commentClass"
       single-line
       hide-details
-      class="caption"
       height="1.5em"
     />
   </div>
@@ -42,9 +43,11 @@ export type TextValue = {
   inheritAttrs: false,
 })
 export default class VNameComment extends Vue {
-  @Prop({ required: true }) names!: ReadonlyArray<TextValue>;
+  @Prop({ required: true }) items!: ReadonlyArray<TextValue>;
   @Prop({ required: true }) name!: string;
   @Prop({ required: true }) comment!: string;
+  @Prop({ default: true }) commentable!: boolean;
+  @Prop({ default: true }) dense!: boolean;
 
   get refName() {
     return this.name;
@@ -58,6 +61,10 @@ export default class VNameComment extends Vue {
   }
   set refComment(comment: string) {
     this.$emit("update:comment", comment);
+  }
+
+  get commentClass() {
+    return "pa-0 " + (this.dense ? "caption" : "body-2");
   }
 }
 </script>

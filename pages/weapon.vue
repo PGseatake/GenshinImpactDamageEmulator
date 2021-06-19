@@ -26,11 +26,14 @@
     </v-btn>
 
     <v-append-dialog
+      :disabled="!append"
+      :title="'tab.' + type"
       max-width="300px"
-      :type="type"
-      :items="names"
-      @append="onAppend"
-    />
+      @accept="onAppend"
+      @cancel="append = ''"
+    >
+      <v-select v-model="append" :items="names" />
+    </v-append-dialog>
   </v-container>
 </template>
 
@@ -62,7 +65,8 @@ export default class PageWeapon extends Vue {
     bow: [],
     catalyst: [],
   };
-  tab: number = 0;
+  tab = 0;
+  append = "";
 
   readonly types = WeaponTypes;
   readonly icons: IReadonlyMap<string> = {
@@ -108,25 +112,27 @@ export default class PageWeapon extends Vue {
     this.$store.commit("setAppend", true);
   }
 
-  onAppend(name: string) {
-    const konst = WeaponList[this.type][name];
-    const item: IWeaponData = {
+  onAppend() {
+    const name = this.append;
+    const item = WeaponList[this.type][name];
+    const data: IWeaponData = {
       id: this.$makeUniqueId(),
       name: name,
       comment: "",
       rank: 1,
       level: "1",
-      atk: konst.atk[0],
+      atk: item.atk[0],
       second: {
-        type: konst.second,
-        value: konst.secval[0],
+        type: item.second,
+        value: item.secval[0],
       },
     };
-    this.$appendData(this.globals[this.type], item);
+    this.$appendData(this.globals[this.type], data);
+    this.append = "";
   }
 
-  onRemove(item: IWeaponData) {
-    this.$removeData(this.globals[this.type], item);
+  onRemove(data: IWeaponData) {
+    this.$removeData(this.globals[this.type], data);
   }
 }
 </script>

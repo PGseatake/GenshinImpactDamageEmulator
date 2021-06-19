@@ -26,11 +26,14 @@
     </v-btn>
 
     <v-append-dialog
+      :disabled="!append"
+      :title="'tab.' + type"
       max-width="300px"
-      :type="type"
-      :items="names"
-      @append="onAppend"
-    />
+      @accept="onAppend"
+      @cancel="append = ''"
+    >
+      <v-select v-model="append" :items="names" />
+    </v-append-dialog>
   </v-container>
 </template>
 
@@ -56,7 +59,8 @@ export default class PageArtifact extends Vue {
     goblet: [],
     circlet: [],
   };
-  tab: number = 0;
+  tab = 0;
+  append = "";
 
   readonly types = ArtifactTypes;
   readonly icons: IReadonlyMap<string> = {
@@ -102,16 +106,16 @@ export default class PageArtifact extends Vue {
     this.$store.commit("setAppend", true);
   }
 
-  onAppend(name: string) {
-    const mains = ArtifactMain[this.type];
-    const item: IArtifactData = {
+  onAppend() {
+    const name = this.append;
+    const data: IArtifactData = {
       id: this.$makeUniqueId(),
       name: name,
       comment: "",
       star: 3,
       level: 0,
       main: {
-        type: mains[0],
+        type: ArtifactMain[this.type][0],
         value: 0,
       },
       sub1: {
@@ -131,11 +135,12 @@ export default class PageArtifact extends Vue {
         value: 0,
       },
     };
-    this.$appendData(this.globals[this.type], item);
+    this.$appendData(this.globals[this.type], data);
+    this.append = "";
   }
 
-  onRemove(item: IArtifactData) {
-    this.$removeData(this.globals[this.type], item);
+  onRemove(data: IArtifactData) {
+    this.$removeData(this.globals[this.type], data);
   }
 }
 </script>

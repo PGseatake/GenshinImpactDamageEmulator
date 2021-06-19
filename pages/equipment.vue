@@ -62,19 +62,25 @@
       </template>
     </v-data-table>
 
-    <!-- <v-btn fab small @click="onBeforeAppend" class="ma-1">
-      <v-icon>{{ icons.append }}</v-icon>
-    </v-btn> -->
-    <v-btn fab small @click="onAppend" class="ma-1">
+    <v-btn fab small @click="onBeforeAppend" class="ma-1">
       <v-icon>{{ icons.append }}</v-icon>
     </v-btn>
 
-    <!-- <v-append-dialog
+    <v-append-dialog
+      :disabled="!append"
+      title="menu.equipment"
       max-width="300px"
-      type="equip"
-      :items="charas"
-      @append="onAppend"
-    /> -->
+      @accept="onAppend"
+      @cancel="append = ''"
+    >
+      <v-name-comment
+        :items="names"
+        :name.sync="append"
+        :comment="comment"
+        :commentable="false"
+        :dense="false"
+      />
+    </v-append-dialog>
   </v-container>
 </template>
 
@@ -143,7 +149,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { GlobalEquipData, IEquipData } from "~/src/interface";
+import { GlobalCharaData, GlobalEquipData, IEquipData } from "~/src/interface";
 
 @Component({
   name: "PageEquipment",
@@ -153,7 +159,8 @@ import { GlobalEquipData, IEquipData } from "~/src/interface";
   },
 })
 export default class PageEquipment extends Vue {
-  globals: GlobalEquipData = { equip: [] };
+  globals: GlobalEquipData & GlobalCharaData = { equip: [], chara: [] };
+  append = "";
 
   readonly icons: IReadonlyMap<string> = {
     append: mdiPlaylistPlus,
@@ -167,7 +174,7 @@ export default class PageEquipment extends Vue {
       sortable: false,
     },
     {
-      text: this.$t("tab.character") as string,
+      text: this.$t("menu.character") as string,
       value: "chara",
       sortable: false,
     },
@@ -205,6 +212,18 @@ export default class PageEquipment extends Vue {
     },
   ];
 
+  get names() {
+    return this.globals.chara.map((chara) => ({
+      text: this.$t("chara." + chara.name),
+      value: chara.id,
+    }));
+  }
+
+  get comment() {
+    const chara = this.globals.chara.find((chara) => chara.id === this.append);
+    return chara?.comment || "";
+  }
+
   get myClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
   }
@@ -217,12 +236,11 @@ export default class PageEquipment extends Vue {
     this.$store.commit("setAppend", true);
   }
 
-  // onAppend(id: string) {
   onAppend() {
-    const item: IEquipData = {
+    const data: IEquipData = {
       id: this.$makeUniqueId(),
       comment: "",
-      chara: "",
+      chara: this.append,
       weapon: "",
       flower: "",
       feather: "",
@@ -230,12 +248,12 @@ export default class PageEquipment extends Vue {
       goblet: "",
       circlet: "",
     };
-    console.log(this.globals.equip);
-    this.$appendData(this.globals.equip, item);
+    this.$appendData(this.globals.equip, data);
+    this.append = "";
   }
 
-  onRemove(item: IEquipData) {
-    this.$removeData(this.globals.equip, item);
+  onRemove(data: IEquipData) {
+    this.$removeData(this.globals.equip, data);
   }
 }
 </script>

@@ -1,17 +1,20 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <v-character-data :items="charas" @remove="onRemove" />
+    <v-chara-data :items="charas" @remove="onRemove" />
 
     <v-btn fab small @click="onBeforeAppend" class="ma-1">
       <v-icon>{{ icons.append }}</v-icon>
     </v-btn>
 
     <v-append-dialog
+      :disabled="!append"
+      title="menu.character"
       max-width="300px"
-      type="character"
-      :items="names"
-      @append="onAppend"
-    />
+      @accept="onAppend"
+      @cancel="append = ''"
+    >
+      <v-select v-model="append" :items="names" />
+    </v-append-dialog>
   </v-container>
 </template>
 
@@ -24,12 +27,13 @@ import { CharaList, CharaName, CharaNames } from "~/src/character";
 @Component({
   name: "PageCharacter",
   components: {
-    VCharacterData: () => import("~/components/VCharacterData.vue"),
+    VCharaData: () => import("~/components/VCharaData.vue"),
     VAppendDialog: () => import("~/components/VAppendDialog.vue"),
   },
 })
 export default class PageCharacter extends Vue {
   globals: GlobalCharaData = { chara: [] };
+  append = "";
 
   readonly icons: IReadonlyMap<string> = {
     append: mdiPlaylistPlus,
@@ -54,30 +58,32 @@ export default class PageCharacter extends Vue {
     this.$store.commit("setAppend", true);
   }
 
-  onAppend(name: string) {
-    const konst = CharaList[name as CharaName];
-    const item: ICharaData = {
+  onAppend() {
+    const name = this.append as CharaName;
+    const item = CharaList[name];
+    const data: ICharaData = {
       id: this.$makeUniqueId(),
       name: name,
       comment: "",
       conste: 0,
       level: "1",
-      hp: konst.status.hp[0],
-      atk: konst.status.atk[0],
-      def: konst.status.def[0],
+      hp: item.status.hp[0],
+      atk: item.status.atk[0],
+      def: item.status.def[0],
       special: {
-        type: konst.special,
-        value: konst.spvalue[0],
+        type: item.special,
+        value: item.spvalue[0],
       },
       combat: 1,
       skill: 1,
       burst: 1,
     };
-    this.$appendData(this.globals.chara, item);
+    this.$appendData(this.globals.chara, data);
+    this.append = "";
   }
 
-  onRemove(item: ICharaData) {
-    this.$removeData(this.globals.chara, item);
+  onRemove(data: ICharaData) {
+    this.$removeData(this.globals.chara, data);
   }
 }
 </script>
