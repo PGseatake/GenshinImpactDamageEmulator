@@ -178,5 +178,6 @@ export function convert(data?: GlobalDataV002 | GlobalDataV100): GlobalData {
         sands: [],
         goblet: [],
         circlet: [],
+        equip: [],
     };
 }

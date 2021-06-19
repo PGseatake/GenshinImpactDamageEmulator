@@ -125,20 +125,20 @@ export interface IIdentify {
     id: string;
 }
 
-export interface IValueData {
-    value: number;
+export interface INameable {
+    name: string;
 }
 
-export interface IEquipData extends IIdentify {
-    name: string;
+export interface ICommentable {
     comment: string;
 }
 
-export interface IBonusValueData extends IValueData {
+export interface IBonusValueData {
     type: konst.AnyBonusType;
+    value: number;
 }
 
-export interface ICharaData extends IEquipData {
+export interface ICharaData extends IIdentify, INameable, ICommentable {
     conste: number;
     level: string;
     hp: number;
@@ -150,14 +150,14 @@ export interface ICharaData extends IEquipData {
     burst: number;
 }
 
-export interface IWeaponData extends IEquipData {
+export interface IWeaponData extends IIdentify, INameable, ICommentable {
     rank: number;
     level: string;
     atk: number;
     second: IBonusValueData;
 }
 
-export interface IArtifactData extends IEquipData {
+export interface IArtifactData extends IIdentify, INameable, ICommentable {
     star: number;
     level: number;
     main: IBonusValueData;
@@ -167,12 +167,23 @@ export interface IArtifactData extends IEquipData {
     sub4: IBonusValueData;
 }
 
+export interface IEquipData extends IIdentify, ICommentable {
+    chara: string;
+    weapon: string;
+    flower: string;
+    feather: string;
+    sands: string;
+    goblet: string;
+    circlet: string;
+}
+
 export type GlobalVersion = { version: "1.0"; };
+export type GlobalEquipData = { equip: IEquipData[]; };
 export type GlobalCharaData = { chara: ICharaData[]; };
 export type GlobalWeaponData = Record<konst.WeaponType, IWeaponData[]>;
 export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;
 
 export type GlobalData = GlobalVersion &
-    GlobalCharaData & GlobalWeaponData & GlobalArtifactData;
+    GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData;
 
-export const GlobalDataTypes = ["chara", ...konst.WeaponTypes, ...konst.ArtifactTypes] as const;
+export const GlobalDataTypes = ["chara", ...konst.WeaponTypes, ...konst.ArtifactTypes, "equip"] as const;

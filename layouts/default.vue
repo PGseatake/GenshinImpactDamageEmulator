@@ -135,7 +135,7 @@
         content-class="text-center"
         >{{ popupText }}</v-snackbar
       >
-      <v-footer app class="justify-end">
+      <v-footer class="justify-end">
         <span>Ver. 2.0.0</span>
       </v-footer>
 
@@ -214,6 +214,7 @@ import {
   mdiSword,
   mdiTools,
   mdiTranslate,
+  mdiTshirtCrew,
 } from "@mdi/js";
 import { GlobalDataTypes } from "~/src/interface";
 import { convert } from "~/src/convert";
@@ -251,6 +252,7 @@ export default class Default extends Vue {
   selectedPage = 0;
   readonly pageList: IPage[] = [
     { icon: mdiHome, page: "index", to: "/" },
+    { icon: mdiTshirtCrew, page: "equipment", to: "/equipment" },
     { icon: mdiAccount, page: "character", to: "/character" },
     { icon: mdiSword, page: "weapon", to: "/weapon" },
     { icon: mdiRing, page: "artifact", to: "/artifact" },
@@ -321,7 +323,9 @@ export default class Default extends Vue {
     if (json) {
       let data = convert(JSON.parse(json));
       for (const type of GlobalDataTypes) {
-        this.$set(this.$globals, type, data[type]);
+        if (data[type]) {
+          this.$set(this.$globals, type, data[type]);
+        }
       }
     }
   }

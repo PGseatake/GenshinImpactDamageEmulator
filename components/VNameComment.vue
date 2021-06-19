@@ -37,7 +37,10 @@ export type TextValue = {
   value: string;
 };
 
-@Component({ name: "VNameComment" })
+@Component({
+  name: "VNameComment",
+  inheritAttrs: false,
+})
 export default class VNameComment extends Vue {
   @Prop({ required: true }) names!: ReadonlyArray<TextValue>;
   @Prop({ required: true }) name!: string;

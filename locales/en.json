@@ -2,6 +2,7 @@
     "menu": {
         "title": "Menu",
         "index": "Home",
+        "equipment": "Equipment",
         "character": "Character",
         "weapon": "Weapon",
         "artifact": "Artifact",

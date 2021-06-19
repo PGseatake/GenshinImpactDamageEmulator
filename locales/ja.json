@@ -2,6 +2,7 @@
     "menu": {
         "title": "メニュー",
         "index": "ホーム",
+        "equipment": "装備",
         "character": "キャラクター",
         "weapon": "武器",
         "artifact": "聖遺物",
@@ -21,6 +22,7 @@
         "circlet": "理の冠"
     },
     "general": {
+        "none": "なし",
         "name": "名前",
         "comment": "コメント",
         "level": "Lv",
@@ -57,7 +59,6 @@
     },
     "bonus": {
         "none": "なし",
-        "other": "その他",
         "hp": "HP",
         "hp_buf": "HP(%)",
         "atk": "攻撃力",
@@ -81,6 +82,33 @@
         "phys_dmg": "物理ダメージ",
         "elem_dmg": "元素ダメージ",
         "any_dmg": "与ダメージ"
+    },
+    "bonus_short": {
+        "none": "なし",
+        "hp": "HP",
+        "hp_buf": "HP",
+        "atk": "攻撃力",
+        "atk_buf": "攻撃力",
+        "def": "防御力",
+        "def_buf": "防御力",
+        "elem": "元素熟知",
+        "en_rec": "元素ﾁｬｰｼﾞ",
+        "heal_buf": "治療バフ",
+        "cri_dmg": "会心ダメ",
+        "cri_rate": "会心率",
+        "normal_cri": "通常会心",
+        "heavy_cri": "重撃会心",
+        "skill_cri": "ｽｷﾙ会心",
+        "pyro_dmg": "炎ダメ",
+        "hydro_dmg": "水ダメ",
+        "dendro_dmg": "草ダメ",
+        "elect_dmg": "雷ダメ",
+        "anemo_dmg": "風ダメ",
+        "cryo_dmg": "氷ダメ",
+        "geo_dmg": "岩ダメ",
+        "phys_dmg": "物理ダメ",
+        "elem_dmg": "元素ダメ",
+        "any_dmg": "与ダメ"
     },
     "chara": {
         "TravelAnemo": "旅人(風)",
