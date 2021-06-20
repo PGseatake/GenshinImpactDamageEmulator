@@ -3,19 +3,17 @@
     <v-row no-gutters align="end">
       <v-col :cols="cols" class="pa-0">
         <v-select-name
-          :required="true"
           :value.sync="refValue"
-          :items="items"
-          group="chara"
+          :items="$globals[type]"
+          :group="'weapon.' + type"
         />
       </v-col>
       <v-col :cols="cols" class="px-1 py-0 detail" v-text="comment" />
     </v-row>
     <v-row no-gutters>
       <v-col :cols="cols" class="px-1 py-0 detail" v-text="level" />
-      <v-col :cols="cols" class="px-1 py-0 detail" v-text="hp" />
       <v-col :cols="cols" class="px-1 py-0 detail" v-text="atk" />
-      <v-col :cols="cols" class="px-1 py-0 detail" v-text="def" />
+      <v-col :cols="cols" class="px-1 py-0 detail" v-text="second" />
     </v-row>
   </v-container>
 </template>
@@ -31,17 +29,17 @@ div.detail {
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { ICharaData } from "~/src/interface";
+import { CharaList, CharaName } from "~/src/character";
 
 @Component({
-  name: "VCharaDetail",
+  name: "VWeaponDetail",
   components: {
     VSelectName: () => import("~/components/VSelectName.vue"),
   },
   inheritAttrs: false,
 })
-export default class VCharaDetail extends Vue {
-  @Prop({ required: true }) items!: ReadonlyArray<ICharaData>;
+export default class VWeaponDetail extends Vue {
+  @Prop({ required: true }) chara!: string;
   @Prop({ default: "" }) value!: string;
 
   get refValue() {
@@ -55,6 +53,15 @@ export default class VCharaDetail extends Vue {
     return this.$vuetify.breakpoint.xs ? "auto" : "12";
   }
 
+  get type() {
+    const chara = this.$globals.chara.find((item) => item.id === this.chara);
+    return CharaList[chara!.name as CharaName].weapon;
+  }
+
+  get items() {
+    return this.$globals[this.type];
+  }
+
   get item() {
     return this.items.find((item) => item.id === this.value);
   }
@@ -64,19 +71,15 @@ export default class VCharaDetail extends Vue {
   }
 
   get level() {
-    return `Lv.${this.item?.level || 0}`;
-  }
-
-  get hp() {
-    return `HP:${this.item?.hp || 0}`;
+    return this.item ? `Lv.${this.item.level}` : undefined;
   }
 
   get atk() {
-    return `${this.$t("bonus.atk")}:${this.item?.atk || 0}`;
+    return this.item ? `${this.$t("bonus.atk")}:${this.item.rank}` : undefined;
   }
 
-  get def() {
-    return `${this.$t("bonus.def")}:${this.item?.def || 0}`;
+  get second() {
+    return this.$formatBonus(this, this.item?.second);
   }
 }
 </script>

@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib'
-import { convert, makeUniqueId } from '~/src/convert';
+import { convert } from '~/src/convert';
+
+const DirectBonus = ["none", "hp", "atk", "def", "elem"];
 
 const utils = {
     install(Vue) {
@@ -19,6 +21,20 @@ const utils = {
             if (0 <= idx) {
                 data.splice(idx, 1);
             }
+        }
+
+        Vue.prototype.$formatBonus = function(vm, data) {
+            if (data) {
+                const type = data.type || BonusType.None;
+                if (type !== BonusType.None) {
+                    const value = data.value;
+                    if (DirectBonus.includes(type)) {
+                        return `${vm.$t("bonus_short." + type)}:${value.toFixed(0)}`;
+                    }
+                    return `${vm.$t("bonus_short." + type)}:${value.toFixed(1)}%`;
+                }
+            }
+            return "";
         }
     }
 }

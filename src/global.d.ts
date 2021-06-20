@@ -1,4 +1,4 @@
-import { GlobalData, IIdentify } from "~/src/interface";
+import { GlobalData, IBonusValueData, IIdentify } from "~/src/interface";
 
 export { };
 
@@ -31,5 +31,6 @@ declare module "vue/types/vue" {
         $makeUniqueId: () => string;
         $appendData: (data: IIdentify[], item: IIdentify) => void;
         $removeData: (data: IIdentify[], item: IIdentify) => void;
+        $formatBonus: (vm: Vue, data: IBonusValueData | undefined) => string;
     }
 }

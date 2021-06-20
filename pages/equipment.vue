@@ -19,7 +19,9 @@
       <template v-slot:[`item.chara`]="{ item }">
         <v-chara-detail :value.sync="item.chara" :items="globals.chara" />
       </template>
-      <!-- <template v-slot:[`item.weapon`]="{ item }"> </template>-->
+      <template v-slot:[`item.weapon`]="{ item }">
+        <v-weapon-detail :chara="item.chara" :value.sync="item.weapon" />
+      </template>
       <template v-slot:[`item.flower`]="{ item }">
         <v-artifact-detail
           :value.sync="item.flower"
@@ -90,33 +92,52 @@
 }
 
 .pc-data-table ::v-deep {
+  tr:hover {
+    background: inherit !important;
+  }
   th.text-start {
     padding: 0 6px;
   }
-  &:hover {
-    background: inherit !important;
-  }
-
   td.text-start {
     padding: 4px 6px;
     vertical-align: top;
 
     // コメント
     &:nth-of-type(1) {
-      min-width: 100px;
-      max-width: 150px;
+      min-width: 120px;
+      max-width: 200px;
       vertical-align: middle;
     }
-    // その他
-    &:nth-of-type(n + 2) {
-      min-width: 100px;
-      max-width: 150px;
+    // キャラクター
+    &:nth-of-type(2) {
+      min-width: 80px;
+      max-width: 200px;
     }
-    // 削除
+    // 武器
+    &:nth-of-type(3) {
+      min-width: 80px;
+      max-width: 200px;
+    }
+    // 聖遺物
+    &:nth-of-type(4) {
+      min-width: 100px;
+      max-width: 200px;
+    }
+    &:nth-of-type(5) {
+      min-width: 100px;
+      max-width: 200px;
+    }
+    &:nth-of-type(6) {
+      min-width: 100px;
+      max-width: 200px;
+    }
+    &:nth-of-type(7) {
+      min-width: 100px;
+      max-width: 200px;
+    }
     &:nth-of-type(8) {
-      min-width: 50px;
-      max-width: 50px;
-      vertical-align: middle;
+      min-width: 100px;
+      max-width: 200px;
     }
   }
 }
@@ -125,21 +146,41 @@
   td.v-data-table__mobile-row {
     padding: 4px 12px;
 
-    // 名前
+    // コメント
     &:nth-of-type(1) .v-data-table__mobile-row__cell {
       min-width: 150px;
       max-width: 65%;
     }
-    // その他
-    &:nth-of-type(n + 1) .v-data-table__mobile-row__cell {
+    // キャラクター
+    &:nth-of-type(2) .v-data-table__mobile-row__cell {
       min-width: 150px;
       max-width: 65%;
-      text-align: left;
     }
-    // 削除
+    // 武器
+    &:nth-of-type(3) .v-data-table__mobile-row__cell {
+      min-width: 150px;
+      max-width: 65%;
+    }
+    // 聖遺物
+    &:nth-of-type(4) .v-data-table__mobile-row__cell {
+      min-width: 150px;
+      max-width: 65%;
+    }
+    &:nth-of-type(5) .v-data-table__mobile-row__cell {
+      min-width: 150px;
+      max-width: 65%;
+    }
+    &:nth-of-type(6) .v-data-table__mobile-row__cell {
+      min-width: 150px;
+      max-width: 65%;
+    }
+    &:nth-of-type(7) .v-data-table__mobile-row__cell {
+      min-width: 150px;
+      max-width: 65%;
+    }
     &:nth-of-type(8) .v-data-table__mobile-row__cell {
-      min-width: 50px;
-      max-width: 50px;
+      min-width: 150px;
+      max-width: 65%;
     }
   }
 }
@@ -155,6 +196,8 @@ import { GlobalCharaData, GlobalEquipData, IEquipData } from "~/src/interface";
   name: "PageEquipment",
   components: {
     VCharaDetail: () => import("~/components/VCharaDetail.vue"),
+    VWeaponDetail: () => import("~/components/VWeaponDetail.vue"),
+    VArtifactDetail: () => import("~/components/VArtifactDetail.vue"),
     VAppendDialog: () => import("~/components/VAppendDialog.vue"),
   },
 })
@@ -178,7 +221,11 @@ export default class PageEquipment extends Vue {
       value: "chara",
       sortable: false,
     },
-    // { text: this.$t("menu.weapon") as string, value: "weapon", sortable: false },
+    {
+      text: this.$t("menu.weapon") as string,
+      value: "weapon",
+      sortable: false,
+    },
     {
       text: this.$t("tab.flower") as string,
       value: "flower",
@@ -209,6 +256,7 @@ export default class PageEquipment extends Vue {
       text: this.$t("dialog.remove") as string,
       value: "remove",
       width: "50px",
+      sortable: false,
     },
   ];
 
