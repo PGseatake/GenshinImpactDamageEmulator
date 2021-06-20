@@ -1,5 +1,5 @@
 import * as ascension from "./ascension";
-import { GlobalData, IBonusValueData } from "./interface";
+import { GlobalData, IBonusValueData, IEquipData } from "./interface";
 import { ArtifactType, ArtifactTypes, BonusType, WeaponTypes } from "./const";
 import { ArtifactMain, ArtifactName, ArtifactNames, ArtifactSub, calcMain } from "./artifact";
 import { CharaList, CharaName } from "./character";
@@ -33,6 +33,15 @@ interface IArtifactV002 {
     sub3: [BonusType, string],
     sub4: [BonusType, string],
 }
+interface IEquipV002 {
+    chara: string;
+    weapon: string;
+    flower: string;
+    feather: string;
+    sands: string;
+    goblet: string;
+    circlet: string;
+}
 type GlobalDataV002 = {
     ver: "0.02",
     version: undefined,
@@ -47,15 +56,11 @@ type GlobalDataV002 = {
     sands: IArtifactV002[],
     goblet: IArtifactV002[],
     circlet: IArtifactV002[],
+    equip: IEquipV002[],
 };
 
 type GlobalDataV1xx = { ver: undefined; };
 type GlobalDataV100 = GlobalDataV1xx & GlobalData;
-
-export function makeUniqueId() {
-    return Date.now().toString(16) +
-        Math.floor(0xFFFF * Math.random()).toString(16);
-}
 
 function tryParseFloat(val: string) {
     const num = parseFloat(val);
@@ -88,13 +93,13 @@ const ver002 = {
         return { type: ArtifactSub[0], value: 0 };
     }
 };
-function Ver002toVer100(data: GlobalDataV002): GlobalData {
-    let raw = convert();
-    for (const chara of data.chara) {
+function Ver002toVer100(before: GlobalDataV002): GlobalData {
+    let after = convert();
+    before.chara.forEach((chara, index) => {
         if (chara.name in CharaList) {
             const info = CharaList[chara.name];
-            raw.chara.push({
-                id: makeUniqueId(),
+            after.chara.push({
+                id: `chara002_${index}`,
                 name: chara.name,
                 comment: "",
                 conste: tryParseFloat(chara.conste),
@@ -111,14 +116,14 @@ function Ver002toVer100(data: GlobalDataV002): GlobalData {
                 burst: tryParseFloat(chara.burst),
             });
         }
-    }
+    });
     for (const type of WeaponTypes) {
         const weapons = WeaponList[type];
-        for (const weapon of data[type]) {
+        before[type].forEach((weapon, index) => {
             if (weapon.name in weapons) {
                 const info = weapons[weapon.name];
-                raw[type].push({
-                    id: makeUniqueId(),
+                after[type].push({
+                    id: `${type}002_${index}`,
                     name: weapon.name,
                     comment: "",
                     rank: tryParseFloat(weapon.rank),
@@ -130,13 +135,13 @@ function Ver002toVer100(data: GlobalDataV002): GlobalData {
                     },
                 });
             }
-        }
+        });
     }
     for (const type of ArtifactTypes) {
-        for (const artifact of data[type]) {
+        before[type].forEach((artifact, index) => {
             if (ArtifactNames.includes(artifact.name)) {
-                raw[type].push({
-                    id: makeUniqueId(),
+                after[type].push({
+                    id: `${type}002_${index}`,
                     name: artifact.name,
                     comment: "",
                     star: tryParseFloat(artifact.star),
@@ -148,9 +153,42 @@ function Ver002toVer100(data: GlobalDataV002): GlobalData {
                     sub4: ver002.sub(artifact.sub4),
                 });
             }
-        }
+        });
     }
-    return raw;
+    before.equip.forEach((equip, index) => {
+        let data: IEquipData = {
+            id: `equip002_${index}`,
+            comment: "",
+            chara: "",
+            weapon: "",
+            flower: "",
+            feather: "",
+            sands: "",
+            goblet: "",
+            circlet: ""
+        };
+        // キャラの検索
+        let id = "chara002_" + equip.chara;
+        const chara = after.chara.find(item => item.id === id);
+        if (chara) {
+            data.chara = id;
+            // 武器の検索
+            const weapon = CharaList[chara.name as CharaName].weapon;
+            id = weapon + "002_" + equip.weapon;
+            if (after[weapon].find(item => item.id === id)) {
+                data.weapon = id;
+            }
+            // 聖遺物の検索
+            for (const artifact of ArtifactTypes) {
+                id = artifact + "002_" + equip[artifact];
+                if (after[artifact].find(item => item.id === id)) {
+                    data[artifact] = id;
+                }
+            }
+            after.equip.push(data);
+        }
+    });
+    return after;
 }
 
 export function convert(data?: GlobalDataV002 | GlobalDataV100): GlobalData {
