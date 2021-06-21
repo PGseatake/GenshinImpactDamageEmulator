@@ -49,7 +49,6 @@
         :dense="mobile"
         :clipped-left="desktop"
         :clipped-right="desktop"
-        :hide-on-scroll="!desktop"
       >
         <v-app-bar-nav-icon
           large

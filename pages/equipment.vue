@@ -4,6 +4,7 @@
       :headers="headers"
       :items="globals.equip"
       :class="myClass"
+      :items-per-page="1000"
       fixed-header
       hide-default-footer
     >

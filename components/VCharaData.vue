@@ -6,6 +6,7 @@
       :headers="headers"
       :items="items"
       :class="myClass"
+      :items-per-page="1000"
       fixed-header
       hide-default-footer
     >
