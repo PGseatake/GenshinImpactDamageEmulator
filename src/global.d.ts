@@ -1,4 +1,5 @@
 import { GlobalData, IBonusValueData, IIdentify } from "~/src/interface";
+import { ElementType } from "./const";
 
 export { };
 
@@ -32,5 +33,7 @@ declare module "vue/types/vue" {
         $appendData: (data: IIdentify[], item: IIdentify) => void;
         $removeData: (data: IIdentify[], item: IIdentify) => void;
         $formatBonus: (vm: Vue, data: IBonusValueData | undefined) => string;
+        $starColor: (star: number) => string;
+        $elementBGColor: (elem: ElementType) => string;
     }
 }

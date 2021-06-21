@@ -2,18 +2,36 @@
   <v-container class="pa-0">
     <v-row no-gutters align="end">
       <v-col :cols="cols" class="pa-0">
-        <v-select-name
-          :value.sync="refValue"
-          :items="$globals[type]"
-          :group="'weapon.' + type"
-        />
+        <v-badge
+          :value="!!rank"
+          :color="color"
+          :content="rank"
+          left
+          offset-y="18px"
+        >
+          <v-select-name
+            :value.sync="refValue"
+            :items="$globals[type]"
+            :group="'weapon.' + type"
+          />
+        </v-badge>
       </v-col>
       <v-col :cols="cols" class="px-1 py-0 detail" v-text="comment" />
     </v-row>
     <v-row no-gutters>
-      <v-col :cols="cols" class="px-1 py-0 detail" v-text="level" />
-      <v-col :cols="cols" class="px-1 py-0 detail" v-text="atk" />
-      <v-col :cols="cols" class="px-1 py-0 detail" v-text="second" />
+      <v-col
+        v-if="level"
+        :cols="cols"
+        class="px-1 py-0 detail"
+        v-text="level"
+      />
+      <v-col v-if="atk" :cols="cols" class="px-1 py-0 detail" v-text="atk" />
+      <v-col
+        v-if="second"
+        :cols="cols"
+        class="px-1 py-0 detail"
+        v-text="second"
+      />
     </v-row>
   </v-container>
 </template>
@@ -30,6 +48,7 @@ div.detail {
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { CharaList, CharaName } from "~/src/character";
+import { WeaponList } from "~/src/weapon";
 
 @Component({
   name: "VWeaponDetail",
@@ -72,6 +91,16 @@ export default class VWeaponDetail extends Vue {
 
   get level() {
     return this.item ? `Lv.${this.item.level}` : undefined;
+  }
+
+  get rank() {
+    return this.item?.rank;
+  }
+
+  get color() {
+    return this.item
+      ? this.$starColor(WeaponList[this.type][this.item.name].star)
+      : undefined;
   }
 
   get atk() {

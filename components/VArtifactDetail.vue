@@ -2,16 +2,23 @@
   <v-container class="pa-0">
     <v-row no-gutters align="end">
       <v-col :cols="cols" class="pa-0">
-        <v-select-name
-          :value.sync="refValue"
-          :items="items"
-          :group="'artifact.' + type"
-        />
+        <v-badge
+          :value="!!level"
+          :color="color"
+          :content="level"
+          left
+          offset-y="18px"
+        >
+          <v-select-name
+            :value.sync="refValue"
+            :items="items"
+            :group="'artifact.' + type"
+          />
+        </v-badge>
       </v-col>
       <v-col :cols="cols" class="px-1 py-0 detail" v-text="comment" />
     </v-row>
     <v-row no-gutters>
-      <v-col :cols="cols" class="px-1 py-0 detail" v-text="level" />
       <v-col v-if="main" :cols="cols" class="px-1 py-0 detail" v-text="main" />
       <v-col v-if="sub1" :cols="cols" class="px-1 py-0 detail" v-text="sub1" />
       <v-col v-if="sub2" :cols="cols" class="px-1 py-0 detail" v-text="sub2" />
@@ -67,7 +74,11 @@ export default class VArtifactDetail extends Vue {
   }
 
   get level() {
-    return `Lv.${this.item?.level || 0}`;
+    return this.item?.level;
+  }
+
+  get color() {
+    return this.$starColor(this.item?.star || 0);
   }
 
   get main() {

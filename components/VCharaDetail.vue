@@ -2,12 +2,20 @@
   <v-container class="pa-0">
     <v-row no-gutters align="end">
       <v-col :cols="cols" class="pa-0">
-        <v-select-name
-          :required="true"
-          :value.sync="refValue"
-          :items="items"
-          group="chara"
-        />
+        <v-badge
+          :value="!!conste"
+          :color="color"
+          :content="conste"
+          left
+          offset-y="18px"
+        >
+          <v-select-name
+            :required="true"
+            :value.sync="refValue"
+            :items="items"
+            group="chara"
+          />
+        </v-badge>
       </v-col>
       <v-col :cols="cols" class="px-1 py-0 detail" v-text="comment" />
     </v-row>
@@ -31,6 +39,8 @@ div.detail {
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { CharaList, CharaName } from "~/src/character";
+import { ElementType } from "~/src/const";
 import { ICharaData } from "~/src/interface";
 
 @Component({
@@ -61,6 +71,19 @@ export default class VCharaDetail extends Vue {
 
   get comment() {
     return this.item?.comment || "-";
+  }
+
+  get conste() {
+    return this.item?.conste;
+  }
+
+  get color() {
+    const item = this.item;
+    console.log(item);
+    if (item) {
+      return this.$elementBGColor(CharaList[item.name as CharaName].element);
+    }
+    return this.$elementBGColor(ElementType.Phys);
   }
 
   get level() {
