@@ -5,19 +5,31 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item key="sword">
-        <v-weapon-data type="sword" :items="sword" @remove="onRemove" />
+        <v-weapon-data type="sword" :items="sword" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="claymore">
-        <v-weapon-data type="claymore" :items="claymore" @remove="onRemove" />
+        <v-weapon-data
+          type="claymore"
+          :items="claymore"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
       <v-tab-item key="polearm">
-        <v-weapon-data type="polearm" :items="polearm" @remove="onRemove" />
+        <v-weapon-data
+          type="polearm"
+          :items="polearm"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
       <v-tab-item key="bow">
-        <v-weapon-data type="bow" :items="bow" @remove="onRemove" />
+        <v-weapon-data type="bow" :items="bow" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="catalyst">
-        <v-weapon-data type="catalyst" :items="catalyst" @remove="onRemove" />
+        <v-weapon-data
+          type="catalyst"
+          :items="catalyst"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
     </v-tabs-items>
 
@@ -34,6 +46,15 @@
     >
       <v-select v-model="append" :items="names" />
     </v-append-dialog>
+    <v-remove-dialog
+      :title="$t('tab.' + type) + $t('dialog.remove')"
+      :item="remove"
+      :name="removeName"
+      :exists="exists"
+      max-width="300px"
+      @accept="onRemove"
+      @cancel="remove = null"
+    />
   </v-container>
 </template>
 
@@ -55,6 +76,7 @@ import { WeaponList, WeaponNames } from "~/src/weapon";
   components: {
     VWeaponData: () => import("~/components/VWeaponData.vue"),
     VAppendDialog: () => import("~/components/VAppendDialog.vue"),
+    VRemoveDialog: () => import("~/components/VRemoveDialog.vue"),
   },
 })
 export default class PageWeapon extends Vue {
@@ -67,6 +89,7 @@ export default class PageWeapon extends Vue {
   };
   tab = 0;
   append = "";
+  remove: IWeaponData | null = null;
 
   readonly types = WeaponTypes;
   readonly icons: IReadonlyMap<string> = {
@@ -104,6 +127,11 @@ export default class PageWeapon extends Vue {
     return this.globals.catalyst;
   }
 
+  get removeName() {
+    const name = this.remove?.name;
+    return name ? this.$t(`weapon.${this.type}.${name}`) : "";
+  }
+
   created() {
     this.globals = this.$globals;
   }
@@ -131,8 +159,19 @@ export default class PageWeapon extends Vue {
     this.append = "";
   }
 
-  onRemove(data: IWeaponData) {
-    this.$removeData(this.globals[this.type], data);
+  onBeforeRemove(data: IWeaponData) {
+    this.remove = data;
+  }
+
+  onRemove() {
+    if (this.remove) {
+      this.$removeData(this.globals[this.type], this.remove);
+      this.remove = null;
+    }
+  }
+
+  exists(id: string): boolean {
+    return !!this.$globals.equip.find((data) => data.weapon === id);
   }
 }
 </script>

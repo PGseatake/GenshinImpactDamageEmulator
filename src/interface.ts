@@ -138,6 +138,10 @@ export interface IBonusValueData {
     value: number;
 }
 
+export interface IBasicData extends IIdentify, ICommentable {
+    name?: string;
+}
+
 export interface ICharaData extends IIdentify, INameable, ICommentable {
     conste: number;
     level: string;
@@ -186,4 +190,15 @@ export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;
 export type GlobalData = GlobalVersion &
     GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData;
 
-export const GlobalDataTypes = ["chara", ...konst.WeaponTypes, ...konst.ArtifactTypes, "equip"] as const;
+export const GlobalDataType = {
+    Chara: "chara",
+    Equip: "equip",
+} as const;
+
+export const GlobalDataTypes = [
+    GlobalDataType.Chara,
+    ...konst.WeaponTypes,
+    ...konst.ArtifactTypes,
+    GlobalDataType.Equip
+] as const;
+export type GlobalDataType = typeof GlobalDataTypes[number];

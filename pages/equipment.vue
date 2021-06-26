@@ -59,7 +59,7 @@
         />
       </template>
       <template v-slot:[`item.remove`]="{ item }">
-        <v-btn fab x-small class="my-1" @click="onRemove(item)">
+        <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
           <v-icon>{{ icons.remove }}</v-icon>
         </v-btn>
       </template>
@@ -84,6 +84,15 @@
         :dense="false"
       />
     </v-append-dialog>
+    <v-remove-dialog
+      :title="$t('menu.equipment') + $t('dialog.remove')"
+      :item="remove"
+      :name="removeName"
+      :exists="exists"
+      max-width="300px"
+      @accept="onRemove"
+      @cancel="remove = null"
+    />
   </v-container>
 </template>
 
@@ -191,7 +200,12 @@
 import { Vue, Component } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { GlobalCharaData, GlobalEquipData, IEquipData } from "~/src/interface";
+import {
+  GlobalCharaData,
+  GlobalEquipData,
+  ICharaData,
+  IEquipData,
+} from "~/src/interface";
 
 @Component({
   name: "PageEquipment",
@@ -200,11 +214,13 @@ import { GlobalCharaData, GlobalEquipData, IEquipData } from "~/src/interface";
     VWeaponDetail: () => import("~/components/VWeaponDetail.vue"),
     VArtifactDetail: () => import("~/components/VArtifactDetail.vue"),
     VAppendDialog: () => import("~/components/VAppendDialog.vue"),
+    VRemoveDialog: () => import("~/components/VRemoveDialog.vue"),
   },
 })
 export default class PageEquipment extends Vue {
   globals: GlobalEquipData & GlobalCharaData = { equip: [], chara: [] };
   append = "";
+  remove: IEquipData | null = null;
 
   readonly icons: IReadonlyMap<string> = {
     append: mdiPlaylistPlus,
@@ -269,12 +285,17 @@ export default class PageEquipment extends Vue {
   }
 
   get comment() {
-    const chara = this.globals.chara.find((chara) => chara.id === this.append);
+    const chara = this.findChara(this.append);
     return chara?.comment || "";
   }
 
   get myClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get removeName() {
+    const chara = this.findChara(this.remove?.chara);
+    return chara?.name ? this.$t(`chara.${chara.name}`) : "";
   }
 
   created() {
@@ -301,8 +322,29 @@ export default class PageEquipment extends Vue {
     this.append = "";
   }
 
-  onRemove(data: IEquipData) {
-    this.$removeData(this.globals.equip, data);
+  onBeforeRemove(data: IEquipData) {
+    this.remove = data;
+  }
+
+  onRemove() {
+    if (this.remove) {
+      this.$removeData(this.globals.equip, this.remove);
+      this.remove = null;
+    }
+  }
+
+  exists(id: string): boolean {
+    return !!this.$globals.team.find(
+      ({ equip1, equip2, equip3, equip4 }) =>
+        equip1 === id || equip2 === id || equip3 === id || equip4 === id
+    );
+  }
+
+  findChara(id: string | undefined): ICharaData | undefined {
+    if (id) {
+      return this.globals.chara.find((chara) => chara.id === id);
+    }
+    return undefined;
   }
 }
 </script>

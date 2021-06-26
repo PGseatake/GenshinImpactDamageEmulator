@@ -5,19 +5,35 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item key="flower">
-        <v-artifact-data type="flower" :items="flower" @remove="onRemove" />
+        <v-artifact-data
+          type="flower"
+          :items="flower"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
       <v-tab-item key="feather">
-        <v-artifact-data type="feather" :items="feather" @remove="onRemove" />
+        <v-artifact-data
+          type="feather"
+          :items="feather"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
       <v-tab-item key="sands">
-        <v-artifact-data type="sands" :items="sands" @remove="onRemove" />
+        <v-artifact-data type="sands" :items="sands" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="goblet">
-        <v-artifact-data type="goblet" :items="goblet" @remove="onRemove" />
+        <v-artifact-data
+          type="goblet"
+          :items="goblet"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
       <v-tab-item key="circlet">
-        <v-artifact-data type="circlet" :items="circlet" @remove="onRemove" />
+        <v-artifact-data
+          type="circlet"
+          :items="circlet"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
     </v-tabs-items>
 
@@ -34,6 +50,15 @@
     >
       <v-select v-model="append" :items="names" />
     </v-append-dialog>
+    <v-remove-dialog
+      :title="$t('tab.' + type) + $t('dialog.remove')"
+      :item="remove"
+      :name="removeName"
+      :exists="exists"
+      max-width="300px"
+      @accept="onRemove"
+      @cancel="remove = null"
+    />
   </v-container>
 </template>
 
@@ -49,6 +74,7 @@ import { ArtifactMain, ArtifactNames } from "~/src/artifact";
   components: {
     VArtifactData: () => import("~/components/VArtifactData.vue"),
     VAppendDialog: () => import("~/components/VAppendDialog.vue"),
+    VRemoveDialog: () => import("~/components/VRemoveDialog.vue"),
   },
 })
 export default class PageArtifact extends Vue {
@@ -61,6 +87,7 @@ export default class PageArtifact extends Vue {
   };
   tab = 0;
   append = "";
+  remove: IArtifactData | null = null;
 
   readonly types = ArtifactTypes;
   readonly icons: IReadonlyMap<string> = {
@@ -96,6 +123,11 @@ export default class PageArtifact extends Vue {
 
   get circlet() {
     return this.globals.circlet;
+  }
+
+  get removeName() {
+    const name = this.remove?.name;
+    return name ? this.$t(`artifact.${this.type}.${name}`) : "";
   }
 
   created() {
@@ -139,8 +171,19 @@ export default class PageArtifact extends Vue {
     this.append = "";
   }
 
-  onRemove(data: IArtifactData) {
-    this.$removeData(this.globals[this.type], data);
+  onBeforeRemove(data: IArtifactData) {
+    this.remove = data;
+  }
+
+  onRemove() {
+    if (this.remove) {
+      this.$removeData(this.globals[this.type], this.remove);
+      this.remove = null;
+    }
+  }
+
+  exists(id: string): boolean {
+    return !!this.$globals.equip.find((data) => data[this.type] === id);
   }
 }
 </script>

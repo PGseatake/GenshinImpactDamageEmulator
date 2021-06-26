@@ -1,6 +1,6 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <v-chara-data :items="charas" @remove="onRemove" />
+    <v-chara-data :items="charas" @remove="onBeforeRemove" />
 
     <v-btn fab small @click="onBeforeAppend" class="ma-1">
       <v-icon>{{ icons.append }}</v-icon>
@@ -15,6 +15,15 @@
     >
       <v-select v-model="append" :items="names" />
     </v-append-dialog>
+    <v-remove-dialog
+      :title="$t('menu.character') + $t('dialog.remove')"
+      :item="remove"
+      :name="removeName"
+      :exists="exists"
+      max-width="300px"
+      @accept="onRemove"
+      @cancel="remove = null"
+    />
   </v-container>
 </template>
 
@@ -29,11 +38,13 @@ import { CharaList, CharaName, CharaNames } from "~/src/character";
   components: {
     VCharaData: () => import("~/components/VCharaData.vue"),
     VAppendDialog: () => import("~/components/VAppendDialog.vue"),
+    VRemoveDialog: () => import("~/components/VRemoveDialog.vue"),
   },
 })
 export default class PageCharacter extends Vue {
   globals: GlobalCharaData = { chara: [] };
   append = "";
+  remove: ICharaData | null = null;
 
   readonly icons: IReadonlyMap<string> = {
     append: mdiPlaylistPlus,
@@ -48,6 +59,11 @@ export default class PageCharacter extends Vue {
 
   get charas() {
     return this.globals.chara;
+  }
+
+  get removeName() {
+    const name = this.remove?.name;
+    return name ? this.$t(`chara.${name}`) : "";
   }
 
   created() {
@@ -82,8 +98,19 @@ export default class PageCharacter extends Vue {
     this.append = "";
   }
 
-  onRemove(data: ICharaData) {
-    this.$removeData(this.globals.chara, data);
+  onBeforeRemove(data: ICharaData) {
+    this.remove = data;
+  }
+
+  onRemove() {
+    if (this.remove) {
+      this.$removeData(this.globals.chara, this.remove);
+      this.remove = null;
+    }
+  }
+
+  exists(id: string): boolean {
+    return !!this.$globals.equip.find((data) => data.chara === id);
   }
 }
 </script>

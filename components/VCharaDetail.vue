@@ -78,10 +78,10 @@ export default class VCharaDetail extends Vue {
   }
 
   get color() {
-    const item = this.item;
-    console.log(item);
-    if (item) {
-      return this.$elementBGColor(CharaList[item.name as CharaName].element);
+    if (this.item) {
+      return this.$elementBGColor(
+        CharaList[this.item.name as CharaName].element
+      );
     }
     return this.$elementBGColor(ElementType.Phys);
   }
