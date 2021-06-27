@@ -335,8 +335,8 @@ export default class PageEquipment extends Vue {
 
   exists(id: string): boolean {
     return !!this.$globals.team.find(
-      ({ equip1, equip2, equip3, equip4 }) =>
-        equip1 === id || equip2 === id || equip3 === id || equip4 === id
+      ({ member1, member2, member3, member4 }) =>
+        member1 === id || member2 === id || member3 === id || member4 === id
     );
   }
 

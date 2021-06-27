@@ -3,6 +3,7 @@
         "title": "Menu",
         "index": "Home",
         "equipment": "Equipment",
+        "team": "Team",
         "character": "Character",
         "weapon": "Weapon",
         "artifact": "Artifact",

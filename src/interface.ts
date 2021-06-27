@@ -138,10 +138,6 @@ export interface IBonusValueData {
     value: number;
 }
 
-export interface IBasicData extends IIdentify, ICommentable {
-    name?: string;
-}
-
 export interface ICharaData extends IIdentify, INameable, ICommentable {
     conste: number;
     level: string;
@@ -181,24 +177,34 @@ export interface IEquipData extends IIdentify, ICommentable {
     circlet: string;
 }
 
+export interface ITeamData extends IIdentify, INameable {
+    member1: string;
+    member2: string;
+    member3: string;
+    member4: string;
+}
+
 export type GlobalVersion = { version: "1.0"; };
+export type GlobalTeamData = { team: ITeamData[]; };
 export type GlobalEquipData = { equip: IEquipData[]; };
 export type GlobalCharaData = { chara: ICharaData[]; };
 export type GlobalWeaponData = Record<konst.WeaponType, IWeaponData[]>;
 export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;
 
 export type GlobalData = GlobalVersion &
-    GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData;
+    GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData & GlobalTeamData;
 
 export const GlobalDataType = {
     Chara: "chara",
     Equip: "equip",
+    Team: "team",
 } as const;
 
 export const GlobalDataTypes = [
     GlobalDataType.Chara,
     ...konst.WeaponTypes,
     ...konst.ArtifactTypes,
-    GlobalDataType.Equip
+    GlobalDataType.Equip,
+    GlobalDataType.Team,
 ] as const;
 export type GlobalDataType = typeof GlobalDataTypes[number];

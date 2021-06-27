@@ -28,7 +28,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-type NameComment = {
+export type NameComment = {
   id: string;
   name: string;
   comment: string;

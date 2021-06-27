@@ -10,7 +10,9 @@
       <v-card>
         <v-card-title v-text="title" />
         <v-card-text>
-          <slot><span v-html="text + $t('dialog.remove_html')" /></slot>
+          <slot name="enable" v-bind:item="item"
+            ><span v-html="text + $t('dialog.remove_html')"
+          /></slot>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -33,7 +35,9 @@
       <v-card>
         <v-card-title v-text="title" />
         <v-card-text>
-          <slot><span v-html="text + $t('dialog.remove_x_html')" /></slot>
+          <slot name="disable" v-bind:item="item"
+            ><span v-html="text + $t('dialog.remove_x_html')"
+          /></slot>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

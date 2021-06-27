@@ -200,6 +200,7 @@ html {
 import { Vue, Component, Watch } from "vue-property-decorator";
 import {
   mdiAccount,
+  mdiAccountMultiplePlus,
   mdiClose,
   mdiContentSave,
   mdiExport,
@@ -252,6 +253,7 @@ export default class Default extends Vue {
   readonly pageList: IPage[] = [
     { icon: mdiHome, page: "index", to: "/" },
     { icon: mdiTshirtCrew, page: "equipment", to: "/equipment" },
+    { icon: mdiAccountMultiplePlus, page: "team", to: "/team" },
     { icon: mdiAccount, page: "character", to: "/character" },
     { icon: mdiSword, page: "weapon", to: "/weapon" },
     { icon: mdiRing, page: "artifact", to: "/artifact" },

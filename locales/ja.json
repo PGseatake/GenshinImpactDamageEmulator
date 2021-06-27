@@ -3,6 +3,7 @@
         "title": "メニュー",
         "index": "ホーム",
         "equipment": "装備",
+        "team": "チーム",
         "character": "キャラクター",
         "weapon": "武器",
         "artifact": "聖遺物",
@@ -37,7 +38,9 @@
         "sub1": "サブ効果1",
         "sub2": "サブ効果2",
         "sub3": "サブ効果3",
-        "sub4": "サブ効果4"
+        "sub4": "サブ効果4",
+        "team": "チーム名",
+        "member": "メンバー"
     },
     "dialog": {
         "yes": "はい",
@@ -47,12 +50,14 @@
         "cancel": "キャンセル",
         "append": "追加",
         "remove": "削除",
+        "dismiss": "解散",
         "import": "インポート",
         "import_text": "すべてのページの内容が上書きされます。",
         "export": "エクスポート",
         "export_text": "ファイルはダウンロードフォルダに保存されます。",
         "remove_html": "を削除します。<br>よろしいですか？",
-        "remove_x_html": "は使用中のため削除できません。"
+        "remove_x_html": "は使用中のため削除できません。",
+        "dismiss_default": "このチームは解散します。<br>よろしいですか？"
     },
     "popup": {
         "save": "保存しました。",

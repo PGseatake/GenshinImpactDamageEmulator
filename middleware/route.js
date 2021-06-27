@@ -1,6 +1,7 @@
 export default function({ store, route }) {
     const pages = [
         "equipment",
+        "team",
         "character",
         "weapon",
         "artifact",

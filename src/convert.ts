@@ -199,7 +199,10 @@ export function convert(data?: GlobalDataV002 | GlobalDataV100): GlobalData {
             }
         } else if (data.version) {
             if (data.version === "1.0") {
-                return data;
+                return {
+                    ...convert(),
+                    ...data,
+                };
             }
         }
     }
@@ -217,5 +220,6 @@ export function convert(data?: GlobalDataV002 | GlobalDataV100): GlobalData {
         goblet: [],
         circlet: [],
         equip: [],
+        team: [],
     };
 }
