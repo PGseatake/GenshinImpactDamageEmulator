@@ -40,7 +40,7 @@ div.detail {
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { ArtifactType } from "~/src/const";
-import { IArtifactData } from "~/src/interface";
+import { IArtifactData } from "~/src/artifact";
 
 @Component({
   name: "VArtifactDetail",

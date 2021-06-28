@@ -1,4 +1,5 @@
-import { GlobalData, IBonusValueData, IIdentify } from "~/src/interface";
+import { IBonusValueData, IIdentify } from "~/src/interface";
+import { GlobalData } from "~/src/convert";
 import { ElementType } from "./const";
 
 export { };

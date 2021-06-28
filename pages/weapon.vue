@@ -67,9 +67,13 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiPlaylistPlus } from "@mdi/js";
-import { GlobalWeaponData, IWeaponData } from "~/src/interface";
 import { WeaponTypes } from "~/src/const";
-import { WeaponList, WeaponNames } from "~/src/weapon";
+import {
+  WeaponList,
+  WeaponNames,
+  IWeaponData,
+  GlobalWeaponData,
+} from "~/src/weapon";
 
 @Component({
   name: "PageWeapon",

@@ -5,7 +5,7 @@
       v-on="$listeners"
       :headers="headers"
       :items="items"
-      :class="myClass"
+      :class="tableClass"
       :items-per-page="1000"
       fixed-header
       hide-default-footer
@@ -151,8 +151,8 @@ import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete } from "@mdi/js";
 import { ArtifactType } from "~/src/const";
-import { IArtifactData } from "~/src/interface";
 import {
+  IArtifactData,
   ArtifactNames,
   ArtifactMain,
   ArtifactSub,
@@ -192,13 +192,12 @@ export default class VArtifactData extends Vue {
       width: "50px",
     },
   ];
-
-  readonly subs = ArtifactSub;
   readonly icons = {
     remove: mdiDelete,
   };
+  readonly subs = ArtifactSub;
 
-  get myClass() {
+  get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
   }
 

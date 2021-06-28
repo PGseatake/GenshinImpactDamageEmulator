@@ -109,9 +109,8 @@ import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete } from "@mdi/js";
 import * as ascension from "~/src/ascension";
-import { IWeaponData } from "~/src/interface";
 import { WeaponType } from "~/src/const";
-import { WeaponNames, WeaponList } from "~/src/weapon";
+import { IWeaponData, WeaponNames, WeaponList } from "~/src/weapon";
 
 @Component({
   name: "VWeaponData",

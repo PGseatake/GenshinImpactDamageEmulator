@@ -3,8 +3,8 @@
     v-bind="$attrs"
     no-action
     :sub-group="group"
-    :append-icon="appendIcon()"
-    :prepend-icon="prependIcon()"
+    :append-icon="appendIcon"
+    :prepend-icon="prependIcon"
   >
     <template v-slot:activator>
       <v-list-item :dense="group">
@@ -75,11 +75,11 @@ export default class VReleaseNode extends Vue {
   @Prop({ required: true }) items!: ReleaseLeaf;
   @Prop({ default: false }) group!: boolean;
 
-  appendIcon() {
+  get appendIcon() {
     return this.group ? "" : mdiChevronDown;
   }
 
-  prependIcon() {
+  get prependIcon() {
     return this.group ? mdiMenuDown : "";
   }
 }

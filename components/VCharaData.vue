@@ -5,7 +5,7 @@
       v-on="$listeners"
       :headers="headers"
       :items="items"
-      :class="myClass"
+      :class="tableClass"
       :items-per-page="1000"
       fixed-header
       hide-default-footer
@@ -157,8 +157,7 @@ import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete } from "@mdi/js";
 import * as ascension from "~/src/ascension";
-import { ICharaData } from "~/src/interface";
-import { CharaList, CharaName, CharaNames } from "~/src/character";
+import { ICharaData, CharaList, CharaNames } from "~/src/character";
 
 @Component({
   name: "VCharacterData",
@@ -207,12 +206,11 @@ export default class VCharacterData extends Vue {
       width: "50px",
     },
   ];
-
   readonly icons: IReadonlyMap<string> = {
     remove: mdiDelete,
   };
 
-  get myClass() {
+  get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
   }
 
@@ -224,7 +222,7 @@ export default class VCharacterData extends Vue {
   }
 
   onChangeName(item: ICharaData) {
-    const { special } = CharaList[item.name as CharaName];
+    const { special } = CharaList[item.name];
     item.conste = 0;
     item.level = "1";
     item.special = { type: special, value: 0 };
@@ -235,7 +233,7 @@ export default class VCharacterData extends Vue {
   }
 
   onChangeLevel(item: ICharaData) {
-    const { status, spvalue } = CharaList[item.name as CharaName];
+    const { status, spvalue } = CharaList[item.name];
     const level = item.level;
     item.hp = ascension.calc14(level, status.hp);
     item.atk = ascension.calc14(level, status.atk);

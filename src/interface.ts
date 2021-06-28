@@ -138,35 +138,6 @@ export interface IBonusValueData {
     value: number;
 }
 
-export interface ICharaData extends IIdentify, INameable, ICommentable {
-    conste: number;
-    level: string;
-    hp: number;
-    atk: number;
-    def: number;
-    special: IBonusValueData;
-    combat: number;
-    skill: number;
-    burst: number;
-}
-
-export interface IWeaponData extends IIdentify, INameable, ICommentable {
-    rank: number;
-    level: string;
-    atk: number;
-    second: IBonusValueData;
-}
-
-export interface IArtifactData extends IIdentify, INameable, ICommentable {
-    star: number;
-    level: number;
-    main: IBonusValueData;
-    sub1: IBonusValueData;
-    sub2: IBonusValueData;
-    sub3: IBonusValueData;
-    sub4: IBonusValueData;
-}
-
 export interface IEquipData extends IIdentify, ICommentable {
     chara: string;
     weapon: string;
@@ -176,6 +147,7 @@ export interface IEquipData extends IIdentify, ICommentable {
     goblet: string;
     circlet: string;
 }
+export type GlobalEquipData = { equip: IEquipData[]; };
 
 export interface ITeamData extends IIdentify, INameable {
     member1: string;
@@ -183,28 +155,15 @@ export interface ITeamData extends IIdentify, INameable {
     member3: string;
     member4: string;
 }
-
-export type GlobalVersion = { version: "1.0"; };
 export type GlobalTeamData = { team: ITeamData[]; };
-export type GlobalEquipData = { equip: IEquipData[]; };
-export type GlobalCharaData = { chara: ICharaData[]; };
-export type GlobalWeaponData = Record<konst.WeaponType, IWeaponData[]>;
-export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;
-
-export type GlobalData = GlobalVersion &
-    GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData & GlobalTeamData;
-
-export const GlobalDataType = {
-    Chara: "chara",
-    Equip: "equip",
-    Team: "team",
-} as const;
 
 export const GlobalDataTypes = [
-    GlobalDataType.Chara,
+    "equip",
+    "team",
+    "chara",
     ...konst.WeaponTypes,
     ...konst.ArtifactTypes,
-    GlobalDataType.Equip,
-    GlobalDataType.Team,
 ] as const;
 export type GlobalDataType = typeof GlobalDataTypes[number];
+
+export type GlobalVersion = { version: "1.0"; };

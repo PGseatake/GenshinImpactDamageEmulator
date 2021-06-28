@@ -1,5 +1,5 @@
 import * as konst from "~/src/const";
-import { IArtifactSet } from "~/src/interface";
+import { IArtifactSet, IBonusValueData, IIdentify, INameable, ICommentable } from "~/src/interface";
 
 export const ArtifactMain: Record<konst.ArtifactType, ReadonlyArray<konst.AnyBonusType>> = {
     "flower": [konst.StatusBonusType.Hp],
@@ -298,3 +298,14 @@ export function calcScore(type: konst.AnyBonusType, star: number, level: number,
     }
     return 0;
 }
+
+export interface IArtifactData extends IIdentify, INameable, ICommentable {
+    star: number;
+    level: number;
+    main: IBonusValueData;
+    sub1: IBonusValueData;
+    sub2: IBonusValueData;
+    sub3: IBonusValueData;
+    sub4: IBonusValueData;
+}
+export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;

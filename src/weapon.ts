@@ -1,5 +1,5 @@
 import * as konst from "./const";
-import { IWeapon } from "./interface";
+import { IWeapon, IBonusValueData, IIdentify, INameable, ICommentable } from "./interface";
 
 const WeaponAtk3: IReadonlyMap<ReadonlyArray<number>> = {
     //    1,  20, 20+,  40, 40+,  50, 50+,  60, 60+,  70, 70+,  80, 80+,  90
@@ -1050,3 +1050,11 @@ export const WeaponList: ReadonlyRecord<konst.WeaponType, WeaponList> = {
     bow: BowList,
     catalyst: CatalystList
 } as const;
+
+export interface IWeaponData extends IIdentify, INameable, ICommentable {
+    rank: number;
+    level: string;
+    atk: number;
+    second: IBonusValueData;
+}
+export type GlobalWeaponData = Record<konst.WeaponType, IWeaponData[]>;

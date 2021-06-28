@@ -39,9 +39,8 @@ div.detail {
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { CharaList, CharaName } from "~/src/character";
+import { CharaList, ICharaData } from "~/src/character";
 import { ElementType } from "~/src/const";
-import { ICharaData } from "~/src/interface";
 
 @Component({
   name: "VCharaDetail",
@@ -79,9 +78,7 @@ export default class VCharaDetail extends Vue {
 
   get color() {
     if (this.item) {
-      return this.$elementBGColor(
-        CharaList[this.item.name as CharaName].element
-      );
+      return this.$elementBGColor(CharaList[this.item.name].element);
     }
     return this.$elementBGColor(ElementType.Phys);
   }

@@ -3,15 +3,8 @@
     <v-col align-self="center" class="pa-0" cols="auto">
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-bind="attrs"
-            v-on="on"
-            :disabled="!selectable"
-            fab
-            dark
-            x-small
-          >
-            <v-icon dark> {{ icon }} </v-icon>
+          <v-btn v-bind="attrs" v-on="on" :disabled="!selectable" fab x-small>
+            <v-icon>{{ icon }}</v-icon>
           </v-btn>
         </template>
         <v-list>
@@ -110,6 +103,23 @@ export default class VBonusValue extends Vue {
   @Emit("change")
   onChange() {}
 
+  get refValue() {
+    return this.value;
+  }
+  set refValue(value: number) {
+    this.$emit("update:value", value);
+    this.onChange();
+  }
+
+  get selectedItem() {
+    return this.types.indexOf(this.type);
+  }
+  set selectedItem(value: number) {
+    this.$emit("update:type", this.types[value]);
+    this.$emit("update:value", 0);
+    this.onChange();
+  }
+
   get selectable() {
     return 1 < this.types.length;
   }
@@ -123,35 +133,18 @@ export default class VBonusValue extends Vue {
   }
 
   get label() {
-    if (this.types.indexOf(this.type) < 0) {
-      return this.$t("bonus.none");
+    if (this.types.includes(this.type)) {
+      return this.$t("bonus." + this.type);
     }
-    return this.$t("bonus." + this.type);
+    return this.$t("bonus.none");
   }
 
   get suffix() {
-    return BonusDisplayInfo[this.type].suffix ?? "";
+    return BonusDisplayInfo[this.type].suffix || "";
   }
 
   get precision() {
     return BonusDisplayInfo[this.type].suffix ? 1 : 0;
-  }
-
-  get refValue() {
-    return this.value;
-  }
-  set refValue(num: number) {
-    this.$emit("update:value", num);
-    this.onChange();
-  }
-
-  get selectedItem() {
-    return this.types.indexOf(this.type);
-  }
-  set selectedItem(item: number) {
-    this.$emit("update:type", this.types[item]);
-    this.$emit("update:value", 0);
-    this.onChange();
   }
 }
 </script>

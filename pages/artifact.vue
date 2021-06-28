@@ -65,9 +65,13 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiPlaylistPlus } from "@mdi/js";
-import { GlobalArtifactData, IArtifactData } from "~/src/interface";
 import { ArtifactTypes, BonusType } from "~/src/const";
-import { ArtifactMain, ArtifactNames } from "~/src/artifact";
+import {
+  ArtifactMain,
+  ArtifactNames,
+  IArtifactData,
+  GlobalArtifactData,
+} from "~/src/artifact";
 
 @Component({
   name: "PageArtifact",

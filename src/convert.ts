@@ -1,9 +1,12 @@
 import * as ascension from "./ascension";
-import { GlobalData, IBonusValueData, IEquipData } from "./interface";
+import { IBonusValueData, IEquipData, GlobalVersion, GlobalEquipData, GlobalTeamData } from "./interface";
 import { ArtifactType, ArtifactTypes, BonusType, WeaponTypes } from "./const";
-import { ArtifactMain, ArtifactName, ArtifactNames, ArtifactSub, calcMain } from "./artifact";
-import { CharaList, CharaName } from "./character";
-import { WeaponList } from "./weapon";
+import { ArtifactMain, ArtifactName, ArtifactNames, ArtifactSub, calcMain, GlobalArtifactData } from "./artifact";
+import { CharaList, CharaName, GlobalCharaData } from "./character";
+import { WeaponList, GlobalWeaponData } from "./weapon";
+
+export type GlobalData = GlobalVersion &
+    GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData & GlobalTeamData;
 
 interface ICharaV002 {
     name: CharaName,
@@ -173,7 +176,7 @@ function Ver002toVer100(before: GlobalDataV002): GlobalData {
         if (chara) {
             data.chara = id;
             // 武器の検索
-            const weapon = CharaList[chara.name as CharaName].weapon;
+            const weapon = CharaList[chara.name].weapon;
             id = weapon + "002_" + equip.weapon;
             if (after[weapon].find(item => item.id === id)) {
                 data.weapon = id;

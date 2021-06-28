@@ -1,5 +1,5 @@
 import * as konst from "./const";
-import { ICharacter } from "./interface";
+import { ICharacter, IBonusValueData, IIdentify, INameable, ICommentable } from "./interface";
 
 export const CharaNames = [
     "TravelAnemo",
@@ -2493,6 +2493,20 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         }
     },
 } as const;
+
+export interface ICharaData extends IIdentify, INameable, ICommentable {
+    name: CharaName;
+    conste: number;
+    level: string;
+    hp: number;
+    atk: number;
+    def: number;
+    special: IBonusValueData;
+    combat: number;
+    skill: number;
+    burst: number;
+}
+export type GlobalCharaData = { chara: ICharaData[]; };
 
 /*
 // https://bbs.mihoyo.com/ys/article/2160993

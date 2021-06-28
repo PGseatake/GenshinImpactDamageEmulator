@@ -30,8 +30,13 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiPlaylistPlus } from "@mdi/js";
-import { GlobalCharaData, ICharaData } from "~/src/interface";
-import { CharaList, CharaName, CharaNames } from "~/src/character";
+import {
+  CharaList,
+  CharaName,
+  CharaNames,
+  ICharaData,
+  GlobalCharaData,
+} from "~/src/character";
 
 @Component({
   name: "PageCharacter",

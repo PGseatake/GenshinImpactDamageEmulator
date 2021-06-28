@@ -157,12 +157,8 @@ import { Vue, Component } from "vue-property-decorator";
 import { NameComment } from "~/components/VSelectName.vue";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import {
-  GlobalCharaData,
-  GlobalEquipData,
-  GlobalTeamData,
-  ITeamData,
-} from "~/src/interface";
+import { GlobalCharaData } from "~/src/character";
+import { GlobalEquipData, GlobalTeamData, ITeamData } from "~/src/interface";
 
 @Component({
   name: "PageTeam",

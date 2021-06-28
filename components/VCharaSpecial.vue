@@ -20,8 +20,9 @@ export default class VCharaSpecial extends Vue {
   @Prop({ required: true }) name!: CharaName;
   @Prop({ required: true }) value!: number;
 
-  get special() {
-    return CharaList[this.name].special;
+  @Watch("name")
+  onChangeName() {
+    this.$emit("update:type", this.special);
   }
 
   get refValue() {
@@ -31,9 +32,8 @@ export default class VCharaSpecial extends Vue {
     this.$emit("update:value", value);
   }
 
-  @Watch("name")
-  onChangeName() {
-    this.$emit("update:type", this.special);
+  get special() {
+    return CharaList[this.name].special;
   }
 }
 </script>
