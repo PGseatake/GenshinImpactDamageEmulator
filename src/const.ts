@@ -1,3 +1,13 @@
+export const ElementTypes = [
+    "pyro",
+    "hydro",
+    "dendro",
+    "elect",
+    "anemo",
+    "cryo",
+    "geo",
+    "phys",
+] as const;
 export const ElementType = {
     Pyro: "pyro",
     Hydro: "hydro",

@@ -200,7 +200,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { GlobalEquipData, IEquipData } from "~/src/interface";
+import { GlobalEquipData, IEquipData, Members } from "~/src/interface";
 import { ICharaData, GlobalCharaData } from "~/src/character";
 
 @Component({
@@ -330,10 +330,12 @@ export default class PageEquipment extends Vue {
   }
 
   exists(id: string): boolean {
-    return !!this.$globals.team.find(
-      ({ member1, member2, member3, member4 }) =>
-        member1 === id || member2 === id || member3 === id || member4 === id
-    );
+    return !!this.$globals.team.find((team) => {
+      for (const key of Members) {
+        if (team[key] === id) return true;
+      }
+      return false;
+    });
   }
 
   findChara(id: string | undefined): ICharaData | undefined {

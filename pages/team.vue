@@ -18,16 +18,35 @@
         />
       </template>
       <template v-slot:[`item.member1`]="{ item }">
-        <v-equip-detail :value.sync="item.member1" :items="items" />
+        <v-equip-detail
+          :value.sync="item.member1"
+          :items="items"
+          @change="onChangeItem(item)"
+        />
       </template>
       <template v-slot:[`item.member2`]="{ item }">
-        <v-equip-detail :value.sync="item.member2" :items="items" />
+        <v-equip-detail
+          :value.sync="item.member2"
+          :items="items"
+          @change="onChangeItem(item)"
+        />
       </template>
       <template v-slot:[`item.member3`]="{ item }">
-        <v-equip-detail :value.sync="item.member3" :items="items" />
+        <v-equip-detail
+          :value.sync="item.member3"
+          :items="items"
+          @change="onChangeItem(item)"
+        />
       </template>
       <template v-slot:[`item.member4`]="{ item }">
-        <v-equip-detail :value.sync="item.member4" :items="items" />
+        <v-equip-detail
+          :value.sync="item.member4"
+          :items="items"
+          @change="onChangeItem(item)"
+        />
+      </template>
+      <template v-slot:[`item.resonance`]="{ item }">
+        <v-resonance :items="item.resonance" />
       </template>
       <template v-slot:[`item.remove`]="{ item }">
         <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
@@ -113,8 +132,8 @@
     }
     // 元素共鳴
     &:nth-of-type(6) {
-      min-width: 60px;
-      max-width: 200px;
+      min-width: 50px;
+      max-width: 70px;
     }
   }
 }
@@ -159,8 +178,14 @@ import { Vue, Component } from "vue-property-decorator";
 import { NameComment } from "~/components/VSelectName.vue";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { GlobalCharaData } from "~/src/character";
-import { GlobalEquipData, GlobalTeamData, ITeamData } from "~/src/interface";
+import { CharaList, GlobalCharaData } from "~/src/character";
+import {
+  GlobalEquipData,
+  GlobalTeamData,
+  ITeamData,
+  Members,
+} from "~/src/interface";
+import { ElementType } from "~/src/const";
 
 @Component({
   name: "PageTeam",
@@ -208,6 +233,11 @@ export default class PageTeam extends Vue {
     {
       text: this.$t("general.member") + "4",
       value: "member4",
+      sortable: false,
+    },
+    {
+      text: this.$t("general.resonance") as string,
+      value: "resonance",
       sortable: false,
     },
     {
@@ -259,6 +289,36 @@ export default class PageTeam extends Vue {
     this.globals = this.$globals;
   }
 
+  onChangeItem(item: ITeamData) {
+    let elements: ElementType[] = [];
+    for (const key of Members) {
+      const member = item[key];
+      if (member) {
+        const equip = this.globals.equip.find((d) => d.id === member);
+        if (equip) {
+          const chara = this.globals.chara.find((d) => d.id === equip.chara);
+          if (chara) {
+            elements.push(CharaList[chara.name].element);
+          }
+        }
+      }
+    }
+    elements.sort();
+    item.resonance.splice(0);
+
+    const count = elements.length;
+    let first = 0;
+    while (first < count) {
+      let type = elements[first];
+      let last = elements.lastIndexOf(type) + 1;
+      // 元素共鳴追加
+      if (2 <= last - first) {
+        item.resonance.push(elements[first]);
+      }
+      first = last;
+    }
+  }
+
   onBeforeAppend() {
     this.$store.commit("setAppend", true);
   }
@@ -271,6 +331,7 @@ export default class PageTeam extends Vue {
       member2: "",
       member3: "",
       member4: "",
+      resonance: [],
     };
     this.$appendData(this.globals.team, data);
     this.append = "";

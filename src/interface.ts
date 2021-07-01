@@ -149,11 +149,11 @@ export interface IEquipData extends IIdentify, ICommentable {
 }
 export type GlobalEquipData = { equip: IEquipData[]; };
 
-export interface ITeamData extends IIdentify, INameable {
-    member1: string;
-    member2: string;
-    member3: string;
-    member4: string;
+export const Members = ["member1", "member2", "member3", "member4"] as const;
+export type Members = typeof Members[number];
+
+export interface ITeamData extends IIdentify, INameable, Record<Members, string> {
+    resonance: konst.ElementType[];
 }
 export type GlobalTeamData = { team: ITeamData[]; };
 

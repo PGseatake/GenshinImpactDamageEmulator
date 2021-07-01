@@ -40,7 +40,8 @@
         "sub3": "サブ効果3",
         "sub4": "サブ効果4",
         "team": "チーム名",
-        "member": "メンバー"
+        "member": "メンバー",
+        "resonance": "元素共鳴"
     },
     "dialog": {
         "yes": "はい",
@@ -65,6 +66,16 @@
         "save": "保存しました。",
         "import": "インポートしました。",
         "export": "エクスポートしました。"
+    },
+    "element": {
+        "pyro": "火",
+        "hydro": "水",
+        "dendro": "草",
+        "elect": "雷",
+        "anemo": "風",
+        "cryo": "氷",
+        "geo": "岩",
+        "phys": "物理"
     },
     "bonus": {
         "none": "なし",

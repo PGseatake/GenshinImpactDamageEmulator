@@ -3,7 +3,6 @@
     <v-select-name
       v-bind="$attrs"
       v-on="$listeners"
-      v-model="refValue"
       :items="items"
       hide-details
       group="chara"
@@ -50,17 +49,9 @@ import { NameComment } from "~/components/VSelectName.vue";
 })
 export default class VEquipDetail extends Vue {
   @Prop({ required: true }) items!: ReadonlyArray<NameComment>;
-  @Prop({ default: "" }) value!: string;
-
-  get refValue() {
-    return this.value;
-  }
-  set refValue(value: string) {
-    this.$emit("update:value", value);
-  }
 
   get item() {
-    return this.items.find((item) => item.id === this.value);
+    return this.items.find((item) => item.id === this.$attrs.value);
   }
 
   get comment() {

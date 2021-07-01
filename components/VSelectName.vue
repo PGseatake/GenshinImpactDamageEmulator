@@ -26,7 +26,7 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 
 export type NameComment = {
   id: string;
@@ -44,6 +44,9 @@ export default class VSelectName extends Vue {
   @Prop({ default: "" }) value!: string;
   @Prop({ default: false }) required!: boolean;
 
+  @Emit("change")
+  onChange() {}
+
   get selectedItem() {
     return this.items.findIndex((item) => item.id === this.value);
   }
@@ -53,6 +56,7 @@ export default class VSelectName extends Vue {
     } else {
       this.$emit("update:value", "");
     }
+    this.onChange();
   }
 
   get name() {
