@@ -52,12 +52,14 @@
         "remove": "削除",
         "dismiss": "解散",
         "import": "インポート",
-        "import_text": "すべてのページの内容が上書きされます。",
         "export": "エクスポート",
+        "import_text": "すべてのページの内容が上書きされます。",
         "export_text": "ファイルはダウンロードフォルダに保存されます。",
-        "remove_html": "を削除します。<br>よろしいですか？",
-        "remove_x_html": "は使用中のため削除できません。",
-        "dismiss_default": "このチームは解散します。<br>よろしいですか？"
+        "confirm_text": "よろしいですか？",
+        "remove_text": "を削除します。",
+        "remove_x_text": "は使用中のため削除できません。",
+        "dismiss_text": "を解散します。",
+        "dismiss_x_text": "は使用中のため解散できません。"
     },
     "popup": {
         "save": "保存しました。",

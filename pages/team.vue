@@ -3,7 +3,7 @@
     <v-data-table
       :headers="headers"
       :items="globals.team"
-      :class="myClass"
+      :class="tableClass"
       :items-per-page="1000"
       fixed-header
       hide-default-footer
@@ -57,14 +57,16 @@
     </v-append-dialog>
     <v-remove-dialog
       :item="remove"
-      :name="removeName"
       :title="$t('menu.team') + $t('dialog.dismiss')"
       max-width="300px"
       @accept="onRemove"
       @cancel="remove = null"
     >
       <template #enable>
-        <span v-html="removeText" />
+        <div v-text="removeName + $t('dialog.dismiss_text')" />
+      </template>
+      <template #disable>
+        <div v-text="removeName + $t('dialog.dismiss_x_text')" />
       </template>
     </v-remove-dialog>
   </v-container>
@@ -241,12 +243,16 @@ export default class PageTeam extends Vue {
     return item?.comment || "";
   }
 
-  get myClass() {
+  get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
   }
 
   get removeName() {
-    return this.remove?.name || "";
+    if (this.remove?.name) {
+      return `${this.$t("menu.team")} "${this.remove.name}" `;
+    } else {
+      return this.$t("menu.team");
+    }
   }
 
   created() {
@@ -278,14 +284,6 @@ export default class PageTeam extends Vue {
     if (this.remove) {
       this.$removeData(this.globals.team, this.remove);
       this.remove = null;
-    }
-  }
-
-  get removeText() {
-    if (this.remove?.name) {
-      return `チーム「${this.remove.name}」を解散します。<br>よろしいですか？`;
-    } else {
-      return `チームを解散します。<br>よろしいですか？`;
     }
   }
 }
