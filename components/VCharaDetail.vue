@@ -4,15 +4,16 @@
       <v-col :cols="cols" class="pa-0">
         <v-badge
           :value="!!conste"
-          :color="color"
           :content="conste"
+          :color="color"
           left
           offset-y="18px"
         >
           <v-select-name
-            :required="true"
-            :value.sync="refValue"
+            v-bind="$attrs"
+            v-on="$listeners"
             :items="items"
+            :mandatory="true"
             group="chara"
           />
         </v-badge>
@@ -38,8 +39,8 @@ div.detail {
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { CharaList, ICharaData } from "~/src/character";
+import { Vue, Component } from "vue-property-decorator";
+import { CharaList } from "~/src/character";
 import { ElementType } from "~/src/const";
 
 @Component({
@@ -50,22 +51,16 @@ import { ElementType } from "~/src/const";
   inheritAttrs: false,
 })
 export default class VCharaDetail extends Vue {
-  @Prop({ required: true }) items!: ReadonlyArray<ICharaData>;
-  @Prop({ default: "" }) value!: string;
-
-  get refValue() {
-    return this.value;
-  }
-  set refValue(value: string) {
-    this.$emit("update:value", value);
-  }
-
   get cols() {
     return this.$vuetify.breakpoint.xs ? "auto" : "12";
   }
 
+  get items() {
+    return this.$globals.chara;
+  }
+
   get item() {
-    return this.items.find((item) => item.id === this.value);
+    return this.items.find((item) => item.id === this.$attrs.value);
   }
 
   get comment() {

@@ -5,7 +5,7 @@
       v-on="$listeners"
       :headers="headers"
       :items="items"
-      :class="myClass"
+      :class="tableClass"
       :items-per-page="1000"
       fixed-header
       hide-default-footer
@@ -152,7 +152,7 @@ export default class VWeaponData extends Vue {
     remove: mdiDelete,
   };
 
-  get myClass() {
+  get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
   }
 

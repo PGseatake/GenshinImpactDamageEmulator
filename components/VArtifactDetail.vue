@@ -4,13 +4,14 @@
       <v-col :cols="cols" class="pa-0">
         <v-badge
           :value="!!level"
-          :color="color"
           :content="level"
+          :color="color"
           left
           offset-y="18px"
         >
           <v-select-name
-            :value.sync="refValue"
+            v-bind="$attrs"
+            v-on="$listeners"
             :items="items"
             :group="'artifact.' + type"
           />
@@ -50,23 +51,15 @@ import { IArtifactData } from "~/src/artifact";
   inheritAttrs: false,
 })
 export default class VArtifactDetail extends Vue {
-  @Prop({ required: true }) type!: ArtifactType;
   @Prop({ required: true }) items!: ReadonlyArray<IArtifactData>;
-  @Prop({ default: "" }) value!: string;
-
-  get refValue() {
-    return this.value;
-  }
-  set refValue(value: string) {
-    this.$emit("update:value", value);
-  }
+  @Prop({ required: true }) type!: ArtifactType;
 
   get cols() {
     return this.$vuetify.breakpoint.xs ? "auto" : "12";
   }
 
   get item() {
-    return this.items.find((item) => item.id === this.value);
+    return this.items.find((item) => item.id === this.$attrs.value);
   }
 
   get comment() {

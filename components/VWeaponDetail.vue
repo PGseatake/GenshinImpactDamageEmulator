@@ -4,14 +4,15 @@
       <v-col :cols="cols" class="pa-0">
         <v-badge
           :value="!!rank"
-          :color="color"
           :content="rank"
+          :color="color"
           left
           offset-y="18px"
         >
           <v-select-name
-            :value.sync="refValue"
-            :items="$globals[type]"
+            v-bind="$attrs"
+            v-on="$listeners"
+            :items="items"
             :group="'weapon.' + type"
           />
         </v-badge>
@@ -47,7 +48,7 @@ div.detail {
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { CharaList, CharaName } from "~/src/character";
+import { CharaList } from "~/src/character";
 import { WeaponList } from "~/src/weapon";
 
 @Component({
@@ -59,14 +60,6 @@ import { WeaponList } from "~/src/weapon";
 })
 export default class VWeaponDetail extends Vue {
   @Prop({ required: true }) chara!: string;
-  @Prop({ default: "" }) value!: string;
-
-  get refValue() {
-    return this.value;
-  }
-  set refValue(value: string) {
-    this.$emit("update:value", value);
-  }
 
   get cols() {
     return this.$vuetify.breakpoint.xs ? "auto" : "12";
@@ -82,7 +75,7 @@ export default class VWeaponDetail extends Vue {
   }
 
   get item() {
-    return this.items.find((item) => item.id === this.value);
+    return this.items.find((item) => item.id === this.$attrs.value);
   }
 
   get comment() {

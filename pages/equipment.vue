@@ -3,9 +3,10 @@
     <v-data-table
       :headers="headers"
       :items="globals.equip"
-      :class="myClass"
+      :class="tableClass"
       :items-per-page="1000"
       fixed-header
+      disable-sort
       hide-default-footer
     >
       <template v-slot:[`item.comment`]="{ item }">
@@ -18,7 +19,7 @@
         />
       </template>
       <template v-slot:[`item.chara`]="{ item }">
-        <v-chara-detail :value.sync="item.chara" :items="globals.chara" />
+        <v-chara-detail :value.sync="item.chara" />
       </template>
       <template v-slot:[`item.weapon`]="{ item }">
         <v-weapon-detail :chara="item.chara" :value.sync="item.weapon" />
@@ -285,7 +286,7 @@ export default class PageEquipment extends Vue {
     return chara?.comment || "";
   }
 
-  get myClass() {
+  get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
   }
 

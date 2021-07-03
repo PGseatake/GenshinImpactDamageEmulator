@@ -1,15 +1,20 @@
 <template>
   <v-menu offset-y>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn v-bind="attrs" v-on="on" small outlined class="px-1">{{
-        name
-      }}</v-btn>
+    <template #activator="{ attrs, on }">
+      <v-btn
+        v-bind="attrs"
+        v-on="on"
+        small
+        outlined
+        class="px-1"
+        v-text="name"
+      />
     </template>
     <v-list>
       <v-list-item-group
         v-model="selectedItem"
         color="primary"
-        :mandatory="required"
+        :mandatory="mandatory"
       >
         <v-list-item v-for="item in items" :key="item.id" link dense two-line>
           <v-list-item-content class="pa-0">
@@ -42,7 +47,7 @@ export default class VSelectName extends Vue {
   @Prop({ required: true }) items!: ReadonlyArray<NameComment>;
   @Prop({ required: true }) group!: string;
   @Prop({ default: "" }) value!: string;
-  @Prop({ default: false }) required!: boolean;
+  @Prop({ default: false }) mandatory!: boolean;
 
   @Emit("change")
   onChange() {}
