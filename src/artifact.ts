@@ -291,21 +291,20 @@ export function calcMain(type: konst.AnyBonusType, star: number, level: number):
     return 0;
 }
 
-export function calcScore(type: konst.AnyBonusType, star: number, level: number, value: number): number {
-    const param = getArtifactParam(type, star, level);
+export function calcScore(bonus: IBonusValueData, star: number, level: number): number | undefined {
+    const param = getArtifactParam(bonus.type, star, level);
     if (param?.substep) {
-        return Math.round(value / param.substep);
+        return Math.round(bonus.value / param.substep);
     }
-    return 0;
+    return undefined;
 }
 
-export interface IArtifactData extends IIdentify, INameable, ICommentable {
+export const SubBonus = ["sub1", "sub2", "sub3", "sub4"] as const;
+export type SubBonus = typeof SubBonus[number];
+
+export interface IArtifactData extends IIdentify, INameable, ICommentable, Record<SubBonus, IBonusValueData> {
     star: number;
     level: number;
     main: IBonusValueData;
-    sub1: IBonusValueData;
-    sub2: IBonusValueData;
-    sub3: IBonusValueData;
-    sub4: IBonusValueData;
 }
 export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;

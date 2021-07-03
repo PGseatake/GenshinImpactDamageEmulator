@@ -1,11 +1,27 @@
 <template>
   <v-row dense>
-    <v-col align-self="center" class="pa-0" cols="auto">
+    <v-col :align-self="align" class="pa-0" cols="auto">
       <v-menu offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs" v-on="on" :disabled="!selectable" fab x-small>
-            <v-icon>{{ icon }}</v-icon>
-          </v-btn>
+        <template #activator="{ attrs, on }">
+          <v-badge
+            :value="!!score"
+            :content="score"
+            left
+            offset-x="12"
+            offset-y="12"
+            color="cyan darken-1"
+          >
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              :disabled="!selectable"
+              fab
+              x-small
+              class="my-1"
+            >
+              <v-icon>{{ icon }}</v-icon>
+            </v-btn>
+          </v-badge>
         </template>
         <v-list>
           <v-list-item-group v-model="selectedItem" color="primary" mandatory>
@@ -86,11 +102,6 @@ const BonusDisplayInfo: ReadonlyRecord<BonusDisplayType, BonusDisplayInfo> = {
   phys_dmg: { icon: mdiBoxingGlove, suffix: "%" },
 };
 
-export type BonusValue = {
-  type: BonusDisplayType;
-  value: number;
-};
-
 @Component({
   name: "VBonusValue",
   components: { VNumberField: () => import("./VNumberField.vue") },
@@ -99,6 +110,7 @@ export default class VBonusValue extends Vue {
   @Prop({ required: true }) types!: ReadonlyArray<BonusDisplayType>;
   @Prop({ required: true }) type!: BonusDisplayType;
   @Prop({ required: true }) value!: number;
+  @Prop({ default: "" }) score!: string;
 
   @Emit("change")
   onChange() {}
@@ -145,6 +157,10 @@ export default class VBonusValue extends Vue {
 
   get precision() {
     return BonusDisplayInfo[this.type].suffix ? 1 : 0;
+  }
+
+  get align() {
+    return this.score ? "end" : "center";
   }
 }
 </script>

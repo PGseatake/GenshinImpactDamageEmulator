@@ -35,22 +35,39 @@
       </template>
       <template v-slot:[`item.main`]="{ item }">
         <v-bonus-value
-          :types="mains"
           v-bind.sync="item.main"
+          :types="mains"
+          :score="getTotal(item)"
           @change="onChangeMain(item)"
         />
       </template>
       <template v-slot:[`item.sub1`]="{ item }">
-        <v-bonus-value :types="subs" v-bind.sync="item.sub1" />
+        <v-bonus-value
+          v-bind.sync="item.sub1"
+          :types="subs"
+          :score="getScore(item, item.sub1)"
+        />
       </template>
       <template v-slot:[`item.sub2`]="{ item }">
-        <v-bonus-value :types="subs" v-bind.sync="item.sub2" />
+        <v-bonus-value
+          v-bind.sync="item.sub2"
+          :types="subs"
+          :score="getScore(item, item.sub2)"
+        />
       </template>
       <template v-slot:[`item.sub3`]="{ item }">
-        <v-bonus-value :types="subs" v-bind.sync="item.sub3" />
+        <v-bonus-value
+          v-bind.sync="item.sub3"
+          :types="subs"
+          :score="getScore(item, item.sub3)"
+        />
       </template>
       <template v-slot:[`item.sub4`]="{ item }">
-        <v-bonus-value :types="subs" v-bind.sync="item.sub4" />
+        <v-bonus-value
+          v-bind.sync="item.sub4"
+          :types="subs"
+          :score="getScore(item, item.sub4)"
+        />
       </template>
       <template v-slot:[`item.remove`]="{ item }">
         <v-btn fab x-small class="my-1" @click="onRemove(item)">
@@ -66,7 +83,10 @@
   tr:hover {
     background: inherit !important;
   }
-  .text-start {
+  th.text-start {
+    padding: 0 6px;
+  }
+  td.text-start {
     padding: 0 6px;
 
     // 名前
@@ -78,11 +98,15 @@
     &:nth-of-type(2) {
       min-width: 50px;
       max-width: 80px;
+      vertical-align: bottom;
+      padding: 0 6px 4px 6px;
     }
     // Lv
     &:nth-of-type(3) {
       min-width: 60px;
       max-width: 80px;
+      vertical-align: bottom;
+      padding: 0 6px 4px 6px;
     }
     // メイン効果
     &:nth-of-type(4) {
@@ -151,12 +175,15 @@ import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete } from "@mdi/js";
 import { ArtifactType } from "~/src/const";
+import { IBonusValueData } from "~/src/interface";
 import {
   IArtifactData,
   ArtifactNames,
   ArtifactMain,
   ArtifactSub,
   calcMain,
+  calcScore,
+  SubBonus,
 } from "~/src/artifact";
 
 @Component({
@@ -165,7 +192,6 @@ import {
     VBonusValue: () => import("~/components/VBonusValue.vue"),
     VNameComment: () => import("~/components/VNameComment.vue"),
     VSelectRange: () => import("~/components/VSelectRange.vue"),
-    VAscensionLevel: () => import("~/components/VAscensionLevel.vue"),
   },
   inheritAttrs: false,
 })
@@ -225,6 +251,28 @@ export default class VArtifactData extends Vue {
 
   onChangeMain(item: IArtifactData) {
     this.updateMain(item);
+  }
+
+  getScore({ star, level }: IArtifactData, bonus: IBonusValueData) {
+    const score = calcScore(bonus, star, level);
+    if (score !== undefined) {
+      return score.toString();
+    }
+    return "";
+  }
+
+  getTotal(item: IArtifactData) {
+    if (item.star < 4) return "";
+    let total = 0;
+    let limit = 10 + Math.floor(item.level / 4) * 10;
+    for (const sub of SubBonus) {
+      const score = calcScore(item[sub], item.star, item.level);
+      if (score !== undefined) {
+        total += score;
+      }
+    }
+    limit += item.star === 4 ? 20 : 30;
+    return `${total}/${limit}`;
   }
 
   updateMain(item: IArtifactData) {
