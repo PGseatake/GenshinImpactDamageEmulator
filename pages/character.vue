@@ -48,10 +48,10 @@ import {
 })
 export default class PageCharacter extends Vue {
   globals: GlobalCharaData = { chara: [] };
-  append = "";
+  append: CharaName | "" = "";
   remove: ICharaData | null = null;
 
-  readonly icons: IReadonlyMap<string> = {
+  readonly icons: IReadonlyDict<string> = {
     append: mdiPlaylistPlus,
   };
 
@@ -73,6 +73,7 @@ export default class PageCharacter extends Vue {
 
   created() {
     this.globals = this.$globals;
+    this.$store.commit("setAppendable", true);
   }
 
   onBeforeAppend() {
@@ -80,27 +81,29 @@ export default class PageCharacter extends Vue {
   }
 
   onAppend() {
-    const name = this.append as CharaName;
-    const item = CharaList[name];
-    const data: ICharaData = {
-      id: this.$makeUniqueId(),
-      name: name,
-      comment: "",
-      conste: 0,
-      level: "1",
-      hp: item.status.hp[0],
-      atk: item.status.atk[0],
-      def: item.status.def[0],
-      special: {
-        type: item.special,
-        value: item.spvalue[0],
-      },
-      combat: 1,
-      skill: 1,
-      burst: 1,
-    };
-    this.$appendData(this.globals.chara, data);
-    this.append = "";
+    const name = this.append;
+    if (name) {
+      const item = CharaList[name];
+      const data: ICharaData = {
+        id: this.$makeUniqueId(),
+        name: name,
+        comment: "",
+        conste: 0,
+        level: "1",
+        hp: item.status.hp[0],
+        atk: item.status.atk[0],
+        def: item.status.def[0],
+        special: {
+          type: item.special,
+          value: item.spvalue[0],
+        },
+        combat: 1,
+        skill: 1,
+        burst: 1,
+      };
+      this.$appendData(this.globals.chara, data);
+      this.append = "";
+    }
   }
 
   onBeforeRemove(data: ICharaData) {

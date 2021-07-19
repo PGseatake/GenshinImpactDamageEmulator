@@ -1,14 +1,14 @@
 import * as konst from "./const";
 import { IWeapon, IBonusValueData, IIdentify, INameable, ICommentable } from "./interface";
 
-const WeaponAtk3: IReadonlyMap<ReadonlyArray<number>> = {
+const WeaponAtk3: IReadonlyHash<ReadonlyArray<number>> = {
     //    1,  20, 20+,  40, 40+,  50, 50+,  60, 60+,  70, 70+,  80, 80+,  90
     38: [38, 86, 105, 151, 171, 193, 212, 234, 253, 274, 294, 314, 334, 354],
     39: [39, 94, 113, 169, 189, 216, 236, 263, 282, 309, 329, 355, 375, 401],
     40: [40, 102, 121, 187, 207, 239, 259, 292, 311, 344, 363, 396, 415, 448],
 } as const;
 
-const WeaponAtk4: IReadonlyMap<ReadonlyArray<number>> = {
+const WeaponAtk4: IReadonlyHash<ReadonlyArray<number>> = {
     //    1,  20, 20+,  40, 40+,  50, 50+,  60, 60+,  70, 70+,  80, 80+,  90
     39: [39, 94, 120, 176, 202, 229, 255, 282, 308, 335, 361, 388, 414, 440],
     41: [41, 99, 125, 184, 210, 238, 264, 293, 319, 347, 373, 401, 427, 454],
@@ -17,7 +17,7 @@ const WeaponAtk4: IReadonlyMap<ReadonlyArray<number>> = {
     45: [45, 128, 154, 247, 273, 321, 347, 395, 421, 470, 496, 545, 571, 620],
 } as const;
 
-const WeaponAtk5: IReadonlyMap<ReadonlyArray<number>> = {
+const WeaponAtk5: IReadonlyHash<ReadonlyArray<number>> = {
     //    1,  20, 20+,  40, 40+,  50, 50+,  60, 60+,  70, 70+,  80, 80+,  90
     44: [44, 110, 141, 210, 241, 275, 307, 341, 373, 408, 439, 475, 506, 542],
     46: [46, 122, 153, 235, 266, 308, 340, 382, 414, 457, 488, 532, 563, 608],

@@ -303,6 +303,7 @@ export const SubBonus = ["sub1", "sub2", "sub3", "sub4"] as const;
 export type SubBonus = typeof SubBonus[number];
 
 export interface IArtifactData extends IIdentify, INameable, ICommentable, Record<SubBonus, IBonusValueData> {
+    name: ArtifactName;
     star: number;
     level: number;
     main: IBonusValueData;

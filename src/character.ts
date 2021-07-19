@@ -243,9 +243,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         },
         passive: {
             // 4. 創生術・擬似陽華の刹那の花がHP50％以下の敵にダメージを与えた場合、ダメージ量+25％
-            lv4: { items: konst.CombatBonusType.Skill, value: 25.0, limit: "元素スキルがHP50％以下の敵にダメージを与えた時" },
+            asc1st: { items: konst.CombatBonusType.Skill, value: 25.0, limit: "元素スキルがHP50％以下の敵にダメージを与えた時" },
             // 5. 誕生式・大地の潮を発動した時、付近のチーム内キャラクターの元素熟知を+125、継続時間10秒。
-            lv5: { items: konst.StatusBonusType.Elem, value: 125, limit: "元素爆発を発動した時付近のキャラ", times: 10, target: konst.BonusTarget.All },
+            asc4th: { items: konst.StatusBonusType.Elem, value: 125, limit: "元素爆発を発動した時付近のキャラ", times: 10, target: konst.BonusTarget.All },
         },
         conste: {
             // 1. アルベドの創生術・疑似陽華の刹那の花が放たれた時、アルベド自身の元素エネルギーが1.2回復する。
@@ -321,7 +321,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         passive: {
             // 4. 矢の雨の会心率+10%、影響範囲+30%。
             // 5. 狙い撃ちが弱点に命中すると、攻撃力+15%、継続時間10秒。
-            lv5: { items: konst.StatusBonusType.AtkBuf, value: 15.0, limit: "狙い撃ちが弱点に命中した時", times: 10 },
+            asc4th: { items: konst.StatusBonusType.AtkBuf, value: 15.0, limit: "狙い撃ちが弱点に命中した時", times: 10 },
         },
         conste: {
             // 1. 狙い撃ちする時、矢を連続2本放つ。2本目の矢は元の矢の20%のダメージを与える。
@@ -465,7 +465,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             // 5. 最大ダメージ上昇効果のある浪追いを発動した10秒内、下記の効果が発動される:
             //    ・通常攻撃と重撃の攻撃速度+15%、攻撃ダメージ+15%
             //    ・重撃に必要な時間が大幅に減少する。
-            lv5: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 15.0, limit: "最大ダメージ上昇効果のある元素スキルを発動した時", times: 10 },
+            asc4th: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 15.0, limit: "最大ダメージ上昇効果のある元素スキルを発動した時", times: 10 },
         },
         conste: {
             // 1. 雷斫り発動時:HP上限16%相当のシールドを生成し、持続時間15秒。該当シールドは雷ダメージに対して250%の吸収効果がある。
@@ -617,7 +617,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             // 4. 霊刃・重華積霜エリア内にいる時、片手剣、両手剣、長柄武器キャラの通常攻撃と攻撃速度が8%上昇する。
             // 5. 霊刃・重華積霜エリアが消えた時、自動的に付近の敵を攻撃する霊刃を召喚し、霊刃・重華積霜のスキルダメージ100%の氷範囲ダメージを与える。
             //    命中された敵の氷耐性が10%減少する、継続時間8秒。
-            lv5: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Cryo, value: 10.0, limit: "元素スキルの霊刃が命中した敵", times: 8 },
+            asc4th: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Cryo, value: 10.0, limit: "元素スキルの霊刃が命中した敵", times: 8 },
         },
         conste: {
             // 1. 通常攻撃の最後の一撃が前方に3つの氷の刃を放ち、氷の刃は途中の敵に重雲の50%攻撃力の氷ダメージを与える。
@@ -692,7 +692,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             burst: { extra: konst.ExtraBonusType.Enchant, elem: konst.ElementType.Pyro, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素爆発発動後", times: 8 },
             // 4. 重撃のスタミナ消費-50%、最大継続時間+3秒。
             // 5. 黎明による炎元素バフの継続時間+4秒。さらに効果継続中にディルックの与える炎ダメージ+20%。
-            lv5: { items: konst.ElementBonusType.Pyro, value: 20.0, limit: "元素爆発の炎元素付与継続中", times: 12 },
+            asc4th: { items: konst.ElementBonusType.Pyro, value: 20.0, limit: "元素爆発の炎元素付与継続中", times: 12 },
         },
         conste: {
             // 1. HPが50%より上回る敵に対して、ディルックの与えるダメージ+15％。
@@ -915,7 +915,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             // 4. 霜華の矢を放った後の5秒以内に放たれた霜華の矢と霜華満開の会心率+20%
             // TODO: lv4: { items: CriticalBonusType.Heavy, value: 20.0, limit: "霜華の矢を放った後", times: 5, target: "heavy_ex" },
             // 5. 降衆天華エリア内のキャラクターの氷元素ダメージ+20%
-            lv5: { items: konst.ElementBonusType.Cryo, value: 20.0, limit: "元素爆発エリア内のキャラ", target: konst.BonusTarget.All },
+            asc4th: { items: konst.ElementBonusType.Cryo, value: 20.0, limit: "元素爆発エリア内のキャラ", target: konst.BonusTarget.All },
         },
         conste: {
             // 1. 二段チャージ重撃の霜華の矢または霜華満開が命中した時、敵の氷元素耐性-15%。継続時間6秒
@@ -994,7 +994,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
                     extra: konst.ExtraBonusType.Flat,
                     dest: konst.StatusBonusType.Atk,
                     base: konst.FlatBonusBase.Hp,
-                    max: { base: konst.FlatBonusBase.Atk, value: 400 },
+                    bound: { base: konst.FlatBonusBase.Atk, value: 400 },
                     scale: konst.DamageScale.Xiao,
                     value: 3.84,
                     limit: "元素スキル発動後",
@@ -1003,9 +1003,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
                 { extra: konst.ExtraBonusType.Enchant, elem: konst.ElementType.Pyro, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素スキル発動後", times: 9 },
             ],
             // 4. 蝶導来世による冥蝶の舞状態終了後、チーム全員(胡桃自身を除く)の会心率+12%、継続時間8秒。
-            lv4: { items: konst.CriticalBonusType.Rate, value: 12, limit: "元素スキル終了後", times: 8, target: konst.BonusTarget.Other },
+            asc1st: { items: konst.CriticalBonusType.Rate, value: 12, limit: "元素スキル終了後", times: 8, target: konst.BonusTarget.Other },
             // 5. 胡桃のHPが50%以下の時、炎元素ダメージ+33%。
-            lv5: { items: konst.ElementBonusType.Pyro, value: 100 / 3, limit: "HPが50%以下の時" },
+            asc4th: { items: konst.ElementBonusType.Pyro, value: 100 / 3, limit: "HPが50%以下の時" },
         },
         conste: {
             // 1. 蝶導来世による冥蝶の舞状態の時、胡桃の重撃はスタミナを消費しない。
@@ -1219,9 +1219,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         },
         passive: {
             // 4. 雷楔継続中に再び星辰帰位を発動すると、刻晴は雷元素バフを獲得する。継続時間5秒。
-            lv4: { extra: konst.ExtraBonusType.Enchant, elem: konst.ElementType.Elect, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "星辰帰位を発動後", times: 5 },
+            asc1st: { extra: konst.ExtraBonusType.Enchant, elem: konst.ElementType.Elect, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "星辰帰位を発動後", times: 5 },
             // 5. 天街巡遊継続中、刻晴の会心率+15%、元素チャージ効率+15%、継続時間8秒。
-            lv5: { items: [konst.CriticalBonusType.Rate, konst.StatusBonusType.EnRec], value: 15.0, limit: "元素爆発継続中", times: 8 },
+            asc4th: { items: [konst.CriticalBonusType.Rate, konst.StatusBonusType.EnRec], value: 15.0, limit: "元素爆発継続中", times: 8 },
         },
         conste: {
             // 1. 雷楔継続中に再び星辰帰位を発動すると、刻晴は消失位置と出現位置に攻撃力の50%の雷元素範囲ダメージを与える。
@@ -1292,7 +1292,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             // 4. ボンボン爆弾と通常攻撃が敵にダメージを与える時、50%の確率でクレーが爆裂花火を獲得する。
             //    重撃を発動する時はスタミナの変わりに爆裂花火を優先的に消費し、さらに与えるダメージ+50%
             // 5. クレーの重撃が会心発生した後、チーム全員の元素エネルギーが2回復する。
-            lv5: { items: konst.CombatBonusType.Heavy, value: 50.0, limit: "爆裂花火を消費した時", times: 25 },
+            asc4th: { items: konst.CombatBonusType.Heavy, value: 50.0, limit: "爆裂花火を消費した時", times: 25 },
         },
         conste: {
             // 1. 攻撃やスキル発動の際に、一定確率で花火を召喚し敵を攻撃、ドッカン花火攻撃力の120%ダメージを与える。
@@ -1366,7 +1366,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         passive: {
             // 4. 重撃が命中した時、敵に蒼雷の誘雷効果を付与する。
             // 5. 薔薇の雷光攻撃を受けた敵の防御力-15%、継続時間10秒。
-            lv5: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductBonusType.Defence, value: 15.0, limit: "元素爆発の攻撃を受けた敵", times: 10 },
+            asc4th: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductBonusType.Defence, value: 15.0, limit: "元素爆発の攻撃を受けた敵", times: 10 },
         },
         conste: {
             // 1. 蒼雷を長押しで発動した後、敵に命中する度にリサの元素エネルギー+2。一回で最大10まで回復可能。
@@ -1438,7 +1438,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             // 4. 虚実流動状態に入った2秒後、周囲に敵がいる場合は自動的に虚影を1つ生成する。
             //    虚影は2秒間存在し破裂する。破裂ダメージは水中幻願のダメージの50%。
             // 5. モナの与える水ダメージが増加する。増加量はモナの元素チャージ効率の20%に相当する。
-            lv5: { extra: konst.ExtraBonusType.Flat, dest: konst.ElementBonusType.Hydro, base: konst.StatusBonusType.EnRec, value: 20.0 },
+            asc4th: { extra: konst.ExtraBonusType.Flat, dest: konst.ElementBonusType.Hydro, base: konst.StatusBonusType.EnRec, value: 20.0 },
         },
         conste: {
             // 1. チーム内の自身のキャラクターの攻撃が星異状態の敵に命中した8秒間、水元素の関連反応の効果が上昇する：
@@ -1507,7 +1507,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         passive: {
             // 4. 星璇がついている間に、凝光の重撃はスタミナを消費しない。
             // 5. 璇璣屏を突き抜けたキャラの岩ダメージ+12%、継続時間10秒
-            lv5: { items: konst.ElementBonusType.Geo, value: 12.0, limit: "璇璣屏を突き抜けたキャラ", times: 10, target: konst.BonusTarget.All },
+            asc4th: { items: konst.ElementBonusType.Geo, value: 12.0, limit: "璇璣屏を突き抜けたキャラ", times: 10, target: konst.BonusTarget.All },
         },
         conste: {
             // 1. 通常攻撃が命中すると範囲ダメージを与える。
@@ -1719,7 +1719,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         passive: {
             // 4. 鋭い爪と蒼雷のクールタイムが18％減少する。雷牙を放つ時、鋭い爪と蒼雷のクールタイムをリセットする。
             // 5. レザーの元素エネルギーが50％以下になると、元素チャージ効率30％上昇する。
-            lv5: { items: konst.StatusBonusType.EnRec, value: 30.0, limit: "元素エネルギーが50%以下の時" },
+            asc4th: { items: konst.StatusBonusType.EnRec, value: 30.0, limit: "元素エネルギーが50%以下の時" },
         },
         conste: {
             // 1. レザーが元素オーブまたは元素粒子を獲得した8秒内、与えるダメージが10％上昇する。
@@ -1791,15 +1791,15 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         },
         passive: {
             // 4. 罪喰いの懺悔で敵の背後から攻撃すると、ロサリアの会心率+12%、継続時間5秒。
-            lv4: { items: konst.CriticalBonusType.Rate, value: 12.0, limit: "元素スキルで背後から攻撃した時", times: 5 },
+            asc1st: { items: konst.CriticalBonusType.Rate, value: 12.0, limit: "元素スキルで背後から攻撃した時", times: 5 },
             // 5. 臨終の聖礼発動時、自身の会心率の15%分、チーム全員(ロサリア自身を除く)の会心率をアップさせる、継続時間10秒。
             //    この方法で獲得できる会心率アップ効果は、最大15%まで。
-            lv5: {
+            asc4th: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.CriticalBonusType.Rate,
                 base: konst.CriticalBonusType.Rate,
                 value: 15.0,
-                max: { base: konst.FlatBonusBase.CriRate, value: 15.0 },
+                bound: { base: konst.FlatBonusBase.CriRate, value: 15.0 },
                 limit: "元素爆発発動後",
                 times: 10,
                 target: konst.BonusTarget.Other
@@ -1872,9 +1872,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         },
         passive: {
             // 4. スクロースが拡散反応を起こした時、該当元素のチームメンバー全員（スクロース自身を除く）の元素熟知+50、継続時間8秒。
-            lv4: { items: konst.StatusBonusType.Elem, value: 50, limit: "拡散反応を起こした時、該当元素のキャラ", times: 8, target: konst.BonusTarget.Other },
+            asc1st: { items: konst.StatusBonusType.Elem, value: 50, limit: "拡散反応を起こした時、該当元素のキャラ", times: 8, target: konst.BonusTarget.Other },
             // 5. 「風霊作成·六三〇八」又は「禁·風霊作成·七五同構弐型」が敵に命中した時、スクロースの元素熟知の20%を基準に、チーム内キャラクター全員（スクロース自身を除く）の元素熟知を強化、継続時間8秒。
-            lv5: { extra: konst.ExtraBonusType.Flat, dest: konst.StatusBonusType.Elem, base: konst.StatusBonusType.Elem, value: 20.0, limit: "元素スキル・元素爆発が敵に命中した時", times: 8, target: konst.BonusTarget.Other },
+            asc4th: { extra: konst.ExtraBonusType.Flat, dest: konst.StatusBonusType.Elem, base: konst.StatusBonusType.Elem, value: 20.0, limit: "元素スキル・元素爆発が敵に命中した時", times: 8, target: konst.BonusTarget.Other },
         },
         conste: {
             // 1. 風霊作成・六三〇八の発動可能回数+1。
@@ -2108,7 +2108,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         passive: {
             // 4. グゥオパァーの噴火距離が20％上昇する。
             // 5. グゥオパァー出撃効果終了時、グゥオパァーは消える位置に唐辛子を残す。唐辛子を拾うと、攻撃力10％上昇する。継続時間10秒。
-            lv5: { items: konst.StatusBonusType.AtkBuf, value: 10.0, limit: "唐辛子を拾った時", times: 10 },
+            asc4th: { items: konst.StatusBonusType.AtkBuf, value: 10.0, limit: "唐辛子を拾った時", times: 10 },
         },
         conste: {
             // 1. グゥオパァーに攻撃された敵の炎耐性が15％減少する、継続時間6秒。
@@ -2180,9 +2180,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             //        この状態の魈は、HPが持続的に減少する。この効果は魈が退場する時に解除される。
             burst: { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.CombatDmg, base: konst.FlatBonusBase.None, value: 58.5, scale: konst.DamageScale.Xiao, limit: "元素爆発発動後", times: 15 },
             // 4. 靖妖儺舞状態の時、魈の与える全ダメージ+5%。また、スキル継続中、3秒毎に与える全ダメージが更に+5%。最大25％まで。
-            lv4: { items: konst.AnyBonusType.Damage, value: 5.0, limit: "元素爆発継続中3秒毎", stack: 5 },
+            asc1st: { items: konst.AnyBonusType.Damage, value: 5.0, limit: "元素爆発継続中3秒毎", stack: 5 },
             // 5. 風輪両立発動後の7秒間、風輪両立によるダメージ+15%。継続時間7秒、最大3重まで、重複で発動すると継続時間がリセットされる。
-            lv5: { items: konst.CombatBonusType.Skill, value: 15.0, limit: "元素スキル発動後", times: 7, stack: 3 },
+            asc4th: { items: konst.CombatBonusType.Skill, value: 15.0, limit: "元素スキル発動後", times: 7, stack: 3 },
         },
         conste: {
             // 1. 風輪両立の使用可能回数+1。
@@ -2253,7 +2253,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         passive: {
             // 4. 雨すだれの剣が破壊、または継続時間が終了したとき、行秋のHP上限の6％を基準に出場キャラのHPを回復する。
             // 5. 行秋の水ダメージ+20％。
-            lv5: { items: konst.ElementBonusType.Hydro, value: 20.0 },
+            asc4th: { items: konst.ElementBonusType.Hydro, value: 20.0 },
         },
         conste: {
             // 1. 雨すだれの剣の最大本数+1。
@@ -2327,7 +2327,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             //    ・Lv2シールド・指揮のリズム：1名の敵に命中する；
             //    ・Lv3シールド・舞のリズム：2名の敵に命中する。
             // 5. 情熱の薙ぎ払いのシールドが存在する時、キャラクターが与える物理ダメージが15%上昇する。
-            lv5: { items: konst.ElementBonusType.Phys, value: 15.0, limit: "元素スキルのシールドが存在する時" },
+            asc4th: { items: konst.ElementBonusType.Phys, value: 15.0, limit: "元素スキルのシールドが存在する時" },
         },
         conste: {
             // 1. 会心攻撃が発生した5秒間、通常攻撃と重撃の攻撃速度が12%上昇する。5秒毎に1回のみ発動可能。
@@ -2399,7 +2399,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             burst: { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.HeavyDmg, base: konst.FlatBonusBase.None, value: 33.0, scale: konst.DamageScale.Elem, limit: "元素爆発発動後", times: 15 },
             // 4. 煙緋が重撃で丹火の印を消費した時、丹火の印1枚につき炎元素ダメージ+5%、継続時間6秒。
             //    効果持続中に再び重撃を放つと、既存の効果が先にクリアされる。
-            lv4: { items: konst.ElementBonusType.Pyro, value: 5.0, limit: "重撃で丹火の印を消費した時", times: 6, stack: 6 },
+            asc1st: { items: konst.ElementBonusType.Pyro, value: 5.0, limit: "重撃で丹火の印を消費した時", times: 6, stack: 6 },
             // 5. 煙緋が自ら発動した重撃が敵に対して会心した時、追加で自身の攻撃力80%分の炎元素範囲ダメージを与える。
             //    このダメージは重撃によるダメージとみなされる。
         },
@@ -2477,7 +2477,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             //    玉璋シールドに守られたキャラクターのシールド強化+5%。
             //    シールドが消えるまで、最大5回強度を上げることができる。
             // 5. 天星のダメージ量が鍾離のHP上限の33%分上昇する。
-            lv5: [
+            asc4th: [
                 { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Combat, base: konst.StatusBonusType.Hp, value: 1.39 },
                 { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Skill, base: konst.StatusBonusType.Hp, value: 1.9 },
                 { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Burst, base: konst.StatusBonusType.Hp, value: 100.0 / 3 },
@@ -2510,7 +2510,7 @@ export type GlobalCharaData = { chara: ICharaData[]; };
 
 /*
 // https://bbs.mihoyo.com/ys/article/2160993
-const ENEMY_LIST: DeepReadonly<IMap<IEnemy>> = {
+const ENEMY_LIST: IReadonlyHash<IEnemy> = {
     SlimePyro: {
         name: "スライム・炎",
         resist: {

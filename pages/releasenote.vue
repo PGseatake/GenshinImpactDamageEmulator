@@ -16,6 +16,9 @@ import { Vue, Component } from "vue-property-decorator";
   components: { VReleaseRoot: () => import("~/components/VReleaseRoot.vue") },
 })
 export default class PageReleaseNote extends Vue {
+  created() {
+    this.$store.commit("setAppendable", false);
+  }
   items() {
     return this.$t("releasenote");
   }

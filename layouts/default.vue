@@ -67,10 +67,15 @@
         </template>
         <template v-else>
           <span v-for="(list, index) in toolList" :key="index">
-            <template v-if="list.type === 'locale-select'">
+            <template v-if="list.type === 'locale'">
               <v-locale-select fab icon>
                 <v-icon v-text="list.icon" />
               </v-locale-select>
+            </template>
+            <template v-else-if="list.type === 'append'">
+              <v-btn fab icon :disabled="!appendable" @click="list.func">
+                <v-icon v-text="list.icon" />
+              </v-btn>
             </template>
             <template v-else>
               <v-btn fab icon @click="list.func">
@@ -108,10 +113,21 @@
             class="ma-0"
           >
             <v-list-item-icon>
-              <template v-if="list.type === 'locale-select'">
+              <template v-if="list.type === 'locale'">
                 <v-locale-select fab icon small>
                   <v-icon v-text="list.icon" />
                 </v-locale-select>
+              </template>
+              <template v-else-if="list.type === 'append'">
+                <v-btn
+                  fab
+                  icon
+                  small
+                  :disabled="!appendable"
+                  @click="list.func"
+                >
+                  <v-icon v-text="list.icon" />
+                </v-btn>
               </template>
               <template v-else>
                 <v-btn fab icon small @click="list.func">
@@ -203,6 +219,7 @@ import {
   mdiAccountMultiplePlus,
   mdiClose,
   mdiContentSave,
+  mdiExpandAll,
   mdiExport,
   mdiHome,
   mdiImport,
@@ -254,17 +271,18 @@ export default class Default extends Vue {
     { icon: mdiHome, page: "index", to: "/" },
     { icon: mdiTshirtCrew, page: "equipment", to: "/equipment" },
     { icon: mdiAccountMultiplePlus, page: "team", to: "/team" },
+    { icon: mdiExpandAll, page: "bonus", to: "/bonus" },
     { icon: mdiAccount, page: "character", to: "/character" },
     { icon: mdiSword, page: "weapon", to: "/weapon" },
     { icon: mdiRing, page: "artifact", to: "/artifact" },
     { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
   ];
   toolList: ITool[] = [
-    { icon: mdiPlaylistPlus, func: undefined },
+    { icon: mdiPlaylistPlus, func: undefined, type: "append" },
     { icon: mdiContentSave, func: undefined },
     { icon: mdiImport, func: undefined },
     { icon: mdiExport, func: undefined },
-    { icon: mdiTranslate, type: "locale-select" },
+    { icon: mdiTranslate, type: "locale" },
   ];
   readonly icons = {
     menu: mdiMenu,
@@ -284,6 +302,10 @@ export default class Default extends Vue {
 
   get page() {
     return this.pageList[this.selectedPage].page;
+  }
+
+  get appendable() {
+    return this.$store.state.appendable;
   }
 
   get storePopup() {

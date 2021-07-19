@@ -108,6 +108,7 @@ export const CombatBonusType = {
     Normal: "normal_dmg",
     Heavy: "heavy_dmg",
     Plunge: "plunge_dmg",
+    Combat: "combat_dmg",
     Skill: "skill_dmg",
     Burst: "burst_dmg"
 } as const;
@@ -157,8 +158,6 @@ export const BonusTarget = {
     Enemy: "enemy", // 敵
 } as const;
 export type BonusTarget = typeof BonusTarget[keyof typeof BonusTarget];
-
-export type BonusDisplayType = "none" | StatusBonusType | ElementBonusType;
 
 export const TalentType = {
     Combat: "combat",

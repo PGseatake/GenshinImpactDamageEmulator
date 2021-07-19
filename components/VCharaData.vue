@@ -206,7 +206,7 @@ export default class VCharacterData extends Vue {
       width: "50px",
     },
   ];
-  readonly icons: IReadonlyMap<string> = {
+  readonly icons: IReadonlyDict<string> = {
     remove: mdiDelete,
   };
 

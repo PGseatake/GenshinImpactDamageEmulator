@@ -32,5 +32,14 @@
 </template>
 
 <script lang="ts">
-export default {};
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
+  name: "index",
+})
+export default class PageIndex extends Vue {
+  created() {
+    this.$store.commit("setAppendable", false);
+  }
+}
 </script>

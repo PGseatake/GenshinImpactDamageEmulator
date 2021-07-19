@@ -68,6 +68,7 @@ import { mdiPlaylistPlus } from "@mdi/js";
 import { ArtifactTypes, BonusType } from "~/src/const";
 import {
   ArtifactMain,
+  ArtifactName,
   ArtifactNames,
   IArtifactData,
   GlobalArtifactData,
@@ -90,11 +91,11 @@ export default class PageArtifact extends Vue {
     circlet: [],
   };
   tab = 0;
-  append = "";
+  append: ArtifactName | "" = "";
   remove: IArtifactData | null = null;
 
   readonly types = ArtifactTypes;
-  readonly icons: IReadonlyMap<string> = {
+  readonly icons: IReadonlyDict<string> = {
     append: mdiPlaylistPlus,
   };
 
@@ -136,6 +137,7 @@ export default class PageArtifact extends Vue {
 
   created() {
     this.globals = this.$globals;
+    this.$store.commit("setAppendable", true);
   }
 
   onBeforeAppend() {
@@ -144,35 +146,37 @@ export default class PageArtifact extends Vue {
 
   onAppend() {
     const name = this.append;
-    const data: IArtifactData = {
-      id: this.$makeUniqueId(),
-      name: name,
-      comment: "",
-      star: 3,
-      level: 0,
-      main: {
-        type: ArtifactMain[this.type][0],
-        value: 0,
-      },
-      sub1: {
-        type: BonusType.None,
-        value: 0,
-      },
-      sub2: {
-        type: BonusType.None,
-        value: 0,
-      },
-      sub3: {
-        type: BonusType.None,
-        value: 0,
-      },
-      sub4: {
-        type: BonusType.None,
-        value: 0,
-      },
-    };
-    this.$appendData(this.globals[this.type], data);
-    this.append = "";
+    if (name) {
+      const data: IArtifactData = {
+        id: this.$makeUniqueId(),
+        name: name,
+        comment: "",
+        star: 3,
+        level: 0,
+        main: {
+          type: ArtifactMain[this.type][0],
+          value: 0,
+        },
+        sub1: {
+          type: BonusType.None,
+          value: 0,
+        },
+        sub2: {
+          type: BonusType.None,
+          value: 0,
+        },
+        sub3: {
+          type: BonusType.None,
+          value: 0,
+        },
+        sub4: {
+          type: BonusType.None,
+          value: 0,
+        },
+      };
+      this.$appendData(this.globals[this.type], data);
+      this.append = "";
+    }
   }
 
   onBeforeRemove(data: IArtifactData) {

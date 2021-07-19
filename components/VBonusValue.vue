@@ -72,43 +72,41 @@ import {
   mdiWaterOutline,
   mdiWaterPercent,
 } from "@mdi/js";
-import { BonusType, BonusDisplayType } from "~/src/const";
+import { BonusType, StatusBonusType, ElementBonusType } from "~/src/const";
+import { getSuffix, isRateBonus } from "~/src/bonus";
 
-type BonusDisplayInfo = {
-  icon: string;
-  suffix?: string;
-};
+type DisplayBonusType = "none" | StatusBonusType | ElementBonusType;
 
-const BonusDisplayInfo: ReadonlyRecord<BonusDisplayType, BonusDisplayInfo> = {
-  none: { icon: mdiMinus },
-  hp: { icon: mdiWaterOutline },
-  hp_buf: { icon: mdiWaterPercent, suffix: "%" },
-  atk: { icon: mdiSword },
-  atk_buf: { icon: mdiSwordCross, suffix: "%" },
-  def: { icon: mdiShieldOutline },
-  def_buf: { icon: mdiShieldHalfFull, suffix: "%" },
-  elem: { icon: mdiGoogleCirclesExtended },
-  en_rec: { icon: mdiRestore, suffix: "%" },
-  heal_buf: { icon: mdiRestore, suffix: "%" },
-  cri_dmg: { icon: mdiStarFourPoints, suffix: "%" },
-  cri_rate: { icon: mdiStarFourPoints, suffix: "%" },
-  pyro_dmg: { icon: mdiAlphaPCircleOutline, suffix: "%" },
-  hydro_dmg: { icon: mdiAlphaHCircleOutline, suffix: "%" },
-  dendro_dmg: { icon: mdiAlphaDCircleOutline, suffix: "%" },
-  elect_dmg: { icon: mdiAlphaECircleOutline, suffix: "%" },
-  anemo_dmg: { icon: mdiAlphaACircleOutline, suffix: "%" },
-  cryo_dmg: { icon: mdiAlphaCCircleOutline, suffix: "%" },
-  geo_dmg: { icon: mdiAlphaGCircleOutline, suffix: "%" },
-  phys_dmg: { icon: mdiBoxingGlove, suffix: "%" },
-};
+const BonusIcons: Record<DisplayBonusType, string> = {
+  none: mdiMinus,
+  hp: mdiWaterOutline,
+  hp_buf: mdiWaterPercent,
+  atk: mdiSword,
+  atk_buf: mdiSwordCross,
+  def: mdiShieldOutline,
+  def_buf: mdiShieldHalfFull,
+  elem: mdiGoogleCirclesExtended,
+  en_rec: mdiRestore,
+  heal_buf: mdiRestore,
+  cri_dmg: mdiStarFourPoints,
+  cri_rate: mdiStarFourPoints,
+  pyro_dmg: mdiAlphaPCircleOutline,
+  hydro_dmg: mdiAlphaHCircleOutline,
+  dendro_dmg: mdiAlphaDCircleOutline,
+  elect_dmg: mdiAlphaECircleOutline,
+  anemo_dmg: mdiAlphaACircleOutline,
+  cryo_dmg: mdiAlphaCCircleOutline,
+  geo_dmg: mdiAlphaGCircleOutline,
+  phys_dmg: mdiBoxingGlove,
+} as const;
 
 @Component({
   name: "VBonusValue",
   components: { VNumberField: () => import("./VNumberField.vue") },
 })
 export default class VBonusValue extends Vue {
-  @Prop({ required: true }) types!: ReadonlyArray<BonusDisplayType>;
-  @Prop({ required: true }) type!: BonusDisplayType;
+  @Prop({ required: true }) types!: ReadonlyArray<DisplayBonusType>;
+  @Prop({ required: true }) type!: DisplayBonusType;
   @Prop({ required: true }) value!: number;
   @Prop({ default: "" }) score!: string;
 
@@ -141,7 +139,7 @@ export default class VBonusValue extends Vue {
   }
 
   get icon() {
-    return BonusDisplayInfo[this.type].icon!;
+    return BonusIcons[this.type];
   }
 
   get label() {
@@ -152,11 +150,11 @@ export default class VBonusValue extends Vue {
   }
 
   get suffix() {
-    return BonusDisplayInfo[this.type].suffix || "";
+    return getSuffix(this.type);
   }
 
   get precision() {
-    return BonusDisplayInfo[this.type].suffix ? 1 : 0;
+    return isRateBonus(this.type) ? 1 : 0;
   }
 
   get align() {

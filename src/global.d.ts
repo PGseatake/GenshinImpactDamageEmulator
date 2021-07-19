@@ -1,6 +1,7 @@
 import { IBonusValueData, IIdentify } from "~/src/interface";
 import { GlobalData } from "~/src/convert";
 import { ElementType } from "./const";
+import { BonusBase } from "./bonus";
 
 export { };
 
@@ -16,13 +17,17 @@ declare global {
     type Arrayable<T> = T | T[];
     type ReadonlyArrayable<T> = T | ReadonlyArray<T>;
 
-    interface IMap<T> {
+    interface IDict<T> {
         [key: string]: T;
-        [key: number]: T;
+    }
+    interface IReadonlyDict<T> {
+        readonly [key: string]: T;
     }
 
-    interface IReadonlyMap<T> {
-        readonly [key: string]: T;
+    interface IHash<T> {
+        [key: number]: T;
+    }
+    interface IReadonlyHash<T> {
         readonly [key: number]: T;
     }
 }
@@ -30,11 +35,14 @@ declare global {
 declare module "vue/types/vue" {
     interface Vue {
         $globals: GlobalData;
+        $bonuses: IDict<BonusBase>;
         $makeUniqueId: () => string;
         $appendData: (data: IIdentify[], item: IIdentify) => void;
         $removeData: (data: IIdentify[], item: IIdentify) => void;
         $formatBonus: (vm: Vue, data: IBonusValueData | undefined) => string;
         $starColor: (star: number) => string;
         $elementBGColor: (elem: ElementType) => string;
+        $roundRate: (value: number) => string;
+        $roundFloat: (value: number) => string;
     }
 }

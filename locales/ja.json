@@ -4,6 +4,7 @@
         "index": "ホーム",
         "equipment": "装備",
         "team": "チーム",
+        "bonus": "ボーナス",
         "character": "キャラクター",
         "weapon": "武器",
         "artifact": "聖遺物",
@@ -19,7 +20,11 @@
         "feather": "死の羽",
         "sands": "時の砂",
         "goblet": "空の杯",
-        "circlet": "理の冠"
+        "circlet": "理の冠",
+        "source": "発生元",
+        "condition": "効果",
+        "stack": "重",
+        "times": "継続時間"
     },
     "general": {
         "none": "なし",
@@ -41,7 +46,8 @@
         "sub4": "サブ効果4",
         "team": "チーム名",
         "member": "メンバー",
-        "resonance": "元素共鳴"
+        "resonance": "元素共鳴",
+        "everyone": "全員"
     },
     "dialog": {
         "yes": "はい",
@@ -62,6 +68,18 @@
         "dismiss_text": "を解散します。",
         "dismiss_x_text": "は使用中のため解散できません。"
     },
+    "origin": {
+        "skill": "元素スキル",
+        "burst": "元素爆発",
+        "asc1st": "天賦",
+        "asc4th": "天賦",
+        "lv1": "命の星座1",
+        "lv2": "命の星座2",
+        "lv4": "命の星座4",
+        "lv6": "命の星座6",
+        "weapon": "武器",
+        "artifact": "聖遺物"
+    },
     "popup": {
         "save": "保存しました。",
         "import": "インポートしました。",
@@ -77,12 +95,20 @@
         "geo": "岩",
         "phys": "物理"
     },
+    "combat": {
+        "normal": "通常攻撃",
+        "heavy": "重撃",
+        "plunge": "落下攻撃",
+        "skill": "元素スキル",
+        "burst": "元素爆発"
+    },
     "bonus": {
         "none": "なし",
         "hp": "HP",
         "hp_buf": "HP(%)",
         "atk": "攻撃力",
         "atk_buf": "攻撃力(%)",
+        "atk_base": "基礎攻撃力",
         "def": "防御力",
         "def_buf": "防御力(%)",
         "elem": "元素熟知",
@@ -101,7 +127,13 @@
         "geo_dmg": "岩ダメージ",
         "phys_dmg": "物理ダメージ",
         "elem_dmg": "元素ダメージ",
-        "any_dmg": "与ダメージ"
+        "any_dmg": "与ダメージ",
+        "normal_dmg": "通常攻撃ダメージ",
+        "heavy_dmg": "重撃ダメージ",
+        "plunge_dmg": "落下攻撃ダメージ",
+        "combat_dmg": "通常攻撃・重撃・落下ダメージ",
+        "skill_dmg": "元素スキルダメージ",
+        "burst_dmg": "元素爆発ダメージ"
     },
     "bonus_short": {
         "none": "なし",
@@ -129,6 +161,17 @@
         "phys_dmg": "物理ダメ",
         "elem_dmg": "元素ダメ",
         "any_dmg": "与ダメ"
+    },
+    "reduct": {
+        "phys": "物理耐性",
+        "pyro": "炎耐性",
+        "hydro": "水耐性",
+        "elect": "雷耐性",
+        "anemo": "風耐性",
+        "cryo": "氷耐性",
+        "geo": "岩耐性",
+        "defence": "防御力",
+        "contact": "元素反応した元素耐性"
     },
     "chara": {
         "TravelAnemo": "旅人(風)",
@@ -448,7 +491,6 @@
         }
     },
     "limit": {},
-    "sample1": "サンプル!!!!!",
     "releasenote": {
         "v1_0_0": {
             "date": "2021/04/11",

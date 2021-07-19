@@ -96,7 +96,7 @@ export default class PageWeapon extends Vue {
   remove: IWeaponData | null = null;
 
   readonly types = WeaponTypes;
-  readonly icons: IReadonlyMap<string> = {
+  readonly icons: IReadonlyDict<string> = {
     append: mdiPlaylistPlus,
   };
 
@@ -138,6 +138,7 @@ export default class PageWeapon extends Vue {
 
   created() {
     this.globals = this.$globals;
+    this.$store.commit("setAppendable", true);
   }
 
   onBeforeAppend() {
@@ -146,21 +147,23 @@ export default class PageWeapon extends Vue {
 
   onAppend() {
     const name = this.append;
-    const item = WeaponList[this.type][name];
-    const data: IWeaponData = {
-      id: this.$makeUniqueId(),
-      name: name,
-      comment: "",
-      rank: 1,
-      level: "1",
-      atk: item.atk[0],
-      second: {
-        type: item.second,
-        value: item.secval[0],
-      },
-    };
-    this.$appendData(this.globals[this.type], data);
-    this.append = "";
+    if (name) {
+      const item = WeaponList[this.type][name];
+      const data: IWeaponData = {
+        id: this.$makeUniqueId(),
+        name: name,
+        comment: "",
+        rank: 1,
+        level: "1",
+        atk: item.atk[0],
+        second: {
+          type: item.second,
+          value: item.secval[0],
+        },
+      };
+      this.$appendData(this.globals[this.type], data);
+      this.append = "";
+    }
   }
 
   onBeforeRemove(data: IWeaponData) {

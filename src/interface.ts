@@ -1,6 +1,6 @@
 import * as konst from "~/src/const";
 
-export interface IBonus {
+export interface IBonusBase {
     readonly extra?: undefined;
     readonly items: ReadonlyArrayable<konst.BonusType>;
     readonly value: ReadonlyArrayable<number>;
@@ -9,38 +9,38 @@ export interface IBonus {
     readonly stack?: number;
     readonly target?: konst.BonusTarget;
 }
-export interface IBasicBonus extends IBonus {
+export interface IBasicBonus extends IBonusBase {
     readonly value: number;
 }
-export interface IWeaponBonus extends IBonus {
+export interface IWeaponBonus extends IBonusBase {
     readonly value: ReadonlyArray<number>;
 }
 
 export interface IExtraBonus {
-    readonly extra?: konst.ExtraBonusType;
+    readonly extra: konst.ExtraBonusType;
+    readonly target?: konst.BonusTarget;
 }
 
-export interface IFlatBonusMax {
+export interface IFlatBonusBound {
     readonly base: konst.FlatBonusBase;
     readonly value: number;
 }
 
-export interface IFlatBonus extends IExtraBonus {
+export interface IFlatBonusBase extends IExtraBonus {
     readonly extra: "flat";
     readonly dest: konst.FlatBonusDest;
     readonly base: konst.FlatBonusBase;
     readonly value: ReadonlyArrayable<number>;
-    readonly max?: IFlatBonusMax;
+    readonly bound?: IFlatBonusBound;
     readonly scale?: konst.DamageScale;
     readonly limit?: string;
     readonly times?: number;
     readonly stack?: number;
-    readonly target?: konst.BonusTarget;
 }
-export interface IBasicFlatBonus extends IFlatBonus {
+export interface IFlatBonus extends IFlatBonusBase {
     readonly value: number;
 }
-export interface IWeaponFlatBonus extends IFlatBonus {
+export interface IWeaponFlatBonus extends IFlatBonusBase {
     readonly value: ReadonlyArray<number>;
 }
 
@@ -58,10 +58,9 @@ export interface IEnchantBonus extends IExtraBonus {
     readonly dest: ReadonlyArray<konst.CombatType>;
     readonly limit: string;
     readonly times?: number;
-    readonly target?: konst.BonusTarget;
 }
 
-export type AnyExtraBonus = IBasicBonus | IBasicFlatBonus | IReductBonus | IEnchantBonus;
+export type AnyExtraBonus = IBasicBonus | IFlatBonus | IReductBonus | IEnchantBonus;
 
 export const CombatElementType = {
     Contact: "contact"
@@ -82,18 +81,14 @@ export type CharaStatusType = "hp" | "atk" | "def";
 export type CharaStatus = ReadonlyRecord<CharaStatusType, ReadonlyArray<number>>;
 export type CharaTalent = ReadonlyRecord<konst.TalentType, ReadonlyArray<ICombat>>;
 
-export interface IPassive {
-    readonly skill?: ReadonlyArrayable<AnyExtraBonus>;
-    readonly burst?: ReadonlyArrayable<AnyExtraBonus>;
-    readonly lv4?: ReadonlyArrayable<AnyExtraBonus>;
-    readonly lv5?: ReadonlyArrayable<AnyExtraBonus>;
+export const Passives = ["skill", "burst", "asc1st", "asc4th"] as const;
+export interface IPassive extends
+    Partial<ReadonlyRecord<typeof Passives[number], ReadonlyArrayable<AnyExtraBonus>>> {
 }
 
-export interface IConste {
-    readonly lv1?: ReadonlyArrayable<AnyExtraBonus>;
-    readonly lv2?: ReadonlyArrayable<AnyExtraBonus>;
-    readonly lv4?: ReadonlyArrayable<AnyExtraBonus>;
-    readonly lv6?: ReadonlyArrayable<AnyExtraBonus>;
+export const Constes = ["lv1", "lv2", "lv4", "lv6"] as const;
+export interface IConste extends
+    Partial<ReadonlyRecord<typeof Constes[number], ReadonlyArrayable<AnyExtraBonus>>> {
 }
 
 export interface ICharacter {
@@ -138,21 +133,15 @@ export interface IBonusValueData {
     value: number;
 }
 
-export interface IEquipData extends IIdentify, ICommentable {
+export interface IEquipData extends IIdentify, ICommentable, Record<konst.ArtifactType, string> {
     chara: string;
     weapon: string;
-    flower: string;
-    feather: string;
-    sands: string;
-    goblet: string;
-    circlet: string;
 }
 export type GlobalEquipData = { equip: IEquipData[]; };
 
 export const Members = ["member1", "member2", "member3", "member4"] as const;
-export type Members = typeof Members[number];
 
-export interface ITeamData extends IIdentify, INameable, Record<Members, string> {
+export interface ITeamData extends IIdentify, INameable, Record<typeof Members[number], string> {
     resonance: konst.ElementType[];
 }
 export type GlobalTeamData = { team: ITeamData[]; };

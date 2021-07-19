@@ -219,7 +219,7 @@ export default class PageEquipment extends Vue {
   append = "";
   remove: IEquipData | null = null;
 
-  readonly icons: IReadonlyMap<string> = {
+  readonly icons: IReadonlyDict<string> = {
     append: mdiPlaylistPlus,
     remove: mdiDelete,
   };
@@ -297,6 +297,7 @@ export default class PageEquipment extends Vue {
 
   created() {
     this.globals = this.$globals;
+    this.$store.commit("setAppendable", true);
   }
 
   onBeforeAppend() {
