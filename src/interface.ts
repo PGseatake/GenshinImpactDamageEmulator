@@ -1,13 +1,21 @@
 import * as konst from "~/src/const";
 
-export interface IBonusBase {
-    readonly extra?: undefined;
-    readonly items: ReadonlyArrayable<konst.BonusType>;
-    readonly value: ReadonlyArrayable<number>;
+export interface IBonusOption {
+    readonly extra?: konst.ExtraBonusType;
     readonly limit?: string;
     readonly times?: number;
     readonly stack?: number;
     readonly target?: konst.BonusTarget;
+}
+
+export interface IBonusBase extends IBonusOption {
+    readonly extra?: undefined;
+    readonly items: ReadonlyArrayable<konst.BonusType>;
+    readonly value: ReadonlyArrayable<number>;
+    // readonly limit?: string;
+    // readonly times?: number;
+    // readonly stack?: number;
+    // readonly target?: konst.BonusTarget;
 }
 export interface IBasicBonus extends IBonusBase {
     readonly value: number;
@@ -16,26 +24,21 @@ export interface IWeaponBonus extends IBonusBase {
     readonly value: ReadonlyArray<number>;
 }
 
-export interface IExtraBonus {
-    readonly extra: konst.ExtraBonusType;
-    readonly target?: konst.BonusTarget;
-}
-
 export interface IFlatBonusBound {
     readonly base: konst.FlatBonusBase;
     readonly value: number;
 }
 
-export interface IFlatBonusBase extends IExtraBonus {
+export interface IFlatBonusBase extends IBonusOption {
     readonly extra: "flat";
     readonly dest: konst.FlatBonusDest;
     readonly base: konst.FlatBonusBase;
     readonly value: ReadonlyArrayable<number>;
     readonly bound?: IFlatBonusBound;
     readonly scale?: konst.DamageScale;
-    readonly limit?: string;
-    readonly times?: number;
-    readonly stack?: number;
+    // readonly limit?: string;
+    // readonly times?: number;
+    // readonly stack?: number;
 }
 export interface IFlatBonus extends IFlatBonusBase {
     readonly value: number;
@@ -44,20 +47,20 @@ export interface IWeaponFlatBonus extends IFlatBonusBase {
     readonly value: ReadonlyArray<number>;
 }
 
-export interface IReductBonus extends IExtraBonus {
+export interface IReductBonus extends IBonusOption {
     readonly extra: "reduct";
     readonly type: ReadonlyArrayable<konst.ReductBonusType>;
     readonly value: number;
-    readonly limit?: string;
-    readonly times?: number;
+    // readonly limit?: string;
+    // readonly times?: number;
 }
 
-export interface IEnchantBonus extends IExtraBonus {
+export interface IEnchantBonus extends IBonusOption {
     readonly extra: "enchant";
     readonly elem: konst.ElementType;
     readonly dest: ReadonlyArray<konst.CombatType>;
     readonly limit: string;
-    readonly times?: number;
+    // readonly times?: number;
 }
 
 export type AnyExtraBonus = IBasicBonus | IFlatBonus | IReductBonus | IEnchantBonus;
@@ -149,6 +152,7 @@ export type GlobalTeamData = { team: ITeamData[]; };
 export const GlobalDataTypes = [
     "equip",
     "team",
+    "bonus",
     "chara",
     ...konst.WeaponTypes,
     ...konst.ArtifactTypes,

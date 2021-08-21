@@ -4,9 +4,10 @@ import { ArtifactType, ArtifactTypes, BonusType, WeaponTypes } from "./const";
 import { ArtifactMain, ArtifactName, ArtifactNames, ArtifactSub, calcMain, GlobalArtifactData } from "./artifact";
 import { CharaList, CharaName, GlobalCharaData } from "./character";
 import { WeaponList, GlobalWeaponData } from "./weapon";
+import { GlobalBonusData } from "./bonus";
 
 export type GlobalData = GlobalVersion &
-    GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData & GlobalTeamData;
+    GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData & GlobalTeamData & GlobalBonusData;
 
 interface ICharaV002 {
     name: CharaName,
@@ -224,5 +225,6 @@ export function convert(data?: GlobalDataV002 | GlobalDataV100): GlobalData {
         circlet: [],
         equip: [],
         team: [],
+        bonus: {},
     };
 }

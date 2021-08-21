@@ -4,15 +4,21 @@
     v-on="$listeners"
     :items="items"
     :append-icon="icon"
-    type="number"
-    item-text="value"
     dense
     single-line
     hide-details
+    item-text="value"
+    type="number"
+    class="ma-0"
   />
 </template>
 
 <style lang="scss" scoped>
+::v-deep .v-select__selection {
+  width: 100%;
+  margin: 0 !important;
+  text-align: center;
+}
 ::v-deep .v-select__selections input {
   width: 0;
 }

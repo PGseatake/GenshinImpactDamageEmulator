@@ -19,15 +19,22 @@
           {{ group }}
         </td>
       </template>
-      <template #[`item.source`]="{ item }">
-        {{ $t(item.source) }}
-      </template>
+      <template #[`item.source`]="{ item }">{{ $t(item.source) }}</template>
       <template #[`item.stack`]="{ item }">
-        {{ item.stack || "-" }}
+        <template v-if="item.stack">
+          <v-select-range
+            :min="0"
+            :max="item.stack"
+            :suffix="`/${item.stack}`"
+            :value="item.stacks"
+            @input="item.stacks = $event"
+          />
+        </template>
+        <template v-else>-</template>
       </template>
-      <template #[`item.times`]="{ item }">
-        {{ item.times || "-" }}
-      </template>
+      <template #[`item.times`]="{ item }">{{
+        formatTimes(item.times)
+      }}</template>
     </v-data-table>
   </v-container>
 </template>
@@ -45,12 +52,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify";
 import { GlobalEquipData, GlobalTeamData, Members } from "~/src/interface";
 import { ArtifactTypes } from "~/src/const";
-import {
-  BonusBase,
-  getCharaBonus,
-  getWeaponBonus,
-  getArtifactBonus,
-} from "~/src/bonus";
+import { BonusBase, GlobalBonusData, BonusBuilder } from "~/src/bonus";
 import { CharaList, GlobalCharaData } from "~/src/character";
 import { GlobalWeaponData } from "~/src/weapon";
 import { ArtifactName, GlobalArtifactData } from "~/src/artifact";
@@ -64,7 +66,8 @@ export default class PageBonus extends Vue {
     GlobalEquipData &
     GlobalCharaData &
     GlobalWeaponData &
-    GlobalArtifactData = {
+    GlobalArtifactData &
+    GlobalBonusData = {
     team: [],
     equip: [],
     chara: [],
@@ -78,6 +81,7 @@ export default class PageBonus extends Vue {
     sands: [],
     goblet: [],
     circlet: [],
+    bonus: {},
   };
   tab: number = -1;
   teams: IDict<BonusBase[]> = {};
@@ -106,19 +110,24 @@ export default class PageBonus extends Vue {
   }
 
   mounted() {
-    const { team, equip, chara } = this.globals;
+    const { team, equip, chara, bonus } = this.globals;
+    let builder = new BonusBuilder(this, bonus);
+    this.globals.bonus = {};
     team.forEach((t, i) => {
-      let bonus: BonusBase[] = [];
-      Members.forEach((key, j) => {
+      builder.team = t.id;
+      let data: BonusBase[] = [];
+      Members.forEach((key) => {
         const member = t[key];
         if (member) {
           const e = equip.find((item) => item.id === member);
           if (e) {
+            builder.equip = e.id;
             const c = chara.find((item) => item.id === e.chara);
             if (c) {
-              const group = `${j + 1}. ${this.$t("chara." + c.name)}`;
+              const idx = key.replace("member", "");
+              builder.group = `${idx}. ${this.$t("chara." + c.name)}`;
               // キャラボーナス追加
-              bonus.push(...getCharaBonus(this, c, group));
+              data.push(...builder.charaBonus(c));
               // 武器ボーナス追加
               {
                 const type = CharaList[c.name].weapon;
@@ -126,7 +135,7 @@ export default class PageBonus extends Vue {
                   (item) => item.id === e.weapon
                 );
                 if (weapon) {
-                  bonus.push(...getWeaponBonus(this, type, weapon, group));
+                  data.push(...builder.weaponBonus(type, weapon));
                 }
               }
               // 聖遺物ボーナス追加
@@ -139,21 +148,27 @@ export default class PageBonus extends Vue {
                   artifacts.push(artifact.name);
                 }
               }
-              bonus.push(...getArtifactBonus(this, artifacts, group));
+              data.push(...builder.artifactBonus(artifacts));
             }
           }
         }
       });
-      bonus.sort(
+      data.push(...builder.resonanceBonus(t.resonance));
+      data.sort(
         (a, b) =>
           a.group.localeCompare(b.group) ||
-          a.index.localeCompare(b.index) ||
+          a.index - b.index ||
           a.source.localeCompare(b.source)
       );
-      const caption = t.name || this.$t("menu.team") + (i + 1).toString();
-      this.$set(this.teams, caption, bonus);
+      const key = t.name || `${this.$t("menu.team")}${i + 1}`;
+      this.$set(this.teams, key, data);
       this.tab = 0;
     });
+    this.globals.bonus = builder.output;
+  }
+
+  formatTimes(value: number) {
+    return value ? `${value}${this.$t("general.sec")}` : "-";
   }
 }
 </script>

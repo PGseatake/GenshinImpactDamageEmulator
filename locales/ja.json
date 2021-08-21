@@ -47,7 +47,8 @@
         "team": "チーム名",
         "member": "メンバー",
         "resonance": "元素共鳴",
-        "everyone": "全員"
+        "everyone": "全員",
+        "sec": "秒"
     },
     "dialog": {
         "yes": "はい",
