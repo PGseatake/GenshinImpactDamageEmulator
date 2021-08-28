@@ -23,6 +23,8 @@
         "circlet": "理の冠",
         "source": "発生元",
         "condition": "効果",
+        "team": "チーム名",
+        "member": "メンバー",
         "stack": "重",
         "times": "継続時間"
     },
@@ -44,8 +46,6 @@
         "sub2": "サブ効果2",
         "sub3": "サブ効果3",
         "sub4": "サブ効果4",
-        "team": "チーム名",
-        "member": "メンバー",
         "resonance": "元素共鳴",
         "everyone": "全員",
         "sec": "秒"

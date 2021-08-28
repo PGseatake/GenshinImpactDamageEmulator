@@ -201,8 +201,9 @@
 import { Vue, Component } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { GlobalEquipData, IEquipData, Members } from "~/src/interface";
+import { GlobalEquipData, IEquipData } from "~/src/interface";
 import { ICharaData, GlobalCharaData } from "~/src/character";
+import { Members } from "~/src/team";
 
 @Component({
   name: "PageEquipment",

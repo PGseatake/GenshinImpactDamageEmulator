@@ -142,13 +142,6 @@ export interface IEquipData extends IIdentify, ICommentable, Record<konst.Artifa
 }
 export type GlobalEquipData = { equip: IEquipData[]; };
 
-export const Members = ["member1", "member2", "member3", "member4"] as const;
-
-export interface ITeamData extends IIdentify, INameable, Record<typeof Members[number], string> {
-    resonance: konst.ElementType[];
-}
-export type GlobalTeamData = { team: ITeamData[]; };
-
 export const GlobalDataTypes = [
     "equip",
     "team",

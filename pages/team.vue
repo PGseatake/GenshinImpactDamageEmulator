@@ -178,13 +178,9 @@ import { Vue, Component } from "vue-property-decorator";
 import { NameComment } from "~/components/VSelectName.vue";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { CharaList, GlobalCharaData } from "~/src/character";
-import {
-  GlobalEquipData,
-  GlobalTeamData,
-  ITeamData,
-  Members,
-} from "~/src/interface";
+import { GlobalCharaData } from "~/src/character";
+import { GlobalEquipData } from "~/src/interface";
+import { Members, ITeamData, GlobalTeamData, getMember } from "~/src/team";
 import { ElementType } from "~/src/const";
 
 @Component({
@@ -196,11 +192,7 @@ import { ElementType } from "~/src/const";
   },
 })
 export default class PageTeam extends Vue {
-  globals: GlobalCharaData & GlobalEquipData & GlobalTeamData = {
-    chara: [],
-    equip: [],
-    team: [],
-  };
+  globals!: GlobalCharaData & GlobalEquipData & GlobalTeamData;
   append = "";
   remove: ITeamData | null = null;
 
@@ -211,27 +203,27 @@ export default class PageTeam extends Vue {
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     {
-      text: this.$t("general.team") as string,
+      text: this.$t("tab.team") as string,
       value: "name",
       sortable: false,
     },
     {
-      text: this.$t("general.member") + "1",
+      text: this.$t("tab.member") + "1",
       value: "member1",
       sortable: false,
     },
     {
-      text: this.$t("general.member") + "2",
+      text: this.$t("tab.member") + "2",
       value: "member2",
       sortable: false,
     },
     {
-      text: this.$t("general.member") + "3",
+      text: this.$t("tab.member") + "3",
       value: "member3",
       sortable: false,
     },
     {
-      text: this.$t("general.member") + "4",
+      text: this.$t("tab.member") + "4",
       value: "member4",
       sortable: false,
     },
@@ -250,12 +242,11 @@ export default class PageTeam extends Vue {
 
   get items() {
     let values: NameComment[] = [];
-    for (const equip of this.globals.equip) {
-      const chara = this.globals.chara.find(
-        (chara) => chara.id === equip.chara
-      );
-      if (chara) {
-        values.push({ id: equip.id, name: chara.name, comment: equip.comment });
+    const { equip, chara } = this.globals;
+    for (const e of equip) {
+      const c = chara.find((val) => val.id === e.chara);
+      if (c) {
+        values.push({ id: e.id, name: c.name, comment: e.comment });
       }
     }
     return values;
@@ -297,15 +288,9 @@ export default class PageTeam extends Vue {
   updateResonance(item: ITeamData) {
     let elements: ElementType[] = [];
     for (const key of Members) {
-      const member = item[key];
-      if (member) {
-        const equip = this.globals.equip.find((d) => d.id === member);
-        if (equip) {
-          const chara = this.globals.chara.find((d) => d.id === equip.chara);
-          if (chara) {
-            elements.push(CharaList[chara.name].element);
-          }
-        }
+      const { info } = getMember(item[key], this.globals);
+      if (info) {
+        elements.push(info.element);
       }
     }
     elements.sort();

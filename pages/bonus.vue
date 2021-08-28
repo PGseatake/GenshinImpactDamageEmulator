@@ -1,7 +1,7 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
     <v-tabs v-model="tab" centered center-active show-arrows>
-      <v-tab v-for="(items, key) in teams" :key="key">{{ key }}</v-tab>
+      <v-tab v-for="{ key } of teams" :key="key">{{ key }}</v-tab>
     </v-tabs>
     <v-data-table
       :headers="headers"
@@ -15,8 +15,12 @@
       hide-default-footer
     >
       <template #[`group.header`]="{ group, headers }">
-        <td :colspan="headers.length" class="v-row-group__header">
-          {{ group }}
+        <td
+          :colspan="headers.length"
+          class="v-row-group__header text-subtitle-2"
+          style="vertical-align: middle; text-align: center"
+        >
+          {{ $t(group) }}
         </td>
       </template>
       <template #[`item.source`]="{ item }">{{ $t(item.source) }}</template>
@@ -50,41 +54,33 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify";
-import { GlobalEquipData, GlobalTeamData, Members } from "~/src/interface";
-import { ArtifactTypes } from "~/src/const";
-import { BonusBase, GlobalBonusData, BonusBuilder } from "~/src/bonus";
-import { CharaList, GlobalCharaData } from "~/src/character";
+import { GlobalEquipData } from "~/src/interface";
+import {
+  Members,
+  GlobalTeamData,
+  getTeamName,
+  getMember,
+  getWeapon,
+  getArtifacts,
+} from "~/src/team";
+import { BonusBase, BonusBuilder, GlobalBonusData } from "~/src/bonus";
+import { GlobalCharaData } from "~/src/character";
 import { GlobalWeaponData } from "~/src/weapon";
-import { ArtifactName, GlobalArtifactData } from "~/src/artifact";
+import { GlobalArtifactData } from "~/src/artifact";
 
 @Component({
   name: "PageBonus",
   components: {},
 })
 export default class PageBonus extends Vue {
-  globals: GlobalTeamData &
+  globals!: GlobalTeamData &
     GlobalEquipData &
     GlobalCharaData &
     GlobalWeaponData &
     GlobalArtifactData &
-    GlobalBonusData = {
-    team: [],
-    equip: [],
-    chara: [],
-    sword: [],
-    claymore: [],
-    polearm: [],
-    bow: [],
-    catalyst: [],
-    flower: [],
-    feather: [],
-    sands: [],
-    goblet: [],
-    circlet: [],
-    bonus: {},
-  };
+    GlobalBonusData;
   tab: number = -1;
-  teams: IDict<BonusBase[]> = {};
+  teams: { key: string; data: BonusBase[] }[] = [];
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("tab.source") as string, value: "source" },
@@ -95,9 +91,9 @@ export default class PageBonus extends Vue {
 
   get items() {
     if (this.tab >= 0) {
-      return Object.values(this.teams)[this.tab];
+      return this.teams[this.tab].data;
     }
-    return undefined;
+    return [];
   }
 
   get tableClass() {
@@ -110,49 +106,30 @@ export default class PageBonus extends Vue {
   }
 
   mounted() {
-    const { team, equip, chara, bonus } = this.globals;
-    let builder = new BonusBuilder(this, bonus);
+    const text = this.$t("menu.team");
+    let builder = new BonusBuilder(this, this.globals.bonus);
     this.globals.bonus = {};
-    team.forEach((t, i) => {
+
+    this.globals.team.forEach((t, i) => {
       builder.team = t.id;
       let data: BonusBase[] = [];
-      Members.forEach((key) => {
-        const member = t[key];
-        if (member) {
-          const e = equip.find((item) => item.id === member);
-          if (e) {
-            builder.equip = e.id;
-            const c = chara.find((item) => item.id === e.chara);
-            if (c) {
-              const idx = key.replace("member", "");
-              builder.group = `${idx}. ${this.$t("chara." + c.name)}`;
-              // キャラボーナス追加
-              data.push(...builder.charaBonus(c));
-              // 武器ボーナス追加
-              {
-                const type = CharaList[c.name].weapon;
-                const weapon = this.globals[type].find(
-                  (item) => item.id === e.weapon
-                );
-                if (weapon) {
-                  data.push(...builder.weaponBonus(type, weapon));
-                }
-              }
-              // 聖遺物ボーナス追加
-              let artifacts: ArtifactName[] = [];
-              for (const type of ArtifactTypes) {
-                const artifact = this.globals[type].find(
-                  (item) => item.id === e[type]
-                );
-                if (artifact) {
-                  artifacts.push(artifact.name);
-                }
-              }
-              data.push(...builder.artifactBonus(artifacts));
-            }
-          }
+      for (const key of Members) {
+        const { info, chara, equip } = getMember(t[key], this.globals);
+        if (info && chara && equip) {
+          builder.equip = equip.id;
+          builder.group = "chara." + chara.name;
+
+          // キャラボーナス追加
+          data.push(...builder.charaBonus(chara));
+          // 武器ボーナス追加
+          const weapon = getWeapon(info, equip, this.globals);
+          data.push(...builder.weaponBonus(weapon.type, weapon.data));
+          // 聖遺物ボーナス追加
+          const artifacts = getArtifacts(equip, this.globals);
+          data.push(...builder.artifactBonus(artifacts));
         }
-      });
+      }
+      // 元素共鳴ボーナス追加
       data.push(...builder.resonanceBonus(t.resonance));
       data.sort(
         (a, b) =>
@@ -160,8 +137,8 @@ export default class PageBonus extends Vue {
           a.index - b.index ||
           a.source.localeCompare(b.source)
       );
-      const key = t.name || `${this.$t("menu.team")}${i + 1}`;
-      this.$set(this.teams, key, data);
+      const key = getTeamName(text, t, i);
+      this.teams.push({ key, data });
       this.tab = 0;
     });
     this.globals.bonus = builder.output;

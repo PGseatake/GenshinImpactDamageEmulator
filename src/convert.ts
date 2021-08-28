@@ -1,10 +1,11 @@
 import * as ascension from "./ascension";
-import { IBonusValueData, IEquipData, GlobalVersion, GlobalEquipData, GlobalTeamData } from "./interface";
+import { IBonusValueData, IEquipData, GlobalVersion, GlobalEquipData } from "./interface";
 import { ArtifactType, ArtifactTypes, BonusType, WeaponTypes } from "./const";
 import { ArtifactMain, ArtifactName, ArtifactNames, ArtifactSub, calcMain, GlobalArtifactData } from "./artifact";
 import { CharaList, CharaName, GlobalCharaData } from "./character";
 import { WeaponList, GlobalWeaponData } from "./weapon";
 import { GlobalBonusData } from "./bonus";
+import { GlobalTeamData } from "./team";
 
 export type GlobalData = GlobalVersion &
     GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData & GlobalTeamData & GlobalBonusData;

@@ -369,13 +369,13 @@ export class BonusBuilder {
         this.equip = "";
         this.group = "";
         this.bonus = { ...bonus }; // 新しいインスタンスを生成
-        this.output = {};
+        this.output = { };
     }
 
     private convert(data: AnyExtraBonus, ref: string, index: number, origin: string, source: string): BonusBase {
         let group: string;
         if (data.target && data.target !== konst.BonusTarget.Self) {
-            group = this.vm.$t("general.everyone") as string;
+            group = "general.everyone";
             index += 1000;
         } else {
             group = this.group;
@@ -435,17 +435,19 @@ export class BonusBuilder {
         return bonus;
     }
 
-    public weaponBonus(type: konst.WeaponType, data: IWeaponData): BonusBase[] {
-        const source = `weapon.${type}.${data.name}`;
-        const weapon = WeaponList[type][data.name];
-        const bonus = weapon.passive;
-        if (bonus) {
-            if (Array.isArray(bonus)) {
-                return bonus.map((value, i) => this.convert(
-                    { ...value, value: value.value[data.rank] }, data.id, 200 + i, "weapon", source));
-            } else {
-                return [this.convert(
-                    { ...bonus, value: bonus.value[data.rank] }, data.id, 200, "weapon", source)];
+    public weaponBonus(type: konst.WeaponType, data: IWeaponData | undefined): BonusBase[] {
+        if (data) {
+            const source = `weapon.${type}.${data.name}`;
+            const weapon = WeaponList[type][data.name];
+            const bonus = weapon.passive;
+            if (bonus) {
+                if (Array.isArray(bonus)) {
+                    return bonus.map((value, i) => this.convert(
+                        { ...value, value: value.value[data.rank] }, data.id, 200 + i, "weapon", source));
+                } else {
+                    return [this.convert(
+                        { ...bonus, value: bonus.value[data.rank] }, data.id, 200, "weapon", source)];
+                }
             }
         }
         return [];
