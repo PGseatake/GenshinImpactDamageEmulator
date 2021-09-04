@@ -3,9 +3,10 @@
     v-bind="$attrs"
     v-on="$listeners"
     :items="items"
+    :label="label"
     :append-icon="icon"
+    :single-line="!label"
     dense
-    single-line
     hide-details
     item-text="value"
     type="number"
@@ -40,6 +41,7 @@ import { mdiMenuDown } from "@mdi/js";
 export default class VSelectRange extends Vue {
   @Prop({ required: true }) min!: number;
   @Prop({ required: true }) max!: number;
+  @Prop({ default: undefined }) label: string | undefined;
 
   readonly icon = mdiMenuDown;
 

@@ -217,6 +217,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import {
   mdiAccount,
   mdiAccountMultiplePlus,
+  mdiCalculatorVariant,
   mdiClose,
   mdiContentSave,
   mdiExpandAll,
@@ -272,6 +273,7 @@ export default class Default extends Vue {
     { icon: mdiTshirtCrew, page: "equipment", to: "/equipment" },
     { icon: mdiAccountMultiplePlus, page: "team", to: "/team" },
     { icon: mdiExpandAll, page: "bonus", to: "/bonus" },
+    { icon: mdiCalculatorVariant, page: "damage", to: "/damage" },
     { icon: mdiAccount, page: "character", to: "/character" },
     { icon: mdiSword, page: "weapon", to: "/weapon" },
     { icon: mdiRing, page: "artifact", to: "/artifact" },

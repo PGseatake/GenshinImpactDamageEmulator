@@ -57,11 +57,11 @@ const utils = {
                 case ElementType.Hydro:
                     return "indigo darken-1";
                 case ElementType.Dendro:
-                    return "light green-2";
+                    return "green darken-2";
                 case ElementType.Elect:
                     return "purple darken-1";
                 case ElementType.Anemo:
-                    return "green darken-1";
+                    return "light-green darken-1";
                 case ElementType.Cryo:
                     return "light-blue darken-1";
                 case ElementType.Geo:

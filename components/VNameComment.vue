@@ -32,11 +32,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-
-export type TextValue = {
-  text: string;
-  value: string;
-};
+import { TextValue } from "~/src/types";
 
 @Component({
   name: "VNameComment",

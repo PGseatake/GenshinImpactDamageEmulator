@@ -5,6 +5,7 @@
         "equipment": "装備",
         "team": "チーム",
         "bonus": "ボーナス",
+        "damage": "ダメージ",
         "character": "キャラクター",
         "weapon": "武器",
         "artifact": "聖遺物",
@@ -32,6 +33,7 @@
         "none": "なし",
         "name": "名前",
         "comment": "コメント",
+        "element": "元素",
         "level": "Lv",
         "star": "☆",
         "rank": "凸",
@@ -48,7 +50,11 @@
         "sub4": "サブ効果4",
         "resonance": "元素共鳴",
         "everyone": "全員",
-        "sec": "秒"
+        "sec": "秒",
+        "phase": "状態",
+        "regist": "耐性",
+        "rate": "倍率",
+        "immutable": "無効"
     },
     "dialog": {
         "yes": "はい",
@@ -490,6 +496,50 @@
             "Icebreaker": "氷雪を踏む音",
             "OceanConqueror": "酒に漬けた帽子"
         }
+    },
+    "enemy": {
+        "label": "敵",
+        "normal": "通常",
+        "down": "ダウン",
+        "shield": "シールド",
+        "wakeup": "寝起き",
+        "Slime": "スライム・{0}",
+        "Hilichurl": "ヒルチャール",
+        "Mitachurl": "ヒルチャール・暴徒",
+        "Samachurl": "ヒルチャールシャーマン・{0}",
+        "Lawachurl": {
+            "cryo": "ヒルチャール・霜鎧の王",
+            "geo": "ヒルチャール・岩兜の王"
+        },
+        "RuinGuard": "遺跡守衛",
+        "RuinGrader": "遺跡重機",
+        "RuinHunter": "遺跡狩人",
+        "WhopperFlower": "トリックフラワー・{0}",
+        "FatuiSkirmisher": "ファデュイ先遣隊",
+        "FatuiAgent": "ファデュイ・デットエージェント",
+        "FatuiCicinMage": "ファデュイ・{0}蛍術師",
+        "TreasureHoarder": "盗賊団",
+        "GeovishapHatchling": "ベビーヴィシャップ・岩",
+        "Geovishap": "ヴィシャップ・岩",
+        "AbyssMage": "アビスの魔術師",
+        "EyeoftheStorm": "狂風のコア",
+        "Cicin": "{0}蛍",
+        "SnowboarKing": "雪のイノシシ王",
+        "Hypostasis": "無相の{0}",
+        "Oceanid": "純水精霊",
+        "Regisvine": {
+            "pyro": "爆炎樹",
+            "cryo": "急凍樹"
+        },
+        "PrimoGeovishap": "エンシェントヴィシャップ・岩",
+        "Dvalin": "トワリン",
+        "Andrius": "アンドリアス",
+        "Tartaglia1": "タルタリヤ・第1段階",
+        "Tartaglia2": "タルタリヤ・第2段階",
+        "Tartaglia3": "タルタリヤ・第3段階",
+        "Azhdaha1": "若陀龍王・第1段階",
+        "Azhdaha2": "若陀龍王・第2段階",
+        "Azhdaha3": "若陀龍王・第3段階"
     },
     "limit": {},
     "releasenote": {
