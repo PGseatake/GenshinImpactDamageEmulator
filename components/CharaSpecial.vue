@@ -1,5 +1,5 @@
 <template>
-  <v-bonus-value
+  <bonus-value
     v-bind="$attrs"
     v-on="$listeners"
     :types="[special]"
@@ -12,11 +12,10 @@ import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { CharaName, CharaList } from "~/src/character";
 
 @Component({
-  name: "VCharaSpecial",
-  components: { VBonusValue: () => import("~/components/VBonusValue.vue") },
+  name: "CharaSpecial",
   inheritAttrs: false,
 })
-export default class VCharaSpecial extends Vue {
+export default class CharaSpecial extends Vue {
   @Prop({ required: true }) name!: CharaName;
   @Prop({ required: true }) value!: number;
 

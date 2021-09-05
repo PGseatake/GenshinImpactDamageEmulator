@@ -5,27 +5,23 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item key="sword">
-        <v-weapon-data type="sword" :items="sword" @remove="onBeforeRemove" />
+        <weapon-data type="sword" :items="sword" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="claymore">
-        <v-weapon-data
+        <weapon-data
           type="claymore"
           :items="claymore"
           @remove="onBeforeRemove"
         />
       </v-tab-item>
       <v-tab-item key="polearm">
-        <v-weapon-data
-          type="polearm"
-          :items="polearm"
-          @remove="onBeforeRemove"
-        />
+        <weapon-data type="polearm" :items="polearm" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="bow">
-        <v-weapon-data type="bow" :items="bow" @remove="onBeforeRemove" />
+        <weapon-data type="bow" :items="bow" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="catalyst">
-        <v-weapon-data
+        <weapon-data
           type="catalyst"
           :items="catalyst"
           @remove="onBeforeRemove"
@@ -37,7 +33,7 @@
       <v-icon>{{ icons.append }}</v-icon>
     </v-btn>
 
-    <v-append-dialog
+    <dialog-append
       :disabled="!append"
       :title="'tab.' + type"
       max-width="300px"
@@ -45,8 +41,8 @@
       @cancel="append = ''"
     >
       <v-select v-model="append" :items="names" />
-    </v-append-dialog>
-    <v-remove-dialog
+    </dialog-append>
+    <dialog-remove
       :title="$t('tab.' + type) + $t('dialog.remove')"
       :item="remove"
       :name="removeName"
@@ -78,9 +74,9 @@ import {
 @Component({
   name: "PageWeapon",
   components: {
-    VWeaponData: () => import("~/components/VWeaponData.vue"),
-    VAppendDialog: () => import("~/components/VAppendDialog.vue"),
-    VRemoveDialog: () => import("~/components/VRemoveDialog.vue"),
+    WeaponData: () => import("~/components/WeaponData.vue"),
+    DialogAppend: () => import("~/components/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/DialogRemove.vue"),
   },
 })
 export default class PageWeapon extends Vue {

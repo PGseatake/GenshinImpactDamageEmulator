@@ -11,14 +11,14 @@
       hide-default-footer
     >
       <template v-slot:[`item.name`]="{ item }">
-        <v-name-comment
+        <name-comment
           :items="names"
           :name.sync="item.name"
           :comment.sync="item.comment"
         />
       </template>
       <template v-slot:[`item.star`]="{ item }">
-        <v-select-range
+        <select-range
           v-model="item.star"
           :min="3"
           :max="5"
@@ -26,7 +26,7 @@
         />
       </template>
       <template v-slot:[`item.level`]="{ item }">
-        <v-select-range
+        <select-range
           v-model="item.level"
           :min="0"
           :max="item.star * 4"
@@ -34,7 +34,7 @@
         />
       </template>
       <template v-slot:[`item.main`]="{ item }">
-        <v-bonus-value
+        <bonus-value
           v-bind.sync="item.main"
           :types="mains"
           :score="getTotal(item)"
@@ -42,28 +42,28 @@
         />
       </template>
       <template v-slot:[`item.sub1`]="{ item }">
-        <v-bonus-value
+        <bonus-value
           v-bind.sync="item.sub1"
           :types="subs"
           :score="getScore(item, item.sub1)"
         />
       </template>
       <template v-slot:[`item.sub2`]="{ item }">
-        <v-bonus-value
+        <bonus-value
           v-bind.sync="item.sub2"
           :types="subs"
           :score="getScore(item, item.sub2)"
         />
       </template>
       <template v-slot:[`item.sub3`]="{ item }">
-        <v-bonus-value
+        <bonus-value
           v-bind.sync="item.sub3"
           :types="subs"
           :score="getScore(item, item.sub3)"
         />
       </template>
       <template v-slot:[`item.sub4`]="{ item }">
-        <v-bonus-value
+        <bonus-value
           v-bind.sync="item.sub4"
           :types="subs"
           :score="getScore(item, item.sub4)"
@@ -187,15 +187,15 @@ import {
 } from "~/src/artifact";
 
 @Component({
-  name: "VArtifactData",
+  name: "ArtifactData",
   components: {
-    VBonusValue: () => import("~/components/VBonusValue.vue"),
-    VNameComment: () => import("~/components/VNameComment.vue"),
-    VSelectRange: () => import("~/components/VSelectRange.vue"),
+    BonusValue: () => import("~/components/BonusValue.vue"),
+    NameComment: () => import("~/components/NameComment.vue"),
+    SelectRange: () => import("~/components/SelectRange.vue"),
   },
   inheritAttrs: false,
 })
-export default class VArtifactData extends Vue {
+export default class ArtifactData extends Vue {
   @Prop({ required: true }) type!: ArtifactType;
   @Prop({ required: true }) items!: Array<IArtifactData>;
 

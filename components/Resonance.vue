@@ -15,8 +15,8 @@
 import { Vue, Prop, Component } from "vue-property-decorator";
 import { ElementType, ElementTypes } from "~/src/const";
 
-@Component({ name: "VResonance" })
-export default class VResonance extends Vue {
+@Component({ name: "Resonance" })
+export default class Resonance extends Vue {
   @Prop({ required: true }) items!: ElementType[];
 
   readonly elements = ElementTypes;

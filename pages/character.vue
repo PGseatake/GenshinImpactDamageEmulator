@@ -1,12 +1,12 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <v-chara-data :items="charas" @remove="onBeforeRemove" />
+    <chara-data :items="charas" @remove="onBeforeRemove" />
 
     <v-btn fab small @click="onBeforeAppend" class="ma-1">
       <v-icon>{{ icons.append }}</v-icon>
     </v-btn>
 
-    <v-append-dialog
+    <dialog-append
       :disabled="!append"
       title="menu.character"
       max-width="300px"
@@ -14,8 +14,8 @@
       @cancel="append = ''"
     >
       <v-select v-model="append" :items="names" />
-    </v-append-dialog>
-    <v-remove-dialog
+    </dialog-append>
+    <dialog-remove
       :title="$t('menu.character') + $t('dialog.remove')"
       :item="remove"
       :name="removeName"
@@ -41,9 +41,9 @@ import {
 @Component({
   name: "PageCharacter",
   components: {
-    VCharaData: () => import("~/components/VCharaData.vue"),
-    VAppendDialog: () => import("~/components/VAppendDialog.vue"),
-    VRemoveDialog: () => import("~/components/VRemoveDialog.vue"),
+    CharaData: () => import("~/components/CharaData.vue"),
+    DialogAppend: () => import("~/components/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/DialogRemove.vue"),
   },
 })
 export default class PageCharacter extends Vue {

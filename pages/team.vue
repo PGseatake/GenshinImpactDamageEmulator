@@ -18,35 +18,35 @@
         />
       </template>
       <template v-slot:[`item.member1`]="{ item }">
-        <v-equip-detail
+        <equip-detail
           :value.sync="item.member1"
           :items="items"
           @change="onChangeItem(item)"
         />
       </template>
       <template v-slot:[`item.member2`]="{ item }">
-        <v-equip-detail
+        <equip-detail
           :value.sync="item.member2"
           :items="items"
           @change="onChangeItem(item)"
         />
       </template>
       <template v-slot:[`item.member3`]="{ item }">
-        <v-equip-detail
+        <equip-detail
           :value.sync="item.member3"
           :items="items"
           @change="onChangeItem(item)"
         />
       </template>
       <template v-slot:[`item.member4`]="{ item }">
-        <v-equip-detail
+        <equip-detail
           :value.sync="item.member4"
           :items="items"
           @change="onChangeItem(item)"
         />
       </template>
       <template v-slot:[`item.resonance`]="{ item }">
-        <v-resonance :items="item.resonance" />
+        <resonance :items="item.resonance" />
       </template>
       <template v-slot:[`item.remove`]="{ item }">
         <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
@@ -59,22 +59,22 @@
       <v-icon>{{ icons.append }}</v-icon>
     </v-btn>
 
-    <v-append-dialog
+    <dialog-append
       :disabled="!append"
       title="menu.team"
       max-width="300px"
       @accept="onAppend"
       @cancel="append = ''"
     >
-      <v-name-comment
+      <name-comment
         :items="names"
         :name.sync="append"
         :comment="comment"
         :commentable="false"
         :dense="false"
       />
-    </v-append-dialog>
-    <v-remove-dialog
+    </dialog-append>
+    <dialog-remove
       :item="remove"
       :title="$t('menu.team') + $t('dialog.dismiss')"
       max-width="300px"
@@ -87,7 +87,7 @@
       <template #disable>
         <div v-text="removeName + $t('dialog.dismiss_x_text')" />
       </template>
-    </v-remove-dialog>
+    </dialog-remove>
   </v-container>
 </template>
 
@@ -175,7 +175,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { NameComment } from "~/components/VSelectName.vue";
+import { NameComment } from "~/components/SelectName.vue";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { GlobalCharaData } from "~/src/character";
@@ -186,9 +186,11 @@ import { ElementType } from "~/src/const";
 @Component({
   name: "PageTeam",
   components: {
-    VSelectName: () => import("~/components/VSelectName.vue"),
-    VAppendDialog: () => import("~/components/VAppendDialog.vue"),
-    VRemoveDialog: () => import("~/components/VRemoveDialog.vue"),
+    NameComment: () => import("~/components/NameComment.vue"),
+    Resonance: () => import("~/components/Resonance.vue"),
+    EquipDetail: () => import("~/components/EquipDetail.vue"),
+    DialogAppend: () => import("~/components/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/DialogRemove.vue"),
   },
 })
 export default class PageTeam extends Vue {

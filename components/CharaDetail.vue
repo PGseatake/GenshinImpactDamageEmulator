@@ -9,7 +9,7 @@
           left
           offset-y="18px"
         >
-          <v-select-name
+          <select-name
             v-bind="$attrs"
             v-on="$listeners"
             :items="items"
@@ -44,13 +44,13 @@ import { CharaList } from "~/src/character";
 import { ElementType } from "~/src/const";
 
 @Component({
-  name: "VCharaDetail",
+  name: "CharaDetail",
   components: {
-    VSelectName: () => import("~/components/VSelectName.vue"),
+    SelectName: () => import("~/components/SelectName.vue"),
   },
   inheritAttrs: false,
 })
-export default class VCharaDetail extends Vue {
+export default class CharaDetail extends Vue {
   get cols() {
     return this.$vuetify.breakpoint.xs ? "auto" : "12";
   }

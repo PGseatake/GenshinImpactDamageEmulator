@@ -1,5 +1,5 @@
 <template>
-  <v-release-node :title="title" :items="root.items" class="list-item-root" />
+  <release-node :title="title" :items="root.items" class="list-item-root" />
 </template>
 
 <style lang="scss" scoped>
@@ -12,14 +12,13 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from "vue-property-decorator";
-import { ReleaseNode } from "./VReleaseNode.vue";
+import { ReleaseNode } from "~/components/ReleaseNode.vue";
 
 @Component({
-  name: "VReleaseRoot",
-  components: { VReleaseNode: () => import("./VReleaseNode.vue") },
+  name: "ReleaseRoot",
   inheritAttrs: false,
 })
-export default class VReleaseRoot extends Vue {
+export default class ReleaseRoot extends Vue {
   @Prop({ required: true }) version!: string;
   @Prop({ required: true }) root!: ReleaseNode;
 

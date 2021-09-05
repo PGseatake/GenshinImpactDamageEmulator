@@ -68,9 +68,9 @@
         <template v-else>
           <span v-for="(list, index) in toolList" :key="index">
             <template v-if="list.type === 'locale'">
-              <v-locale-select fab icon>
+              <select-locale fab icon>
                 <v-icon v-text="list.icon" />
-              </v-locale-select>
+              </select-locale>
             </template>
             <template v-else-if="list.type === 'append'">
               <v-btn fab icon :disabled="!appendable" @click="list.func">
@@ -114,9 +114,9 @@
           >
             <v-list-item-icon>
               <template v-if="list.type === 'locale'">
-                <v-locale-select fab icon small>
+                <select-locale fab icon small>
                   <v-icon v-text="list.icon" />
-                </v-locale-select>
+                </select-locale>
               </template>
               <template v-else-if="list.type === 'append'">
                 <v-btn
@@ -155,7 +155,7 @@
       </v-footer>
 
       <!-- インポートダイアログ -->
-      <v-file-dialog
+      <dialog-file
         width="450px"
         :file="importFile"
         :show.sync="importShow"
@@ -173,9 +173,9 @@
             :prepend-icon="icons.file"
           />
         </template>
-      </v-file-dialog>
+      </dialog-file>
       <!-- エクスポートダイアログ -->
-      <v-file-dialog
+      <dialog-file
         width="450px"
         :file="exportFile"
         :show.sync="exportShow"
@@ -191,7 +191,7 @@
             :prepend-icon="icons.file"
           />
         </template>
-      </v-file-dialog>
+      </dialog-file>
     </v-app>
   </client-only>
 </template>
@@ -252,8 +252,8 @@ interface ITool {
 @Component({
   name: "default",
   components: {
-    VFileDialog: () => import("~/components/VFileDialog.vue"),
-    VLocaleSelect: () => import("~/components/VLocaleSelect.vue"),
+    DialogFile: () => import("~/components/DialogFile.vue"),
+    SelectLocale: () => import("~/components/SelectLocale.vue"),
   },
 })
 export default class Default extends Vue {

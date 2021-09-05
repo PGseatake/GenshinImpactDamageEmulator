@@ -2,23 +2,25 @@
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
     <select-enemy />
     <v-row dense align="center" style="max-width: 500px">
-      <v-col
-        ><v-select
+      <v-col>
+        <v-select
           v-model="team"
           :items="teams"
           :label="$t('menu.team')"
           dense
           hide-details
           @change="onChangeTeam"
-      /></v-col>
-      <v-col
-        ><v-name-comment
+        />
+      </v-col>
+      <v-col>
+        <name-comment
           :items="members"
           :name.sync="member"
           :comment="comment"
           :commentable="false"
           @change="onChangeMember"
-      /></v-col>
+        />
+      </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col>
@@ -67,6 +69,7 @@ import { getMember, getTeamName } from "~/src/team";
 @Component({
   name: "PageDamage",
   components: {
+    NameComment: () => import("~/components/NameComment.vue"),
     SelectEnemy: () => import("~/components/SelectEnemy.vue"),
   },
 })

@@ -30,15 +30,13 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { VSelect } from "vuetify/lib";
 import { mdiMenuDown } from "@mdi/js";
 
 @Component({
-  name: "VSelectRange",
-  components: { VSelect },
+  name: "SelectRange",
   inheritAttrs: false,
 })
-export default class VSelectRange extends Vue {
+export default class SelectRange extends Vue {
   @Prop({ required: true }) min!: number;
   @Prop({ required: true }) max!: number;
   @Prop({ default: undefined }) label: string | undefined;

@@ -5,31 +5,23 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item key="flower">
-        <v-artifact-data
-          type="flower"
-          :items="flower"
-          @remove="onBeforeRemove"
-        />
+        <artifact-data type="flower" :items="flower" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="feather">
-        <v-artifact-data
+        <artifact-data
           type="feather"
           :items="feather"
           @remove="onBeforeRemove"
         />
       </v-tab-item>
       <v-tab-item key="sands">
-        <v-artifact-data type="sands" :items="sands" @remove="onBeforeRemove" />
+        <artifact-data type="sands" :items="sands" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="goblet">
-        <v-artifact-data
-          type="goblet"
-          :items="goblet"
-          @remove="onBeforeRemove"
-        />
+        <artifact-data type="goblet" :items="goblet" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="circlet">
-        <v-artifact-data
+        <artifact-data
           type="circlet"
           :items="circlet"
           @remove="onBeforeRemove"
@@ -41,7 +33,7 @@
       <v-icon>{{ icons.append }}</v-icon>
     </v-btn>
 
-    <v-append-dialog
+    <dialog-append
       :disabled="!append"
       :title="'tab.' + type"
       max-width="300px"
@@ -49,8 +41,8 @@
       @cancel="append = ''"
     >
       <v-select v-model="append" :items="names" />
-    </v-append-dialog>
-    <v-remove-dialog
+    </dialog-append>
+    <dialog-remove
       :title="$t('tab.' + type) + $t('dialog.remove')"
       :item="remove"
       :name="removeName"
@@ -77,9 +69,9 @@ import {
 @Component({
   name: "PageArtifact",
   components: {
-    VArtifactData: () => import("~/components/VArtifactData.vue"),
-    VAppendDialog: () => import("~/components/VAppendDialog.vue"),
-    VRemoveDialog: () => import("~/components/VRemoveDialog.vue"),
+    ArtifactData: () => import("~/components/ArtifactData.vue"),
+    DialogAppend: () => import("~/components/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/DialogRemove.vue"),
   },
 })
 export default class PageArtifact extends Vue {

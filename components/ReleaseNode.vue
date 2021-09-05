@@ -34,7 +34,7 @@
           <v-list-item-title v-text="data" class="pr-4 text-wrap" />
         </v-list-item-content>
       </v-list-item>
-      <v-release-node
+      <release-node
         v-else
         :key="index"
         :value="true"
@@ -67,10 +67,10 @@ export type ReleaseLeaf = string | ReadonlyArray<string | ReleaseNode>;
 export type ReleaseNode = { readonly [key in string]: ReleaseLeaf };
 
 @Component({
-  name: "VReleaseNode",
+  name: "ReleaseNode",
   inheritAttrs: false,
 })
-export default class VReleaseNode extends Vue {
+export default class CReleaseNode extends Vue {
   @Prop({ required: true }) title!: string;
   @Prop({ required: true }) items!: ReleaseLeaf;
   @Prop({ default: false }) group!: boolean;

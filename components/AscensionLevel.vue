@@ -28,7 +28,6 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { VSelect } from "vuetify/lib";
 import { mdiMenuDown } from "@mdi/js";
 import * as Ascension from "~/src/ascension";
 
@@ -52,11 +51,10 @@ const levelTexts = (() => {
 })();
 
 @Component({
-  name: "VAscensionLevel",
-  components: { VSelect },
+  name: "AscensionLevel",
   inheritAttrs: false,
 })
-export default class VAscensionLevel extends Vue {
+export default class AscensionLevel extends Vue {
   readonly items = levelTexts;
   readonly icon = mdiMenuDown;
 }

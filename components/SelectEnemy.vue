@@ -36,7 +36,7 @@
       </v-col>
       <!-- レベル -->
       <v-col cols="auto" class="pb-4">
-        <v-select-range
+        <select-range
           v-model="level"
           :label="$t('general.level')"
           :min="1"
@@ -126,6 +126,9 @@ type Enemy = {
 @Component({
   name: "SelectEnemy",
   inheritAttrs: false,
+  components: {
+    SelectRange: () => import("~/components/SelectRange.vue"),
+  },
 })
 export default class SelectEnemy extends Vue {
   name = EnemyNames[0];

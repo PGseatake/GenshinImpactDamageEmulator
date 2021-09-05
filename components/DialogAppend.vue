@@ -27,10 +27,10 @@
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 
 @Component({
-  name: "VAppendDialog",
+  name: "DialogAppend",
   inheritAttrs: false,
 })
-export default class VAppendDialog extends Vue {
+export default class DialogAppend extends Vue {
   @Prop({ required: true }) title!: string;
   @Prop({ default: false }) disabled!: boolean;
 

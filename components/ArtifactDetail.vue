@@ -9,7 +9,7 @@
           left
           offset-y="18px"
         >
-          <v-select-name
+          <select-name
             v-bind="$attrs"
             v-on="$listeners"
             :items="items"
@@ -44,13 +44,13 @@ import { ArtifactType } from "~/src/const";
 import { IArtifactData } from "~/src/artifact";
 
 @Component({
-  name: "VArtifactDetail",
+  name: "ArtifactDetail",
   components: {
-    VSelectName: () => import("~/components/VSelectName.vue"),
+    SelectName: () => import("~/components/SelectName.vue"),
   },
   inheritAttrs: false,
 })
-export default class VArtifactDetail extends Vue {
+export default class ArtifactDetail extends Vue {
   @Prop({ required: true }) items!: ReadonlyArray<IArtifactData>;
   @Prop({ required: true }) type!: ArtifactType;
 

@@ -39,7 +39,7 @@
       </v-menu>
     </v-col>
     <v-col>
-      <v-number-field
+      <number-field
         :value.sync="refValue"
         :label="label"
         :suffix="suffix"
@@ -102,7 +102,9 @@ const BonusIcons: Record<DisplayBonusType, string> = {
 
 @Component({
   name: "VBonusValue",
-  components: { VNumberField: () => import("./VNumberField.vue") },
+  components: {
+    NumberField: () => import("~/components/NumberField.vue"),
+  },
 })
 export default class VBonusValue extends Vue {
   @Prop({ required: true }) types!: ReadonlyArray<DisplayBonusType>;

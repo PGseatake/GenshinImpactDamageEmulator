@@ -27,14 +27,12 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { VDialog } from "vuetify/lib";
 
 @Component({
-  name: "VFileDialog",
-  components: { VDialog },
+  name: "DialogFile",
   inheritAttrs: false,
 })
-export default class VFileDialog extends Vue {
+export default class DialogFile extends Vue {
   @Prop({ required: true }) show!: boolean;
   @Prop({ required: true }) file!: string | File | null;
   @Prop({ default: "" }) label!: string;

@@ -39,14 +39,12 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { VTextField } from "vuetify/lib";
 
 @Component({
-  name: "VNumberField",
-  components: { VTextField },
+  name: "NumberField",
   inheritAttrs: false,
 })
-export default class VNumberField extends Vue {
+export default class NumberField extends Vue {
   @Prop({ required: true }) value!: number;
   @Prop({ default: "" }) suffix!: string;
   @Prop({ default: 0 }) precision!: number;

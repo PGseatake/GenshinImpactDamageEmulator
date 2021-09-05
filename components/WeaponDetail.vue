@@ -9,7 +9,7 @@
           left
           offset-y="18px"
         >
-          <v-select-name
+          <select-name
             v-bind="$attrs"
             v-on="$listeners"
             :items="items"
@@ -52,13 +52,13 @@ import { CharaList } from "~/src/character";
 import { WeaponList } from "~/src/weapon";
 
 @Component({
-  name: "VWeaponDetail",
+  name: "WeaponDetail",
   components: {
-    VSelectName: () => import("~/components/VSelectName.vue"),
+    SelectName: () => import("~/components/SelectName.vue"),
   },
   inheritAttrs: false,
 })
-export default class VWeaponDetail extends Vue {
+export default class WeaponDetail extends Vue {
   @Prop({ required: true }) chara!: string;
 
   get cols() {

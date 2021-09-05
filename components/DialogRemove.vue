@@ -10,9 +10,9 @@
       <v-card>
         <v-card-title v-text="title" />
         <v-card-text>
-          <slot name="enable" v-bind:item="item"
-            ><div v-text="text + $t('dialog.remove_text')"
-          /></slot>
+          <slot name="enable" v-bind:item="item">
+            <div v-text="text + $t('dialog.remove_text')" />
+          </slot>
           <div v-text="$t('dialog.confirm_text')" />
         </v-card-text>
         <v-card-actions>
@@ -36,9 +36,9 @@
       <v-card>
         <v-card-title v-text="title" />
         <v-card-text>
-          <slot name="disable" v-bind:item="item"
-            ><div v-text="text + $t('dialog.remove_x_text')"
-          /></slot>
+          <slot name="disable" v-bind:item="item">
+            <div v-text="text + $t('dialog.remove_x_text')" />
+          </slot>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -56,10 +56,10 @@ import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { IIdentify } from "~/src/interface";
 
 @Component({
-  name: "VRemoveDialog",
+  name: "DialogRemove",
   inheritAttrs: false,
 })
-export default class VRemoveDialog extends Vue {
+export default class DialogRemove extends Vue {
   @Prop({ required: true }) title!: string;
   @Prop({ default: null }) item!: IIdentify | null;
   @Prop({ default: "" }) name!: string;

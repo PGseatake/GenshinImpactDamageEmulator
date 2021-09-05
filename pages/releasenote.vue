@@ -2,7 +2,7 @@
   <v-container>
     <v-list expand :class="$vuetify.breakpoint.xs ? '' : 'px-2'">
       <template v-for="(item, key) in items()">
-        <v-release-root :key="key" :version="key" :root="item" />
+        <release-root :key="key" :version="key" :root="item" />
       </template>
     </v-list>
   </v-container>
@@ -13,7 +13,9 @@ import { Vue, Component } from "vue-property-decorator";
 
 @Component({
   name: "PageReleaseNote",
-  components: { VReleaseRoot: () => import("~/components/VReleaseRoot.vue") },
+  components: {
+    ReleaseRoot: () => import("~/components/ReleaseRoot.vue"),
+  },
 })
 export default class PageReleaseNote extends Vue {
   created() {

@@ -11,7 +11,7 @@
       hide-default-footer
     >
       <template v-slot:[`item.name`]="{ item }">
-        <v-name-comment
+        <name-comment
           :items="names"
           :name.sync="item.name"
           :comment.sync="item.comment"
@@ -19,31 +19,31 @@
         />
       </template>
       <template v-slot:[`item.conste`]="{ item }">
-        <v-select-range v-model="item.conste" :min="0" :max="6" />
+        <select-range v-model="item.conste" :min="0" :max="6" />
       </template>
       <template v-slot:[`item.level`]="{ item }">
-        <v-ascension-level v-model="item.level" @change="onChangeLevel(item)" />
+        <ascension-level v-model="item.level" @change="onChangeLevel(item)" />
       </template>
       <template v-slot:[`item.hp`]="{ item }">
-        <v-number-field :value.sync="item.hp" hide-label="true" />
+        <number-field :value.sync="item.hp" hide-label="true" />
       </template>
       <template v-slot:[`item.atk`]="{ item }">
-        <v-number-field :value.sync="item.atk" hide-label="true" />
+        <number-field :value.sync="item.atk" hide-label="true" />
       </template>
       <template v-slot:[`item.def`]="{ item }">
-        <v-number-field :value.sync="item.def" hide-label="true" />
+        <number-field :value.sync="item.def" hide-label="true" />
       </template>
       <template v-slot:[`item.special`]="{ item }">
-        <v-chara-special :name="item.name" v-bind.sync="item.special" />
+        <chara-special :name="item.name" v-bind.sync="item.special" />
       </template>
       <template v-slot:[`item.combat`]="{ item }">
-        <v-select-range v-model="item.combat" :min="1" :max="15" />
+        <select-range v-model="item.combat" :min="1" :max="15" />
       </template>
       <template v-slot:[`item.skill`]="{ item }">
-        <v-select-range v-model="item.skill" :min="1" :max="15" />
+        <select-range v-model="item.skill" :min="1" :max="15" />
       </template>
       <template v-slot:[`item.burst`]="{ item }">
-        <v-select-range v-model="item.burst" :min="1" :max="15" />
+        <select-range v-model="item.burst" :min="1" :max="15" />
       </template>
       <template v-slot:[`item.remove`]="{ item }">
         <v-btn fab x-small class="my-1" @click="onRemove(item)">
@@ -160,17 +160,17 @@ import * as ascension from "~/src/ascension";
 import { ICharaData, CharaList, CharaNames } from "~/src/character";
 
 @Component({
-  name: "VCharacterData",
+  name: "CharaData",
   components: {
-    VNameComment: () => import("~/components/VNameComment.vue"),
-    VNumberField: () => import("~/components/VNumberField.vue"),
-    VSelectRange: () => import("~/components/VSelectRange.vue"),
-    VCharaSpecial: () => import("~/components/VCharaSpecial.vue"),
-    VAscensionLevel: () => import("~/components/VAscensionLevel.vue"),
+    NameComment: () => import("~/components/NameComment.vue"),
+    NumberField: () => import("~/components/NumberField.vue"),
+    SelectRange: () => import("~/components/SelectRange.vue"),
+    CharaSpecial: () => import("~/components/CharaSpecial.vue"),
+    AscensionLevel: () => import("~/components/AscensionLevel.vue"),
   },
   inheritAttrs: false,
 })
-export default class VCharacterData extends Vue {
+export default class CharaData extends Vue {
   @Prop({ required: true }) items!: Array<ICharaData>;
 
   @Emit("remove")

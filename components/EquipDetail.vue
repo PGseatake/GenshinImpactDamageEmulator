@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-select-name
+    <select-name
       v-bind="$attrs"
       v-on="$listeners"
       :items="items"
@@ -38,16 +38,16 @@ div.detail {
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { NameComment } from "~/components/VSelectName.vue";
+import { NameComment } from "~/components/SelectName.vue";
 
 @Component({
-  name: "VEquipDetail",
+  name: "EquipDetail",
   components: {
-    VSelectName: () => import("~/components/VSelectName.vue"),
+    SelectName: () => import("~/components/SelectName.vue"),
   },
   inheritAttrs: false,
 })
-export default class VEquipDetail extends Vue {
+export default class EquipDetail extends Vue {
   @Prop({ required: true }) items!: ReadonlyArray<NameComment>;
 
   get item() {

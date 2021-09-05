@@ -11,7 +11,7 @@
       hide-default-footer
     >
       <template v-slot:[`item.name`]="{ item }">
-        <v-name-comment
+        <name-comment
           :items="names"
           :name.sync="item.name"
           :comment.sync="item.comment"
@@ -19,16 +19,16 @@
         />
       </template>
       <template v-slot:[`item.rank`]="{ item }">
-        <v-select-range v-model="item.rank" :min="1" :max="5" />
+        <select-range v-model="item.rank" :min="1" :max="5" />
       </template>
       <template v-slot:[`item.level`]="{ item }">
-        <v-ascension-level v-model="item.level" @change="onChangeLevel(item)" />
+        <ascension-level v-model="item.level" @change="onChangeLevel(item)" />
       </template>
       <template v-slot:[`item.atk`]="{ item }">
-        <v-number-field :value.sync="item.atk" hide-label="true" />
+        <number-field :value.sync="item.atk" hide-label="true" />
       </template>
       <template v-slot:[`item.second`]="{ item }">
-        <v-weapon-second
+        <weapon-second
           :list="list"
           :name="item.name"
           v-bind.sync="item.second"
@@ -113,17 +113,17 @@ import { WeaponType } from "~/src/const";
 import { IWeaponData, WeaponNames, WeaponList } from "~/src/weapon";
 
 @Component({
-  name: "VWeaponData",
+  name: "WeaponData",
   components: {
-    VNameComment: () => import("~/components/VNameComment.vue"),
-    VNumberField: () => import("~/components/VNumberField.vue"),
-    VSelectRange: () => import("~/components/VSelectRange.vue"),
-    VWeaponSecond: () => import("~/components/VWeaponSecond.vue"),
-    VAscensionLevel: () => import("~/components/VAscensionLevel.vue"),
+    NameComment: () => import("~/components/NameComment.vue"),
+    NumberField: () => import("~/components/NumberField.vue"),
+    SelectRange: () => import("~/components/SelectRange.vue"),
+    WeaponSecond: () => import("~/components/WeaponSecond.vue"),
+    AscensionLevel: () => import("~/components/AscensionLevel.vue"),
   },
   inheritAttrs: false,
 })
-export default class VWeaponData extends Vue {
+export default class WeaponData extends Vue {
   @Prop({ required: true }) type!: WeaponType;
   @Prop({ required: true }) items!: Array<IWeaponData>;
 

@@ -40,10 +40,10 @@ export type NameComment = {
 };
 
 @Component({
-  name: "VSelectName",
+  name: "SelectName",
   inheritAttrs: false,
 })
-export default class VSelectName extends Vue {
+export default class SelectName extends Vue {
   @Prop({ required: true }) items!: ReadonlyArray<NameComment>;
   @Prop({ required: true }) group!: string;
   @Prop({ default: "" }) value!: string;

@@ -26,7 +26,7 @@
       <template #[`item.source`]="{ item }">{{ $t(item.source) }}</template>
       <template #[`item.stack`]="{ item }">
         <template v-if="item.stack">
-          <v-select-range
+          <select-range
             :min="0"
             :max="item.stack"
             :suffix="`/${item.stack}`"
@@ -70,7 +70,9 @@ import { GlobalArtifactData } from "~/src/artifact";
 
 @Component({
   name: "PageBonus",
-  components: {},
+  components: {
+    SelectRange: () => import("~/components/SelectRange.vue"),
+  },
 })
 export default class PageBonus extends Vue {
   globals!: GlobalTeamData &

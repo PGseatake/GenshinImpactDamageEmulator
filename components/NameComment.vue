@@ -35,10 +35,10 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { TextValue } from "~/src/types";
 
 @Component({
-  name: "VNameComment",
+  name: "NameComment",
   inheritAttrs: false,
 })
-export default class VNameComment extends Vue {
+export default class NameComment extends Vue {
   @Prop({ required: true }) items!: ReadonlyArray<TextValue>;
   @Prop({ required: true }) name!: string;
   @Prop({ required: true }) comment!: string;

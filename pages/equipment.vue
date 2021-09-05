@@ -19,41 +19,41 @@
         />
       </template>
       <template v-slot:[`item.chara`]="{ item }">
-        <v-chara-detail :value.sync="item.chara" />
+        <chara-detail :value.sync="item.chara" />
       </template>
       <template v-slot:[`item.weapon`]="{ item }">
-        <v-weapon-detail :chara="item.chara" :value.sync="item.weapon" />
+        <weapon-detail :chara="item.chara" :value.sync="item.weapon" />
       </template>
       <template v-slot:[`item.flower`]="{ item }">
-        <v-artifact-detail
+        <artifact-detail
           :value.sync="item.flower"
           :items="globals.flower"
           type="flower"
         />
       </template>
       <template v-slot:[`item.feather`]="{ item }">
-        <v-artifact-detail
+        <artifact-detail
           :value.sync="item.feather"
           :items="globals.feather"
           type="feather"
         />
       </template>
       <template v-slot:[`item.sands`]="{ item }">
-        <v-artifact-detail
+        <artifact-detail
           :value.sync="item.sands"
           :items="globals.sands"
           type="sands"
         />
       </template>
       <template v-slot:[`item.goblet`]="{ item }">
-        <v-artifact-detail
+        <artifact-detail
           :value.sync="item.goblet"
           :items="globals.goblet"
           type="goblet"
         />
       </template>
       <template v-slot:[`item.circlet`]="{ item }">
-        <v-artifact-detail
+        <artifact-detail
           :value.sync="item.circlet"
           :items="globals.circlet"
           type="circlet"
@@ -70,22 +70,22 @@
       <v-icon>{{ icons.append }}</v-icon>
     </v-btn>
 
-    <v-append-dialog
+    <dialog-append
       :disabled="!append"
       title="menu.equipment"
       max-width="300px"
       @accept="onAppend"
       @cancel="append = ''"
     >
-      <v-name-comment
+      <name-comment
         :items="names"
         :name.sync="append"
         :comment="comment"
         :commentable="false"
         :dense="false"
       />
-    </v-append-dialog>
-    <v-remove-dialog
+    </dialog-append>
+    <dialog-remove
       :title="$t('menu.equipment') + $t('dialog.remove')"
       :item="remove"
       :name="removeName"
@@ -208,11 +208,12 @@ import { Members } from "~/src/team";
 @Component({
   name: "PageEquipment",
   components: {
-    VCharaDetail: () => import("~/components/VCharaDetail.vue"),
-    VWeaponDetail: () => import("~/components/VWeaponDetail.vue"),
-    VArtifactDetail: () => import("~/components/VArtifactDetail.vue"),
-    VAppendDialog: () => import("~/components/VAppendDialog.vue"),
-    VRemoveDialog: () => import("~/components/VRemoveDialog.vue"),
+    NameComment: () => import("~/components/NameComment.vue"),
+    CharaDetail: () => import("~/components/CharaDetail.vue"),
+    WeaponDetail: () => import("~/components/WeaponDetail.vue"),
+    ArtifactDetail: () => import("~/components/ArtifactDetail.vue"),
+    DialogAppend: () => import("~/components/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/DialogRemove.vue"),
   },
 })
 export default class PageEquipment extends Vue {
