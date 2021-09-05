@@ -8,7 +8,7 @@
       fixed-header
       hide-default-footer
     >
-      <template v-slot:[`item.name`]="{ item }">
+      <template #[`item.name`]="{ item }">
         <v-text-field
           v-model="item.name"
           single-line
@@ -17,38 +17,38 @@
           class="text-caption"
         />
       </template>
-      <template v-slot:[`item.member1`]="{ item }">
+      <template #[`item.member1`]="{ item }">
         <equip-detail
           :value.sync="item.member1"
           :items="items"
           @change="onChangeItem(item)"
         />
       </template>
-      <template v-slot:[`item.member2`]="{ item }">
+      <template #[`item.member2`]="{ item }">
         <equip-detail
           :value.sync="item.member2"
           :items="items"
           @change="onChangeItem(item)"
         />
       </template>
-      <template v-slot:[`item.member3`]="{ item }">
+      <template #[`item.member3`]="{ item }">
         <equip-detail
           :value.sync="item.member3"
           :items="items"
           @change="onChangeItem(item)"
         />
       </template>
-      <template v-slot:[`item.member4`]="{ item }">
+      <template #[`item.member4`]="{ item }">
         <equip-detail
           :value.sync="item.member4"
           :items="items"
           @change="onChangeItem(item)"
         />
       </template>
-      <template v-slot:[`item.resonance`]="{ item }">
+      <template #[`item.resonance`]="{ item }">
         <resonance :items="item.resonance" />
       </template>
-      <template v-slot:[`item.remove`]="{ item }">
+      <template #[`item.remove`]="{ item }">
         <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
           <v-icon>{{ icons.remove }}</v-icon>
         </v-btn>

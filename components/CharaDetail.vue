@@ -40,8 +40,8 @@ div.detail {
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { CharaList } from "~/src/character";
 import { ElementType } from "~/src/const";
+import { CharaList } from "~/src/character";
 
 @Component({
   name: "CharaDetail",

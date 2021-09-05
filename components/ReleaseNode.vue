@@ -1,12 +1,12 @@
 <template>
   <v-list-group
     v-bind="$attrs"
-    no-action
     :sub-group="group"
     :append-icon="appendIcon"
     :prepend-icon="prependIcon"
+    no-action
   >
-    <template v-slot:activator>
+    <template #activator>
       <v-list-item :dense="group">
         <v-list-item-content class="py-0">
           <v-list-item-title v-text="title" />

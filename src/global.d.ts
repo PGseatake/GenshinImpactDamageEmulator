@@ -1,7 +1,8 @@
+import { LocaleObject } from "nuxt-i18n";
 import { IBonusValueData, IIdentify } from "~/src/interface";
 import { GlobalData } from "~/src/convert";
-import { ElementType } from "./const";
-import { BonusBase } from "./bonus";
+import { ElementType } from "~/src/const";
+import { BonusBase } from "~/src/bonus";
 
 export { };
 
@@ -44,5 +45,11 @@ declare module "vue/types/vue" {
         $elementBGColor: (elem: ElementType) => string;
         $roundRate: (value: number) => string;
         $roundFloat: (value: number) => string;
+    }
+}
+
+declare module "vue-i18n/types" {
+    interface IVueI18n {
+        locales: LocaleObject[];
     }
 }

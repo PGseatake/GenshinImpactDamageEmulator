@@ -8,10 +8,10 @@
     <v-card>
       <v-card-title>{{ $t(title) }}{{ $t("dialog.append") }}</v-card-title>
       <v-card-text>
-        <slot></slot>
+        <slot />
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-btn text color="secondary" @click="onCancel">{{
           $t("dialog.cancel")
         }}</v-btn>

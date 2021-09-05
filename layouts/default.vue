@@ -387,15 +387,19 @@ export default class Default extends Vue {
       let blob = new Blob([JSON.stringify(this.$globals)], {
         type: "application/json",
       });
-      let link = document.createElement("a");
-      document.body.appendChild(link);
-      let url = URL.createObjectURL(blob);
-      link.href = url;
-      link.download = this.exportFile;
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-      this.popup("export");
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, this.exportFile);
+      } else {
+        let link = document.createElement("a");
+        document.body.appendChild(link);
+        let url = (URL || webkitURL).createObjectURL(blob);
+        link.href = url;
+        link.download = this.exportFile;
+        link.click();
+        link.remove();
+        (URL || webkitURL).revokeObjectURL(url);
+        this.popup("export");
+      }
     }
   }
 }

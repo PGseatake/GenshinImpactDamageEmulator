@@ -1,57 +1,55 @@
 <template>
-  <div>
-    <v-data-table
-      v-bind="$attrs"
-      v-on="$listeners"
-      :headers="headers"
-      :items="items"
-      :class="tableClass"
-      :items-per-page="1000"
-      fixed-header
-      hide-default-footer
-    >
-      <template v-slot:[`item.name`]="{ item }">
-        <name-comment
-          :items="names"
-          :name.sync="item.name"
-          :comment.sync="item.comment"
-          @change="onChangeName(item)"
-        />
-      </template>
-      <template v-slot:[`item.conste`]="{ item }">
-        <select-range v-model="item.conste" :min="0" :max="6" />
-      </template>
-      <template v-slot:[`item.level`]="{ item }">
-        <ascension-level v-model="item.level" @change="onChangeLevel(item)" />
-      </template>
-      <template v-slot:[`item.hp`]="{ item }">
-        <number-field :value.sync="item.hp" hide-label="true" />
-      </template>
-      <template v-slot:[`item.atk`]="{ item }">
-        <number-field :value.sync="item.atk" hide-label="true" />
-      </template>
-      <template v-slot:[`item.def`]="{ item }">
-        <number-field :value.sync="item.def" hide-label="true" />
-      </template>
-      <template v-slot:[`item.special`]="{ item }">
-        <chara-special :name="item.name" v-bind.sync="item.special" />
-      </template>
-      <template v-slot:[`item.combat`]="{ item }">
-        <select-range v-model="item.combat" :min="1" :max="15" />
-      </template>
-      <template v-slot:[`item.skill`]="{ item }">
-        <select-range v-model="item.skill" :min="1" :max="15" />
-      </template>
-      <template v-slot:[`item.burst`]="{ item }">
-        <select-range v-model="item.burst" :min="1" :max="15" />
-      </template>
-      <template v-slot:[`item.remove`]="{ item }">
-        <v-btn fab x-small class="my-1" @click="onRemove(item)">
-          <v-icon>{{ icons.remove }}</v-icon>
-        </v-btn>
-      </template>
-    </v-data-table>
-  </div>
+  <v-data-table
+    v-bind="$attrs"
+    v-on="$listeners"
+    :headers="headers"
+    :items="items"
+    :class="tableClass"
+    :items-per-page="1000"
+    fixed-header
+    hide-default-footer
+  >
+    <template #[`item.name`]="{ item }">
+      <name-comment
+        :items="names"
+        :name.sync="item.name"
+        :comment.sync="item.comment"
+        @change="onChangeName(item)"
+      />
+    </template>
+    <template #[`item.conste`]="{ item }">
+      <select-range v-model="item.conste" :min="0" :max="6" />
+    </template>
+    <template #[`item.level`]="{ item }">
+      <ascension-level v-model="item.level" @change="onChangeLevel(item)" />
+    </template>
+    <template #[`item.hp`]="{ item }">
+      <number-field :value.sync="item.hp" :hide-label="true" />
+    </template>
+    <template #[`item.atk`]="{ item }">
+      <number-field :value.sync="item.atk" :hide-label="true" />
+    </template>
+    <template #[`item.def`]="{ item }">
+      <number-field :value.sync="item.def" :hide-label="true" />
+    </template>
+    <template #[`item.special`]="{ item }">
+      <chara-special :name="item.name" v-bind.sync="item.special" />
+    </template>
+    <template #[`item.combat`]="{ item }">
+      <select-range v-model="item.combat" :min="1" :max="15" />
+    </template>
+    <template #[`item.skill`]="{ item }">
+      <select-range v-model="item.skill" :min="1" :max="15" />
+    </template>
+    <template #[`item.burst`]="{ item }">
+      <select-range v-model="item.burst" :min="1" :max="15" />
+    </template>
+    <template #[`item.remove`]="{ item }">
+      <v-btn fab x-small class="my-1" @click="onRemove(item)">
+        <v-icon>{{ icons.remove }}</v-icon>
+      </v-btn>
+    </template>
+  </v-data-table>
 </template>
 
 <style lang="scss" scoped>

@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title v-text="label" />
       <v-card-text>
-        <slot></slot>
+        <slot />
         <div v-html="detail" :style="textStyle" />
       </v-card-text>
       <v-card-actions class="justify-end">

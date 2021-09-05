@@ -9,7 +9,7 @@
       disable-sort
       hide-default-footer
     >
-      <template v-slot:[`item.comment`]="{ item }">
+      <template #[`item.comment`]="{ item }">
         <v-text-field
           v-model="item.comment"
           single-line
@@ -18,48 +18,48 @@
           class="text-caption"
         />
       </template>
-      <template v-slot:[`item.chara`]="{ item }">
+      <template #[`item.chara`]="{ item }">
         <chara-detail :value.sync="item.chara" />
       </template>
-      <template v-slot:[`item.weapon`]="{ item }">
+      <template #[`item.weapon`]="{ item }">
         <weapon-detail :chara="item.chara" :value.sync="item.weapon" />
       </template>
-      <template v-slot:[`item.flower`]="{ item }">
+      <template #[`item.flower`]="{ item }">
         <artifact-detail
           :value.sync="item.flower"
           :items="globals.flower"
           type="flower"
         />
       </template>
-      <template v-slot:[`item.feather`]="{ item }">
+      <template #[`item.feather`]="{ item }">
         <artifact-detail
           :value.sync="item.feather"
           :items="globals.feather"
           type="feather"
         />
       </template>
-      <template v-slot:[`item.sands`]="{ item }">
+      <template #[`item.sands`]="{ item }">
         <artifact-detail
           :value.sync="item.sands"
           :items="globals.sands"
           type="sands"
         />
       </template>
-      <template v-slot:[`item.goblet`]="{ item }">
+      <template #[`item.goblet`]="{ item }">
         <artifact-detail
           :value.sync="item.goblet"
           :items="globals.goblet"
           type="goblet"
         />
       </template>
-      <template v-slot:[`item.circlet`]="{ item }">
+      <template #[`item.circlet`]="{ item }">
         <artifact-detail
           :value.sync="item.circlet"
           :items="globals.circlet"
           type="circlet"
         />
       </template>
-      <template v-slot:[`item.remove`]="{ item }">
+      <template #[`item.remove`]="{ item }">
         <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
           <v-icon>{{ icons.remove }}</v-icon>
         </v-btn>

@@ -1,81 +1,79 @@
 <template>
-  <div>
-    <v-data-table
-      v-bind="$attrs"
-      v-on="$listeners"
-      :headers="headers"
-      :items="items"
-      :class="tableClass"
-      :items-per-page="1000"
-      fixed-header
-      hide-default-footer
-    >
-      <template v-slot:[`item.name`]="{ item }">
-        <name-comment
-          :items="names"
-          :name.sync="item.name"
-          :comment.sync="item.comment"
-        />
-      </template>
-      <template v-slot:[`item.star`]="{ item }">
-        <select-range
-          v-model="item.star"
-          :min="3"
-          :max="5"
-          @change="onChangeStar(item)"
-        />
-      </template>
-      <template v-slot:[`item.level`]="{ item }">
-        <select-range
-          v-model="item.level"
-          :min="0"
-          :max="item.star * 4"
-          @change="onChangeLevel(item)"
-        />
-      </template>
-      <template v-slot:[`item.main`]="{ item }">
-        <bonus-value
-          v-bind.sync="item.main"
-          :types="mains"
-          :score="getTotal(item)"
-          @change="onChangeMain(item)"
-        />
-      </template>
-      <template v-slot:[`item.sub1`]="{ item }">
-        <bonus-value
-          v-bind.sync="item.sub1"
-          :types="subs"
-          :score="getScore(item, item.sub1)"
-        />
-      </template>
-      <template v-slot:[`item.sub2`]="{ item }">
-        <bonus-value
-          v-bind.sync="item.sub2"
-          :types="subs"
-          :score="getScore(item, item.sub2)"
-        />
-      </template>
-      <template v-slot:[`item.sub3`]="{ item }">
-        <bonus-value
-          v-bind.sync="item.sub3"
-          :types="subs"
-          :score="getScore(item, item.sub3)"
-        />
-      </template>
-      <template v-slot:[`item.sub4`]="{ item }">
-        <bonus-value
-          v-bind.sync="item.sub4"
-          :types="subs"
-          :score="getScore(item, item.sub4)"
-        />
-      </template>
-      <template v-slot:[`item.remove`]="{ item }">
-        <v-btn fab x-small class="my-1" @click="onRemove(item)">
-          <v-icon>{{ icons.remove }}</v-icon>
-        </v-btn>
-      </template>
-    </v-data-table>
-  </div>
+  <v-data-table
+    v-bind="$attrs"
+    v-on="$listeners"
+    :headers="headers"
+    :items="items"
+    :class="tableClass"
+    :items-per-page="1000"
+    fixed-header
+    hide-default-footer
+  >
+    <template #[`item.name`]="{ item }">
+      <name-comment
+        :items="names"
+        :name.sync="item.name"
+        :comment.sync="item.comment"
+      />
+    </template>
+    <template #[`item.star`]="{ item }">
+      <select-range
+        v-model="item.star"
+        :min="3"
+        :max="5"
+        @change="onChangeStar(item)"
+      />
+    </template>
+    <template #[`item.level`]="{ item }">
+      <select-range
+        v-model="item.level"
+        :min="0"
+        :max="item.star * 4"
+        @change="onChangeLevel(item)"
+      />
+    </template>
+    <template #[`item.main`]="{ item }">
+      <bonus-value
+        v-bind.sync="item.main"
+        :types="mains"
+        :score="getTotal(item)"
+        @change="onChangeMain(item)"
+      />
+    </template>
+    <template #[`item.sub1`]="{ item }">
+      <bonus-value
+        v-bind.sync="item.sub1"
+        :types="subs"
+        :score="getScore(item, item.sub1)"
+      />
+    </template>
+    <template #[`item.sub2`]="{ item }">
+      <bonus-value
+        v-bind.sync="item.sub2"
+        :types="subs"
+        :score="getScore(item, item.sub2)"
+      />
+    </template>
+    <template #[`item.sub3`]="{ item }">
+      <bonus-value
+        v-bind.sync="item.sub3"
+        :types="subs"
+        :score="getScore(item, item.sub3)"
+      />
+    </template>
+    <template #[`item.sub4`]="{ item }">
+      <bonus-value
+        v-bind.sync="item.sub4"
+        :types="subs"
+        :score="getScore(item, item.sub4)"
+      />
+    </template>
+    <template #[`item.remove`]="{ item }">
+      <v-btn fab x-small class="my-1" @click="onRemove(item)">
+        <v-icon>{{ icons.remove }}</v-icon>
+      </v-btn>
+    </template>
+  </v-data-table>
 </template>
 
 <style lang="scss" scoped>
