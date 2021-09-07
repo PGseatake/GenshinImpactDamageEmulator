@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid>
-    <v-row dense class="pt-2 align-end">
+  <v-container fluid class="py-2">
+    <v-row dense class="pt-2" align="end" justify="center">
       <!-- 敵選択 -->
       <v-col cols="auto" class="pb-4">
         <v-select
@@ -69,10 +69,11 @@
         </v-radio-group>
       </v-col>
     </v-row>
-    <v-row no-gutters>
+    <v-row no-gutters justify="center">
       <v-data-table
         :headers="headers"
         :items="items"
+        :mobile-breakpoint="0"
         dense
         fixed-header
         hide-default-footer

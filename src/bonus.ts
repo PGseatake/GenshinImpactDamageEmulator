@@ -1,11 +1,12 @@
 import {
     IBasicBonus, IFlatBonus, IFlatBonusBound, IEnchantBonus, IReductBonus,
-    AnyExtraBonus, Constes, Passives, IBonusOption
+    AnyExtraBonus, Constes, Passives, IBonusOption, GlobalEquipData
 } from "./interface";
 import * as konst from "./const";
-import { CharaList, ICharaData } from "./character";
-import { WeaponList, IWeaponData } from "./weapon";
-import { ArtifactName, ArtifactSet } from "./artifact";
+import { CharaList, ICharaData, GlobalCharaData } from "./character";
+import { WeaponList, IWeaponData, GlobalWeaponData } from "./weapon";
+import { ArtifactName, ArtifactSet, GlobalArtifactData } from "./artifact";
+import { getArtifacts, getMember, getWeapon, ITeamData, Members } from "./team";
 
 export const RateBonus: ReadonlyArray<string> = [
     konst.StatusBonusType.HpBuf,
@@ -109,6 +110,10 @@ export class BonusBase {
     }
     public set stacks(value: number) {
         this.data.stack = value;
+    }
+
+    public isMine(chara: ICharaData) {
+        return this.group === "general.everyone" || this.group.includes(chara.name);
     }
 
     public getLabel(type: konst.AnyBonusType) {
@@ -355,6 +360,13 @@ export interface IBonusData {
 }
 export type GlobalBonusData = { bonus: IDict<IBonusData>; };
 
+type InputData =
+    GlobalEquipData &
+    GlobalCharaData &
+    GlobalWeaponData &
+    GlobalArtifactData &
+    GlobalBonusData;
+
 export class BonusBuilder {
     private vm: Vue;
     public team: string;
@@ -368,8 +380,8 @@ export class BonusBuilder {
         this.team = "";
         this.equip = "";
         this.group = "";
-        this.bonus = { ...bonus }; // 新しいインスタンスを生成
-        this.output = { };
+        this.bonus = bonus;
+        this.output = {};
     }
 
     private convert(data: AnyExtraBonus, ref: string, index: number, origin: string, source: string): BonusBase {
@@ -401,9 +413,6 @@ export class BonusBuilder {
         const key = `${this.team}.${this.equip}.${index}`;
         if (key in this.bonus) {
             bonus.data = this.bonus[key];
-        }
-        if (key in this.output) {
-            console.warn("duplicate property", key);
         }
         this.output[key] = bonus.data;
         return bonus;
@@ -491,5 +500,35 @@ export class BonusBuilder {
             }
         }
         return bonus;
+    }
+
+    public build(team: ITeamData, input: InputData) {
+        let data: BonusBase[] = [];
+        this.team = team.id;
+        for (const key of Members) {
+            const { info, chara, equip } = getMember(team[key], input);
+            if (info && chara && equip) {
+                this.equip = equip.id;
+                this.group = "chara." + chara.name;
+
+                // キャラボーナス追加
+                data.push(...this.charaBonus(chara));
+                // 武器ボーナス追加
+                const weapon = getWeapon(info, equip, input);
+                data.push(...this.weaponBonus(weapon.type, weapon.data));
+                // 聖遺物ボーナス追加
+                const artifacts = getArtifacts(equip, input);
+                data.push(...this.artifactBonus(artifacts));
+            }
+        }
+        // 元素共鳴ボーナス追加
+        data.push(...this.resonanceBonus(team.resonance));
+        data.sort(
+            (a, b) =>
+                a.group.localeCompare(b.group) ||
+                a.index - b.index ||
+                a.source.localeCompare(b.source)
+        );
+        return data;
     }
 }

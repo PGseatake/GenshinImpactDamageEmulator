@@ -1,30 +1,43 @@
 <template>
-  <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <select-enemy />
-    <v-row dense align="center" style="max-width: 500px">
-      <v-col>
-        <v-select
-          v-model="team"
-          :items="teams"
-          :label="$t('menu.team')"
-          dense
-          hide-details
-          @change="onChangeTeam"
-        />
+  <v-container fluid>
+    <v-row no-gutters>
+      <!-- 敵 -->
+      <v-col cols="12" md="4" xl="3">
+        <select-enemy />
       </v-col>
-      <v-col>
-        <name-comment
-          :items="members"
-          :name.sync="member"
-          :comment="comment"
-          :commentable="false"
-          @change="onChangeMember"
-        />
+      <!-- ボーナス -->
+      <v-col cols="12" md="8" xl="9">
+        <v-container fluid class="py-2">
+          <v-row dense align="end">
+            <v-col cols="auto">
+              <v-select
+                v-model="team"
+                :items="teams"
+                :label="$t('menu.team')"
+                dense
+                hide-details
+                @change="onChangeTeam"
+                class="py-1"
+              />
+            </v-col>
+            <v-col cols="auto">
+              <name-comment
+                :items="members"
+                :name.sync="member"
+                :comment="comment"
+                :commentable="false"
+                @change="onChangeMember"
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutters>
+            <bonus-table :items="bonus" :group="true" />
+          </v-row>
+        </v-container>
       </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col>
-        <!-- 敵 -->
         <v-tabs v-model="tab" centered center-active show-arrows>
           <!-- <v-tab v-for="(items, key) in teams" :key="key">{{ key }}</v-tab> -->
         </v-tabs>
@@ -61,9 +74,12 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { TextValue } from "~/src/types";
-import { GlobalCharaData } from "~/src/character";
 import { GlobalEquipData } from "~/src/interface";
-import { GlobalTeamData, Member, Members } from "~/src/team";
+import { GlobalCharaData } from "~/src/character";
+import { GlobalWeaponData } from "~/src/weapon";
+import { GlobalArtifactData } from "~/src/artifact";
+import { BonusBase, BonusBuilder, GlobalBonusData } from "~/src/bonus";
+import { GlobalTeamData, ITeamData, Member, Members } from "~/src/team";
 import { getMember, getTeamName } from "~/src/team";
 
 @Component({
@@ -71,20 +87,27 @@ import { getMember, getTeamName } from "~/src/team";
   components: {
     NameComment: () => import("~/components/NameComment.vue"),
     SelectEnemy: () => import("~/components/SelectEnemy.vue"),
+    BonusTable: () => import("~/components/BonusTable.vue"),
   },
 })
 export default class PageDamage extends Vue {
-  globals!: GlobalCharaData & GlobalEquipData & GlobalTeamData;
-  team = "";
+  globals!: GlobalTeamData &
+    GlobalEquipData &
+    GlobalCharaData &
+    GlobalWeaponData &
+    GlobalArtifactData &
+    GlobalBonusData;
+  team: ITeamData | null = null;
   member: Required<Member> | null = null;
+  bonus: BonusBase[] = [];
   tab = 0;
 
   get teams() {
     const text = this.$t("menu.team");
     const { team } = this.globals;
-    let items: { text: string; value: string }[] = [];
+    let items: { text: string; value: ITeamData }[] = [];
     team.forEach((t, i) =>
-      items.push({ text: getTeamName(text, t, i), value: t.id })
+      items.push({ text: getTeamName(text, t, i), value: t })
     );
     return items;
   }
@@ -92,11 +115,10 @@ export default class PageDamage extends Vue {
   get members() {
     let items: TextValue[] = [];
     if (this.team) {
-      const { team } = this.globals;
-      const t = team.find((val) => val.id === this.team);
-      if (t) {
+      const team = this.team;
+      if (team) {
         for (const key of Members) {
-          const { info, chara, equip } = getMember(t[key], this.globals);
+          const { info, chara, equip } = getMember(team[key], this.globals);
           if (info && chara && equip) {
             items.push({
               text: this.$t("chara." + chara.name) as string,
@@ -123,8 +145,6 @@ export default class PageDamage extends Vue {
     if (teams.length > 0) {
       this.team = teams[0].value;
       this.onChangeTeam();
-    } else {
-      this.team = "";
     }
   }
 
@@ -135,11 +155,20 @@ export default class PageDamage extends Vue {
       this.onChangeMember();
     } else {
       this.member = null;
+      this.bonus.splice(0);
     }
   }
 
   onChangeMember() {
-    console.log(this.member);
+    this.bonus.splice(0);
+    const team = this.team;
+    const chara = this.member?.chara;
+    if (team && chara) {
+      let builder = new BonusBuilder(this, this.globals.bonus);
+      let bonus = builder.build(team, this.globals);
+      this.bonus.push(...bonus.filter((val) => val.isMine(chara)));
+      this.globals.bonus = { ...this.globals.bonus, ...builder.output };
+    }
   }
 }
 </script>
