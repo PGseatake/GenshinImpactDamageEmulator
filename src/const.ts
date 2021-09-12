@@ -231,6 +231,11 @@ export const FlatBonusBase = {
 } as const;
 export type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
 
+export const ResistType = {
+    Defence: "defence"
+} as const;
+export type ResistType = ElementType | typeof ResistType[keyof typeof ResistType];
+
 export const ReductBonusType = {
     Defence: "defence",
     Contact: "contact"

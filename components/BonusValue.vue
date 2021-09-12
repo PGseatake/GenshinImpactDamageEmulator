@@ -73,7 +73,7 @@ import {
   mdiWaterPercent,
 } from "@mdi/js";
 import { BonusType, StatusBonusType, ElementBonusType } from "~/src/const";
-import { getSuffix, isRateBonus } from "~/src/bonus";
+import { RateBonus } from "~/src/bonus";
 
 type DisplayBonusType = "none" | StatusBonusType | ElementBonusType;
 
@@ -152,11 +152,11 @@ export default class VBonusValue extends Vue {
   }
 
   get suffix() {
-    return getSuffix(this.type);
+    return RateBonus.suffix(this.type);
   }
 
   get precision() {
-    return isRateBonus(this.type) ? 1 : 0;
+    return RateBonus.check(this.type) ? 1 : 0;
   }
 
   get align() {

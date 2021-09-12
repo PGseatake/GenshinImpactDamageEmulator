@@ -3,7 +3,7 @@
     <v-tabs v-model="tab" centered center-active show-arrows>
       <v-tab v-for="{ key } of teams" :key="key">{{ key }}</v-tab>
     </v-tabs>
-    <bonus-table :items="items" :group="true" />
+    <bonus-table :items="items" />
   </v-container>
 </template>
 

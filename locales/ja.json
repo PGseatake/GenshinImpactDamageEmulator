@@ -34,7 +34,7 @@
         "name": "名前",
         "comment": "コメント",
         "element": "元素",
-        "level": "Lv",
+        "level": "Lv.",
         "star": "☆",
         "rank": "凸",
         "conste": "星座",
@@ -52,7 +52,7 @@
         "everyone": "全員",
         "sec": "秒",
         "phase": "状態",
-        "regist": "耐性",
+        "resist": "耐性",
         "rate": "倍率",
         "immutable": "無効"
     },

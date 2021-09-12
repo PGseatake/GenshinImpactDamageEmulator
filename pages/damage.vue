@@ -3,12 +3,13 @@
     <v-row no-gutters>
       <!-- 敵 -->
       <v-col cols="12" md="4" xl="3">
-        <select-enemy />
+        <select-enemy :defence="defence" @update="onChangeEnemy" />
       </v-col>
       <!-- ボーナス -->
       <v-col cols="12" md="8" xl="9">
-        <v-container fluid class="py-2">
+        <v-container fluid class="pa-0 pb-2">
           <v-row dense align="end">
+            <!-- チーム選択 -->
             <v-col cols="auto">
               <v-select
                 v-model="team"
@@ -16,11 +17,12 @@
                 :label="$t('menu.team')"
                 dense
                 hide-details
-                @change="onChangeTeam"
                 class="py-1"
+                @change="onChangeTeam"
               />
             </v-col>
-            <v-col cols="auto">
+            <!-- キャラ選択 -->
+            <v-col cols="auto" class="pt-0">
               <name-comment
                 :items="members"
                 :name.sync="member"
@@ -29,9 +31,19 @@
                 @change="onChangeMember"
               />
             </v-col>
+            <!-- レベル設定 -->
+            <v-col cols="auto">
+              <div class="py-1" style="width: 60px">
+                <ascension-level
+                  v-if="member"
+                  v-model="member.chara.level"
+                  :label="$t('general.level')"
+                />
+              </div>
+            </v-col>
           </v-row>
           <v-row no-gutters>
-            <bonus-table :items="bonus" :group="true" />
+            <bonus-table :items="bonus" :check="true" />
           </v-row>
         </v-container>
       </v-col>
@@ -74,13 +86,16 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { TextValue } from "~/src/types";
+import { ElementType } from "~/src/const";
+import { EnemyNames } from "~/src/enemy";
 import { GlobalEquipData } from "~/src/interface";
 import { GlobalCharaData } from "~/src/character";
 import { GlobalWeaponData } from "~/src/weapon";
 import { GlobalArtifactData } from "~/src/artifact";
-import { BonusBase, BonusBuilder, GlobalBonusData } from "~/src/bonus";
+import { GlobalBonusData, BonusBase, BonusBuilder } from "~/src/bonus";
 import { GlobalTeamData, ITeamData, Member, Members } from "~/src/team";
 import { getMember, getTeamName } from "~/src/team";
+import { EnemyData } from "~/components/SelectEnemy.vue";
 
 @Component({
   name: "PageDamage",
@@ -101,6 +116,12 @@ export default class PageDamage extends Vue {
   member: Required<Member> | null = null;
   bonus: BonusBase[] = [];
   tab = 0;
+  enemy: EnemyData = {
+    name: EnemyNames[0],
+    elem: ElementType.Pyro,
+    level: 1,
+    fixed: 0,
+  };
 
   get teams() {
     const text = this.$t("menu.team");
@@ -133,6 +154,17 @@ export default class PageDamage extends Vue {
 
   get comment() {
     return this.member?.chara?.comment || "-";
+  }
+
+  get defence() {
+    const enemy = this.enemy.level + 100;
+    const chara = this.charaLevel + 100;
+    return chara / (enemy + chara);
+  }
+
+  get charaLevel() {
+    const level = this.member?.chara.level;
+    return parseInt(level?.replace("+", "") || "1");
   }
 
   created() {
@@ -169,6 +201,13 @@ export default class PageDamage extends Vue {
       this.bonus.push(...bonus.filter((val) => val.isMine(chara)));
       this.globals.bonus = { ...this.globals.bonus, ...builder.output };
     }
+  }
+
+  onChangeEnemy(data: EnemyData) {
+    this.enemy.name = data.name;
+    this.enemy.elem = data.elem;
+    this.enemy.level = data.level;
+    this.enemy.fixed = data.fixed;
   }
 }
 </script>

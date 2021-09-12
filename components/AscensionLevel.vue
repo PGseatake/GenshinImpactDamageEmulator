@@ -2,10 +2,11 @@
   <v-select
     v-bind="$attrs"
     v-on="$listeners"
+    :label="label"
     :items="items"
     :append-icon="icon"
+    :single-line="!label"
     dense
-    single-line
     hide-details
     item-text="value"
     class="ma-0"
@@ -27,7 +28,7 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiMenuDown } from "@mdi/js";
 import * as Ascension from "~/src/ascension";
 
@@ -55,6 +56,8 @@ const levelTexts = (() => {
   inheritAttrs: false,
 })
 export default class AscensionLevel extends Vue {
+  @Prop({ default: "" }) label!: string;
+
   readonly items = levelTexts;
   readonly icon = mdiMenuDown;
 }

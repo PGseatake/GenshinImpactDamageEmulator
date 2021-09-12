@@ -4,7 +4,8 @@
     :items="items"
     :class="tableClass"
     :items-per-page="1000"
-    :group-by="group ? 'group' : undefined"
+    :show-select="check"
+    group-by="group"
     dense
     fixed-header
     disable-sort
@@ -13,17 +14,35 @@
     <template #[`group.header`]="{ group, headers }">
       <td
         :colspan="headers.length"
-        class="v-row-group__header text-subtitle-2"
-        style="vertical-align: middle; text-align: center"
+        class="v-row-group__header text-subtitle-2 text-center"
       >
         {{ $t(group) }}
       </td>
+    </template>
+    <template #[`header.data-table-select`]="{}">
+      <v-simple-checkbox
+        :key="-1"
+        :value="isSelectAll"
+        :ripple="false"
+        hide-details
+        @input="selectAll($event)"
+      />
+    </template>
+    <template #[`item.data-table-select`]="{ index, item }">
+      <v-simple-checkbox
+        :key="index"
+        :value="item.checked"
+        :disabled="item.always"
+        :ripple="false"
+        hide-details
+        @input="item.checked = $event"
+      />
     </template>
     <template #[`item.source`]="{ item }">{{ $t(item.source) }}</template>
     <template #[`item.stack`]="{ item }">
       <template v-if="item.stack">
         <select-range
-          :min="0"
+          :min="1"
           :max="item.stack"
           :suffix="`/${item.stack}`"
           :value="item.stacks"
@@ -43,6 +62,16 @@
   tr:hover {
     background: inherit !important;
   }
+  td.text-start {
+    align-self: center;
+    vertical-align: middle;
+  }
+}
+
+.mb-data-table ::v-deep {
+  td.v-data-table__mobile-row {
+    padding: 0 12px;
+  }
 }
 </style>
 
@@ -59,7 +88,7 @@ import { BonusBase } from "~/src/bonus";
 })
 export default class BonusTable extends Vue {
   @Prop({ required: true }) items!: Array<BonusBase>;
-  @Prop({ default: false }) group!: boolean;
+  @Prop({ default: false }) check!: boolean;
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     { text: this.$t("tab.source") as string, value: "source" },
@@ -70,6 +99,19 @@ export default class BonusTable extends Vue {
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get isSelectAll() {
+    for (const item of this.items) {
+      if (!item.always && !item.checked) return false;
+    }
+    return true;
+  }
+
+  selectAll(value: boolean) {
+    for (const item of this.items) {
+      item.checked = value;
+    }
   }
 
   formatTimes(value: number) {

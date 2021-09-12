@@ -1,10 +1,10 @@
 <template>
-  <v-container fluid class="py-2">
-    <v-row dense class="pt-2" align="end" justify="center">
+  <v-container fluid class="pa-2 pb-4">
+    <v-row dense align="end" justify="center">
       <!-- 敵選択 -->
-      <v-col cols="auto" class="pb-4">
+      <v-col cols="auto" class="my-2">
         <v-select
-          v-model="name"
+          v-model="data.name"
           :items="enemies"
           :label="$t('enemy.label')"
           :item-text="getEnemyText"
@@ -16,9 +16,9 @@
         />
       </v-col>
       <!-- 元素選択 -->
-      <v-col v-if="elements" cols="auto" class="pb-4">
+      <v-col v-if="elements" cols="auto" class="my-2">
         <v-select
-          v-model="element"
+          v-model="data.elem"
           :items="elements"
           :label="$t('general.element')"
           :item-text="getElementText"
@@ -35,23 +35,25 @@
         </v-select>
       </v-col>
       <!-- レベル -->
-      <v-col cols="auto" class="pb-4">
+      <v-col cols="auto" class="my-2">
         <select-range
-          v-model="level"
+          v-model="data.level"
           :label="$t('general.level')"
           :min="1"
-          :max="100"
+          :max="150"
+          @change="onChangeData"
         />
       </v-col>
       <!-- 状態選択 -->
-      <v-col v-if="phases" cols="auto" class="pb-4">
+      <v-col v-if="phases" cols="auto" class="my-2">
         <v-radio-group
-          v-model="fixed"
+          v-model="data.fixed"
           row
           dense
           mandatory
           hide-details
           class="pa-0 ma-0"
+          @change="onChangeData"
         >
           <template #label>
             <label class="v-label v-label--active phase">{{
@@ -70,6 +72,7 @@
       </v-col>
     </v-row>
     <v-row no-gutters justify="center">
+      <!-- 耐性表示 -->
       <v-data-table
         :headers="headers"
         :items="items"
@@ -78,18 +81,33 @@
         fixed-header
         hide-default-footer
       >
-        <template #[`item.element`]="{ item }">
-          <chip-element :element="item.element" />
+        <template #[`item.type`]="{ item }">
+          <chip-element v-if="item.type !== 'defence'" :element="item.type" />
+          <template v-else>{{ $t("reduct.defence") }}</template>
         </template>
-        <template #[`item.regist`]="{ item }">{{
-          isFinite(item.regist) ? `${item.regist}%` : $t("general.immutable")
-        }}</template>
+        <template #[`item.value`]="{ item }">
+          <template v-if="item.type !== 'defence'">{{
+            isFinite(item.value) ? `${item.value}%` : $t("general.immutable")
+          }}</template>
+        </template>
+        <template #[`item.rate`]="{ item }">
+          <template v-if="item.type !== 'defence'">{{
+            $roundRate(calcRate(item) * 100)
+          }}</template>
+          <template v-else>{{ $roundRate(defence * 100) }}</template>
+        </template>
       </v-data-table>
     </v-row>
   </v-container>
 </template>
 
 <style lang="scss" scoped>
+.v-data-table ::v-deep {
+  tr:hover {
+    background: inherit !important;
+  }
+}
+
 ::v-deep .v-select__selection {
   width: 100%;
   max-width: 100%;
@@ -114,14 +132,25 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify";
-import { ElementType, ElementTypes } from "~/src/const";
+import { ElementType, ElementTypes, ResistType } from "~/src/const";
 import { EnemyList, EnemyName, EnemyNames, IEnemy } from "~/src/enemy";
 
-type Enemy = {
+export type EnemyData = {
+  name: EnemyName;
+  elem: ElementType | "";
+  level: number;
+  fixed: number;
+};
+
+type TextValue = {
   name: EnemyName;
   item: IEnemy;
+};
+type Resist = {
+  type: ResistType;
+  value?: number;
 };
 
 @Component({
@@ -132,26 +161,40 @@ type Enemy = {
   },
 })
 export default class SelectEnemy extends Vue {
-  name = EnemyNames[0];
-  element: ElementType | "" = ElementType.Pyro;
-  level = 1;
-  fixed = 0;
+  @Prop({ default: 0 }) defence!: number;
+
+  data: EnemyData = {
+    name: EnemyNames[0],
+    elem: ElementType.Pyro,
+    level: 1,
+    fixed: 0,
+  };
+
+  @Emit("update")
+  onUpdate(data: EnemyData) {}
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     {
       text: this.$t("general.element") as string,
-      value: "element",
+      value: "type",
       align: "center",
+      sortable: false,
     },
     {
-      text: this.$t("general.regist") as string,
-      value: "regist",
+      text: this.$t("general.resist") as string,
+      value: "value",
       align: "center",
+      sortable: false,
     },
-    { text: this.$t("general.rate") as string, value: "" },
+    {
+      text: this.$t("general.rate") as string,
+      value: "rate",
+      align: "center",
+      sortable: false,
+    },
   ];
 
-  get enemies(): Enemy[] {
+  get enemies(): TextValue[] {
     return EnemyNames.map((val) => ({
       name: val,
       item: EnemyList[val],
@@ -159,11 +202,11 @@ export default class SelectEnemy extends Vue {
   }
 
   get elements() {
-    return EnemyList[this.name].element?.map((val) => ({ type: val }));
+    return EnemyList[this.data.name].element?.map((val) => ({ type: val }));
   }
 
   get phases() {
-    const { phase } = EnemyList[this.name];
+    const { phase } = EnemyList[this.data.name];
     if (phase) {
       return [{ label: "enemy.normal", fixed: 0 }, ...phase];
     }
@@ -171,20 +214,35 @@ export default class SelectEnemy extends Vue {
   }
 
   get items() {
-    const enemy = EnemyList[this.name];
-    return ElementTypes.map((val) => ({
-      element: val,
-      regist:
-        enemy.resist[val] +
-        this.fixed +
-        ((val === this.element && enemy.value) || 0),
-    }));
+    const enemy = EnemyList[this.data.name];
+    let items = ElementTypes.map(
+      (val): Resist => ({
+        type: val,
+        value:
+          enemy.resist[val] +
+          this.data.fixed +
+          ((val === this.data.elem && enemy.value) || 0),
+      })
+    );
+    items.push({ type: ResistType.Defence }); // 防御力を別枠で追加
+    return items;
   }
 
-  getEnemyText({ name, item }: Enemy) {
+  calcRate({ type, value }: Required<Resist>) {
+    const rate = value; //- this.reduct[type];
+    if (rate < 0) {
+      return (100 - rate / 2) / 100;
+    } else if (75 <= rate) {
+      return 100 / (rate * 4 + 100);
+    } else {
+      return (100 - rate) / 100;
+    }
+  }
+
+  getEnemyText({ name, item }: TextValue) {
     let type: ElementType | "";
-    if (this.name === name) {
-      type = this.element;
+    if (this.data.name === name) {
+      type = this.data.elem;
     } else {
       type = item.element ? item.element[0] : "";
     }
@@ -202,14 +260,20 @@ export default class SelectEnemy extends Vue {
     return this.$t("element." + type);
   }
 
+  onChangeData() {
+    this.onUpdate(this.data);
+  }
+
   onChangeEnemy() {
-    const item = EnemyList[this.name];
-    this.element = item.element ? item.element[0] : "";
-    this.fixed = 0;
+    const item = EnemyList[this.data.name];
+    this.data.elem = item.element ? item.element[0] : "";
+    this.data.fixed = 0;
+    this.onUpdate(this.data);
   }
 
   onChangeElement() {
-    this.fixed = 0;
+    this.data.fixed = 0;
+    this.onUpdate(this.data);
   }
 }
 </script>

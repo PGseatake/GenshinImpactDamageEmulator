@@ -8,34 +8,6 @@ import { WeaponList, IWeaponData, GlobalWeaponData } from "./weapon";
 import { ArtifactName, ArtifactSet, GlobalArtifactData } from "./artifact";
 import { getArtifacts, getMember, getWeapon, ITeamData, Members } from "./team";
 
-export const RateBonus: ReadonlyArray<string> = [
-    konst.StatusBonusType.HpBuf,
-    konst.StatusBonusType.AtkBuf,
-    konst.StatusBonusType.DefBuf,
-    konst.StatusBonusType.EnRec,
-    konst.StatusBonusType.HealBuf,
-    konst.CriticalBonusType.Damage,
-    konst.CriticalBonusType.Rate,
-    konst.CriticalBonusType.Heavy,
-    konst.CriticalBonusType.Skill,
-    konst.ElementBonusType.Pyro,
-    konst.ElementBonusType.Hydro,
-    konst.ElementBonusType.Dendro,
-    konst.ElementBonusType.Elect,
-    konst.ElementBonusType.Anemo,
-    konst.ElementBonusType.Cryo,
-    konst.ElementBonusType.Geo,
-    konst.ElementBonusType.Phys,
-    konst.AnyBonusType.Damage,
-    konst.AnyBonusType.Element,
-    konst.CombatBonusType.Normal,
-    konst.CombatBonusType.Heavy,
-    konst.CombatBonusType.Plunge,
-    konst.CombatBonusType.Combat,
-    konst.CombatBonusType.Skill,
-    konst.CombatBonusType.Burst,
-] as const;
-
 export const TypeToBonus = {
     element(type: konst.ElementType) {
         return type + "_dmg" as konst.ElementBonusType;
@@ -51,13 +23,22 @@ export const TypeToBonus = {
     },
 } as const;
 
-export function isRateBonus(type: konst.AnyBonusType) {
-    return RateBonus.includes(type);
-}
+export const DirectBonus: ReadonlyArray<string> = [
+    konst.BonusType.None,
+    konst.StatusBonusType.Hp,
+    konst.StatusBonusType.Atk,
+    konst.StatusBonusType.Def,
+    konst.StatusBonusType.Elem,
+] as const;
 
-export function getSuffix(type: konst.AnyBonusType) {
-    return RateBonus.includes(type) ? "%" : "";
-}
+export const RateBonus = {
+    check(type: konst.AnyBonusType) {
+        return !DirectBonus.includes(type);
+    },
+    suffix(type: konst.AnyBonusType) {
+        return DirectBonus.includes(type) ? "" : "%";
+    }
+} as const;
 
 // TODO: 多言語対応
 export const TeamBonus: Partial<ReadonlyRecord<konst.ElementType, IBasicBonus>> = {
@@ -91,10 +72,22 @@ export class BonusBase {
         this.stack = stack ?? 0;
         this.target = target ?? konst.BonusTarget.Self;
         this.source = source;
-        this.data = { index: index, apply: false, stack: 0 };
+        this.data = { index: index, apply: this.always, stack: 1 };
     }
 
-    public get effect(): string {
+    public get always() {
+        return !this.limit;
+    }
+
+    public get checked() {
+        return this.data.apply;
+    }
+    public set checked(value: boolean) {
+        if (this.always) return;
+        this.data.apply = value;
+    }
+
+    public get effect() {
         return "";
     }
 
@@ -110,6 +103,12 @@ export class BonusBase {
     }
     public set stacks(value: number) {
         this.data.stack = value;
+    }
+
+    public reset(data: IBonusData) {
+        this.data = data;
+        this.data.apply = this.always || data.apply;
+        this.data.stack = data.stack || 1;
     }
 
     public isMine(chara: ICharaData) {
@@ -178,7 +177,7 @@ export class BasicBonus extends BonusBase {
     public get effect() {
         const items = this.types;
         let str = this.types.map(type => this.getLabel(type)).join("・");
-        if (isRateBonus(items[0])) {
+        if (RateBonus.check(items[0])) {
             return `${str} +${this.vm.$roundFloat(this.value)}%`;
         }
         return `${str} +${this.value}`;
@@ -412,7 +411,7 @@ export class BonusBuilder {
 
         const key = `${this.team}.${this.equip}.${index}`;
         if (key in this.bonus) {
-            bonus.data = this.bonus[key];
+            bonus.reset(this.bonus[key]);
         }
         this.output[key] = bonus.data;
         return bonus;
