@@ -1297,7 +1297,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         conste: {
             // 1. 攻撃やスキル発動の際に、一定確率で花火を召喚し敵を攻撃、ドッカン花火攻撃力の120%ダメージを与える。
             // 2. ボンボン爆弾ブービートラップダメージを受けた敵の防御力-23%、継続時間10秒
-            lv2: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductBonusType.Defence, value: 23.0, limit: "ブービートラップダメージを受けた敵", times: 10 },
+            lv2: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductType.Defence, value: 23.0, limit: "ブービートラップダメージを受けた敵", times: 10 },
             // 3. ボンボン爆弾のスキルLv.+3
             // 4. ドッカン花火継続中にキャラを切り替えると、爆発が発生し、攻撃力の555%の炎範囲ダメージを与える。
             // 5. ドッカン花火のスキルLv.+3
@@ -1366,7 +1366,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
         passive: {
             // 4. 重撃が命中した時、敵に蒼雷の誘雷効果を付与する。
             // 5. 薔薇の雷光攻撃を受けた敵の防御力-15%、継続時間10秒。
-            asc4th: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductBonusType.Defence, value: 15.0, limit: "元素爆発の攻撃を受けた敵", times: 10 },
+            asc4th: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductType.Defence, value: 15.0, limit: "元素爆発の攻撃を受けた敵", times: 10 },
         },
         conste: {
             // 1. 蒼雷を長押しで発動した後、敵に命中する度にリサの元素エネルギー+2。一回で最大10まで回復可能。
@@ -1728,7 +1728,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             lv2: { items: konst.CriticalBonusType.Rate, value: 10.0, limit: "HPが30％以下の敵を攻撃する時" },
             // 3. 雷牙のスキルLv.+3
             // 4. 鋭い爪と蒼雷の一回押しで攻撃時、命中された敵の防御力が15%減少する、継続時間7秒。
-            lv4: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductBonusType.Defence, value: 15.0, limit: "元素スキル一回押しで攻撃した時", times: 7 },
+            lv4: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductType.Defence, value: 15.0, limit: "元素スキル一回押しで攻撃した時", times: 7 },
             // 5. 鋭い爪と蒼雷のスキルLv.+3
             // 6. 10秒毎に、レザーの大剣が自動的にエネルギーを溜め、次の通常攻撃に落雷を引き起こし、攻撃力の100％の雷ダメージを与える。
             //    雷牙状態でない時、落雷が敵に命中すると、レザーに鋭い爪と蒼雷の雷の印を1重付与する。
@@ -2045,7 +2045,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
             lv4: { items: konst.ElementBonusType.Anemo, value: 25.0, limit: "元素オーブまたは元素粒子を獲得した時", times: 10 },
             // 5. 高天の歌のスキルLv.+3
             // 6. 風神の詩の影響を受ける敵の風属性-20%。元素変化があった場合、変化した元素の耐性-20%。
-            lv6: { extra: konst.ExtraBonusType.Reduct, type: [konst.ElementType.Anemo, konst.ReductBonusType.Contact], value: 20.0, limit: "元素爆発の影響を受ける敵" },
+            lv6: { extra: konst.ExtraBonusType.Reduct, type: [konst.ElementType.Anemo, konst.ReductType.Contact], value: 20.0, limit: "元素爆発の影響を受ける敵" },
         }
     },
     Xiangling: {

@@ -1,5 +1,7 @@
 <template>
   <v-data-table
+    v-bind="$attrs"
+    v-on="$listeners"
     :headers="headers"
     :items="items"
     :class="tableClass"
@@ -32,10 +34,9 @@
       <v-simple-checkbox
         :key="index"
         :value="item.checked"
-        :disabled="item.always"
         :ripple="false"
         hide-details
-        @input="item.checked = $event"
+        @input="select(item, $event)"
       />
     </template>
     <template #[`item.source`]="{ item }">{{ $t(item.source) }}</template>
@@ -46,7 +47,7 @@
           :max="item.stack"
           :suffix="`/${item.stack}`"
           :value="item.stacks"
-          @input="item.stacks = $event"
+          @input="selectRange(item, $event)"
         />
       </template>
       <template v-else>-</template>
@@ -76,12 +77,13 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify";
 import { BonusBase } from "~/src/bonus";
 
 @Component({
   name: "BonusTable",
+  inheritAttrs: false,
   components: {
     SelectRange: () => import("~/components/SelectRange.vue"),
   },
@@ -97,13 +99,16 @@ export default class BonusTable extends Vue {
     { text: this.$t("tab.times") as string, value: "times", align: "center" },
   ];
 
+  @Emit("change")
+  onChange() {}
+
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
   }
 
   get isSelectAll() {
     for (const item of this.items) {
-      if (!item.always && !item.checked) return false;
+      if (!item.checked) return false;
     }
     return true;
   }
@@ -112,6 +117,17 @@ export default class BonusTable extends Vue {
     for (const item of this.items) {
       item.checked = value;
     }
+    this.onChange();
+  }
+
+  select(item: BonusBase, value: boolean) {
+    item.checked = value;
+    this.onChange();
+  }
+
+  selectRange(item: BonusBase, value: number) {
+    item.stacks = value;
+    this.onChange();
   }
 
   formatTimes(value: number) {

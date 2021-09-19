@@ -53,8 +53,7 @@
         "sec": "秒",
         "phase": "状態",
         "resist": "耐性",
-        "rate": "倍率",
-        "immutable": "無効"
+        "rate": "倍率"
     },
     "dialog": {
         "yes": "はい",
@@ -123,6 +122,7 @@
         "heal_buf": "与える治療効果",
         "cri_dmg": "会心ダメージ",
         "cri_rate": "会心率",
+        "normal_cri": "通常会心率",
         "heavy_cri": "重撃会心率",
         "skill_cri": "スキル会心率",
         "pyro_dmg": "炎ダメージ",
@@ -140,7 +140,15 @@
         "plunge_dmg": "落下攻撃ダメージ",
         "combat_dmg": "通常攻撃・重撃・落下ダメージ",
         "skill_dmg": "元素スキルダメージ",
-        "burst_dmg": "元素爆発ダメージ"
+        "burst_dmg": "元素爆発ダメージ",
+        "burning_dmg": "燃焼ダメージ",
+        "vaporize_dmg": "蒸発ダメージ",
+        "melt_dmg": "融解ダメージ",
+        "swirl_dmg": "拡散ダメージ",
+        "echarge_dmg": "感電ダメージ",
+        "shutter_dmg": "氷砕きダメージ",
+        "conduct_dmg": "超電導ダメージ",
+        "overload_dmg": "過負荷ダメージ"
     },
     "bonus_short": {
         "none": "なし",
@@ -179,6 +187,12 @@
         "geo": "岩耐性",
         "defence": "防御力",
         "contact": "元素反応した元素耐性"
+    },
+    "damage": {
+        "title": "ステータス",
+        "total": "最終値",
+        "base": "基礎値",
+        "immutable": "無効"
     },
     "chara": {
         "TravelAnemo": "旅人(風)",

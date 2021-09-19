@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-2 pb-4">
+  <v-container fluid class="pa-0 pt-2">
     <v-row dense align="end" justify="center">
       <!-- 敵選択 -->
       <v-col cols="auto" class="my-2">
@@ -87,14 +87,14 @@
         </template>
         <template #[`item.value`]="{ item }">
           <template v-if="item.type !== 'defence'">{{
-            isFinite(item.value) ? `${item.value}%` : $t("general.immutable")
+            getValue(item.type)
           }}</template>
         </template>
         <template #[`item.rate`]="{ item }">
           <template v-if="item.type !== 'defence'">{{
-            $roundRate(calcRate(item) * 100)
+            getResist(item.type)
           }}</template>
-          <template v-else>{{ $roundRate(defence * 100) }}</template>
+          <template v-else>{{ $roundRate(defence) }}</template>
         </template>
       </v-data-table>
     </v-row>
@@ -134,7 +134,8 @@
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify";
-import { ElementType, ElementTypes, ResistType } from "~/src/const";
+import { StatusReduct } from "~/src/bonus";
+import { ElementType, ResistTypes } from "~/src/const";
 import { EnemyList, EnemyName, EnemyNames, IEnemy } from "~/src/enemy";
 
 export type EnemyData = {
@@ -144,23 +145,58 @@ export type EnemyData = {
   fixed: number;
 };
 
+export class Enemy {
+  public data: EnemyData;
+  public info: IEnemy;
+  public reduct: StatusReduct;
+
+  constructor(data: EnemyData, reduct: StatusReduct) {
+    this.data = data;
+    this.info = EnemyList[data.name];
+    this.reduct = reduct;
+  }
+
+  value(type: ElementType) {
+    return (
+      this.info.resist[type] +
+      this.data.fixed +
+      ((type === this.data.elem && this.info.value) || 0)
+    );
+  }
+
+  resist(type: ElementType) {
+    let rate = this.value(type) - this.reduct[type];
+    if (rate < 0) {
+      return (100 - rate / 2) / 100;
+    } else if (75 <= rate) {
+      return 100 / (rate * 4 + 100);
+    } else {
+      return (100 - rate) / 100;
+    }
+  }
+
+  defence(charaLevel: number) {
+    const enemy = this.data.level + 100;
+    const chara = charaLevel + 100;
+    let def = (chara / (enemy + chara)) * 100 + this.reduct.defence;
+    return def < 100 ? def : 100;
+  }
+}
+
 type TextValue = {
   name: EnemyName;
   item: IEnemy;
 };
-type Resist = {
-  type: ResistType;
-  value?: number;
-};
 
 @Component({
-  name: "SelectEnemy",
+  name: "EnemyTable",
   inheritAttrs: false,
   components: {
     SelectRange: () => import("~/components/SelectRange.vue"),
   },
 })
-export default class SelectEnemy extends Vue {
+export default class EnemyTable extends Vue {
+  @Prop({ required: true }) reduct!: StatusReduct;
   @Prop({ default: 0 }) defence!: number;
 
   data: EnemyData = {
@@ -170,8 +206,8 @@ export default class SelectEnemy extends Vue {
     fixed: 0,
   };
 
-  @Emit("update")
-  onUpdate(data: EnemyData) {}
+  @Emit("change")
+  onChange(data: EnemyData) {}
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     {
@@ -214,29 +250,18 @@ export default class SelectEnemy extends Vue {
   }
 
   get items() {
-    const enemy = EnemyList[this.data.name];
-    let items = ElementTypes.map(
-      (val): Resist => ({
-        type: val,
-        value:
-          enemy.resist[val] +
-          this.data.fixed +
-          ((val === this.data.elem && enemy.value) || 0),
-      })
-    );
-    items.push({ type: ResistType.Defence }); // 防御力を別枠で追加
-    return items;
+    return ResistTypes.map((val) => ({ type: val }));
   }
 
-  calcRate({ type, value }: Required<Resist>) {
-    const rate = value; //- this.reduct[type];
-    if (rate < 0) {
-      return (100 - rate / 2) / 100;
-    } else if (75 <= rate) {
-      return 100 / (rate * 4 + 100);
-    } else {
-      return (100 - rate) / 100;
-    }
+  getValue(type: ElementType) {
+    let enemy = new Enemy(this.data, this.reduct);
+    const value = enemy.value(type);
+    return isFinite(value) ? `${value}%` : this.$t("damage.immutable");
+  }
+
+  getResist(type: ElementType) {
+    let enemy = new Enemy(this.data, this.reduct);
+    return this.$roundRate(enemy.resist(type) * 100);
   }
 
   getEnemyText({ name, item }: TextValue) {
@@ -261,19 +286,19 @@ export default class SelectEnemy extends Vue {
   }
 
   onChangeData() {
-    this.onUpdate(this.data);
+    this.onChange(this.data);
   }
 
   onChangeEnemy() {
     const item = EnemyList[this.data.name];
     this.data.elem = item.element ? item.element[0] : "";
     this.data.fixed = 0;
-    this.onUpdate(this.data);
+    this.onChange(this.data);
   }
 
   onChangeElement() {
     this.data.fixed = 0;
-    this.onUpdate(this.data);
+    this.onChange(this.data);
   }
 }
 </script>

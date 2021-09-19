@@ -1,16 +1,11 @@
 <template>
   <v-container fluid>
-    <v-row no-gutters>
-      <!-- 敵 -->
-      <v-col cols="12" md="4" xl="3">
-        <select-enemy :defence="defence" @update="onChangeEnemy" />
-      </v-col>
-      <!-- ボーナス -->
-      <v-col cols="12" md="8" xl="9">
-        <v-container fluid class="pa-0 pb-2">
-          <v-row dense align="end">
+    <v-row no-gutters justify="center">
+      <v-col cols="12" md="8" xl="9" class="px-2">
+        <!-- ボーナス -->
+        <v-row no-gutters align="end" justify="center">
             <!-- チーム選択 -->
-            <v-col cols="auto">
+          <v-col cols="auto" class="px-1">
               <v-select
                 v-model="team"
                 :items="teams"
@@ -22,7 +17,7 @@
               />
             </v-col>
             <!-- キャラ選択 -->
-            <v-col cols="auto" class="pt-0">
+          <v-col cols="auto" class="px-1">
               <name-comment
                 :items="members"
                 :name.sync="member"
@@ -32,27 +27,37 @@
               />
             </v-col>
             <!-- レベル設定 -->
-            <v-col cols="auto">
+          <v-col cols="auto" class="px-1">
               <div class="py-1" style="width: 60px">
                 <ascension-level
-                  v-if="member"
+                v-if="member.chara"
                   v-model="member.chara.level"
                   :label="$t('general.level')"
                 />
               </div>
             </v-col>
           </v-row>
-          <v-row no-gutters>
-            <bonus-table :items="bonus" :check="true" />
+        <v-row dense justify="center" class="ma-0">
+          <v-col cols="12" md="auto">
+            <bonus-table :items="bonus" :check="true" @change="onChangeBonus" />
+          </v-col>
           </v-row>
-        </v-container>
       </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col>
-        <v-tabs v-model="tab" centered center-active show-arrows>
-          <!-- <v-tab v-for="(items, key) in teams" :key="key">{{ key }}</v-tab> -->
-        </v-tabs>
+      <v-col cols="12" md="4" class="px-2">
+        <!-- 敵 -->
+        <v-row dense justify="center">
+          <v-col cols="auto">
+            <enemy-table
+              :reduct="data.reduct"
+              :defence="defence"
+              @change="onChangeEnemy"
+            />
+      </v-col>
+      <!-- ステータス -->
+          <v-col cols="12" sm="auto">
+        <status-table :param="data.param" :base="data.base" />
+      </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -87,22 +92,36 @@
 import { Vue, Component } from "vue-property-decorator";
 import { TextValue } from "~/src/types";
 import { ElementType } from "~/src/const";
-import { EnemyNames } from "~/src/enemy";
 import { GlobalEquipData } from "~/src/interface";
 import { GlobalCharaData } from "~/src/character";
 import { GlobalWeaponData } from "~/src/weapon";
 import { GlobalArtifactData } from "~/src/artifact";
-import { GlobalBonusData, BonusBase, BonusBuilder } from "~/src/bonus";
-import { GlobalTeamData, ITeamData, Member, Members } from "~/src/team";
-import { getMember, getTeamName } from "~/src/team";
-import { EnemyData } from "~/components/SelectEnemy.vue";
+import {
+  GlobalTeamData,
+  ITeamData,
+  Member,
+  Members,
+  getMember,
+  getTeamName,
+} from "~/src/team";
+import {
+  GlobalBonusData,
+  BonusBase,
+  BonusBuilder,
+  Status,
+  IStatus,
+} from "~/src/bonus";
+import { EnemyNames } from "~/src/enemy";
+import { Enemy, EnemyData } from "~/components/EnemyTable.vue";
 
 @Component({
   name: "PageDamage",
   components: {
     NameComment: () => import("~/components/NameComment.vue"),
-    SelectEnemy: () => import("~/components/SelectEnemy.vue"),
+    AscensionLevel: () => import("~/components/AscensionLevel.vue"),
+    EnemyTable: () => import("~/components/EnemyTable.vue"),
     BonusTable: () => import("~/components/BonusTable.vue"),
+    StatusTable: () => import("~/components/StatusTable.vue"),
   },
 })
 export default class PageDamage extends Vue {
@@ -113,15 +132,82 @@ export default class PageDamage extends Vue {
     GlobalArtifactData &
     GlobalBonusData;
   team: ITeamData | null = null;
-  member: Required<Member> | null = null;
+  member: Member = { info: null, chara: null, equip: null };
   bonus: BonusBase[] = [];
-  tab = 0;
   enemy: EnemyData = {
     name: EnemyNames[0],
     elem: ElementType.Pyro,
     level: 1,
     fixed: 0,
   };
+  data: IStatus = {
+    talent: { combat: 0, skill: 0, burst: 0 },
+    base: { hp: 0, atk: 0, def: 0 },
+    param: {
+      hp: 0,
+      hp_buf: 0,
+      atk: 0,
+      atk_buf: 0,
+      def: 0,
+      def_buf: 0,
+      elem: 0,
+      en_rec: 0,
+      heal_buf: 0,
+      cri_dmg: 0,
+      cri_rate: 0,
+      any_dmg: 0,
+      normal_cri: 0,
+      heavy_cri: 0,
+      skill_cri: 0,
+      normal_dmg: 0,
+      heavy_dmg: 0,
+      plunge_dmg: 0,
+      combat_dmg: 0,
+      skill_dmg: 0,
+      burst_dmg: 0,
+      phys_dmg: 0,
+      pyro_dmg: 0,
+      hydro_dmg: 0,
+      dendro_dmg: 0,
+      elect_dmg: 0,
+      anemo_dmg: 0,
+      cryo_dmg: 0,
+      geo_dmg: 0,
+      elem_dmg: 0,
+      burning_dmg: 0,
+      vaporize_dmg: 0,
+      melt_dmg: 0,
+      swirl_dmg: 0,
+      echarge_dmg: 0,
+      shutter_dmg: 0,
+      conduct_dmg: 0,
+      overload_dmg: 0,
+    },
+    flat: {
+      normal: 0,
+      heavy: 0,
+      plunge: 0,
+      skill: 0,
+      burst: 0,
+    },
+    reduct: {
+      pyro: 0,
+      hydro: 0,
+      dendro: 0,
+      elect: 0,
+      anemo: 0,
+      cryo: 0,
+      geo: 0,
+      phys: 0,
+      defence: 0,
+      contact: 0,
+    },
+    enchant: {
+      type: ElementType.Phys,
+      dest: [],
+    },
+  };
+  status!: Status;
 
   get teams() {
     const text = this.$t("menu.team");
@@ -153,23 +239,20 @@ export default class PageDamage extends Vue {
   }
 
   get comment() {
-    return this.member?.chara?.comment || "-";
+    return this.member.chara?.comment || "-";
   }
 
   get defence() {
-    const enemy = this.enemy.level + 100;
-    const chara = this.charaLevel + 100;
-    return chara / (enemy + chara);
-  }
-
-  get charaLevel() {
-    const level = this.member?.chara.level;
-    return parseInt(level?.replace("+", "") || "1");
+    let enemy = new Enemy(this.enemy, this.data.reduct);
+    return enemy.defence(
+      parseInt(this.member.chara?.level?.replace("+", "") || "1")
+    );
   }
 
   created() {
     this.globals = this.$globals;
     this.$store.commit("setAppendable", false);
+    this.status = new Status(this.data);
   }
 
   mounted() {
@@ -183,10 +266,15 @@ export default class PageDamage extends Vue {
   onChangeTeam() {
     const members = this.members;
     if (members.length > 0) {
-      this.member = members[0].value;
+      const { info, chara, equip } = members[0].value;
+      this.member.info = info;
+      this.member.chara = chara;
+      this.member.equip = equip;
       this.onChangeMember();
     } else {
-      this.member = null;
+      this.member.info = null;
+      this.member.chara = null;
+      this.member.equip = null;
       this.bonus.splice(0);
     }
   }
@@ -194,12 +282,20 @@ export default class PageDamage extends Vue {
   onChangeMember() {
     this.bonus.splice(0);
     const team = this.team;
-    const chara = this.member?.chara;
+    const chara = this.member.chara;
     if (team && chara) {
       let builder = new BonusBuilder(this, this.globals.bonus);
       let bonus = builder.build(team, this.globals);
       this.bonus.push(...bonus.filter((val) => val.isMine(chara)));
       this.globals.bonus = { ...this.globals.bonus, ...builder.output };
+    }
+    this.onChangeBonus();
+  }
+
+  onChangeBonus() {
+    this.status.equip(this.member, this.globals);
+    for (const bonus of this.bonus) {
+      bonus.apply(this.status);
     }
   }
 

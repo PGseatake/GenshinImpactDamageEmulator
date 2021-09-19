@@ -97,7 +97,7 @@ export default class WeaponDetail extends Vue {
   }
 
   get atk() {
-    return this.item ? `${this.$t("bonus.atk")}:${this.item.rank}` : undefined;
+    return this.item ? `${this.$t("bonus.atk")}:${this.item.atk}` : undefined;
   }
 
   get second() {

@@ -84,7 +84,7 @@ export type AnyStatusBonusType = StatusBonusType | "any_dmg";
 export const CriticalBonusType = {
     Damage: "cri_dmg",
     Rate: "cri_rate",
-    // Normal: "normal_cri",
+    Normal: "normal_cri",
     Heavy: "heavy_cri",
     Skill: "skill_cri",
 } as const;
@@ -166,6 +166,13 @@ export const TalentType = {
 } as const;
 export type TalentType = typeof TalentType[keyof typeof TalentType];
 
+export const CombatTypes = [
+    "normal",
+    "heavy",
+    "plunge",
+    "skill",
+    "burst",
+] as const;
 export const CombatType = {
     Normal: "normal",
     Heavy: "heavy",
@@ -231,18 +238,27 @@ export const FlatBonusBase = {
 } as const;
 export type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
 
+export const ResistTypes = [
+    ...ElementTypes,
+    "defence",
+] as const;
 export const ResistType = {
-    Defence: "defence"
+    Defence: "defence",
 } as const;
 export type ResistType = ElementType | typeof ResistType[keyof typeof ResistType];
 
-export const ReductBonusType = {
+export const ReductTypes = [
+    ...ElementTypes,
+    "defence",
+    "contact",
+] as const;
+export const ReductType = {
     Defence: "defence",
-    Contact: "contact"
+    Contact: "contact",
 } as const;
-export type ReductBonusType = ElementType | typeof ReductBonusType[keyof typeof ReductBonusType];
+export type ReductType = ElementType | typeof ReductType[keyof typeof ReductType];
 
-const DAMAGE_SCALE: ReadonlyRecord<DamageScale, ReadonlyArray<number>> = {
+export const DamageScaleTable: ReadonlyRecord<DamageScale, ReadonlyArray<number>> = {
     //    [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
     phys: [100.0, 108.0, 116.0, 127.5, 135.0, 145.0, 157.5, 170.0, 182.5, 197.5, 211.5, 225.5, 239.5, 253.5, 267.5],
     elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0, 212.5, 225.0, 237.5],

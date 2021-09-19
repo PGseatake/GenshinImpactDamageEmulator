@@ -1,6 +1,6 @@
 import { TranslateResult } from "vue-i18n";
 import * as konst from "~/src/const";
-import { ArtifactName, GlobalArtifactData } from "./artifact";
+import { GlobalArtifactData, IArtifactData } from "./artifact";
 import { GlobalCharaData, CharaList, ICharaData } from "./character";
 import { GlobalEquipData, ICharacter, IEquipData, IIdentify, INameable } from "./interface";
 import { GlobalWeaponData, IWeaponData } from "./weapon";
@@ -17,9 +17,9 @@ export function getTeamName(text: TranslateResult, data: ITeamData, idx: number)
 }
 
 export type Member = {
-    readonly info?: ICharacter;
-    readonly chara?: ICharaData;
-    readonly equip?: IEquipData;
+    info: ICharacter | null;
+    chara: ICharaData | null;
+    equip: IEquipData | null;
 };
 
 export function getMember(id: string, { equip, chara }: GlobalEquipData & GlobalCharaData): Member {
@@ -32,7 +32,7 @@ export function getMember(id: string, { equip, chara }: GlobalEquipData & Global
             }
         }
     }
-    return { };
+    return { info: null, chara: null, equip: null };
 }
 
 export type Weapon = {
@@ -48,13 +48,13 @@ export function getWeapon(info: ICharacter, equip: IEquipData, globals: GlobalWe
     return { type, data };
 }
 
-export function getArtifacts(equip: IEquipData, globals: GlobalArtifactData): ArtifactName[] {
-    let ret: ArtifactName[] = [];
+export function getArtifacts(equip: IEquipData, globals: GlobalArtifactData): IArtifactData[] {
+    let ret: IArtifactData[] = [];
     for (const type of konst.ArtifactTypes) {
         const id = equip[type];
         const data = globals[type].find((val) => val.id === id);
         if (data) {
-            ret.push(data.name);
+            ret.push(data);
         }
     }
     return ret;
