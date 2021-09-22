@@ -238,6 +238,13 @@ export const FlatBonusBase = {
 } as const;
 export type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
 
+export const EnchantType = {
+    Pyro: "pyro",
+    Elect: "elect",
+    Cryo: "cryo",
+} as const;
+export type EnchantType = typeof EnchantType[keyof typeof EnchantType];
+
 export const ResistTypes = [
     ...ElementTypes,
     "defence",

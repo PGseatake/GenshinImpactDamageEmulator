@@ -4,44 +4,50 @@
       <v-col cols="12" md="8" xl="9" class="px-2">
         <!-- ボーナス -->
         <v-row no-gutters align="end" justify="center">
-            <!-- チーム選択 -->
+          <!-- チーム選択 -->
           <v-col cols="auto" class="px-1">
-              <v-select
-                v-model="team"
-                :items="teams"
-                :label="$t('menu.team')"
-                dense
-                hide-details
-                class="py-1"
-                @change="onChangeTeam"
-              />
-            </v-col>
-            <!-- キャラ選択 -->
+            <v-select
+              v-model="team"
+              :items="teams"
+              :label="$t('menu.team')"
+              dense
+              hide-details
+              class="py-1"
+              @change="onChangeTeam"
+            />
+          </v-col>
+          <!-- キャラ選択 -->
           <v-col cols="auto" class="px-1">
-              <name-comment
-                :items="members"
-                :name.sync="member"
-                :comment="comment"
-                :commentable="false"
-                @change="onChangeMember"
-              />
-            </v-col>
-            <!-- レベル設定 -->
+            <name-comment
+              :items="members"
+              :name.sync="member"
+              :comment="comment"
+              :commentable="false"
+              @change="onChangeMember"
+            />
+          </v-col>
+          <!-- レベル設定 -->
           <v-col cols="auto" class="px-1">
-              <div class="py-1" style="width: 60px">
-                <ascension-level
+            <div class="py-1" style="width: 60px">
+              <ascension-level
                 v-if="member.chara"
-                  v-model="member.chara.level"
-                  :label="$t('general.level')"
-                />
-              </div>
-            </v-col>
-          </v-row>
+                v-model="member.chara.level"
+                :label="$t('general.level')"
+              />
+            </div>
+          </v-col>
+        </v-row>
         <v-row dense justify="center" class="ma-0">
           <v-col cols="12" md="auto">
             <bonus-table :items="bonus" :check="true" @change="onChangeBonus" />
           </v-col>
-          </v-row>
+        </v-row>
+        <!-- ダメージ -->
+        <v-row dense justify="center" class="ma-0">
+          <v-col cols="12" md="auto">
+            <damage-table v-bind="member" :enemy="enemy" :status="data" />
+          </v-col>
+        </v-row>
       </v-col>
       <v-col cols="12" md="4" class="px-2">
         <!-- 敵 -->
@@ -52,11 +58,11 @@
               :defence="defence"
               @change="onChangeEnemy"
             />
-      </v-col>
-      <!-- ステータス -->
+          </v-col>
+          <!-- ステータス -->
           <v-col cols="12" sm="auto">
-        <status-table :param="data.param" :base="data.base" />
-      </v-col>
+            <status-table :param="data.param" :base="data.base" />
+          </v-col>
         </v-row>
       </v-col>
     </v-row>
@@ -91,7 +97,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { TextValue } from "~/src/types";
-import { ElementType } from "~/src/const";
+import { ElementType, ExtraBonusType } from "~/src/const";
 import { GlobalEquipData } from "~/src/interface";
 import { GlobalCharaData } from "~/src/character";
 import { GlobalWeaponData } from "~/src/weapon";
@@ -122,6 +128,7 @@ import { Enemy, EnemyData } from "~/components/EnemyTable.vue";
     EnemyTable: () => import("~/components/EnemyTable.vue"),
     BonusTable: () => import("~/components/BonusTable.vue"),
     StatusTable: () => import("~/components/StatusTable.vue"),
+    DamageTable: () => import("~/components/DamageTable.vue"),
   },
 })
 export default class PageDamage extends Vue {
@@ -203,8 +210,9 @@ export default class PageDamage extends Vue {
       contact: 0,
     },
     enchant: {
-      type: ElementType.Phys,
+      type: "",
       dest: [],
+      self: false,
     },
   };
   status!: Status;
@@ -295,7 +303,15 @@ export default class PageDamage extends Vue {
   onChangeBonus() {
     this.status.equip(this.member, this.globals);
     for (const bonus of this.bonus) {
-      bonus.apply(this.status);
+      if (bonus.extra !== ExtraBonusType.Flat) {
+        bonus.apply(this.status);
+      }
+    }
+    // 固定割合ボーナスの適用は後回し
+    for (const bonus of this.bonus) {
+      if (bonus.extra === ExtraBonusType.Flat) {
+        bonus.apply(this.status);
+      }
     }
   }
 

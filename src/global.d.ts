@@ -15,6 +15,10 @@ declare global {
         readonly [P in K]: T;
     };
 
+    type ReadonlyPartial<T> = {
+        readonly [P in keyof T]?: T[P];
+    };
+
     type Arrayable<T> = T | T[];
     type ReadonlyArrayable<T> = T | ReadonlyArray<T>;
 

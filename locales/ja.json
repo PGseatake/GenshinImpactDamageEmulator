@@ -105,8 +105,19 @@
         "normal": "通常攻撃",
         "heavy": "重撃",
         "plunge": "落下攻撃",
+        "combat": "通常攻撃・重撃",
         "skill": "元素スキル",
         "burst": "元素爆発"
+    },
+    "reaction": {
+        "burning": "燃焼",
+        "vaporize": "蒸発",
+        "melt": "融解",
+        "swirl": "拡散",
+        "echarge": "感電",
+        "shutter": "氷砕き",
+        "conduct": "超電導",
+        "overload": "過負荷"
     },
     "bonus": {
         "none": "なし",

@@ -57,7 +57,7 @@ export interface IReductBonus extends IBonusOption {
 
 export interface IEnchantBonus extends IBonusOption {
     readonly extra: "enchant";
-    readonly elem: konst.ElementType;
+    readonly elem: konst.EnchantType;
     readonly dest: ReadonlyArray<konst.CombatType>;
     readonly limit: string;
     // readonly times?: number;
