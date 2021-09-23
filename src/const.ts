@@ -19,6 +19,7 @@ export const ElementType = {
     Phys: "phys",
 } as const;
 export type ElementType = typeof ElementType[keyof typeof ElementType];
+export type NoneElementType = ElementType | "";
 
 export const WeaponTypes = [
     "sword",
@@ -63,6 +64,7 @@ export const ReactionType = {
     Overload: "overload",
 } as const;
 export type ReactionType = typeof ReactionType[keyof typeof ReactionType];
+export type NoneReactionType = ReactionType | "";
 
 export const StatusBonusType = {
     Hp: "hp",
@@ -239,6 +241,7 @@ export const FlatBonusBase = {
 export type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
 
 export const EnchantType = {
+    None: "",
     Pyro: "pyro",
     Elect: "elect",
     Cryo: "cryo",

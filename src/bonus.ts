@@ -1,6 +1,6 @@
 import {
     IBasicBonus, IFlatBonus, IFlatBonusBound, IEnchantBonus, IReductBonus,
-    IBonusOption, AnyExtraBonus, Constes, Passives, GlobalEquipData
+    IBonusOption, AnyExtraBonus, Constes, Passives, GlobalEquipData, ICharacter
 } from "./interface";
 import * as konst from "./const";
 import { CharaList, ICharaData, GlobalCharaData } from "./character";
@@ -126,13 +126,43 @@ type CriticalValue = {
     damage: number;
 };
 
+export const Reaction = {
+    list(chara: ICharacter | null, enchant: konst.EnchantType) {
+        let types: konst.ReactionType[] = [];
+        if (chara) {
+            let elems = [chara.element];
+            if (enchant && (enchant !== chara.element)) {
+                elems.push(enchant);
+            }
+
+            for (const elem of elems) {
+                const scales = ReactionScaleTable[elem];
+                if (scales) {
+                    // 元素反応を追加
+                    for (const type in scales) {
+                        types.push(type as konst.ReactionType);
+                    }
+                }
+
+                // 氷砕きを追加
+                if (elem === konst.ElementType.Geo) {
+                    types.push(konst.ReactionType.Shutter);
+                } else if (chara.weapon === konst.WeaponType.Claymore) {
+                    types.push(konst.ReactionType.Shutter);
+                }
+            }
+        }
+        return types;
+    }
+};
+
 export type StatusTalent = Record<konst.TalentType, number>;
 export type StatusBase = { hp: number; atk: number; def: number; };
 export type StatusParam = Record<konst.BonusType, number>;
 export type StatusFlat = Record<konst.CombatType, number>;
 export type StatusReduct = Record<konst.ReductType, number>;
 export type StatusEnchant = {
-    type: konst.EnchantType | "";
+    type: konst.EnchantType;
     dest: konst.CombatType[];
     self: boolean;
 };
@@ -251,7 +281,7 @@ export class Status {
     }
 
     renchant(type: konst.EnchantType, dest: ReadonlyArray<konst.CombatType>, self: boolean) {
-        if (!self || this.enchant.type) {
+        if (!self && this.enchant.type) {
             switch (this.enchant.type) {
                 case konst.ElementType.Elect:
                     if (type === konst.ElementType.Elect) {

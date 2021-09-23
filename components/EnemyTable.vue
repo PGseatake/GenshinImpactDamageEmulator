@@ -17,22 +17,12 @@
       </v-col>
       <!-- 元素選択 -->
       <v-col v-if="elements" cols="auto" class="my-2">
-        <v-select
-          v-model="data.elem"
-          :items="elements"
+        <select-element
+          :type.sync="data.elem"
+          :types="elements"
           :label="$t('general.element')"
-          :item-text="getElementText"
-          item-value="type"
-          dense
-          small-chips
-          hide-details
-          class="ma-0 element"
           @change="onChangeElement"
-        >
-          <template #selection="{ item }">
-            <chip-element :element="item.type" small />
-          </template>
-        </v-select>
+        />
       </v-col>
       <!-- レベル -->
       <v-col cols="auto" class="my-2">
@@ -135,12 +125,12 @@
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify";
 import { StatusReduct } from "~/src/bonus";
-import { ElementType, ResistTypes } from "~/src/const";
+import { ElementType, NoneElementType, ResistTypes } from "~/src/const";
 import { EnemyList, EnemyName, EnemyNames, IEnemy } from "~/src/enemy";
 
 export type EnemyData = {
   name: EnemyName;
-  elem: ElementType | "";
+  elem: NoneElementType;
   level: number;
   fixed: number;
 };
@@ -193,6 +183,7 @@ type TextValue = {
   inheritAttrs: false,
   components: {
     SelectRange: () => import("~/components/SelectRange.vue"),
+    SelectElement: () => import("~/components/SelectElement.vue"),
   },
 })
 export default class EnemyTable extends Vue {
@@ -238,7 +229,7 @@ export default class EnemyTable extends Vue {
   }
 
   get elements() {
-    return EnemyList[this.data.name].element?.map((val) => ({ type: val }));
+    return EnemyList[this.data.name].element;
   }
 
   get phases() {
@@ -265,7 +256,7 @@ export default class EnemyTable extends Vue {
   }
 
   getEnemyText({ name, item }: TextValue) {
-    let type: ElementType | "";
+    let type: NoneElementType;
     if (this.data.name === name) {
       type = this.data.elem;
     } else {
@@ -279,10 +270,6 @@ export default class EnemyTable extends Vue {
       return this.$t(text, [this.$t("element." + type)]);
     }
     return this.$t(text);
-  }
-
-  getElementText({ type }: { type: ElementType }) {
-    return this.$t("element." + type);
   }
 
   onChangeData() {

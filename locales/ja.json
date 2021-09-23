@@ -53,7 +53,9 @@
         "sec": "秒",
         "phase": "状態",
         "resist": "耐性",
-        "rate": "倍率"
+        "rate": "倍率",
+        "contact": "元素変化",
+        "reaction": "元素反応"
     },
     "dialog": {
         "yes": "はい",
@@ -92,6 +94,7 @@
         "export": "エクスポートしました。"
     },
     "element": {
+        "none": "なし",
         "pyro": "火",
         "hydro": "水",
         "dendro": "草",
@@ -110,6 +113,7 @@
         "burst": "元素爆発"
     },
     "reaction": {
+        "none": "なし",
         "burning": "燃焼",
         "vaporize": "蒸発",
         "melt": "融解",

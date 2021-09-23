@@ -63,6 +63,8 @@ import {
   DamageBased,
   DamageScaleTable,
   ElementType,
+  NoneElementType,
+  NoneReactionType,
   ReactionType,
   TalentType,
 } from "~/src/const";
@@ -96,7 +98,9 @@ class Damage {
       const val = this.value[0];
       return `<td class="text-right">${this.calc(val)} x${this.multi}</td>`;
     }
-    const through = this.strike ? " text-decoration-line-through" : "";
+    const through = this.strike
+      ? " text-decoration-line-through text--disabled"
+      : "";
     return (
       `<td class="text-right${through}">` +
       this.value.map((val) => this.calc(val)).join("<br>") +
@@ -149,82 +153,91 @@ class CombatAttribute {
     );
   }
 
-  damage(status: Status, enemy: Enemy, reaction?: ReactionType): string[] {
+  damage(
+    status: Status,
+    enemy: Enemy,
+    reaction?: ReactionType,
+    contact?: ElementType
+  ): string[] {
     let elem = this.elem;
-    if (elem !== CombatElementType.Contact) {
-      if (status.enchant.type && elem === ElementType.Phys) {
-        elem = status.enchant.type;
-      }
-
-      // 元素反応の正規化
-      reaction = this.reaction(elem, reaction);
-
-      // 攻撃力
-      let attackPower: number;
-      switch (this.based) {
-        case DamageBased.Def:
-          attackPower = status.def;
-          break;
-        default:
-          attackPower = status.atk;
-          break;
-      }
-
-      // 防御力
-      const enemyDefence = enemy.defence(status.level) / 100;
-      const enemyResist = enemy.resist(elem);
-
-      // 各種倍率
-      const combatBonus = status.combatBonus(this.type);
-      const elementBonus = status.elementBonus(elem);
-      const damageBonus = status.param.any_dmg;
-      const combatScale = toScale(combatBonus + elementBonus + damageBonus);
-      const critical = status.critical(this.type);
-      const criticalScale = toScale(critical.damage);
-
-      const atk = attackPower * combatScale;
-      const def = enemyDefence * enemyResist;
-      const flat = status.flat[this.type];
-      const pair = (rate: number) => {
-        return [
-          this.toDamage(rate, def, flat), // 通常ダメージ
-          this.toDamage(rate * criticalScale, def, flat), // 会心ダメージ
-        ];
-      };
-      let damages = pair(atk);
-
-      if (reaction) {
-        const elementMaster = status.elementMaster(reaction);
-        const reactionBonus = status.reactionBonus(reaction);
-
-        if (isAmplifyReaction(reaction)) {
-          // 蒸発と溶解は取り消し線で表示
-          damages.forEach((d) => (d.strike = true));
-
-          const reactionScale =
-            toScale(elementMaster + reactionBonus) *
-            status.reactionScale(reaction, elem);
-
-          // 元素反応ダメージ
-          damages.push(...pair(atk * reactionScale));
-        } else {
-          const reactionScale = toScale(elementMaster + reactionBonus);
-          const reactionFactor = ReactionFactorTable[reaction];
-          const reactionResist = enemy.resist(reactionFactor.resist);
-          const reactionDamage =
-            (reactionFactor.values[status.level - 1] ?? 0) *
-            reactionScale *
-            reactionResist;
-
-          return [
-            ...damages.map((val) => val.toHtml()),
-            `<td class="text-right">${reactionDamage.toFixed()}</td>`, // 元素反応ダメージ
-          ];
-        }
-      }
-      return damages.map((val) => val.toHtml());
+    // 元素変化
+    if (elem === CombatElementType.Contact) {
+      if (!contact) return [];
+      elem = contact;
+      reaction = undefined;
     }
-    return [];
+    // 元素付与
+    if (elem === ElementType.Phys && status.enchant.type) {
+      elem = status.enchant.type;
+    }
+
+    // 元素反応の正規化
+    reaction = this.reaction(elem, reaction);
+
+    // 攻撃力
+    let attackPower: number;
+    switch (this.based) {
+      case DamageBased.Def:
+        attackPower = status.def;
+        break;
+      default:
+        attackPower = status.atk;
+        break;
+    }
+
+    // 防御力
+    const enemyDefence = enemy.defence(status.level) / 100;
+    const enemyResist = enemy.resist(elem);
+
+    // 各種倍率
+    const combatBonus = status.combatBonus(this.type);
+    const elementBonus = status.elementBonus(elem);
+    const damageBonus = status.param.any_dmg;
+    const combatScale = toScale(combatBonus + elementBonus + damageBonus);
+    const critical = status.critical(this.type);
+    const criticalScale = toScale(critical.damage);
+
+    const atk = attackPower * combatScale;
+    const def = enemyDefence * enemyResist;
+    const flat = status.flat[this.type];
+    const pair = (rate: number) => {
+      return [
+        this.toDamage(rate, def, flat), // 通常ダメージ
+        this.toDamage(rate * criticalScale, def, flat), // 会心ダメージ
+      ];
+    };
+    let damages = pair(atk);
+
+    if (reaction) {
+      const elementMaster = status.elementMaster(reaction);
+      const reactionBonus = status.reactionBonus(reaction);
+
+      if (isAmplifyReaction(reaction)) {
+        // 蒸発と溶解は取り消し線で表示
+        damages.forEach((d) => (d.strike = true));
+
+        const reactionScale =
+          toScale(elementMaster + reactionBonus) *
+          status.reactionScale(reaction, elem);
+
+        // 元素反応ダメージ
+        damages.push(...pair(atk * reactionScale));
+      } else {
+        const reactionScale = toScale(elementMaster + reactionBonus);
+        const reactionFactor = ReactionFactorTable[reaction];
+        const reactionResist = enemy.resist(reactionFactor.resist);
+        const reactionDamage =
+          (reactionFactor.values[status.level - 1] ?? 0) *
+          reactionScale *
+          reactionResist;
+
+        return [
+          ...damages.map((val) => val.toHtml()),
+          `<td class="text-right">${reactionDamage.toFixed()}</td>`, // 元素反応ダメージ
+        ];
+      }
+    }
+    return damages.map((val) => val.toHtml());
   }
 
   private toDamage(atk: number, def: number, flat: number) {
@@ -259,8 +272,10 @@ interface IAttribute extends ICombat {
 export default class DamageTable extends Vue {
   @Prop({ required: true }) info!: ICharacter | null;
   @Prop({ required: true }) chara!: ICharaData | null;
-  @Prop({ required: true }) status!: IStatus;
   @Prop({ required: true }) enemy!: EnemyData;
+  @Prop({ required: true }) status!: IStatus;
+  @Prop({ required: true }) contact!: NoneElementType;
+  @Prop({ required: true }) reaction!: NoneReactionType;
 
   readonly headers = [
     {
@@ -325,7 +340,12 @@ export default class DamageTable extends Vue {
   makeHtml(item: IAttribute) {
     let attr = new CombatAttribute(item, item.status.talent[item.talent]);
     let html = `<td>${item.name}</td>` + attr.toHtml(this);
-    const damage = attr.damage(item.status, item.enemy);
+    const damage = attr.damage(
+      item.status,
+      item.enemy,
+      this.reaction || undefined,
+      this.contact || undefined
+    );
     for (let i = 0; i < 4; ++i) {
       if (i < damage.length) {
         html += damage[i];

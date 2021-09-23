@@ -12,7 +12,7 @@
               :label="$t('menu.team')"
               dense
               hide-details
-              class="py-1"
+              class="slim py-1"
               @change="onChangeTeam"
             />
           </v-col>
@@ -45,7 +45,36 @@
         <!-- ダメージ -->
         <v-row dense justify="center" class="ma-0">
           <v-col cols="12" md="auto">
-            <damage-table v-bind="member" :enemy="enemy" :status="data" />
+            <v-row dense align="end" justify="end">
+              <!-- 元素変化 -->
+              <v-col cols="auto" class="px-1 pt-5 pb-3">
+                <select-element
+                  :type.sync="contact"
+                  :types="contacts"
+                  :label="$t('general.contact')"
+                />
+              </v-col>
+              <!-- 元素反応 -->
+              <v-col cols="auto" class="px-1 pt-5 pb-3">
+                <v-select
+                  v-model="reaction"
+                  :items="reactions"
+                  :label="$t('general.reaction')"
+                  dense
+                  hide-details
+                  class="slim ma-0"
+                />
+              </v-col>
+            </v-row>
+            <v-row no-gutters>
+              <damage-table
+                v-bind="member"
+                :enemy="enemy"
+                :status="data"
+                :contact="contact"
+                :reaction="reaction"
+              />
+            </v-row>
           </v-col>
         </v-row>
       </v-col>
@@ -92,12 +121,29 @@
     padding: 4px 12px;
   }
 }
+
+.slim ::v-deep .v-select__selection {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 !important;
+}
+.slim ::v-deep .v-select__selections input {
+  width: 0;
+}
+.slim ::v-deep .v-input__append-inner {
+  padding: 0;
+}
 </style>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { TextValue } from "~/src/types";
-import { ElementType, ExtraBonusType } from "~/src/const";
+import {
+  ElementType,
+  ExtraBonusType,
+  NoneElementType,
+  NoneReactionType,
+} from "~/src/const";
 import { GlobalEquipData } from "~/src/interface";
 import { GlobalCharaData } from "~/src/character";
 import { GlobalWeaponData } from "~/src/weapon";
@@ -116,6 +162,8 @@ import {
   BonusBuilder,
   Status,
   IStatus,
+  StatusEnchant,
+  Reaction,
 } from "~/src/bonus";
 import { EnemyNames } from "~/src/enemy";
 import { Enemy, EnemyData } from "~/components/EnemyTable.vue";
@@ -125,6 +173,7 @@ import { Enemy, EnemyData } from "~/components/EnemyTable.vue";
   components: {
     NameComment: () => import("~/components/NameComment.vue"),
     AscensionLevel: () => import("~/components/AscensionLevel.vue"),
+    SelectElement: () => import("~/components/SelectElement.vue"),
     EnemyTable: () => import("~/components/EnemyTable.vue"),
     BonusTable: () => import("~/components/BonusTable.vue"),
     StatusTable: () => import("~/components/StatusTable.vue"),
@@ -215,7 +264,18 @@ export default class PageDamage extends Vue {
       self: false,
     },
   };
+  contact: NoneElementType = "";
+  reaction: NoneReactionType = "";
+
   status!: Status;
+
+  readonly contacts = [
+    "",
+    ElementType.Pyro,
+    ElementType.Hydro,
+    ElementType.Elect,
+    ElementType.Cryo,
+  ];
 
   get teams() {
     const text = this.$t("menu.team");
@@ -257,6 +317,24 @@ export default class PageDamage extends Vue {
     );
   }
 
+  get reactions() {
+    let data: { enchant: StatusEnchant } = {
+      enchant: { type: "", dest: [], self: false },
+    };
+    let status = new Status(data as IStatus);
+    for (const bonus of this.bonus) {
+      if (bonus.extra === ExtraBonusType.Enchant) {
+        bonus.apply(status);
+      }
+    }
+    const list = Reaction.list(this.member.info, status.enchant.type);
+    let items = [{ text: this.$t("reaction.none"), value: "" }];
+    items.push(
+      ...list.map((val) => ({ text: this.$t("reaction." + val), value: val }))
+    );
+    return items;
+  }
+
   created() {
     this.globals = this.$globals;
     this.$store.commit("setAppendable", false);
@@ -278,17 +356,19 @@ export default class PageDamage extends Vue {
       this.member.info = info;
       this.member.chara = chara;
       this.member.equip = equip;
-      this.onChangeMember();
     } else {
       this.member.info = null;
       this.member.chara = null;
       this.member.equip = null;
-      this.bonus.splice(0);
     }
+    this.onChangeMember();
   }
 
   onChangeMember() {
     this.bonus.splice(0);
+    this.contact = "";
+    this.reaction = "";
+
     const team = this.team;
     const chara = this.member.chara;
     if (team && chara) {
