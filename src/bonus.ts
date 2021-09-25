@@ -6,7 +6,7 @@ import {
 import { CharaList, ICharaData, DBCharaTable } from "~/src/character";
 import { WeaponList, IWeaponData, DBWeaponTable } from "~/src/weapon";
 import { ArtifactName, ArtifactList, SubBonus, DBArtifactTable } from "~/src/artifact";
-import { Member, Members, ITeamData, getArtifacts, getMember, getWeapon } from "~/src/team";
+import { Members, Member, ITeamData } from "~/src/team";
 
 export const DamageScaleTable: ReadonlyRecord<konst.DamageScale, ReadonlyArray<number>> = {
     //    [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
@@ -141,8 +141,8 @@ export class Status {
         this.enchant = data.enchant;
     }
 
-    equip({ info, chara, equip }: Member, globals: DBWeaponTable & DBArtifactTable) {
-        this.chara = chara;
+    equip(member: Member, db: DBWeaponTable & DBArtifactTable) {
+        this.chara = member.chara;
 
         for (const type of konst.BonusTypes) {
             this.param[type] = 0;
@@ -161,24 +161,24 @@ export class Status {
         this.param[konst.CriticalBonusType.Damage] = 50;
         this.param[konst.CriticalBonusType.Rate] = 5;
 
-        if (info && chara && equip) {
-            this.talent.combat = chara.combat;
-            this.talent.skill = chara.skill;
-            this.talent.burst = chara.burst;
-            this.base.hp = chara.hp;
-            this.base.atk = chara.atk;
-            this.base.def = chara.def;
+        if (this.chara) {
+            this.talent.combat = this.chara.combat;
+            this.talent.skill = this.chara.skill;
+            this.talent.burst = this.chara.burst;
+            this.base.hp = this.chara.hp;
+            this.base.atk = this.chara.atk;
+            this.base.def = this.chara.def;
 
             // キャラクタ
-            this.apply(chara.special);
+            this.apply(this.chara.special);
             // 武器
-            const { data } = getWeapon(info, equip, globals);
+            const { data } = member.weapon(db);
             if (data) {
                 this.base.atk += data.atk;
                 this.apply(data.second);
             }
             // 聖遺物
-            const list = getArtifacts(equip, globals);
+            const list = member.artifacts(db);
             for (const data of list) {
                 this.apply(data.main);
                 for (const prop of SubBonus) {
@@ -808,18 +808,19 @@ export class BonusBuilder {
         let data: BonusBase[] = [];
         this.team = team.id;
         for (const key of Members) {
-            const { info, chara, equip } = getMember(team[key], db);
-            if (info && chara && equip) {
-                this.equip = equip.id;
-                this.group = "chara." + chara.name;
+            const m = Member.find(team[key], db);
+            if (m.chara) {
+                this.equip = m.equip!.id;
+                this.group = "chara." + m.chara.name;
 
                 // キャラボーナス追加
-                data.push(...this.charaBonus(chara));
+                const member = new Member(m);
+                data.push(...this.charaBonus(m.chara));
                 // 武器ボーナス追加
-                const weapon = getWeapon(info, equip, db);
+                const weapon = member.weapon(db);
                 data.push(...this.weaponBonus(weapon.type, weapon.data));
                 // 聖遺物ボーナス追加
-                const artifacts = getArtifacts(equip, db).map((val) => val.name);
+                const artifacts = member.artifacts(db).map((val) => val.name);
                 data.push(...this.artifactBonus(artifacts));
             }
         }

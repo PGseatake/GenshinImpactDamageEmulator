@@ -150,10 +150,10 @@ import { DBArtifactTable } from "~/src/artifact";
 import {
   DBTeamTable,
   ITeamData,
-  Member,
-  Members,
-  getMember,
   getTeamName,
+  IMember,
+  Members,
+  Member,
 } from "~/src/team";
 import {
   DBBonusTable,
@@ -169,7 +169,7 @@ import { Enemy } from "~/src/damage";
 
 type TextValue = {
   text: string;
-  value: Required<Member>;
+  value: IMember;
 };
 
 @Component({
@@ -192,7 +192,7 @@ export default class PageDamage extends Vue {
     DBArtifactTable &
     DBBonusTable;
   team: ITeamData | null = null;
-  member: Member = { info: null, chara: null, equip: null };
+  member: IMember = { info: null, chara: null, equip: null };
   bonus: BonusBase[] = [];
   enemy: IEnemyData = {
     name: EnemyNames[0],
@@ -297,11 +297,11 @@ export default class PageDamage extends Vue {
       const team = this.team;
       if (team) {
         for (const key of Members) {
-          const { info, chara, equip } = getMember(team[key], this.db);
-          if (info && chara && equip) {
+          const member = Member.find(team[key], this.db);
+          if (member.chara) {
             items.push({
-              text: this.$t("chara." + chara.name) as string,
-              value: { info, chara, equip },
+              text: this.$t("chara." + member.chara.name) as string,
+              value: member,
             });
           }
         }
@@ -385,7 +385,7 @@ export default class PageDamage extends Vue {
   }
 
   onChangeBonus() {
-    this.status.equip(this.member, this.db);
+    this.status.equip(new Member(this.member), this.db);
     for (const bonus of this.bonus) {
       if (bonus.extra !== ExtraBonusType.Flat) {
         bonus.apply(this.status);

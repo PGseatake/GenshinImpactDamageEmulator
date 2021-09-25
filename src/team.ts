@@ -16,46 +16,52 @@ export function getTeamName(text: TranslateResult, data: ITeamData, idx: number)
     return data.name || `${text}${idx + 1}`;
 }
 
-export type Member = {
+export interface IMember {
     info: ICharaInfo | null;
     chara: ICharaData | null;
     equip: IEquipData | null;
-};
+}
 
-export function getMember(id: string, { equip, chara }: DBEquipTable & DBCharaTable): Member {
-    if (id) {
-        const e = equip.find((val) => val.id === id);
-        if (e) {
-            const c = chara.find((val) => val.id === e.chara);
-            if (c) {
-                return { info: CharaList[c.name], chara: c, equip: e };
+export class Member {
+    public info: ICharaInfo | null;
+    public chara: ICharaData | null;
+    public equip: IEquipData | null;
+
+    constructor({ info, chara, equip }: IMember) {
+        this.info = info;
+        this.chara = chara;
+        this.equip = equip;
+    }
+
+    weapon(db: DBWeaponTable): { type: WeaponType, data?: IWeaponData; } {
+        const id = this.equip!.weapon;
+        const type = this.info!.weapon;
+        const data = db[type].find((val) => val.id === id);
+        return { type, data };
+    }
+
+    artifacts(db: DBArtifactTable): IArtifactData[] {
+        let list: IArtifactData[] = [];
+        for (const type of ArtifactTypes) {
+            const id = this.equip![type];
+            const data = db[type].find((val) => val.id === id);
+            if (data) {
+                list.push(data);
             }
         }
+        return list;
     }
-    return { info: null, chara: null, equip: null };
-}
 
-export type Weapon = {
-    readonly type: WeaponType;
-    readonly data?: IWeaponData;
-};
-
-export function getWeapon(info: ICharaInfo, equip: IEquipData, db: DBWeaponTable): Weapon {
-    const type = info.weapon;
-    const data = db[type].find(
-        (val) => val.id === equip.weapon
-    );
-    return { type, data };
-}
-
-export function getArtifacts(equip: IEquipData, db: DBArtifactTable): IArtifactData[] {
-    let ret: IArtifactData[] = [];
-    for (const type of ArtifactTypes) {
-        const id = equip[type];
-        const data = db[type].find((val) => val.id === id);
-        if (data) {
-            ret.push(data);
+    static find(id: string, { equip, chara }: DBEquipTable & DBCharaTable) {
+        if (id) {
+            const e = equip.find((val) => val.id === id);
+            if (e) {
+                const c = chara.find((val) => val.id === e.chara);
+                if (c) {
+                    return { info: CharaList[c.name], chara: c, equip: e };
+                }
+            }
         }
+        return { info: null, chara: null, equip: null };
     }
-    return ret;
 }
