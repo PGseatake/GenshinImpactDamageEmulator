@@ -1,14 +1,14 @@
 import * as ascension from "~/src/ascension";
 import { BonusType, WeaponTypes, ArtifactType, ArtifactTypes } from "~/src/const";
-import { BonusValue, IEquipData, GlobalVersion, GlobalEquipData } from "~/src/interface";
-import { ArtifactName, ArtifactNames, ArtifactMain, ArtifactSub, calcMain, GlobalArtifactData } from "~/src/artifact";
-import { CharaList, CharaName, GlobalCharaData } from "~/src/character";
-import { WeaponList, GlobalWeaponData } from "~/src/weapon";
-import { GlobalBonusData } from "~/src/bonus";
-import { GlobalTeamData } from "~/src/team";
+import { BonusValue, IEquipData, DBVersion, DBEquipTable } from "~/src/interface";
+import { ArtifactName, ArtifactNames, ArtifactMain, ArtifactSub, calcMain, DBArtifactTable } from "~/src/artifact";
+import { CharaList, CharaName, DBCharaTable } from "~/src/character";
+import { WeaponList, DBWeaponTable } from "~/src/weapon";
+import { DBBonusTable } from "~/src/bonus";
+import { DBTeamTable } from "~/src/team";
 
-export type GlobalData = GlobalVersion &
-    GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData & GlobalTeamData & GlobalBonusData;
+export type Database = DBVersion &
+    DBCharaTable & DBWeaponTable & DBArtifactTable & DBEquipTable & DBTeamTable & DBBonusTable;
 
 interface ICharaV002 {
     name: CharaName,
@@ -47,7 +47,7 @@ interface IEquipV002 {
     goblet: string;
     circlet: string;
 }
-type GlobalDataV002 = {
+type DatabaseV002 = {
     ver: "0.02",
     version: undefined,
     chara: ICharaV002[],
@@ -64,8 +64,8 @@ type GlobalDataV002 = {
     equip: IEquipV002[],
 };
 
-type GlobalDataV1xx = { ver: undefined; };
-type GlobalDataV100 = GlobalDataV1xx & GlobalData;
+type DatabaseV1xx = { ver: undefined; };
+type DatabaseV100 = DatabaseV1xx & Database;
 
 function tryParseFloat(val: string) {
     const num = parseFloat(val);
@@ -98,7 +98,7 @@ const ver002 = {
         return { type: ArtifactSub[0], value: 0 };
     }
 };
-function Ver002toVer100(before: GlobalDataV002): GlobalData {
+function Ver002toVer100(before: DatabaseV002): Database {
     let after = convert();
     before.chara.forEach((chara, index) => {
         if (chara.name in CharaList) {
@@ -196,7 +196,7 @@ function Ver002toVer100(before: GlobalDataV002): GlobalData {
     return after;
 }
 
-export function convert(data?: GlobalDataV002 | GlobalDataV100): GlobalData {
+export function convert(data?: DatabaseV002 | DatabaseV100): Database {
     if (data) {
         if (data.ver) {
             if (data.ver === "0.02") {

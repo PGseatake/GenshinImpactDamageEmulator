@@ -1,11 +1,11 @@
 import * as konst from "~/src/const";
 import {
     IBasicBonus, IFlatBonus, IFlatBonusBound, IEnchantBonus, IReductBonus,
-    IBonusOption, AnyBonus, Constes, Passives, GlobalEquipData, ICharaInfo
+    IBonusOption, AnyBonus, Constes, Passives, DBEquipTable, ICharaInfo
 } from "~/src/interface";
-import { CharaList, ICharaData, GlobalCharaData } from "~/src/character";
-import { WeaponList, IWeaponData, GlobalWeaponData } from "~/src/weapon";
-import { ArtifactName, ArtifactList, SubBonus, GlobalArtifactData } from "~/src/artifact";
+import { CharaList, ICharaData, DBCharaTable } from "~/src/character";
+import { WeaponList, IWeaponData, DBWeaponTable } from "~/src/weapon";
+import { ArtifactName, ArtifactList, SubBonus, DBArtifactTable } from "~/src/artifact";
 import { Member, Members, ITeamData, getArtifacts, getMember, getWeapon } from "~/src/team";
 
 export const DamageScaleTable: ReadonlyRecord<konst.DamageScale, ReadonlyArray<number>> = {
@@ -141,7 +141,7 @@ export class Status {
         this.enchant = data.enchant;
     }
 
-    equip({ info, equip, chara }: Member, globals: GlobalWeaponData & GlobalArtifactData) {
+    equip({ info, chara, equip }: Member, globals: DBWeaponTable & DBArtifactTable) {
         this.chara = chara;
 
         for (const type of konst.BonusTypes) {
@@ -161,7 +161,7 @@ export class Status {
         this.param[konst.CriticalBonusType.Damage] = 50;
         this.param[konst.CriticalBonusType.Rate] = 5;
 
-        if (info && equip && chara) {
+        if (info && chara && equip) {
             this.talent.combat = chara.combat;
             this.talent.skill = chara.skill;
             this.talent.burst = chara.burst;
@@ -643,14 +643,14 @@ export interface IBonusData {
     apply: boolean;
     stack: number;
 }
-export type GlobalBonusData = { bonus: IDict<IBonusData>; };
+export type DBBonusTable = { bonus: IDict<IBonusData>; };
 
-type InputData =
-    GlobalEquipData &
-    GlobalCharaData &
-    GlobalWeaponData &
-    GlobalArtifactData &
-    GlobalBonusData;
+type Database =
+    DBEquipTable &
+    DBBonusTable &
+    DBCharaTable &
+    DBWeaponTable &
+    DBArtifactTable;
 
 export class BonusBuilder {
     private vm: Vue;
@@ -804,11 +804,11 @@ export class BonusBuilder {
         return bonus;
     }
 
-    public build(team: ITeamData, input: InputData) {
+    public build(team: ITeamData, db: Database) {
         let data: BonusBase[] = [];
         this.team = team.id;
         for (const key of Members) {
-            const { info, chara, equip } = getMember(team[key], input);
+            const { info, chara, equip } = getMember(team[key], db);
             if (info && chara && equip) {
                 this.equip = equip.id;
                 this.group = "chara." + chara.name;
@@ -816,10 +816,10 @@ export class BonusBuilder {
                 // キャラボーナス追加
                 data.push(...this.charaBonus(chara));
                 // 武器ボーナス追加
-                const weapon = getWeapon(info, equip, input);
+                const weapon = getWeapon(info, equip, db);
                 data.push(...this.weaponBonus(weapon.type, weapon.data));
                 // 聖遺物ボーナス追加
-                const artifacts = getArtifacts(equip, input).map((val) => val.name);
+                const artifacts = getArtifacts(equip, db).map((val) => val.name);
                 data.push(...this.artifactBonus(artifacts));
             }
         }

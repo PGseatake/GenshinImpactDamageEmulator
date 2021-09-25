@@ -2,7 +2,7 @@
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
     <v-data-table
       :headers="headers"
-      :items="globals.equip"
+      :items="db.equip"
       :class="tableClass"
       :items-per-page="1000"
       fixed-header
@@ -27,35 +27,35 @@
       <template #[`item.flower`]="{ item }">
         <artifact-detail
           :value.sync="item.flower"
-          :items="globals.flower"
+          :items="db.flower"
           type="flower"
         />
       </template>
       <template #[`item.feather`]="{ item }">
         <artifact-detail
           :value.sync="item.feather"
-          :items="globals.feather"
+          :items="db.feather"
           type="feather"
         />
       </template>
       <template #[`item.sands`]="{ item }">
         <artifact-detail
           :value.sync="item.sands"
-          :items="globals.sands"
+          :items="db.sands"
           type="sands"
         />
       </template>
       <template #[`item.goblet`]="{ item }">
         <artifact-detail
           :value.sync="item.goblet"
-          :items="globals.goblet"
+          :items="db.goblet"
           type="goblet"
         />
       </template>
       <template #[`item.circlet`]="{ item }">
         <artifact-detail
           :value.sync="item.circlet"
-          :items="globals.circlet"
+          :items="db.circlet"
           type="circlet"
         />
       </template>
@@ -201,8 +201,8 @@
 import { Vue, Component } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { GlobalEquipData, IEquipData } from "~/src/interface";
-import { ICharaData, GlobalCharaData } from "~/src/character";
+import { IEquipData, DBEquipTable } from "~/src/interface";
+import { ICharaData, DBCharaTable } from "~/src/character";
 import { Members } from "~/src/team";
 
 @Component({
@@ -217,7 +217,7 @@ import { Members } from "~/src/team";
   },
 })
 export default class PageEquipment extends Vue {
-  globals: GlobalEquipData & GlobalCharaData = { equip: [], chara: [] };
+  db: DBEquipTable & DBCharaTable = { equip: [], chara: [] };
   append = "";
   remove: IEquipData | null = null;
 
@@ -277,7 +277,7 @@ export default class PageEquipment extends Vue {
   ];
 
   get names() {
-    return this.globals.chara.map((chara) => ({
+    return this.db.chara.map((chara) => ({
       text: this.$t("chara." + chara.name),
       value: chara.id,
     }));
@@ -298,7 +298,7 @@ export default class PageEquipment extends Vue {
   }
 
   created() {
-    this.globals = this.$globals;
+    this.db = this.$db;
     this.$store.commit("setAppendable", true);
   }
 
@@ -318,7 +318,7 @@ export default class PageEquipment extends Vue {
       goblet: "",
       circlet: "",
     };
-    this.$appendData(this.globals.equip, data);
+    this.$appendData(this.db.equip, data);
     this.append = "";
   }
 
@@ -328,13 +328,13 @@ export default class PageEquipment extends Vue {
 
   onRemove() {
     if (this.remove) {
-      this.$removeData(this.globals.equip, this.remove);
+      this.$removeData(this.db.equip, this.remove);
       this.remove = null;
     }
   }
 
   exists(id: string): boolean {
-    return !!this.$globals.team.find((team) => {
+    return !!this.$db.team.find((team) => {
       for (const key of Members) {
         if (team[key] === id) return true;
       }
@@ -344,7 +344,7 @@ export default class PageEquipment extends Vue {
 
   findChara(id: string | undefined): ICharaData | undefined {
     if (id) {
-      return this.globals.chara.find((chara) => chara.id === id);
+      return this.db.chara.find((chara) => chara.id === id);
     }
     return undefined;
   }

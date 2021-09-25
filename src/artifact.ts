@@ -194,18 +194,15 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
     },
 } as const;
 
-const ArtifactLevel = [12, 16, 20];
-
-interface IArtifactParam {
+// TODO: 計算方法を見直す
+type ArtifactParam = {
     readonly intercept: number;
     readonly slope: number;
     readonly substep?: number;
-}
-
+};
 type ArtifactParamType = "hp" | "atk" | "def" | "atk_buf" | "def_buf" | "en_rec" | "cri_rate" | "cri_dmg";
-type ArtifactParamData = ReadonlyRecord<ArtifactParamType, IArtifactParam>;
+type ArtifactParamData = ReadonlyRecord<ArtifactParamType, ArtifactParam>;
 
-// TODO: 値を見直す
 const ArtifactParamList: Readonly<ArtifactParamData[]> = [
     // ☆☆☆
     {
@@ -241,8 +238,11 @@ const ArtifactParamList: Readonly<ArtifactParamData[]> = [
         cri_dmg: { intercept: 9.3, slope: 2.644805195, substep: 0.78 },
     }
 ] as const;
+// TODO: ここまで
 
-function getArtifactParam(type: konst.AnyBonusType, star: number, level: number): IArtifactParam | null {
+const ArtifactLevel = [12, 16, 20];
+
+function getArtifactParam(type: konst.AnyBonusType, star: number, level: number): ArtifactParam | null {
     // ☆を正規化
     if (star < 3 || 5 < star) {
         return null;
@@ -308,4 +308,4 @@ export interface IArtifactData extends IIdentify, INameable, ICommentable, Recor
     level: number;
     main: BonusValue;
 }
-export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;
+export type DBArtifactTable = Record<konst.ArtifactType, IArtifactData[]>;

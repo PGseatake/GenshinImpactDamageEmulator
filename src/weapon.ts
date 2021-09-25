@@ -1057,4 +1057,4 @@ export interface IWeaponData extends IIdentify, INameable, ICommentable {
     atk: number;
     second: BonusValue;
 }
-export type GlobalWeaponData = Record<konst.WeaponType, IWeaponData[]>;
+export type DBWeaponTable = Record<konst.WeaponType, IWeaponData[]>;

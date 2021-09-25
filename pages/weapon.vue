@@ -68,7 +68,7 @@ import {
   WeaponList,
   WeaponNames,
   IWeaponData,
-  GlobalWeaponData,
+  DBWeaponTable,
 } from "~/src/weapon";
 
 @Component({
@@ -80,7 +80,7 @@ import {
   },
 })
 export default class PageWeapon extends Vue {
-  globals: GlobalWeaponData = {
+  db: DBWeaponTable = {
     sword: [],
     claymore: [],
     polearm: [],
@@ -108,23 +108,23 @@ export default class PageWeapon extends Vue {
   }
 
   get sword() {
-    return this.globals.sword;
+    return this.db.sword;
   }
 
   get claymore() {
-    return this.globals.claymore;
+    return this.db.claymore;
   }
 
   get polearm() {
-    return this.globals.polearm;
+    return this.db.polearm;
   }
 
   get bow() {
-    return this.globals.bow;
+    return this.db.bow;
   }
 
   get catalyst() {
-    return this.globals.catalyst;
+    return this.db.catalyst;
   }
 
   get removeName() {
@@ -133,7 +133,7 @@ export default class PageWeapon extends Vue {
   }
 
   created() {
-    this.globals = this.$globals;
+    this.db = this.$db;
     this.$store.commit("setAppendable", true);
   }
 
@@ -157,7 +157,7 @@ export default class PageWeapon extends Vue {
           value: item.secval[0],
         },
       };
-      this.$appendData(this.globals[this.type], data);
+      this.$appendData(this.db[this.type], data);
       this.append = "";
     }
   }
@@ -168,13 +168,13 @@ export default class PageWeapon extends Vue {
 
   onRemove() {
     if (this.remove) {
-      this.$removeData(this.globals[this.type], this.remove);
+      this.$removeData(this.db[this.type], this.remove);
       this.remove = null;
     }
   }
 
   exists(id: string): boolean {
-    return !!this.$globals.equip.find((data) => data.weapon === id);
+    return !!this.$db.equip.find((data) => data.weapon === id);
   }
 }
 </script>

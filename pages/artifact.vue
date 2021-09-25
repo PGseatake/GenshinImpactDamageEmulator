@@ -63,7 +63,7 @@ import {
   ArtifactName,
   ArtifactNames,
   IArtifactData,
-  GlobalArtifactData,
+  DBArtifactTable,
 } from "~/src/artifact";
 
 @Component({
@@ -75,7 +75,7 @@ import {
   },
 })
 export default class PageArtifact extends Vue {
-  globals: GlobalArtifactData = {
+  db: DBArtifactTable = {
     flower: [],
     feather: [],
     sands: [],
@@ -103,23 +103,23 @@ export default class PageArtifact extends Vue {
   }
 
   get flower() {
-    return this.globals.flower;
+    return this.db.flower;
   }
 
   get feather() {
-    return this.globals.feather;
+    return this.db.feather;
   }
 
   get sands() {
-    return this.globals.sands;
+    return this.db.sands;
   }
 
   get goblet() {
-    return this.globals.goblet;
+    return this.db.goblet;
   }
 
   get circlet() {
-    return this.globals.circlet;
+    return this.db.circlet;
   }
 
   get removeName() {
@@ -128,7 +128,7 @@ export default class PageArtifact extends Vue {
   }
 
   created() {
-    this.globals = this.$globals;
+    this.db = this.$db;
     this.$store.commit("setAppendable", true);
   }
 
@@ -166,7 +166,7 @@ export default class PageArtifact extends Vue {
           value: 0,
         },
       };
-      this.$appendData(this.globals[this.type], data);
+      this.$appendData(this.db[this.type], data);
       this.append = "";
     }
   }
@@ -177,13 +177,13 @@ export default class PageArtifact extends Vue {
 
   onRemove() {
     if (this.remove) {
-      this.$removeData(this.globals[this.type], this.remove);
+      this.$removeData(this.db[this.type], this.remove);
       this.remove = null;
     }
   }
 
   exists(id: string): boolean {
-    return !!this.$globals.equip.find((data) => data[this.type] === id);
+    return !!this.$db.equip.find((data) => data[this.type] === id);
   }
 }
 </script>

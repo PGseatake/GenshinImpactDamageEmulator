@@ -129,9 +129,9 @@ export interface IEquipData extends IIdentify, ICommentable, Record<konst.Artifa
     chara: string;
     weapon: string;
 }
-export type GlobalEquipData = { equip: IEquipData[]; };
+export type DBEquipTable = { equip: IEquipData[]; };
 
-export const GlobalDataTypes = [
+export const DBTableTypes = [
     "equip",
     "team",
     "bonus",
@@ -139,6 +139,5 @@ export const GlobalDataTypes = [
     ...konst.WeaponTypes,
     ...konst.ArtifactTypes,
 ] as const;
-export type GlobalDataType = typeof GlobalDataTypes[number];
 
-export type GlobalVersion = { version: "1.0"; };
+export type DBVersion = { version: "1.0"; };

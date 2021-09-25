@@ -2,7 +2,7 @@
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
     <v-data-table
       :headers="headers"
-      :items="globals.team"
+      :items="db.team"
       :class="tableClass"
       :items-per-page="1000"
       fixed-header
@@ -178,9 +178,9 @@ import { Vue, Component } from "vue-property-decorator";
 import { NameComment } from "~/components/SelectName.vue";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { GlobalCharaData } from "~/src/character";
-import { GlobalEquipData } from "~/src/interface";
-import { Members, ITeamData, GlobalTeamData, getMember } from "~/src/team";
+import { DBEquipTable } from "~/src/interface";
+import { DBCharaTable } from "~/src/character";
+import { Members, ITeamData, DBTeamTable, getMember } from "~/src/team";
 import { ElementType } from "~/src/const";
 
 @Component({
@@ -194,7 +194,7 @@ import { ElementType } from "~/src/const";
   },
 })
 export default class PageTeam extends Vue {
-  globals!: GlobalCharaData & GlobalEquipData & GlobalTeamData;
+  db!: DBCharaTable & DBEquipTable & DBTeamTable;
   append = "";
   remove: ITeamData | null = null;
 
@@ -244,7 +244,7 @@ export default class PageTeam extends Vue {
 
   get items() {
     let values: NameComment[] = [];
-    const { equip, chara } = this.globals;
+    const { equip, chara } = this.db;
     for (const e of equip) {
       const c = chara.find((val) => val.id === e.chara);
       if (c) {
@@ -279,7 +279,7 @@ export default class PageTeam extends Vue {
   }
 
   created() {
-    this.globals = this.$globals;
+    this.db = this.$db;
     this.$store.commit("setAppendable", true);
   }
 
@@ -290,7 +290,7 @@ export default class PageTeam extends Vue {
   updateResonance(item: ITeamData) {
     let elements: ElementType[] = [];
     for (const key of Members) {
-      const { info } = getMember(item[key], this.globals);
+      const { info } = getMember(item[key], this.db);
       if (info) {
         elements.push(info.element);
       }
@@ -325,7 +325,7 @@ export default class PageTeam extends Vue {
       member4: "",
       resonance: [],
     };
-    this.$appendData(this.globals.team, data);
+    this.$appendData(this.db.team, data);
     this.append = "";
   }
 
@@ -335,7 +335,7 @@ export default class PageTeam extends Vue {
 
   onRemove() {
     if (this.remove) {
-      this.$removeData(this.globals.team, this.remove);
+      this.$removeData(this.db.team, this.remove);
       this.remove = null;
     }
   }

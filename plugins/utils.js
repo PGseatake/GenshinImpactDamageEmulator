@@ -1,13 +1,12 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib'
 import { BonusType, ElementType } from '~/src/const';
+import { DirectBonus } from '~/src/bonus';
 import { convert } from '~/src/convert';
-
-const DirectBonus = ["none", "hp", "atk", "def", "elem"];
 
 const utils = {
     install(Vue) {
-        Vue.prototype.$globals = convert();
+        Vue.prototype.$db = convert();
         Vue.prototype.$bonuses = [];
 
         Vue.prototype.$makeUniqueId = function() {

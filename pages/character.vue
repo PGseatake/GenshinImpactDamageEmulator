@@ -35,7 +35,7 @@ import {
   CharaName,
   CharaNames,
   ICharaData,
-  GlobalCharaData,
+  DBCharaTable,
 } from "~/src/character";
 
 @Component({
@@ -47,7 +47,7 @@ import {
   },
 })
 export default class PageCharacter extends Vue {
-  globals: GlobalCharaData = { chara: [] };
+  db: DBCharaTable = { chara: [] };
   append: CharaName | "" = "";
   remove: ICharaData | null = null;
 
@@ -63,7 +63,7 @@ export default class PageCharacter extends Vue {
   }
 
   get charas() {
-    return this.globals.chara;
+    return this.db.chara;
   }
 
   get removeName() {
@@ -72,7 +72,7 @@ export default class PageCharacter extends Vue {
   }
 
   created() {
-    this.globals = this.$globals;
+    this.db = this.$db;
     this.$store.commit("setAppendable", true);
   }
 
@@ -101,7 +101,7 @@ export default class PageCharacter extends Vue {
         skill: 1,
         burst: 1,
       };
-      this.$appendData(this.globals.chara, data);
+      this.$appendData(this.db.chara, data);
       this.append = "";
     }
   }
@@ -112,13 +112,13 @@ export default class PageCharacter extends Vue {
 
   onRemove() {
     if (this.remove) {
-      this.$removeData(this.globals.chara, this.remove);
+      this.$removeData(this.db.chara, this.remove);
       this.remove = null;
     }
   }
 
   exists(id: string): boolean {
-    return !!this.$globals.equip.find((data) => data.chara === id);
+    return !!this.$db.equip.find((data) => data.chara === id);
   }
 }
 </script>

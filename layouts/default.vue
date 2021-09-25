@@ -234,7 +234,7 @@ import {
   mdiTranslate,
   mdiTshirtCrew,
 } from "@mdi/js";
-import { GlobalDataTypes } from "~/src/interface";
+import { DBTableTypes } from "~/src/interface";
 import { convert } from "~/src/convert";
 
 interface IPage {
@@ -347,16 +347,16 @@ export default class Default extends Vue {
   reflect(json: string | null) {
     if (json) {
       let data = convert(JSON.parse(json));
-      for (const type of GlobalDataTypes) {
+      for (const type of DBTableTypes) {
         if (data[type]) {
-          this.$set(this.$globals, type, data[type]);
+          this.$set(this.$db, type, data[type]);
         }
       }
     }
   }
 
   save() {
-    localStorage.setItem("global_data", JSON.stringify(this.$globals));
+    localStorage.setItem("global_data", JSON.stringify(this.$db));
   }
 
   popup(label: string) {
@@ -384,7 +384,7 @@ export default class Default extends Vue {
 
   onExport() {
     if (this.exportFile) {
-      let blob = new Blob([JSON.stringify(this.$globals)], {
+      let blob = new Blob([JSON.stringify(this.$db)], {
         type: "application/json",
       });
       if (navigator.msSaveBlob) {

@@ -66,12 +66,12 @@ export default class WeaponDetail extends Vue {
   }
 
   get type() {
-    const chara = this.$globals.chara.find((item) => item.id === this.chara);
+    const chara = this.$db.chara.find((item) => item.id === this.chara);
     return CharaList[chara!.name].weapon;
   }
 
   get items() {
-    return this.$globals[this.type];
+    return this.$db[this.type];
   }
 
   get item() {

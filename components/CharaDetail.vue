@@ -56,7 +56,7 @@ export default class CharaDetail extends Vue {
   }
 
   get items() {
-    return this.$globals.chara;
+    return this.$db.chara;
   }
 
   get item() {

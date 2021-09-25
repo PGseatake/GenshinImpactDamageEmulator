@@ -143,12 +143,12 @@ import {
   NoneElementType,
   NoneReactionType,
 } from "~/src/const";
-import { GlobalEquipData } from "~/src/interface";
-import { GlobalCharaData } from "~/src/character";
-import { GlobalWeaponData } from "~/src/weapon";
-import { GlobalArtifactData } from "~/src/artifact";
+import { DBEquipTable } from "~/src/interface";
+import { DBCharaTable } from "~/src/character";
+import { DBWeaponTable } from "~/src/weapon";
+import { DBArtifactTable } from "~/src/artifact";
 import {
-  GlobalTeamData,
+  DBTeamTable,
   ITeamData,
   Member,
   Members,
@@ -156,7 +156,7 @@ import {
   getTeamName,
 } from "~/src/team";
 import {
-  GlobalBonusData,
+  DBBonusTable,
   BonusBase,
   BonusBuilder,
   Status,
@@ -185,12 +185,12 @@ type TextValue = {
   },
 })
 export default class PageDamage extends Vue {
-  globals!: GlobalTeamData &
-    GlobalEquipData &
-    GlobalCharaData &
-    GlobalWeaponData &
-    GlobalArtifactData &
-    GlobalBonusData;
+  db!: DBTeamTable &
+    DBEquipTable &
+    DBCharaTable &
+    DBWeaponTable &
+    DBArtifactTable &
+    DBBonusTable;
   team: ITeamData | null = null;
   member: Member = { info: null, chara: null, equip: null };
   bonus: BonusBase[] = [];
@@ -283,7 +283,7 @@ export default class PageDamage extends Vue {
 
   get teams() {
     const text = this.$t("menu.team");
-    const { team } = this.globals;
+    const { team } = this.db;
     let items: { text: string; value: ITeamData }[] = [];
     team.forEach((t, i) =>
       items.push({ text: getTeamName(text, t, i), value: t })
@@ -297,7 +297,7 @@ export default class PageDamage extends Vue {
       const team = this.team;
       if (team) {
         for (const key of Members) {
-          const { info, chara, equip } = getMember(team[key], this.globals);
+          const { info, chara, equip } = getMember(team[key], this.db);
           if (info && chara && equip) {
             items.push({
               text: this.$t("chara." + chara.name) as string,
@@ -340,7 +340,7 @@ export default class PageDamage extends Vue {
   }
 
   created() {
-    this.globals = this.$globals;
+    this.db = this.$db;
     this.$store.commit("setAppendable", false);
     this.status = new Status(this.data);
   }
@@ -376,16 +376,16 @@ export default class PageDamage extends Vue {
     const team = this.team;
     const chara = this.member.chara;
     if (team && chara) {
-      let builder = new BonusBuilder(this, this.globals.bonus);
-      let bonus = builder.build(team, this.globals);
+      let builder = new BonusBuilder(this, this.db.bonus);
+      let bonus = builder.build(team, this.db);
       this.bonus.push(...bonus.filter((val) => val.isMine(chara)));
-      this.globals.bonus = { ...this.globals.bonus, ...builder.output };
+      this.db.bonus = { ...this.db.bonus, ...builder.output };
     }
     this.onChangeBonus();
   }
 
   onChangeBonus() {
-    this.status.equip(this.member, this.globals);
+    this.status.equip(this.member, this.db);
     for (const bonus of this.bonus) {
       if (bonus.extra !== ExtraBonusType.Flat) {
         bonus.apply(this.status);

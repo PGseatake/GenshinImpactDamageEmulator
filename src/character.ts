@@ -2506,4 +2506,4 @@ export interface ICharaData extends IIdentify, INameable, ICommentable {
     skill: number;
     burst: number;
 }
-export type GlobalCharaData = { chara: ICharaData[]; };
+export type DBCharaTable = { chara: ICharaData[]; };

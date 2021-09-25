@@ -12,12 +12,12 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { GlobalEquipData } from "~/src/interface";
-import { GlobalCharaData } from "~/src/character";
-import { GlobalWeaponData } from "~/src/weapon";
-import { GlobalArtifactData } from "~/src/artifact";
-import { GlobalTeamData, getTeamName } from "~/src/team";
-import { GlobalBonusData, BonusBase, BonusBuilder } from "~/src/bonus";
+import { DBEquipTable } from "~/src/interface";
+import { DBCharaTable } from "~/src/character";
+import { DBWeaponTable } from "~/src/weapon";
+import { DBArtifactTable } from "~/src/artifact";
+import { DBTeamTable, getTeamName } from "~/src/team";
+import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
 
 @Component({
   name: "PageBonus",
@@ -26,12 +26,12 @@ import { GlobalBonusData, BonusBase, BonusBuilder } from "~/src/bonus";
   },
 })
 export default class PageBonus extends Vue {
-  globals!: GlobalTeamData &
-    GlobalEquipData &
-    GlobalCharaData &
-    GlobalWeaponData &
-    GlobalArtifactData &
-    GlobalBonusData;
+  db!: DBTeamTable &
+    DBEquipTable &
+    DBCharaTable &
+    DBWeaponTable &
+    DBArtifactTable &
+    DBBonusTable;
   tab: number = -1;
   teams: { key: string; data: BonusBase[] }[] = [];
 
@@ -43,20 +43,20 @@ export default class PageBonus extends Vue {
   }
 
   created() {
-    this.globals = this.$globals;
+    this.db = this.$db;
     this.$store.commit("setAppendable", false);
   }
 
   mounted() {
     const text = this.$t("menu.team");
-    let builder = new BonusBuilder(this, this.globals.bonus);
-    this.globals.team.forEach((t, i) => {
+    let builder = new BonusBuilder(this, this.db.bonus);
+    this.db.team.forEach((t, i) => {
       const key = getTeamName(text, t, i);
-      const data = builder.build(t, this.globals);
+      const data = builder.build(t, this.db);
       this.teams.push({ key, data });
       this.tab = 0;
     });
-    this.globals.bonus = builder.output;
+    this.db.bonus = builder.output;
   }
 }
 </script>

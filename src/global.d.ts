@@ -1,7 +1,7 @@
 import { LocaleObject } from "nuxt-i18n";
 import { ElementType } from "~/src/const";
 import { BonusValue, IIdentify } from "~/src/interface";
-import { GlobalData } from "~/src/convert";
+import { Database } from "~/src/convert";
 import { BonusBase } from "~/src/bonus";
 
 export { };
@@ -39,7 +39,7 @@ declare global {
 
 declare module "vue/types/vue" {
     interface Vue {
-        $globals: GlobalData;
+        $db: Database;
         $bonuses: IDict<BonusBase>;
         $makeUniqueId: () => string;
         $appendData: (data: IIdentify[], item: IIdentify) => void;
