@@ -1,5 +1,5 @@
-import * as konst from "./const";
-import { IWeapon, IBonusValueData, IIdentify, INameable, ICommentable } from "./interface";
+import * as konst from "~/src/const";
+import { BonusValue, IIdentify, INameable, ICommentable, IWeaponInfo } from "~/src/interface";
 
 const WeaponAtk3: IReadonlyHash<ReadonlyArray<number>> = {
     //    1,  20, 20+,  40, 40+,  50, 50+,  60, 60+,  70, 70+,  80, 80+,  90
@@ -86,7 +86,7 @@ const SwordNames = [
 ] as const;
 
 // TODO: limitを多言語対応
-const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeapon> = {
+const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
     AquilaFavonia: {
         star: 5,
         atk: WeaponAtk5[48],
@@ -305,7 +305,7 @@ const ClaymoreNames = [
     "FerrousShadow",
 ] as const;
 
-const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeapon> = {
+const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = {
     WolfsGravestone: {
         star: 5,
         atk: WeaponAtk5[46],
@@ -494,7 +494,7 @@ const PolearmNames = [
     "WhiteTassel",
 ] as const;
 
-const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeapon> = {
+const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
     PrimordialSpear: {
         star: 5,
         atk: WeaponAtk5[48],
@@ -669,7 +669,7 @@ const BowNames = [
     "RecurveBow",
 ] as const;
 
-const BowList: ReadonlyRecord<typeof BowNames[number], IWeapon> = {
+const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
     AmosBow: {
         star: 5,
         atk: WeaponAtk5[46],
@@ -859,7 +859,7 @@ const CatalystNames = [
     "TwinNephrite",
 ] as const;
 
-const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeapon> = {
+const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = {
     SkywardAtlas: {
         star: 5,
         atk: WeaponAtk5[48],
@@ -1042,7 +1042,7 @@ export const WeaponNames: ReadonlyRecord<konst.WeaponType, ReadonlyArray<string>
     catalyst: CatalystNames
 };
 
-export type WeaponList = { readonly [key: string]: IWeapon; };
+export type WeaponList = { readonly [key: string]: IWeaponInfo; };
 export const WeaponList: ReadonlyRecord<konst.WeaponType, WeaponList> = {
     sword: SwordList,
     claymore: ClaymoreList,
@@ -1055,6 +1055,6 @@ export interface IWeaponData extends IIdentify, INameable, ICommentable {
     rank: number;
     level: string;
     atk: number;
-    second: IBonusValueData;
+    second: BonusValue;
 }
 export type GlobalWeaponData = Record<konst.WeaponType, IWeaponData[]>;

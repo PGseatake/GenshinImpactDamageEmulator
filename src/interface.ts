@@ -1,5 +1,10 @@
 import * as konst from "~/src/const";
 
+export type BonusValue = {
+    type: konst.AnyBonusType;
+    value: number;
+};
+
 export interface IBonusOption {
     readonly extra?: konst.ExtraBonusType;
     readonly limit?: string;
@@ -63,55 +68,46 @@ export interface IEnchantBonus extends IBonusOption {
     // readonly times?: number;
 }
 
-export type AnyExtraBonus = IBasicBonus | IFlatBonus | IReductBonus | IEnchantBonus;
-
-export const CombatElementType = {
-    Contact: "contact"
-} as const;
-export type CombatElementType = konst.ElementType | typeof CombatElementType[keyof typeof CombatElementType];
+export type AnyBonus = IBasicBonus | IFlatBonus | IReductBonus | IEnchantBonus;
 
 export interface ICombat {
     readonly name: string;
     readonly type: konst.CombatType;
-    readonly elem: CombatElementType;
+    readonly elem: konst.CombatElementType;
     readonly scale: konst.DamageScale;
     readonly value: ReadonlyArrayable<number>;
     readonly multi?: number;
     readonly based?: konst.DamageBased;
 }
 
-export type CharaStatusType = "hp" | "atk" | "def";
-export type CharaStatus = ReadonlyRecord<CharaStatusType, ReadonlyArray<number>>;
-export type CharaTalent = ReadonlyRecord<konst.TalentType, ReadonlyArray<ICombat>>;
-
 export const Passives = ["skill", "burst", "asc1st", "asc4th"] as const;
 export interface IPassive extends
-    Partial<ReadonlyRecord<typeof Passives[number], ReadonlyArrayable<AnyExtraBonus>>> {
+    Partial<ReadonlyRecord<typeof Passives[number], ReadonlyArrayable<AnyBonus>>> {
 }
 
 export const Constes = ["lv1", "lv2", "lv4", "lv6"] as const;
 export interface IConste extends
-    Partial<ReadonlyRecord<typeof Constes[number], ReadonlyArrayable<AnyExtraBonus>>> {
+    Partial<ReadonlyRecord<typeof Constes[number], ReadonlyArrayable<AnyBonus>>> {
 }
 
-export interface ICharacter {
+export interface ICharaInfo {
     readonly star: number;
     readonly element: konst.ElementType;
     readonly weapon: konst.WeaponType;
-    readonly status: CharaStatus;
+    readonly status: ReadonlyRecord<konst.StatusType, ReadonlyArray<number>>;
     readonly special: konst.StatusBonusType | konst.ElementBonusType;
     readonly spvalue: ReadonlyArray<number>;
-    readonly talent: CharaTalent;
+    readonly talent: ReadonlyRecord<konst.TalentType, ReadonlyArray<ICombat>>;
     readonly passive: IPassive;
     readonly conste: IConste;
 }
 
-export interface IArtifactSet {
+export interface IArtifactInfo {
     readonly set2?: IBasicBonus;
     readonly set4?: ReadonlyArrayable<IBasicBonus>;
 }
 
-export interface IWeapon {
+export interface IWeaponInfo {
     readonly star: number;
     readonly atk: ReadonlyArray<number>;
     readonly second: konst.AnyBonusType;
@@ -122,18 +118,11 @@ export interface IWeapon {
 export interface IIdentify {
     id: string;
 }
-
 export interface INameable {
     name: string;
 }
-
 export interface ICommentable {
     comment: string;
-}
-
-export interface IBonusValueData {
-    type: konst.AnyBonusType;
-    value: number;
 }
 
 export interface IEquipData extends IIdentify, ICommentable, Record<konst.ArtifactType, string> {

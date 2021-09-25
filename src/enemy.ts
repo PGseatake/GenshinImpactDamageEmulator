@@ -1,15 +1,14 @@
-import { ElementType } from "./const";
+import { ElementType, NoneElementType } from "~/src/const";
+import { INameable } from "~/src/interface";
 
-export type Resist = Record<ElementType, number>;
-export type Reduct = Resist & { defence: number; };
 export type Phase = {
     readonly label: string;
     readonly fixed: number;
 };
 
-export interface IEnemy {
+export interface IEnemyInfo {
     readonly unique?: boolean;
-    readonly resist: Resist;
+    readonly resist: ReadonlyRecord<ElementType, number>;
     readonly element?: ReadonlyArray<ElementType>;
     readonly count?: number;
     readonly value?: number;
@@ -52,7 +51,7 @@ export const EnemyNames = [
 export type EnemyName = typeof EnemyNames[number];
 
 // https://bbs.mihoyo.com/ys/article/2160993
-export const EnemyList: ReadonlyRecord<EnemyName, IEnemy> = {
+export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
     Slime: {
         resist: {
             pyro: 10,
@@ -529,3 +528,10 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemy> = {
         value: 50,
     },
 } as const;
+
+export interface IEnemyData extends INameable {
+    name: EnemyName;
+    elem: NoneElementType;
+    level: number;
+    fixed: number;
+}

@@ -21,6 +21,19 @@ export const ElementType = {
 export type ElementType = typeof ElementType[keyof typeof ElementType];
 export type NoneElementType = ElementType | "";
 
+export const ReactionType = {
+    Burning: "burning",
+    Vaporize: "vaporize",
+    Melt: "melt",
+    Swirl: "swirl",
+    Echarge: "echarge",
+    Shutter: "shutter",
+    Conduct: "conduct",
+    Overload: "overload",
+} as const;
+export type ReactionType = typeof ReactionType[keyof typeof ReactionType];
+export type NoneReactionType = ReactionType | "";
+
 export const WeaponTypes = [
     "sword",
     "claymore",
@@ -53,18 +66,67 @@ export const ArtifactType = {
 } as const;
 export type ArtifactType = typeof ArtifactType[keyof typeof ArtifactType];
 
-export const ReactionType = {
-    Burning: "burning",
-    Vaporize: "vaporize",
-    Melt: "melt",
-    Swirl: "swirl",
-    Echarge: "echarge",
-    Shutter: "shutter",
-    Conduct: "conduct",
-    Overload: "overload",
+export const TalentType = {
+    Combat: "combat",
+    Skill: "skill",
+    Burst: "burst",
 } as const;
-export type ReactionType = typeof ReactionType[keyof typeof ReactionType];
-export type NoneReactionType = ReactionType | "";
+export type TalentType = typeof TalentType[keyof typeof TalentType];
+
+export const CombatTypes = [
+    "normal",
+    "heavy",
+    "plunge",
+    "skill",
+    "burst",
+] as const;
+export const CombatType = {
+    Normal: "normal",
+    Heavy: "heavy",
+    Plunge: "plunge",
+    Skill: "skill",
+    Burst: "burst",
+} as const;
+export type CombatType = typeof CombatType[keyof typeof CombatType];
+
+export const CombatElementType = {
+    Contact: "contact"
+} as const;
+export type CombatElementType = ElementType | typeof CombatElementType[keyof typeof CombatElementType];
+
+export const ResistTypes = [
+    ...ElementTypes,
+    "defence",
+] as const;
+export const ResistType = {
+    Defence: "defence",
+} as const;
+export type ResistType = ElementType | typeof ResistType[keyof typeof ResistType];
+
+export const ReductTypes = [
+    ...ElementTypes,
+    "defence",
+    "contact",
+] as const;
+export const ReductType = {
+    Defence: "defence",
+    Contact: "contact",
+} as const;
+export type ReductType = ElementType | typeof ReductType[keyof typeof ReductType];
+
+export type AmplifyReactionType = "vaporize" | "melt";
+export function isAmplifyReaction(type: ReactionType): type is AmplifyReactionType {
+    switch (type) {
+        case ReactionType.Vaporize:
+        case ReactionType.Melt:
+            return true;
+    }
+    return false;
+}
+export type TransformReactionType = "burning" | "swirl" | "echarge" | "shutter" | "conduct" | "overload";
+
+
+export type StatusType = "hp" | "atk" | "def";
 
 export const StatusBonusType = {
     Hp: "hp",
@@ -78,7 +140,6 @@ export const StatusBonusType = {
     HealBuf: "heal_buf",
     CriDmg: "cri_dmg",
     CriRate: "cri_rate",
-    // AnyDmg: "any_dmg"
 } as const;
 export type StatusBonusType = typeof StatusBonusType[keyof typeof StatusBonusType];
 export type AnyStatusBonusType = StatusBonusType | "any_dmg";
@@ -101,7 +162,6 @@ export const ElementBonusType = {
     Anemo: "anemo_dmg",
     Cryo: "cryo_dmg",
     Geo: "geo_dmg",
-    // Any: "elem_dmg"
 } as const;
 export type ElementBonusType = typeof ElementBonusType[keyof typeof ElementBonusType];
 export type AnyElementBonusType = ElementBonusType | "elem_dmg";
@@ -139,6 +199,54 @@ export const AnyBonusType = {
 } as const;
 export type AnyBonusType = BonusType | "none";
 
+export const BonusTypes = [
+    // StatusBonusType
+    "hp",
+    "hp_buf",
+    "atk",
+    "atk_buf",
+    "def",
+    "def_buf",
+    "elem",
+    "en_rec",
+    "heal_buf",
+    "cri_dmg",
+    "cri_rate",
+    // ElementBonusType
+    "pyro_dmg",
+    "hydro_dmg",
+    "dendro_dmg",
+    "elect_dmg",
+    "anemo_dmg",
+    "cryo_dmg",
+    "geo_dmg",
+    "phys_dmg",
+    // AnyBonusType
+    "any_dmg",
+    "elem_dmg",
+    // CombatBonusType
+    "normal_dmg",
+    "heavy_dmg",
+    "plunge_dmg",
+    "combat_dmg",
+    "skill_dmg",
+    "burst_dmg",
+    // CriticalBonusType
+    "normal_cri",
+    "heavy_cri",
+    "skill_cri",
+    // ReactionBonusType
+    "burning_dmg",
+    "vaporize_dmg",
+    "melt_dmg",
+    "swirl_dmg",
+    "echarge_dmg",
+    "shutter_dmg",
+    "conduct_dmg",
+    "overload_dmg",
+] as const;
+
+
 export const ItemBonusType = {
     HpBuf: "hp_buf",
     AtkBuf: "atk_buf",
@@ -160,34 +268,6 @@ export const BonusTarget = {
     Enemy: "enemy", // 敵
 } as const;
 export type BonusTarget = typeof BonusTarget[keyof typeof BonusTarget];
-
-export const TalentType = {
-    Combat: "combat",
-    Skill: "skill",
-    Burst: "burst",
-} as const;
-export type TalentType = typeof TalentType[keyof typeof TalentType];
-
-export const CombatTypes = [
-    "normal",
-    "heavy",
-    "plunge",
-    "skill",
-    "burst",
-] as const;
-export const CombatType = {
-    Normal: "normal",
-    Heavy: "heavy",
-    Plunge: "plunge",
-    Skill: "skill",
-    Burst: "burst",
-} as const;
-export type CombatType = typeof CombatType[keyof typeof CombatType];
-
-export const CombatElementType = {
-    Contact: "contact"
-} as const;
-export type CombatElementType = ElementType | typeof CombatElementType[keyof typeof CombatElementType];
 
 export const DamageScale = {
     Phys: "phys",
@@ -247,34 +327,3 @@ export const EnchantType = {
     Cryo: "cryo",
 } as const;
 export type EnchantType = typeof EnchantType[keyof typeof EnchantType];
-
-export const ResistTypes = [
-    ...ElementTypes,
-    "defence",
-] as const;
-export const ResistType = {
-    Defence: "defence",
-} as const;
-export type ResistType = ElementType | typeof ResistType[keyof typeof ResistType];
-
-export const ReductTypes = [
-    ...ElementTypes,
-    "defence",
-    "contact",
-] as const;
-export const ReductType = {
-    Defence: "defence",
-    Contact: "contact",
-} as const;
-export type ReductType = ElementType | typeof ReductType[keyof typeof ReductType];
-
-export const DamageScaleTable: ReadonlyRecord<DamageScale, ReadonlyArray<number>> = {
-    //    [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
-    phys: [100.0, 108.0, 116.0, 127.5, 135.0, 145.0, 157.5, 170.0, 182.5, 197.5, 211.5, 225.5, 239.5, 253.5, 267.5],
-    elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0, 212.5, 225.0, 237.5],
-    xiao: [100.0, 106.0, 112.0, 119.5, 125.5, 131.5, 139.5, 147.0, 155.0, 162.5, 170.5, 178.0, 186.0, 193.5, 201.0],
-    //     [    1,      2,     3,      4,     5,     6,      7,     8,      9,    10,     11,    12,     13,    14,     15]
-    hutao: [100.0, 106.75, 113.5, 122.75, 129.5, 137.5, 147.75, 158.0, 168.25, 178.5, 188.75, 199.0, 209.25, 219.5, 229.75],
-    //       [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
-    zhongli: [100.0, 110.5, 121.5, 135.0, 147.0, 159.5, 175.5, 192.0, 208.0, 224.0, 240.5, 256.5, 270.0, 283.5, 297.0],
-} as const;

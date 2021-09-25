@@ -1,14 +1,14 @@
 import { TranslateResult } from "vue-i18n";
-import * as konst from "~/src/const";
-import { GlobalArtifactData, IArtifactData } from "./artifact";
-import { GlobalCharaData, CharaList, ICharaData } from "./character";
-import { GlobalEquipData, ICharacter, IEquipData, IIdentify, INameable } from "./interface";
-import { GlobalWeaponData, IWeaponData } from "./weapon";
+import { ElementType, WeaponType, ArtifactTypes } from "~/src/const";
+import { GlobalEquipData, ICharaInfo, IEquipData, IIdentify, INameable } from "~/src/interface";
+import { GlobalCharaData, CharaList, ICharaData } from "~/src/character";
+import { GlobalArtifactData, IArtifactData } from "~/src/artifact";
+import { GlobalWeaponData, IWeaponData } from "~/src/weapon";
 
 export const Members = ["member1", "member2", "member3", "member4"] as const;
 
 export interface ITeamData extends IIdentify, INameable, Record<typeof Members[number], string> {
-    resonance: konst.ElementType[];
+    resonance: ElementType[];
 }
 export type GlobalTeamData = { team: ITeamData[]; };
 
@@ -17,7 +17,7 @@ export function getTeamName(text: TranslateResult, data: ITeamData, idx: number)
 }
 
 export type Member = {
-    info: ICharacter | null;
+    info: ICharaInfo | null;
     chara: ICharaData | null;
     equip: IEquipData | null;
 };
@@ -36,11 +36,11 @@ export function getMember(id: string, { equip, chara }: GlobalEquipData & Global
 }
 
 export type Weapon = {
-    readonly type: konst.WeaponType;
+    readonly type: WeaponType;
     readonly data?: IWeaponData;
 };
 
-export function getWeapon(info: ICharacter, equip: IEquipData, globals: GlobalWeaponData): Weapon {
+export function getWeapon(info: ICharaInfo, equip: IEquipData, globals: GlobalWeaponData): Weapon {
     const type = info.weapon;
     const data = globals[type].find(
         (val) => val.id === equip.weapon
@@ -50,7 +50,7 @@ export function getWeapon(info: ICharacter, equip: IEquipData, globals: GlobalWe
 
 export function getArtifacts(equip: IEquipData, globals: GlobalArtifactData): IArtifactData[] {
     let ret: IArtifactData[] = [];
-    for (const type of konst.ArtifactTypes) {
+    for (const type of ArtifactTypes) {
         const id = equip[type];
         const data = globals[type].find((val) => val.id === id);
         if (data) {

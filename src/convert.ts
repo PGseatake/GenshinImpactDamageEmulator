@@ -1,11 +1,11 @@
-import * as ascension from "./ascension";
-import { IBonusValueData, IEquipData, GlobalVersion, GlobalEquipData } from "./interface";
-import { ArtifactType, ArtifactTypes, BonusType, WeaponTypes } from "./const";
-import { ArtifactMain, ArtifactName, ArtifactNames, ArtifactSub, calcMain, GlobalArtifactData } from "./artifact";
-import { CharaList, CharaName, GlobalCharaData } from "./character";
-import { WeaponList, GlobalWeaponData } from "./weapon";
-import { GlobalBonusData } from "./bonus";
-import { GlobalTeamData } from "./team";
+import * as ascension from "~/src/ascension";
+import { BonusType, WeaponTypes, ArtifactType, ArtifactTypes } from "~/src/const";
+import { BonusValue, IEquipData, GlobalVersion, GlobalEquipData } from "~/src/interface";
+import { ArtifactName, ArtifactNames, ArtifactMain, ArtifactSub, calcMain, GlobalArtifactData } from "~/src/artifact";
+import { CharaList, CharaName, GlobalCharaData } from "~/src/character";
+import { WeaponList, GlobalWeaponData } from "~/src/weapon";
+import { GlobalBonusData } from "~/src/bonus";
+import { GlobalTeamData } from "~/src/team";
 
 export type GlobalData = GlobalVersion &
     GlobalCharaData & GlobalWeaponData & GlobalArtifactData & GlobalEquipData & GlobalTeamData & GlobalBonusData;
@@ -76,7 +76,7 @@ function tryParseFloat(val: string) {
 }
 
 const ver002 = {
-    main(type: ArtifactType, { main, star, level }: IArtifactV002): IBonusValueData {
+    main(type: ArtifactType, { main, star, level }: IArtifactV002): BonusValue {
         const s = tryParseFloat(star);
         const l = tryParseFloat(level.replace("+", ""));
         const artifactMain = ArtifactMain[type];
@@ -91,7 +91,7 @@ const ver002 = {
             value: calcMain(artifactMain[0], s, l)
         };
     },
-    sub([type, value]: [BonusType, string]): IBonusValueData {
+    sub([type, value]: [BonusType, string]): BonusValue {
         if (ArtifactSub.includes(type)) {
             return { type: type, value: tryParseFloat(value) };
         }

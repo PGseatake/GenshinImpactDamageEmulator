@@ -126,56 +126,18 @@ import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify";
 import { StatusReduct } from "~/src/bonus";
 import { ElementType, NoneElementType, ResistTypes } from "~/src/const";
-import { EnemyList, EnemyName, EnemyNames, IEnemy } from "~/src/enemy";
-
-export type EnemyData = {
-  name: EnemyName;
-  elem: NoneElementType;
-  level: number;
-  fixed: number;
-};
-
-export class Enemy {
-  public data: EnemyData;
-  public info: IEnemy;
-  public reduct: StatusReduct;
-
-  constructor(data: EnemyData, reduct: StatusReduct) {
-    this.data = data;
-    this.info = EnemyList[data.name];
-    this.reduct = reduct;
-  }
-
-  value(type: ElementType) {
-    return (
-      this.info.resist[type] +
-      this.data.fixed +
-      ((type === this.data.elem && this.info.value) || 0)
-    );
-  }
-
-  resist(type: ElementType) {
-    let rate = this.value(type) - this.reduct[type];
-    if (rate < 0) {
-      return (100 - rate / 2) / 100;
-    } else if (75 <= rate) {
-      return 100 / (rate * 4 + 100);
-    } else {
-      return (100 - rate) / 100;
-    }
-  }
-
-  defence(charaLevel: number) {
-    const enemy = this.data.level + 100;
-    const chara = charaLevel + 100;
-    let def = (chara / (enemy + chara)) * 100 + this.reduct.defence;
-    return def < 100 ? def : 100;
-  }
-}
+import {
+  EnemyList,
+  EnemyName,
+  EnemyNames,
+  IEnemyInfo,
+  IEnemyData,
+} from "~/src/enemy";
+import { Enemy } from "~/src/damage";
 
 type TextValue = {
   name: EnemyName;
-  item: IEnemy;
+  item: IEnemyInfo;
 };
 
 @Component({
@@ -190,7 +152,7 @@ export default class EnemyTable extends Vue {
   @Prop({ required: true }) reduct!: StatusReduct;
   @Prop({ default: 0 }) defence!: number;
 
-  data: EnemyData = {
+  data: IEnemyData = {
     name: EnemyNames[0],
     elem: ElementType.Pyro,
     level: 1,
@@ -198,7 +160,7 @@ export default class EnemyTable extends Vue {
   };
 
   @Emit("change")
-  onChange(data: EnemyData) {}
+  onChange(data: IEnemyData) {}
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
     {

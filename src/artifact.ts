@@ -1,5 +1,5 @@
 import * as konst from "~/src/const";
-import { IArtifactSet, IBonusValueData, IIdentify, INameable, ICommentable } from "~/src/interface";
+import { BonusValue, IIdentify, INameable, ICommentable, IArtifactInfo } from "~/src/interface";
 
 export const ArtifactMain: Record<konst.ArtifactType, ReadonlyArray<konst.AnyBonusType>> = {
     "flower": [konst.StatusBonusType.Hp],
@@ -81,7 +81,7 @@ export const ArtifactNames = [
 export type ArtifactName = typeof ArtifactNames[number];
 
 // TODO: limitを多言語対応
-export const ArtifactSet: Record<typeof ArtifactNames[number], IArtifactSet> = {
+export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> = {
     Adventurer: {
         set2: { items: konst.StatusBonusType.Hp, value: 1000 }, // TODO: hp_buf が係るのか検証
         // set4: null,
@@ -291,7 +291,7 @@ export function calcMain(type: konst.AnyBonusType, star: number, level: number):
     return 0;
 }
 
-export function calcScore(bonus: IBonusValueData, star: number, level: number): number | undefined {
+export function calcScore(bonus: BonusValue, star: number, level: number): number | undefined {
     const param = getArtifactParam(bonus.type, star, level);
     if (param?.substep) {
         return Math.round(bonus.value / param.substep);
@@ -302,10 +302,10 @@ export function calcScore(bonus: IBonusValueData, star: number, level: number): 
 export const SubBonus = ["sub1", "sub2", "sub3", "sub4"] as const;
 export type SubBonus = typeof SubBonus[number];
 
-export interface IArtifactData extends IIdentify, INameable, ICommentable, Record<SubBonus, IBonusValueData> {
+export interface IArtifactData extends IIdentify, INameable, ICommentable, Record<SubBonus, BonusValue> {
     name: ArtifactName;
     star: number;
     level: number;
-    main: IBonusValueData;
+    main: BonusValue;
 }
 export type GlobalArtifactData = Record<konst.ArtifactType, IArtifactData[]>;

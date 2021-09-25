@@ -173,15 +173,15 @@ import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete } from "@mdi/js";
 import { ArtifactType } from "~/src/const";
-import { IBonusValueData } from "~/src/interface";
+import { BonusValue } from "~/src/interface";
 import {
   IArtifactData,
   ArtifactNames,
   ArtifactMain,
   ArtifactSub,
+  SubBonus,
   calcMain,
   calcScore,
-  SubBonus,
 } from "~/src/artifact";
 
 @Component({
@@ -251,7 +251,7 @@ export default class ArtifactData extends Vue {
     this.updateMain(item);
   }
 
-  getScore({ star, level }: IArtifactData, bonus: IBonusValueData) {
+  getScore({ star, level }: IArtifactData, bonus: BonusValue) {
     const score = calcScore(bonus, star, level);
     if (score !== undefined) {
       return score.toString();

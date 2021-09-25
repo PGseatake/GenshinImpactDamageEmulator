@@ -137,7 +137,6 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { TextValue } from "~/src/types";
 import {
   ElementType,
   ExtraBonusType,
@@ -163,10 +162,15 @@ import {
   Status,
   IStatus,
   StatusEnchant,
-  Reaction,
+  enumerateReaction,
 } from "~/src/bonus";
-import { EnemyNames } from "~/src/enemy";
-import { Enemy, EnemyData } from "~/components/EnemyTable.vue";
+import { EnemyNames, IEnemyData } from "~/src/enemy";
+import { Enemy } from "~/src/damage";
+
+type TextValue = {
+  text: string;
+  value: Required<Member>;
+};
 
 @Component({
   name: "PageDamage",
@@ -190,7 +194,7 @@ export default class PageDamage extends Vue {
   team: ITeamData | null = null;
   member: Member = { info: null, chara: null, equip: null };
   bonus: BonusBase[] = [];
-  enemy: EnemyData = {
+  enemy: IEnemyData = {
     name: EnemyNames[0],
     elem: ElementType.Pyro,
     level: 1,
@@ -327,7 +331,7 @@ export default class PageDamage extends Vue {
         bonus.apply(status);
       }
     }
-    const list = Reaction.list(this.member.info, status.enchant.type);
+    const list = enumerateReaction(this.member.info, status.enchant.type);
     let items = [{ text: this.$t("reaction.none"), value: "" }];
     items.push(
       ...list.map((val) => ({ text: this.$t("reaction." + val), value: val }))
@@ -395,7 +399,7 @@ export default class PageDamage extends Vue {
     }
   }
 
-  onChangeEnemy(data: EnemyData) {
+  onChangeEnemy(data: IEnemyData) {
     this.enemy.name = data.name;
     this.enemy.elem = data.elem;
     this.enemy.level = data.level;

@@ -1,5 +1,5 @@
-import * as konst from "./const";
-import { ICharacter, IBonusValueData, IIdentify, INameable, ICommentable } from "./interface";
+import * as konst from "~/src/const";
+import { BonusValue, IIdentify, INameable, ICommentable, ICharaInfo } from "~/src/interface";
 
 export const CharaNames = [
     "TravelAnemo",
@@ -38,7 +38,7 @@ export const CharaNames = [
 ] as const;
 export type CharaName = typeof CharaNames[number];
 
-export const CharaList: ReadonlyRecord<CharaName, ICharacter> = {
+export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     TravelAnemo: {
         star: 5,
         element: konst.ElementType.Anemo,
@@ -2501,7 +2501,7 @@ export interface ICharaData extends IIdentify, INameable, ICommentable {
     hp: number;
     atk: number;
     def: number;
-    special: IBonusValueData;
+    special: BonusValue;
     combat: number;
     skill: number;
     burst: number;

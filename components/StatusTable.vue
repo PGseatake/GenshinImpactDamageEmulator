@@ -47,18 +47,13 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import {
   BonusType,
+  BonusTypes,
+  StatusType,
   StatusBonusType,
   CriticalBonusType,
   CombatBonusType,
 } from "~/src/const";
-import {
-  BonusTypes,
-  TypeToBonus,
-  RateBonus,
-  StatusBase,
-  StatusParam,
-} from "~/src/bonus";
-import { CharaStatusType } from "~/src/interface";
+import { TypeToBonus, RateBonus, StatusBase, StatusParam } from "~/src/bonus";
 
 const excludeTypes: ReadonlyArray<BonusType> = [
   StatusBonusType.HpBuf,
@@ -67,7 +62,7 @@ const excludeTypes: ReadonlyArray<BonusType> = [
   CombatBonusType.Combat,
 ] as const;
 
-function isBaseBonus(type: BonusType): type is CharaStatusType {
+function isBaseBonus(type: BonusType): type is StatusType {
   return (
     type === StatusBonusType.Hp ||
     type === StatusBonusType.Atk ||

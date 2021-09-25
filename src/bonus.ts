@@ -1,29 +1,29 @@
+import * as konst from "~/src/const";
 import {
     IBasicBonus, IFlatBonus, IFlatBonusBound, IEnchantBonus, IReductBonus,
-    IBonusOption, AnyExtraBonus, Constes, Passives, GlobalEquipData, ICharacter
-} from "./interface";
-import * as konst from "./const";
-import { CharaList, ICharaData, GlobalCharaData } from "./character";
-import { WeaponList, IWeaponData, GlobalWeaponData } from "./weapon";
-import { ArtifactName, ArtifactSet, SubBonus, GlobalArtifactData } from "./artifact";
-import { Member, Members, ITeamData, getArtifacts, getMember, getWeapon } from "./team";
+    IBonusOption, AnyBonus, Constes, Passives, GlobalEquipData, ICharaInfo
+} from "~/src/interface";
+import { CharaList, ICharaData, GlobalCharaData } from "~/src/character";
+import { WeaponList, IWeaponData, GlobalWeaponData } from "~/src/weapon";
+import { ArtifactName, ArtifactList, SubBonus, GlobalArtifactData } from "~/src/artifact";
+import { Member, Members, ITeamData, getArtifacts, getMember, getWeapon } from "~/src/team";
 
-export type AmplifyReactionType = "vaporize" | "melt";
-export const isAmplifyReaction = (type: konst.ReactionType): type is AmplifyReactionType => {
-    switch (type) {
-        case konst.ReactionType.Melt:
-        case konst.ReactionType.Vaporize:
-            return true;
-    }
-    return false;
-};
-export type TransformReactionType = "burning" | "swirl" | "echarge" | "shutter" | "conduct" | "overload";
+export const DamageScaleTable: ReadonlyRecord<konst.DamageScale, ReadonlyArray<number>> = {
+    //    [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
+    phys: [100.0, 108.0, 116.0, 127.5, 135.0, 145.0, 157.5, 170.0, 182.5, 197.5, 211.5, 225.5, 239.5, 253.5, 267.5],
+    elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0, 212.5, 225.0, 237.5],
+    xiao: [100.0, 106.0, 112.0, 119.5, 125.5, 131.5, 139.5, 147.0, 155.0, 162.5, 170.5, 178.0, 186.0, 193.5, 201.0],
+    //     [    1,      2,     3,      4,     5,     6,      7,     8,      9,    10,     11,    12,     13,    14,     15]
+    hutao: [100.0, 106.75, 113.5, 122.75, 129.5, 137.5, 147.75, 158.0, 168.25, 178.5, 188.75, 199.0, 209.25, 219.5, 229.75],
+    //       [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
+    zhongli: [100.0, 110.5, 121.5, 135.0, 147.0, 159.5, 175.5, 192.0, 208.0, 224.0, 240.5, 256.5, 270.0, 283.5, 297.0],
+} as const;
 
-export type ReactionDamageFactor = {
+export type ReactionFactor = {
     readonly resist: konst.ElementType;
     readonly values: ReadonlyArray<number>;
 };
-export const ReactionFactorTable: ReadonlyRecord<TransformReactionType, ReactionDamageFactor> = {
+export const ReactionFactorTable: ReadonlyRecord<konst.TransformReactionType, ReactionFactor> = {
     "burning": {
         resist: konst.ElementType.Pyro,
         values: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
@@ -74,90 +74,36 @@ export const ReactionScaleTable: ReadonlyPartial<Record<konst.ElementType, Reado
     }
 } as const;
 
-export const BonusTypes = [
-    // StatusBonusType
-    "hp",
-    "hp_buf",
-    "atk",
-    "atk_buf",
-    "def",
-    "def_buf",
-    "elem",
-    "en_rec",
-    "heal_buf",
-    "cri_dmg",
-    "cri_rate",
-    // ElementBonusType
-    "pyro_dmg",
-    "hydro_dmg",
-    "dendro_dmg",
-    "elect_dmg",
-    "anemo_dmg",
-    "cryo_dmg",
-    "geo_dmg",
-    "phys_dmg",
-    // AnyBonusType
-    "any_dmg",
-    "elem_dmg",
-    // CombatBonusType
-    "normal_dmg",
-    "heavy_dmg",
-    "plunge_dmg",
-    "combat_dmg",
-    "skill_dmg",
-    "burst_dmg",
-    // CriticalBonusType
-    "normal_cri",
-    "heavy_cri",
-    "skill_cri",
-    // ReactionBonusType
-    "burning_dmg",
-    "vaporize_dmg",
-    "melt_dmg",
-    "swirl_dmg",
-    "echarge_dmg",
-    "shutter_dmg",
-    "conduct_dmg",
-    "overload_dmg",
-] as const;
+export function enumerateReaction(chara: ICharaInfo | null, enchant: konst.EnchantType) {
+    let types: konst.ReactionType[] = [];
+    if (chara) {
+        let elems = [chara.element];
+        if (enchant && (enchant !== chara.element)) {
+            elems.push(enchant);
+        }
 
-type CriticalValue = {
-    rate: number;
-    damage: number;
-};
-
-export const Reaction = {
-    list(chara: ICharacter | null, enchant: konst.EnchantType) {
-        let types: konst.ReactionType[] = [];
-        if (chara) {
-            let elems = [chara.element];
-            if (enchant && (enchant !== chara.element)) {
-                elems.push(enchant);
+        for (const elem of elems) {
+            const scales = ReactionScaleTable[elem];
+            if (scales) {
+                // 元素反応を追加
+                for (const type in scales) {
+                    types.push(type as konst.ReactionType);
+                }
             }
 
-            for (const elem of elems) {
-                const scales = ReactionScaleTable[elem];
-                if (scales) {
-                    // 元素反応を追加
-                    for (const type in scales) {
-                        types.push(type as konst.ReactionType);
-                    }
-                }
-
-                // 氷砕きを追加
-                if (elem === konst.ElementType.Geo) {
-                    types.push(konst.ReactionType.Shutter);
-                } else if (chara.weapon === konst.WeaponType.Claymore) {
-                    types.push(konst.ReactionType.Shutter);
-                }
+            // 氷砕きを追加
+            if (elem === konst.ElementType.Geo) {
+                types.push(konst.ReactionType.Shutter);
+            } else if (chara.weapon === konst.WeaponType.Claymore) {
+                types.push(konst.ReactionType.Shutter);
             }
         }
-        return types;
     }
-};
+    return types;
+}
 
 export type StatusTalent = Record<konst.TalentType, number>;
-export type StatusBase = { hp: number; atk: number; def: number; };
+export type StatusBase = Record<konst.StatusType, number>;
 export type StatusParam = Record<konst.BonusType, number>;
 export type StatusFlat = Record<konst.CombatType, number>;
 export type StatusReduct = Record<konst.ReductType, number>;
@@ -198,7 +144,7 @@ export class Status {
     equip({ info, equip, chara }: Member, globals: GlobalWeaponData & GlobalArtifactData) {
         this.chara = chara;
 
-        for (const type of BonusTypes) {
+        for (const type of konst.BonusTypes) {
             this.param[type] = 0;
         }
         for (const type of konst.CombatTypes) {
@@ -356,7 +302,10 @@ export class Status {
     }
 
     // 会心値（％）
-    critical(type: konst.CombatType = konst.CombatType.Normal): CriticalValue {
+    critical(type: konst.CombatType = konst.CombatType.Normal): {
+        rate: number;
+        damage: number;
+    } {
         let rate = this.param.cri_rate;
         switch (type) {
             case konst.CombatType.Normal:
@@ -586,7 +535,7 @@ export class FlatBonus extends BonusBase {
             // ダメージ倍率適用
             if (this.scale) {
                 const burst = status.talent.burst || 1; // TODO: 元素爆発固定
-                value *= konst.DamageScaleTable[this.scale][burst - 1] / 100;
+                value *= DamageScaleTable[this.scale][burst - 1] / 100;
             }
 
             // 最大値チェック
@@ -720,7 +669,7 @@ export class BonusBuilder {
         this.output = {};
     }
 
-    private convert(data: AnyExtraBonus, ref: string, index: number, origin: string, source: string): BonusBase {
+    private convert(data: AnyBonus, ref: string, index: number, origin: string, source: string): BonusBase {
         let group: string;
         if (data.target && data.target !== konst.BonusTarget.Self) {
             group = "general.everyone";
@@ -754,7 +703,7 @@ export class BonusBuilder {
         return bonus;
     }
 
-    private append(data: ReadonlyArrayable<AnyExtraBonus>, ref: string, index: number, origin: string, source: string): BonusBase[] {
+    private append(data: ReadonlyArrayable<AnyBonus>, ref: string, index: number, origin: string, source: string): BonusBase[] {
         if (Array.isArray(data)) {
             return data.map((value, i) => this.convert(value, ref, index + i, origin, source));
         }
@@ -821,10 +770,10 @@ export class BonusBuilder {
         while (first < names.length) {
             let name = names[first];
             let last = names.lastIndexOf(name) + 1;
-            if (name in ArtifactSet) {
+            if (name in ArtifactList) {
                 let same = last - first;
                 const source = "artifact.name." + name;
-                const artifact = ArtifactSet[name];
+                const artifact = ArtifactList[name];
                 // 2セットの効果追加
                 if (2 <= same) {
                     if (artifact.set2) {
