@@ -1,5 +1,10 @@
 <template>
-  <release-node :title="title" :items="root.items" class="list-item-root" />
+  <release-node
+    v-bind="$attrs"
+    :title="title"
+    :items="root.items"
+    class="list-item-root"
+  />
 </template>
 
 <style lang="scss" scoped>

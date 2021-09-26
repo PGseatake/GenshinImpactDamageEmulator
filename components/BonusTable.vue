@@ -9,8 +9,8 @@
     :show-select="check"
     group-by="group"
     dense
-    fixed-header
     disable-sort
+    fixed-header
     hide-default-footer
   >
     <template #[`group.header`]="{ group, headers }">
@@ -63,7 +63,11 @@
   tr:hover {
     background: inherit !important;
   }
+  th.text-start {
+    padding: 0 6px;
+  }
   td.text-start {
+    padding: 4px 6px;
     align-self: center;
     vertical-align: middle;
   }

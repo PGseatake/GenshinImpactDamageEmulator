@@ -8,9 +8,6 @@
   </v-row>
 </template>
 
-<style lang="scss" scoped>
-</style>
-
 <script lang="ts">
 import { Vue, Prop, Component } from "vue-property-decorator";
 import { ElementType, ElementTypes } from "~/src/const";

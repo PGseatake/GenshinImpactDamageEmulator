@@ -10,6 +10,7 @@
               v-model="team"
               :items="teams"
               :label="$t('menu.team')"
+              :menu-props="{ auto: true, transition: false }"
               dense
               hide-details
               class="slim py-1"
@@ -20,17 +21,16 @@
           <v-col cols="auto" class="px-1">
             <name-comment
               :items="members"
-              :name.sync="member"
+              :value.sync="member"
               :comment="comment"
               :commentable="false"
               @change="onChangeMember"
             />
           </v-col>
           <!-- レベル設定 -->
-          <v-col cols="auto" class="px-1">
+          <v-col v-if="member.chara" cols="auto" class="px-1">
             <div class="py-1" style="width: 60px">
               <ascension-level
-                v-if="member.chara"
                 v-model="member.chara.level"
                 :label="$t('general.level')"
               />
@@ -60,6 +60,7 @@
                   v-model="reaction"
                   :items="reactions"
                   :label="$t('general.reaction')"
+                  :menu-props="{ auto: true, transition: false }"
                   dense
                   hide-details
                   class="slim ma-0"
@@ -101,25 +102,6 @@
 <style lang="scss" scoped>
 .v-input {
   padding: 0;
-}
-
-.pc-data-table ::v-deep {
-  tr:hover {
-    background: inherit !important;
-  }
-  th.text-start {
-    padding: 0 6px;
-  }
-  td.text-start {
-    padding: 4px 6px;
-    vertical-align: top;
-  }
-}
-
-.mb-data-table ::v-deep {
-  td.v-data-table__mobile-row {
-    padding: 4px 12px;
-  }
 }
 
 .slim ::v-deep .v-select__selection {
@@ -331,10 +313,11 @@ export default class PageDamage extends Vue {
         bonus.apply(status);
       }
     }
-    const list = enumerateReaction(this.member.info, status.enchant.type);
     let items = [{ text: this.$t("reaction.none"), value: "" }];
     items.push(
-      ...list.map((val) => ({ text: this.$t("reaction." + val), value: val }))
+      ...enumerateReaction(this.member.info, status.enchant.type).map(
+        (val) => ({ text: this.$t("reaction." + val), value: val })
+      )
     );
     return items;
   }
@@ -356,10 +339,7 @@ export default class PageDamage extends Vue {
   onChangeTeam() {
     const members = this.members;
     if (members.length > 0) {
-      const { info, chara, equip } = members[0].value;
-      this.member.info = info;
-      this.member.chara = chara;
-      this.member.equip = equip;
+      this.member = members[0].value;
     } else {
       this.member.info = null;
       this.member.chara = null;
@@ -376,7 +356,7 @@ export default class PageDamage extends Vue {
     const team = this.team;
     const chara = this.member.chara;
     if (team && chara) {
-      let builder = new BonusBuilder(this, this.db.bonus);
+      let builder = new BonusBuilder(this.$i18n, this.db.bonus);
       let bonus = builder.build(team, this.db);
       this.bonus.push(...bonus.filter((val) => val.isMine(chara)));
       this.db.bonus = { ...this.db.bonus, ...builder.output };

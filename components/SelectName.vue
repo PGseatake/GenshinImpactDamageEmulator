@@ -33,7 +33,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 
-export type NameComment = {
+export type SelectItem = {
   id: string;
   name: string;
   comment: string;
@@ -44,7 +44,7 @@ export type NameComment = {
   inheritAttrs: false,
 })
 export default class SelectName extends Vue {
-  @Prop({ required: true }) items!: ReadonlyArray<NameComment>;
+  @Prop({ required: true }) items!: ReadonlyArray<SelectItem>;
   @Prop({ required: true }) group!: string;
   @Prop({ default: "" }) value!: string;
   @Prop({ default: false }) mandatory!: boolean;
@@ -68,11 +68,11 @@ export default class SelectName extends Vue {
     return this.getName(this.items.find((item) => item.id === this.value));
   }
 
-  getComment(item: NameComment | undefined) {
+  getComment(item?: SelectItem) {
     return item?.comment || "-";
   }
 
-  getName(item: NameComment | undefined) {
+  getName(item?: SelectItem) {
     if (item) {
       return this.$t(this.group + "." + item.name);
     }

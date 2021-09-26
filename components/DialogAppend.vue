@@ -6,7 +6,7 @@
     @click:outside="onCancel"
   >
     <v-card>
-      <v-card-title>{{ $t(title) }}{{ $t("dialog.append") }}</v-card-title>
+      <v-card-title>{{ $t(title) + $t("dialog.append") }}</v-card-title>
       <v-card-text>
         <slot />
       </v-card-text>

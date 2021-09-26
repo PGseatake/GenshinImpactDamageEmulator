@@ -3,9 +3,10 @@
     <v-select
       v-bind="$attrs"
       v-on="$listeners"
-      v-model="refName"
+      v-model="refValue"
       :items="items"
       :dense="dense"
+      :menu-props="{ auto: true, transition: false }"
       hide-details
     />
     <v-text-field
@@ -44,16 +45,16 @@ type TextValue = {
 })
 export default class NameComment extends Vue {
   @Prop({ required: true }) items!: ReadonlyArray<TextValue>;
-  @Prop({ required: true }) name!: string;
+  @Prop({ required: true }) value!: any;
   @Prop({ required: true }) comment!: string;
   @Prop({ default: true }) commentable!: boolean;
   @Prop({ default: true }) dense!: boolean;
 
-  get refName() {
-    return this.name;
+  get refValue() {
+    return this.value;
   }
-  set refName(name: string) {
-    this.$emit("update:name", name);
+  set refValue(value: any) {
+    this.$emit("update:value", value);
   }
 
   get refComment() {

@@ -8,8 +8,8 @@
     :items-per-page="1000"
     group-by="talent"
     dense
-    fixed-header
     disable-sort
+    fixed-header
     hide-default-footer
   >
     <template #[`group.header`]="{ group, headers }">
@@ -77,35 +77,12 @@ export default class DamageTable extends Vue {
   @Prop({ required: true }) reaction!: NoneReactionType;
 
   readonly headers = [
-    {
-      text: "",
-      value: "name",
-    },
-    {
-      text: "倍率",
-      value: "rate",
-      align: "right",
-    },
-    {
-      text: "ダメージ",
-      value: "damage",
-      align: "right",
-    },
-    {
-      text: "ｸﾘﾃｨｶﾙ",
-      value: "critical",
-      align: "right",
-    },
-    {
-      text: "元素反応",
-      value: "element",
-      align: "right",
-    },
-    {
-      text: "ｸﾘﾃｨｶﾙ",
-      value: "elem_cri",
-      align: "right",
-    },
+    { text: "", value: "name" },
+    { text: "倍率", value: "rate", align: "right" },
+    { text: "ダメージ", value: "damage", align: "right" },
+    { text: "ｸﾘﾃｨｶﾙ", value: "critical", align: "right" },
+    { text: "元素反応", value: "element", align: "right" },
+    { text: "ｸﾘﾃｨｶﾙ", value: "elem_cri", align: "right" },
   ];
 
   get tableClass() {
@@ -138,7 +115,7 @@ export default class DamageTable extends Vue {
 
   makeHtml(item: IAttribute) {
     let attr = new CombatAttribute(item, item.status.talent[item.talent]);
-    let html = `<td>${item.name}</td>` + attr.toHtml(this);
+    let html = `<td>${item.name}</td>` + attr.toHtml();
     const damage = attr.damage(
       item.status,
       item.enemy,

@@ -5,25 +5,29 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item key="sword">
-        <weapon-data type="sword" :items="sword" @remove="onBeforeRemove" />
+        <weapon-data type="sword" :items="db.sword" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="claymore">
         <weapon-data
           type="claymore"
-          :items="claymore"
+          :items="db.claymore"
           @remove="onBeforeRemove"
         />
       </v-tab-item>
       <v-tab-item key="polearm">
-        <weapon-data type="polearm" :items="polearm" @remove="onBeforeRemove" />
+        <weapon-data
+          type="polearm"
+          :items="db.polearm"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
       <v-tab-item key="bow">
-        <weapon-data type="bow" :items="bow" @remove="onBeforeRemove" />
+        <weapon-data type="bow" :items="db.bow" @remove="onBeforeRemove" />
       </v-tab-item>
       <v-tab-item key="catalyst">
         <weapon-data
           type="catalyst"
-          :items="catalyst"
+          :items="db.catalyst"
           @remove="onBeforeRemove"
         />
       </v-tab-item>
@@ -40,7 +44,11 @@
       @accept="onAppend"
       @cancel="append = ''"
     >
-      <v-select v-model="append" :items="names" />
+      <v-select
+        v-model="append"
+        :items="names"
+        :menu-props="{ auto: true, transition: false }"
+      />
     </dialog-append>
     <dialog-remove
       :title="$t('tab.' + type) + $t('dialog.remove')"
@@ -102,29 +110,9 @@ export default class PageWeapon extends Vue {
 
   get names() {
     return WeaponNames[this.type].map((name) => ({
-      text: this.$t(["weapon", this.type, name].join(".")),
+      text: this.$t(`weapon.${this.type}.${name}`),
       value: name,
     }));
-  }
-
-  get sword() {
-    return this.db.sword;
-  }
-
-  get claymore() {
-    return this.db.claymore;
-  }
-
-  get polearm() {
-    return this.db.polearm;
-  }
-
-  get bow() {
-    return this.db.bow;
-  }
-
-  get catalyst() {
-    return this.db.catalyst;
   }
 
   get removeName() {

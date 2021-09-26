@@ -49,7 +49,7 @@ export default class PageBonus extends Vue {
 
   mounted() {
     const text = this.$t("menu.team");
-    let builder = new BonusBuilder(this, this.db.bonus);
+    let builder = new BonusBuilder(this.$i18n, this.db.bonus);
     this.db.team.forEach((t, i) => {
       const key = getTeamName(text, t, i);
       const data = builder.build(t, this.db);

@@ -7,8 +7,8 @@
     :class="tableClass"
     :items-per-page="1000"
     dense
-    fixed-header
     disable-sort
+    fixed-header
     hide-default-footer
   >
     <template #[`item.type`]="{ item }">
@@ -79,23 +79,9 @@ export default class StatusTable extends Vue {
   @Prop({ required: true }) base!: StatusBase;
 
   readonly headers = [
-    {
-      text: this.$t("damage.title") as string,
-      value: "type",
-      width: "auto",
-    },
-    {
-      text: this.$t("damage.total") as string,
-      value: "total",
-      width: "auto",
-      align: "right",
-    },
-    {
-      text: this.$t("damage.base") as string,
-      value: "base",
-      width: "auto",
-      align: "right",
-    },
+    { text: this.$t("damage.title"), value: "type" },
+    { text: this.$t("damage.total"), value: "total", align: "right" },
+    { text: this.$t("damage.base"), value: "base", align: "right" },
   ];
 
   get tableClass() {

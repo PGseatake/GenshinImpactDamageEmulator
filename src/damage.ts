@@ -14,6 +14,7 @@ import {
     ReactionFactorTable,
 } from "~/src/bonus";
 import { EnemyList, IEnemyInfo, IEnemyData } from "~/src/enemy";
+import { roundRate } from "~/plugins/utils";
 
 export class Enemy {
     public info: IEnemyInfo;
@@ -118,14 +119,14 @@ export class CombatAttribute {
         this.based = info.based ?? DamageBased.Atk;
     }
 
-    toHtml(vm: Vue) {
+    toHtml() {
         if (this.multi > 1) {
             const val = this.value[0];
-            return `<td class="text-right">${vm.$roundRate(val)} x${this.multi}</td>`;
+            return `<td class="text-right">${roundRate(val)} x${this.multi}</td>`;
         }
         return (
             `<td class="text-right">` +
-            this.value.map((val) => vm.$roundRate(val)).join("<br>") +
+            this.value.map((val) => roundRate(val)).join("<br>") +
             "</td>"
         );
     }

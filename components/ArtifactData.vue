@@ -12,7 +12,7 @@
     <template #[`item.name`]="{ item }">
       <name-comment
         :items="names"
-        :name.sync="item.name"
+        :value.sync="item.name"
         :comment.sync="item.comment"
       />
     </template>
@@ -225,15 +225,15 @@ export default class ArtifactData extends Vue {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
   }
 
-  get mains() {
-    return ArtifactMain[this.type];
-  }
-
   get names() {
     return ArtifactNames.map((name) => ({
-      text: this.$t(["artifact", this.type, name].join(".")),
+      text: this.$t(`artifact.${this.type}.${name}`),
       value: name,
     }));
+  }
+
+  get mains() {
+    return ArtifactMain[this.type];
   }
 
   onChangeStar(item: IArtifactData) {

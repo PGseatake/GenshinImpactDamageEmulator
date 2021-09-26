@@ -79,7 +79,7 @@
     >
       <name-comment
         :items="names"
-        :name.sync="append"
+        :value.sync="append"
         :comment="comment"
         :commentable="false"
         :dense="false"
@@ -276,6 +276,10 @@ export default class PageEquipment extends Vue {
     },
   ];
 
+  get tableClass() {
+    return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
   get names() {
     return this.db.chara.map((chara) => ({
       text: this.$t("chara." + chara.name),
@@ -288,13 +292,9 @@ export default class PageEquipment extends Vue {
     return chara?.comment || "";
   }
 
-  get tableClass() {
-    return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
-  }
-
   get removeName() {
     const chara = this.findChara(this.remove?.chara);
-    return chara?.name ? this.$t(`chara.${chara.name}`) : "";
+    return chara?.name ? this.$t("chara." + chara.name) : "";
   }
 
   created() {
@@ -342,7 +342,7 @@ export default class PageEquipment extends Vue {
     });
   }
 
-  findChara(id: string | undefined): ICharaData | undefined {
+  findChara(id?: string): ICharaData | undefined {
     if (id) {
       return this.db.chara.find((chara) => chara.id === id);
     }

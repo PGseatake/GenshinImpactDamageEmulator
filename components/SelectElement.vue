@@ -3,8 +3,8 @@
     v-bind="$attrs"
     v-on="$listeners"
     v-model="refType"
+    :menu-props="{ auto: true, transition: false }"
     :items="items"
-    :item-text="getElementText"
     item-value="type"
     dense
     hide-details
@@ -12,7 +12,7 @@
   >
     <template #selection="{ item }">
       <chip-element v-if="item.type" :element="item.type" small />
-      <template v-else>{{ $t("element.none") }}</template>
+      <template v-else>{{ item.text }}</template>
     </template>
   </v-select>
 </template>
@@ -44,7 +44,10 @@ export default class SelectElement extends Vue {
   @Prop({ required: true }) types!: NoneElementType[];
 
   get items() {
-    return this.types.map((val) => ({ type: val }));
+    return this.types.map((val) => ({
+      text: this.$t("element." + (val || "none")),
+      type: val,
+    }));
   }
 
   get refType() {
@@ -52,10 +55,6 @@ export default class SelectElement extends Vue {
   }
   set refType(value: NoneElementType) {
     this.$emit("update:type", value);
-  }
-
-  getElementText({ type }: { type: NoneElementType }) {
-    return this.$t("element." + (type || "none"));
   }
 }
 </script>

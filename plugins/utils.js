@@ -4,6 +4,20 @@ import { BonusType, ElementType } from '~/src/const';
 import { DirectBonus } from '~/src/bonus';
 import { convert } from '~/src/convert';
 
+export function roundRate(value) {
+    if (value < 100) {
+        return (Math.round(value * 10) / 10).toFixed(1) + "%";
+    }
+    return Math.round(value).toFixed() + "%";
+}
+
+export function roundFloat(value) {
+    if (value < 100) {
+        return (Math.round(value * 10) / 10).toFixed(1);
+    }
+    return Math.round(value).toFixed();
+}
+
 const utils = {
     install(Vue) {
         Vue.prototype.$db = convert();
@@ -25,15 +39,15 @@ const utils = {
             }
         }
 
-        Vue.prototype.$formatBonus = function(vm, data) {
+        Vue.prototype.$formatBonus = function(i18n, data) {
             if (data) {
                 const type = data.type || BonusType.None;
                 if (type !== BonusType.None) {
                     const value = data.value;
                     if (DirectBonus.includes(type)) {
-                        return `${vm.$t("bonus_short." + type)}:${value.toFixed(0)}`;
+                        return `${i18n.t("bonus_short." + type)}:${value.toFixed(0)}`;
                     }
-                    return `${vm.$t("bonus_short." + type)}:${value.toFixed(1)}%`;
+                    return `${i18n.t("bonus_short." + type)}:${value.toFixed(1)}%`;
                 }
             }
             return "";
@@ -71,19 +85,8 @@ const utils = {
             return "indigo darken-4";
         }
 
-        Vue.prototype.$roundRate = function(value) {
-            if (value < 100) {
-                return (Math.round(value * 10) / 10).toFixed(1) + "%";
-            }
-            return Math.round(value).toFixed() + "%";
-        }
-
-        Vue.prototype.$roundFloat = function(value) {
-            if (value < 100) {
-                return (Math.round(value * 10) / 10).toFixed(1);
-            }
-            return Math.round(value).toFixed();
-        }
+        Vue.prototype.$roundRate = roundRate;
+        Vue.prototype.$roundFloat = roundFloat;
     }
 }
 

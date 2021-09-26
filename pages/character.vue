@@ -1,6 +1,6 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <chara-data :items="charas" @remove="onBeforeRemove" />
+    <chara-data :items="db.chara" @remove="onBeforeRemove" />
 
     <v-btn fab small @click="onBeforeAppend" class="ma-1">
       <v-icon>{{ icons.append }}</v-icon>
@@ -13,7 +13,11 @@
       @accept="onAppend"
       @cancel="append = ''"
     >
-      <v-select v-model="append" :items="names" />
+      <v-select
+        v-model="append"
+        :items="names"
+        :menu-props="{ auto: true, transition: false }"
+      />
     </dialog-append>
     <dialog-remove
       :title="$t('menu.character') + $t('dialog.remove')"
@@ -60,10 +64,6 @@ export default class PageCharacter extends Vue {
       text: this.$t("chara." + name),
       value: name,
     }));
-  }
-
-  get charas() {
-    return this.db.chara;
   }
 
   get removeName() {

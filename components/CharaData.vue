@@ -12,7 +12,7 @@
     <template #[`item.name`]="{ item }">
       <name-comment
         :items="names"
-        :name.sync="item.name"
+        :value.sync="item.name"
         :comment.sync="item.comment"
         @change="onChangeName(item)"
       />
@@ -178,10 +178,14 @@ export default class CharaData extends Vue {
     { text: this.$t("general.name") as string, value: "name" },
     { text: this.$t("general.conste") as string, value: "conste" },
     { text: this.$t("general.level") as string, value: "level" },
-    { text: this.$t("bonus.hp") as string, value: "hp", sortable: false },
-    { text: this.$t("bonus.atk") as string, value: "atk", sortable: false },
-    { text: this.$t("bonus.def") as string, value: "def", sortable: false },
-    { text: this.$t("general.special") as string, value: "special" },
+    { text: this.$t("bonus.hp") as string, value: "hp" },
+    { text: this.$t("bonus.atk") as string, value: "atk" },
+    { text: this.$t("bonus.def") as string, value: "def" },
+    {
+      text: this.$t("general.special") as string,
+      value: "special",
+      sortable: false,
+    },
     {
       text: this.$t("general.combat") as string,
       value: "combat",

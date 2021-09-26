@@ -38,7 +38,7 @@ div.detail {
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { NameComment } from "~/components/SelectName.vue";
+import { SelectItem } from "~/components/SelectName.vue";
 
 @Component({
   name: "EquipDetail",
@@ -48,7 +48,7 @@ import { NameComment } from "~/components/SelectName.vue";
   inheritAttrs: false,
 })
 export default class EquipDetail extends Vue {
-  @Prop({ required: true }) items!: ReadonlyArray<NameComment>;
+  @Prop({ required: true }) items!: ReadonlyArray<SelectItem>;
 
   get item() {
     return this.items.find((item) => item.id === this.$attrs.value);

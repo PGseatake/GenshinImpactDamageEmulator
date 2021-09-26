@@ -5,25 +5,37 @@
     </v-tabs>
     <v-tabs-items v-model="tab">
       <v-tab-item key="flower">
-        <artifact-data type="flower" :items="flower" @remove="onBeforeRemove" />
+        <artifact-data
+          type="flower"
+          :items="db.flower"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
       <v-tab-item key="feather">
         <artifact-data
           type="feather"
-          :items="feather"
+          :items="db.feather"
           @remove="onBeforeRemove"
         />
       </v-tab-item>
       <v-tab-item key="sands">
-        <artifact-data type="sands" :items="sands" @remove="onBeforeRemove" />
+        <artifact-data
+          type="sands"
+          :items="db.sands"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
       <v-tab-item key="goblet">
-        <artifact-data type="goblet" :items="goblet" @remove="onBeforeRemove" />
+        <artifact-data
+          type="goblet"
+          :items="db.goblet"
+          @remove="onBeforeRemove"
+        />
       </v-tab-item>
       <v-tab-item key="circlet">
         <artifact-data
           type="circlet"
-          :items="circlet"
+          :items="db.circlet"
           @remove="onBeforeRemove"
         />
       </v-tab-item>
@@ -40,7 +52,11 @@
       @accept="onAppend"
       @cancel="append = ''"
     >
-      <v-select v-model="append" :items="names" />
+      <v-select
+        v-model="append"
+        :items="names"
+        :menu-props="{ auto: true, transition: false }"
+      />
     </dialog-append>
     <dialog-remove
       :title="$t('tab.' + type) + $t('dialog.remove')"
@@ -97,29 +113,9 @@ export default class PageArtifact extends Vue {
 
   get names() {
     return ArtifactNames.map((name) => ({
-      text: this.$t(["artifact", this.type, name].join(".")),
+      text: this.$t(`artifact.${this.type}.${name}`),
       value: name,
     }));
-  }
-
-  get flower() {
-    return this.db.flower;
-  }
-
-  get feather() {
-    return this.db.feather;
-  }
-
-  get sands() {
-    return this.db.sands;
-  }
-
-  get goblet() {
-    return this.db.goblet;
-  }
-
-  get circlet() {
-    return this.db.circlet;
   }
 
   get removeName() {

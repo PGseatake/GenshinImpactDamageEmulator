@@ -6,6 +6,7 @@
     :label="label"
     :append-icon="icon"
     :single-line="!label"
+    :menu-props="{ auto: true, transition: false }"
     dense
     hide-details
     item-text="value"

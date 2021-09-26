@@ -5,6 +5,7 @@
       :items="db.team"
       :class="tableClass"
       :items-per-page="1000"
+      disable-sort
       fixed-header
       hide-default-footer
     >
@@ -68,7 +69,7 @@
     >
       <name-comment
         :items="names"
-        :name.sync="append"
+        :value.sync="append"
         :comment="comment"
         :commentable="false"
         :dense="false"
@@ -175,13 +176,13 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { NameComment } from "~/components/SelectName.vue";
 import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
+import { ElementType } from "~/src/const";
 import { DBEquipTable } from "~/src/interface";
 import { DBCharaTable } from "~/src/character";
-import { Members, ITeamData, DBTeamTable, getMember } from "~/src/team";
-import { ElementType } from "~/src/const";
+import { DBTeamTable, Members, Member, ITeamData } from "~/src/team";
+import { SelectItem } from "~/components/SelectName.vue";
 
 @Component({
   name: "PageTeam",
@@ -204,46 +205,25 @@ export default class PageTeam extends Vue {
   };
 
   readonly headers: ReadonlyArray<DataTableHeader> = [
-    {
-      text: this.$t("tab.team") as string,
-      value: "name",
-      sortable: false,
-    },
-    {
-      text: this.$t("tab.member") + "1",
-      value: "member1",
-      sortable: false,
-    },
-    {
-      text: this.$t("tab.member") + "2",
-      value: "member2",
-      sortable: false,
-    },
-    {
-      text: this.$t("tab.member") + "3",
-      value: "member3",
-      sortable: false,
-    },
-    {
-      text: this.$t("tab.member") + "4",
-      value: "member4",
-      sortable: false,
-    },
-    {
-      text: this.$t("general.resonance") as string,
-      value: "resonance",
-      sortable: false,
-    },
+    { text: this.$t("tab.team") as string, value: "name" },
+    { text: this.$t("tab.member") + "1", value: "member1" },
+    { text: this.$t("tab.member") + "2", value: "member2" },
+    { text: this.$t("tab.member") + "3", value: "member3" },
+    { text: this.$t("tab.member") + "4", value: "member4" },
+    { text: this.$t("general.resonance") as string, value: "resonance" },
     {
       text: this.$t("dialog.remove") as string,
       value: "remove",
       width: "50px",
-      sortable: false,
     },
   ];
 
+  get tableClass() {
+    return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
   get items() {
-    let values: NameComment[] = [];
+    let values: SelectItem[] = [];
     const { equip, chara } = this.db;
     for (const e of equip) {
       const c = chara.find((val) => val.id === e.chara);
@@ -266,10 +246,6 @@ export default class PageTeam extends Vue {
     return item?.comment || "";
   }
 
-  get tableClass() {
-    return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
-  }
-
   get removeName() {
     if (this.remove?.name) {
       return `${this.$t("menu.team")} "${this.remove.name}" `;
@@ -290,7 +266,7 @@ export default class PageTeam extends Vue {
   updateResonance(item: ITeamData) {
     let elements: ElementType[] = [];
     for (const key of Members) {
-      const { info } = getMember(item[key], this.db);
+      const { info } = Member.find(item[key], this.db);
       if (info) {
         elements.push(info.element);
       }

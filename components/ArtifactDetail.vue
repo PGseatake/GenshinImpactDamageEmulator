@@ -75,23 +75,23 @@ export default class ArtifactDetail extends Vue {
   }
 
   get main() {
-    return this.$formatBonus(this, this.item?.main);
+    return this.$formatBonus(this.$i18n, this.item?.main);
   }
 
   get sub1() {
-    return this.$formatBonus(this, this.item?.sub1);
+    return this.$formatBonus(this.$i18n, this.item?.sub1);
   }
 
   get sub2() {
-    return this.$formatBonus(this, this.item?.sub2);
+    return this.$formatBonus(this.$i18n, this.item?.sub2);
   }
 
   get sub3() {
-    return this.$formatBonus(this, this.item?.sub3);
+    return this.$formatBonus(this.$i18n, this.item?.sub3);
   }
 
   get sub4() {
-    return this.$formatBonus(this, this.item?.sub4);
+    return this.$formatBonus(this.$i18n, this.item?.sub4);
   }
 }
 </script>

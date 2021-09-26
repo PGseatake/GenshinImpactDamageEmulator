@@ -8,6 +8,7 @@
           :items="enemies"
           :label="$t('enemy.label')"
           :item-text="getEnemyText"
+          :menu-props="{ auto: true, transition: false }"
           item-value="name"
           dense
           hide-details
@@ -67,7 +68,9 @@
         :headers="headers"
         :items="items"
         :mobile-breakpoint="0"
+        :items-per-page="1000"
         dense
+        disable-sort
         fixed-header
         hide-default-footer
       >
@@ -167,19 +170,16 @@ export default class EnemyTable extends Vue {
       text: this.$t("general.element") as string,
       value: "type",
       align: "center",
-      sortable: false,
     },
     {
       text: this.$t("general.resist") as string,
       value: "value",
       align: "center",
-      sortable: false,
     },
     {
       text: this.$t("general.rate") as string,
       value: "rate",
       align: "center",
-      sortable: false,
     },
   ];
 

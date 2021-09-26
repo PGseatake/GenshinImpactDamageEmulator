@@ -10,7 +10,7 @@
       <v-card>
         <v-card-title v-text="title" />
         <v-card-text>
-          <slot name="enable" v-bind:item="item">
+          <slot name="enable" :item="item">
             <div v-text="text + $t('dialog.remove_text')" />
           </slot>
           <div v-text="$t('dialog.confirm_text')" />

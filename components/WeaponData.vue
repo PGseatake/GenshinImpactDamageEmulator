@@ -12,7 +12,7 @@
     <template #[`item.name`]="{ item }">
       <name-comment
         :items="names"
-        :name.sync="item.name"
+        :value.sync="item.name"
         :comment.sync="item.comment"
         @change="onChangeName(item)"
       />
@@ -152,7 +152,7 @@ export default class WeaponData extends Vue {
 
   get names() {
     return WeaponNames[this.type].map((name) => ({
-      text: this.$t(["weapon", this.type, name].join(".")),
+      text: this.$t(`weapon.${this.type}.${name}`),
       value: name,
     }));
   }

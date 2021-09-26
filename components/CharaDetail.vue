@@ -72,10 +72,11 @@ export default class CharaDetail extends Vue {
   }
 
   get color() {
+    let elem: ElementType = ElementType.Phys;
     if (this.item) {
-      return this.$elementBGColor(CharaList[this.item.name].element);
+      elem = CharaList[this.item.name].element;
     }
-    return this.$elementBGColor(ElementType.Phys);
+    return this.$elementBGColor(elem);
   }
 
   get level() {

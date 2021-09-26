@@ -1,12 +1,14 @@
+import { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
 import {
     IBasicBonus, IFlatBonus, IFlatBonusBound, IEnchantBonus, IReductBonus,
-    IBonusOption, AnyBonus, Constes, Passives, DBEquipTable, ICharaInfo
+    IBonusOption, ICharaInfo, AnyBonus, Constes, Passives, DBEquipTable
 } from "~/src/interface";
 import { CharaList, ICharaData, DBCharaTable } from "~/src/character";
 import { WeaponList, IWeaponData, DBWeaponTable } from "~/src/weapon";
 import { ArtifactName, ArtifactList, SubBonus, DBArtifactTable } from "~/src/artifact";
 import { Members, Member, ITeamData } from "~/src/team";
+import { roundFloat, roundRate } from "~/plugins/utils";
 
 export const DamageScaleTable: ReadonlyRecord<konst.DamageScale, ReadonlyArray<number>> = {
     //    [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
@@ -362,8 +364,7 @@ export const TeamBonus: Partial<ReadonlyRecord<konst.ElementType, IBasicBonus>> 
 } as const;
 
 export class BonusBase {
-    public readonly vm: Vue;
-    public readonly ref: string; // キャラID
+    public readonly i18n: IVueI18n;
     public readonly index: number;
     public readonly group: string; // table-dataのグループ
     public readonly extra: konst.ExtraBonusType | undefined;
@@ -374,10 +375,9 @@ export class BonusBase {
     public readonly source: string;
     public data: IBonusData;
 
-    constructor(vm: Vue, ref: string, index: number, group: string, source: string,
+    constructor(i18n: IVueI18n, index: number, group: string, source: string,
         { extra, limit, times, stack, target }: IBonusOption) {
-        this.vm = vm;
-        this.ref = ref;
+        this.i18n = i18n;
         this.index = index;
         this.group = group;
         this.extra = extra;
@@ -429,7 +429,7 @@ export class BonusBase {
     }
 
     public getLabel(type: konst.AnyBonusType) {
-        return String(this.vm.$t("bonus." + type)).replace("(%)", "");
+        return String(this.i18n.t("bonus." + type)).replace("(%)", "");
     }
 
     public apply(status: Status) { }
@@ -440,8 +440,8 @@ export class BasicBonus extends BonusBase {
     private readonly types: ReadonlyArray<konst.BonusType>;
     private readonly value: number;
 
-    constructor(vm: Vue, ref: string, index: number, group: string, source: string, data: IBasicBonus) {
-        super(vm, ref, index, group, source, data);
+    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IBasicBonus) {
+        super(i18n, index, group, source, data);
         const types = data.items;
         this.types = Array.isArray(types) ? types : [types];
         this.value = data.value;
@@ -451,7 +451,7 @@ export class BasicBonus extends BonusBase {
         const items = this.types;
         let str = this.types.map(type => this.getLabel(type)).join("・");
         if (RateBonus.check(items[0])) {
-            return `${str} +${this.vm.$roundFloat(this.value)}%`;
+            return `${str} +${roundFloat(this.value)}%`;
         }
         return `${str} +${this.value}`;
     }
@@ -474,8 +474,8 @@ export class FlatBonus extends BonusBase {
     private readonly scale: konst.DamageScale | "";
     private readonly bound: IFlatBonusBound | null;
 
-    constructor(vm: Vue, ref: string, index: number, group: string, source: string, data: IFlatBonus) {
-        super(vm, ref, index, group, source, data);
+    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IFlatBonus) {
+        super(i18n, index, group, source, data);
         const dest = data.dest;
         this.dest = dest;
         this.base = data.base;
@@ -490,7 +490,7 @@ export class FlatBonus extends BonusBase {
         switch (this.dest) {
             case konst.FlatBonusDest.Combat:
             case konst.FlatBonusDest.CombatDmg:
-                str = this.vm.$t("bonus.combat_dmg") as string;
+                str = this.i18n.t("bonus.combat_dmg") as string;
                 break;
             case konst.FlatBonusDest.Skill:
             case konst.FlatBonusDest.Burst:
@@ -500,12 +500,12 @@ export class FlatBonus extends BonusBase {
                 str = this.getLabel(this.dest);
                 break;
         }
-        const value = this.vm.$roundFloat(this.value);
+        const value = roundFloat(this.value);
         switch (this.base) {
             case konst.FlatBonusBase.None:
                 return `${str} +${value}%`;
             case konst.FlatBonusBase.Atk:
-                return `${str} +${this.vm.$t("bonus.atk_base")}の${value}%分`;
+                return `${str} +${this.i18n.t("bonus.atk_base")}の${value}%分`;
             default:
                 return `${str} +${this.getLabel(this.base)}の${value}%分`;
         }
@@ -593,8 +593,8 @@ export class ReductBonus extends BonusBase {
     private readonly types: Readonly<konst.ReductType[]>;
     private readonly value: number;
 
-    constructor(vm: Vue, ref: string, index: number, group: string, source: string, data: IReductBonus) {
-        super(vm, ref, index, group, source, { ...data, target: konst.BonusTarget.Enemy });
+    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IReductBonus) {
+        super(i18n, index, group, source, { ...data, target: konst.BonusTarget.Enemy });
         const types = data.type;
         this.types = Array.isArray(types) ? types : [types];
         this.value = data.value;
@@ -602,8 +602,8 @@ export class ReductBonus extends BonusBase {
 
     // TODO: 多言語対応
     public get effect() {
-        const types = this.types.map(type => this.vm.$t("reduct." + type)).join("・");
-        return `${types} -${this.vm.$roundRate(this.value)}`;
+        const types = this.types.map(type => this.i18n.t("reduct." + type)).join("・");
+        return `${types} -${roundRate(this.value)}`;
     }
 
     public apply(status: Status) {
@@ -620,15 +620,15 @@ export class EnchantBonus extends BonusBase {
     private readonly type: konst.EnchantType;
     private readonly dest: ReadonlyArray<konst.CombatType>;
 
-    constructor(vm: Vue, ref: string, index: number, group: string, source: string, data: IEnchantBonus) {
-        super(vm, ref, index, group, source, data);
+    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IEnchantBonus) {
+        super(i18n, index, group, source, data);
         this.type = data.elem;
         this.dest = data.dest;
     }
 
     public get effect() {
-        const dest = this.dest.map(dest => this.vm.$t("combat." + dest)).join("・");
-        return `${dest}に${this.vm.$t("element." + this.type)}元素付与`;
+        const dest = this.dest.map(dest => this.i18n.t("combat." + dest)).join("・");
+        return `${dest}に${this.i18n.t("element." + this.type)}元素付与`;
     }
 
     public apply(status: Status) {
@@ -653,15 +653,15 @@ type Database =
     DBArtifactTable;
 
 export class BonusBuilder {
-    private vm: Vue;
+    private i18n: IVueI18n;
     public team: string;
     public equip: string;
     public group: string;
     private bonus: IDict<IBonusData>;
     public output: IDict<IBonusData>;
 
-    constructor(vm: Vue, bonus: IDict<IBonusData>) {
-        this.vm = vm;
+    constructor(i18n: IVueI18n, bonus: IDict<IBonusData>) {
+        this.i18n = i18n;
         this.team = "";
         this.equip = "";
         this.group = "";
@@ -669,7 +669,7 @@ export class BonusBuilder {
         this.output = {};
     }
 
-    private convert(data: AnyBonus, ref: string, index: number, origin: string, source: string): BonusBase {
+    private convert(data: AnyBonus, index: number, origin: string, source: string): BonusBase {
         let group: string;
         if (data.target && data.target !== konst.BonusTarget.Self) {
             group = "general.everyone";
@@ -682,16 +682,16 @@ export class BonusBuilder {
         let bonus: BonusBase;
         switch (data.extra) {
             case konst.ExtraBonusType.Flat:
-                bonus = new FlatBonus(this.vm, ref, index, group, source, data);
+                bonus = new FlatBonus(this.i18n, index, group, source, data);
                 break;
             case konst.ExtraBonusType.Reduct:
-                bonus = new ReductBonus(this.vm, ref, index, group, source, data);
+                bonus = new ReductBonus(this.i18n, index, group, source, data);
                 break;
             case konst.ExtraBonusType.Enchant:
-                bonus = new EnchantBonus(this.vm, ref, index, group, source, data);
+                bonus = new EnchantBonus(this.i18n, index, group, source, data);
                 break;
             default:
-                bonus = new BasicBonus(this.vm, ref, index, group, source, data);
+                bonus = new BasicBonus(this.i18n, index, group, source, data);
                 break;
         }
 
@@ -703,11 +703,11 @@ export class BonusBuilder {
         return bonus;
     }
 
-    private append(data: ReadonlyArrayable<AnyBonus>, ref: string, index: number, origin: string, source: string): BonusBase[] {
+    private append(data: ReadonlyArrayable<AnyBonus>, index: number, origin: string, source: string): BonusBase[] {
         if (Array.isArray(data)) {
-            return data.map((value, i) => this.convert(value, ref, index + i, origin, source));
+            return data.map((value, i) => this.convert(value, index + i, origin, source));
         }
-        return [this.convert(data, ref, index, origin, source)];
+        return [this.convert(data, index, origin, source)];
     }
 
     public charaBonus(data: ICharaData): BonusBase[] {
@@ -721,16 +721,16 @@ export class BonusBuilder {
                 switch (origin) {
                     case Passives[2]:
                         if ((21 <= level) || (data.level === "20+")) {
-                            bonus.push(...this.append(passive, data.id, 100 + (idx * 10), origin, source));
+                            bonus.push(...this.append(passive, 100 + (idx * 10), origin, source));
                         }
                         break;
                     case Passives[3]:
                         if ((61 <= level) || (data.level === "60+")) {
-                            bonus.push(...this.append(passive, data.id, 100 + (idx * 10), origin, source));
+                            bonus.push(...this.append(passive, 100 + (idx * 10), origin, source));
                         }
                         break;
                     default:
-                        bonus.push(...this.append(passive, data.id, 100 + (idx * 10), origin, source));
+                        bonus.push(...this.append(passive, 100 + (idx * 10), origin, source));
                 }
             }
         }
@@ -739,7 +739,7 @@ export class BonusBuilder {
             const count = parseInt(origin.replace("lv", ""));
             if (conste) {
                 if (count <= data.conste) {
-                    bonus.push(...this.append(conste, data.id, 150 + idx * 10, origin, source));
+                    bonus.push(...this.append(conste, 150 + idx * 10, origin, source));
                 }
             }
         }
@@ -754,10 +754,10 @@ export class BonusBuilder {
             if (bonus) {
                 if (Array.isArray(bonus)) {
                     return bonus.map((value, i) => this.convert(
-                        { ...value, value: value.value[data.rank - 1] }, data.id, 200 + i, "weapon", source));
+                        { ...value, value: value.value[data.rank - 1] }, 200 + i, "weapon", source));
                 } else {
                     return [this.convert(
-                        { ...bonus, value: bonus.value[data.rank - 1] }, data.id, 200, "weapon", source)];
+                        { ...bonus, value: bonus.value[data.rank - 1] }, 200, "weapon", source)];
                 }
             }
         }
@@ -777,13 +777,13 @@ export class BonusBuilder {
                 // 2セットの効果追加
                 if (2 <= same) {
                     if (artifact.set2) {
-                        bonus.push(...this.append(artifact.set2, name, 300, "artifact", source));
+                        bonus.push(...this.append(artifact.set2, 300, "artifact", source));
                     }
                 }
                 // 4セットの効果追加
                 if (4 <= same) {
                     if (artifact.set4) {
-                        bonus.push(...this.append(artifact.set4, name, 310, "artifact", source));
+                        bonus.push(...this.append(artifact.set4, 310, "artifact", source));
                     }
                 }
             }
@@ -798,7 +798,7 @@ export class BonusBuilder {
             const base = TeamBonus[elem];
             if (base) {
                 const data = { ...base, target: konst.BonusTarget.All };
-                bonus.push(...this.append(data, "", 400 + idx, "resonance", "general.resonance"));
+                bonus.push(...this.append(data, 400 + idx, "resonance", "general.resonance"));
             }
         }
         return bonus;
@@ -834,7 +834,7 @@ export class BonusBuilder {
                 times: 12,
                 target: konst.BonusTarget.All
             };
-            data.push(...this.append(bonus, "", 250, "conduct", "reaction.conduct"));
+            data.push(...this.append(bonus, 250, "conduct", "reaction.conduct"));
         }
         // 元素共鳴ボーナス追加
         data.push(...this.resonanceBonus(team.resonance));
