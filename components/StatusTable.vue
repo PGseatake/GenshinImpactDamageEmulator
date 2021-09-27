@@ -79,9 +79,9 @@ export default class StatusTable extends Vue {
   @Prop({ required: true }) base!: StatusBase;
 
   readonly headers = [
-    { text: this.$t("damage.title"), value: "type" },
-    { text: this.$t("damage.total"), value: "total", align: "right" },
-    { text: this.$t("damage.base"), value: "base", align: "right" },
+    { text: this.$t("general.status"), value: "type" },
+    { text: this.$t("general.total"), value: "total", align: "right" },
+    { text: this.$t("general.base"), value: "base", align: "right" },
   ];
 
   get tableClass() {

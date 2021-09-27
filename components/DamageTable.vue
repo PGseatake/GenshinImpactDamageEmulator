@@ -50,12 +50,11 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { TalentType } from "~/src/const";
+import { ICombat } from "~/src/interface";
+import { IMember } from "~/src/team";
 import { IStatus, Status } from "~/src/bonus";
-import { ICharaInfo, ICombat } from "~/src/interface";
-import { NoneElementType, NoneReactionType, TalentType } from "~/src/const";
-import { ICharaData } from "~/src/character";
-import { IEnemyData } from "~/src/enemy";
-import { CombatAttribute, Enemy } from "~/src/damage";
+import { IDamageData, CombatAttribute, Enemy } from "~/src/damage";
 
 interface IAttribute extends ICombat {
   talent: TalentType;
@@ -69,20 +68,17 @@ interface IAttribute extends ICombat {
   inheritAttrs: false,
 })
 export default class DamageTable extends Vue {
-  @Prop({ required: true }) info!: ICharaInfo | null;
-  @Prop({ required: true }) chara!: ICharaData | null;
-  @Prop({ required: true }) enemy!: IEnemyData;
+  @Prop({ required: true }) data!: Readonly<IDamageData>;
+  @Prop({ required: true }) member!: Readonly<IMember>;
   @Prop({ required: true }) status!: IStatus;
-  @Prop({ required: true }) contact!: NoneElementType;
-  @Prop({ required: true }) reaction!: NoneReactionType;
 
   readonly headers = [
     { text: "", value: "name" },
-    { text: "倍率", value: "rate", align: "right" },
-    { text: "ダメージ", value: "damage", align: "right" },
-    { text: "ｸﾘﾃｨｶﾙ", value: "critical", align: "right" },
-    { text: "元素反応", value: "element", align: "right" },
-    { text: "ｸﾘﾃｨｶﾙ", value: "elem_cri", align: "right" },
+    { text: this.$t("general.rate"), value: "rate", align: "right" },
+    { text: this.$t("general.damage"), value: "damage", align: "right" },
+    { text: this.$t("damage.critical"), value: "critical", align: "right" },
+    { text: this.$t("damage.reaction"), value: "element", align: "right" },
+    { text: this.$t("damage.critical"), value: "elem_cri", align: "right" },
   ];
 
   get tableClass() {
@@ -91,10 +87,10 @@ export default class DamageTable extends Vue {
 
   get items() {
     let status = new Status(this.status);
-    status.chara = this.chara;
-    let enemy = new Enemy(this.enemy, this.status.reduct);
+    status.chara = this.member.chara;
+    let enemy = new Enemy(this.data, this.status.reduct);
     let items: IAttribute[] = [];
-    const info = this.info;
+    const info = this.member.info;
     if (info) {
       let key = 1;
       for (const data of info.talent.combat) {
@@ -119,8 +115,8 @@ export default class DamageTable extends Vue {
     const damage = attr.damage(
       item.status,
       item.enemy,
-      this.reaction || undefined,
-      this.contact || undefined
+      this.data.reaction || undefined,
+      this.data.contact || undefined
     );
     for (let i = 0; i < 4; ++i) {
       if (i < damage.length) {

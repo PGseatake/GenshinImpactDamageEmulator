@@ -33,6 +33,7 @@
         "none": "なし",
         "name": "名前",
         "comment": "コメント",
+        "status": "ステータス",
         "element": "元素",
         "level": "Lv.",
         "star": "☆",
@@ -51,11 +52,10 @@
         "resonance": "元素共鳴",
         "everyone": "全員",
         "sec": "秒",
-        "phase": "状態",
-        "resist": "耐性",
-        "rate": "倍率",
-        "contact": "元素変化",
-        "reaction": "元素反応"
+        "damage": "ダメージ",
+        "total": "最終値",
+        "base": "基礎値",
+        "rate": "倍率"
     },
     "dialog": {
         "yes": "はい",
@@ -204,9 +204,11 @@
         "contact": "元素反応した元素耐性"
     },
     "damage": {
-        "title": "ステータス",
-        "total": "最終値",
-        "base": "基礎値",
+        "phase": "状態",
+        "resist": "耐性",
+        "contact": "元素変化",
+        "reaction": "元素反応",
+        "critical": "ｸﾘﾃｨｶﾙ",
         "immutable": "無効"
     },
     "chara": {

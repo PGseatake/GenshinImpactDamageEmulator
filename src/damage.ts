@@ -5,8 +5,10 @@ import {
     CombatElementType,
     DamageBased,
     isAmplifyReaction,
+    NoneElementType,
+    NoneReactionType,
 } from "~/src/const";
-import { ICombat } from "~/src/interface";
+import { ICombat, IIdentify } from "~/src/interface";
 import {
     Status,
     StatusReduct,
@@ -16,12 +18,19 @@ import {
 import { EnemyList, IEnemyInfo, IEnemyData } from "~/src/enemy";
 import { roundRate } from "~/plugins/utils";
 
-export class Enemy {
-    public info: IEnemyInfo;
-    public data: IEnemyData;
-    public reduct: StatusReduct;
+export interface IDamageData extends IIdentify, IEnemyData {
+    team: string;
+    member: number;
+    contact: NoneElementType;
+    reaction: NoneReactionType;
+}
 
-    constructor(data: IEnemyData, reduct: StatusReduct) {
+export class Enemy {
+    public readonly info: Readonly<IEnemyInfo>;
+    public readonly data: Readonly<IEnemyData>;
+    public readonly reduct: StatusReduct;
+
+    constructor(data: Readonly<IEnemyData>, reduct: StatusReduct) {
         this.data = data;
         this.info = EnemyList[data.name];
         this.reduct = reduct;
@@ -55,11 +64,11 @@ export class Enemy {
 }
 
 class Damage {
-    public atk: number;
-    public def: number;
-    public flat: number;
-    public value: ReadonlyArray<number>;
-    public multi: number;
+    public readonly atk: number;
+    public readonly def: number;
+    public readonly flat: number;
+    public readonly value: ReadonlyArray<number>;
+    public readonly multi: number;
     public strike: boolean;
 
     constructor(atk: number, def: number, flat: number, value: ReadonlyArray<number>, multi: number) {
@@ -97,12 +106,12 @@ function toScale(rate: number) {
 
 // 天賦の各種倍率
 export class CombatAttribute {
-    public name: string;
-    public type: CombatType;
-    public elem: CombatElementType;
-    public value: ReadonlyArray<number>;
-    public multi: number;
-    public based: DamageBased;
+    public readonly name: string;
+    public readonly type: CombatType;
+    public readonly elem: CombatElementType;
+    public readonly value: ReadonlyArray<number>;
+    public readonly multi: number;
+    public readonly based: DamageBased;
 
     constructor(info: ICombat, level: number) {
         const scale = DamageScaleTable[info.scale];

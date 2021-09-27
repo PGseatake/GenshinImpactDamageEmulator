@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="pa-0 pt-2">
-    <v-row dense align="end" justify="center">
+    <v-row dense align="end" justify="center" class="ma-0">
       <!-- 敵選択 -->
       <v-col cols="auto" class="my-2">
         <v-select
@@ -48,7 +48,7 @@
         >
           <template #label>
             <label class="v-label v-label--active phase">{{
-              $t("general.phase")
+              $t("damage.phase")
             }}</label>
           </template>
           <v-radio
@@ -62,7 +62,7 @@
         </v-radio-group>
       </v-col>
     </v-row>
-    <v-row no-gutters justify="center">
+    <v-row dense justify="center" class="ma-0">
       <!-- 耐性表示 -->
       <v-data-table
         :headers="headers"
@@ -172,7 +172,7 @@ export default class EnemyTable extends Vue {
       align: "center",
     },
     {
-      text: this.$t("general.resist") as string,
+      text: this.$t("damage.resist") as string,
       value: "value",
       align: "center",
     },
