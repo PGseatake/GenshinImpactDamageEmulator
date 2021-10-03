@@ -336,11 +336,7 @@ export default class Default extends Vue {
   }
 
   mounted() {
-    window.addEventListener("beforeunload", (event) => {
-      event.preventDefault();
-      event.returnValue = "";
-    });
-
+    window.addEventListener("beforeunload", this.onBeforeUnload);
     this.reflect(localStorage.getItem("global_data"));
   }
 
@@ -378,6 +374,9 @@ export default class Default extends Vue {
         this.reflect(reader.result as string);
         this.save();
         this.popup("import");
+
+        window.removeEventListener("beforeunload", this.onBeforeUnload);
+        location.reload();
       };
     }
   }
@@ -401,6 +400,11 @@ export default class Default extends Vue {
         this.popup("export");
       }
     }
+  }
+
+  onBeforeUnload(event: BeforeUnloadEvent) {
+    event.preventDefault();
+    event.returnValue = "";
   }
 }
 </script>

@@ -135,6 +135,7 @@ export const DBTableTypes = [
     "equip",
     "team",
     "bonus",
+    "damage",
     "chara",
     ...konst.WeaponTypes,
     ...konst.ArtifactTypes,

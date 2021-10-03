@@ -8,7 +8,6 @@
     item-value="type"
     dense
     hide-details
-    class="ma-0"
   >
     <template #selection="{ item }">
       <chip-element v-if="item.type" :element="item.type" small />

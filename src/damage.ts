@@ -20,10 +20,11 @@ import { roundRate } from "~/plugins/utils";
 
 export interface IDamageData extends IIdentify, IEnemyData {
     team: string;
-    member: number;
+    member: string;
     contact: NoneElementType;
     reaction: NoneReactionType;
 }
+export type DBDamageTable = { damage: IDamageData[]; };
 
 export class Enemy {
     public readonly info: Readonly<IEnemyInfo>;

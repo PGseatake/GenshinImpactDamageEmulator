@@ -46,7 +46,7 @@
         :menu-props="{ auto: true, transition: false }"
         dense
         hide-details
-        class="ma-0"
+        class="mt-4"
       />
     </v-col>
   </v-row>
@@ -69,16 +69,7 @@
 <script lang="ts">
 import { Vue, Component, Emit, Prop } from "vue-property-decorator";
 import { ElementType, NoneElementType, NoneReactionType } from "~/src/const";
-import { DBEquipTable } from "~/src/interface";
-import { DBCharaTable } from "~/src/character";
-import {
-  DBTeamTable,
-  ITeamData,
-  getTeamName,
-  IMember,
-  Members,
-  Member,
-} from "~/src/team";
+import { ITeamData, IMember, Members, Member, getTeamName } from "~/src/team";
 
 type TextValue = {
   text: string;
@@ -94,11 +85,11 @@ type TextValue = {
   },
 })
 export default class SelectMember extends Vue {
+  @Prop({ required: true }) damage!: string;
   @Prop({ required: true }) contact!: NoneElementType;
   @Prop({ required: true }) reaction!: NoneReactionType;
   @Prop({ required: true }) reactions!: ReadonlyArray<NoneReactionType>;
 
-  db!: DBTeamTable & DBEquipTable & DBCharaTable;
   team: ITeamData | null = null;
   member: IMember = { info: null, chara: null, equip: null };
 
@@ -161,7 +152,7 @@ export default class SelectMember extends Vue {
   get teams() {
     const text = this.$t("menu.team");
     let items: { text: string; value: ITeamData }[] = [];
-    this.db.team.forEach((t, i) =>
+    this.$db.team.forEach((t, i) =>
       items.push({ text: getTeamName(text, t, i), value: t })
     );
     return items;
@@ -173,7 +164,7 @@ export default class SelectMember extends Vue {
       const team = this.team;
       if (team) {
         for (const key of Members) {
-          const member = Member.find(team[key], this.db);
+          const member = Member.find(team[key], this.$db);
           if (member.chara) {
             items.push({
               text: this.$t("chara." + member.chara.name) as string,
@@ -190,22 +181,24 @@ export default class SelectMember extends Vue {
     return this.member.chara?.comment || "-";
   }
 
-  created() {
-    this.db = this.$db;
-  }
-
   mounted() {
-    const teams = this.teams;
-    if (teams.length > 0) {
-      this.team = teams[0].value;
-      this.changeMember();
+    const item = this.$db.damage.find((val) => val.id === this.damage);
+    if (item) {
+      const team = this.$db.team.find((val) => val.id === item.team);
+      if (team) {
+        this.team = team;
+
+        this.changeMember(
+          Members.findIndex((val) => team[val] === item.member)
+        );
+      }
     }
   }
 
-  changeMember() {
+  changeMember(index = 0) {
     const members = this.members;
-    if (members.length > 0) {
-      const member = members[0].value;
+    if (0 <= index && index < members.length) {
+      const member = members[index].value;
       this.member.info = member.info;
       this.member.chara = member.chara;
       this.member.equip = member.equip;

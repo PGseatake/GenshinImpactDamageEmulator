@@ -6,9 +6,10 @@ import { CharaList, CharaName, DBCharaTable } from "~/src/character";
 import { WeaponList, DBWeaponTable } from "~/src/weapon";
 import { DBBonusTable } from "~/src/bonus";
 import { DBTeamTable } from "~/src/team";
+import { DBDamageTable } from "~/src/damage";
 
 export type Database = DBVersion &
-    DBCharaTable & DBWeaponTable & DBArtifactTable & DBEquipTable & DBTeamTable & DBBonusTable;
+    DBCharaTable & DBWeaponTable & DBArtifactTable & DBEquipTable & DBTeamTable & DBBonusTable & DBDamageTable;
 
 interface ICharaV002 {
     name: CharaName,
@@ -227,5 +228,6 @@ export function convert(data?: DatabaseV002 | DatabaseV100): Database {
         equip: [],
         team: [],
         bonus: {},
+        damage: [],
     };
 }

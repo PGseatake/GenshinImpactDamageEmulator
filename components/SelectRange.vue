@@ -11,7 +11,7 @@
     hide-details
     item-text="value"
     type="number"
-    class="ma-0"
+    :class="selectClass"
   />
 </template>
 
@@ -50,6 +50,10 @@ export default class SelectRange extends Vue {
     return Array.from({ length: max - min + 1 }, (_, i): { value: number } => ({
       value: min + i,
     }));
+  }
+
+  get selectClass() {
+    return !this.label ? "ma-0" : "";
   }
 }
 </script>

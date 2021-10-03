@@ -2,7 +2,7 @@
   <v-container fluid class="pa-0 pt-2">
     <v-row dense align="end" justify="center" class="ma-0">
       <!-- 敵選択 -->
-      <v-col cols="auto" class="my-2">
+      <v-col cols="auto">
         <v-select
           v-model="data.name"
           :items="enemies"
@@ -12,12 +12,11 @@
           item-value="name"
           dense
           hide-details
-          class="ma-0"
           @change="onChangeEnemy"
         />
       </v-col>
       <!-- 元素選択 -->
-      <v-col v-if="elements" cols="auto" class="my-2">
+      <v-col v-if="elements" cols="auto">
         <select-element
           :type.sync="data.elem"
           :types="elements"
@@ -26,7 +25,7 @@
         />
       </v-col>
       <!-- レベル -->
-      <v-col cols="auto" class="my-2">
+      <v-col cols="auto">
         <select-range
           v-model="data.level"
           :label="$t('general.level')"
@@ -36,14 +35,14 @@
         />
       </v-col>
       <!-- 状態選択 -->
-      <v-col v-if="phases" cols="auto" class="my-2">
+      <v-col v-if="phases" cols="auto">
         <v-radio-group
           v-model="data.fixed"
           row
           dense
           mandatory
           hide-details
-          class="pa-0 ma-0"
+          class="pa-0"
           @change="onChangeData"
         >
           <template #label>
@@ -152,6 +151,7 @@ type TextValue = {
   },
 })
 export default class EnemyTable extends Vue {
+  @Prop({ required: true }) damage!: string;
   @Prop({ required: true }) reduct!: StatusReduct;
   @Prop({ default: 0 }) defence!: number;
 
@@ -204,6 +204,16 @@ export default class EnemyTable extends Vue {
 
   get items() {
     return ResistTypes.map((val) => ({ type: val }));
+  }
+
+  mounted() {
+    const item = this.$db.damage.find((val) => val.id === this.damage);
+    if (item) {
+      this.data.name = item.name;
+      this.data.elem = item.elem;
+      this.data.level = item.level;
+      this.data.fixed = item.fixed;
+    }
   }
 
   getValue(type: ElementType) {
