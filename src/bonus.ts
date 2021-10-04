@@ -275,7 +275,7 @@ export class Status {
             case konst.ReactionType.Vaporize:
                 return 100 * this.param.elem / (1400 + this.param.elem) * 25 / 9;
         }
-        return 100 * this.param.elem / (1400 + this.param.elem) * 60 / 9;
+        return 100 * this.param.elem / (2000 + this.param.elem) * 16;
     }
 
     // 元素反応ダメージ値（％）
