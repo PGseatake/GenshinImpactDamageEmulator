@@ -2,7 +2,7 @@ import { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
 import {
     IBasicBonus, IFlatBonus, IFlatBonusBound, IEnchantBonus, IReductBonus,
-    IBonusOption, ICharaInfo, AnyBonus, Constes, Passives, DBEquipTable
+    IBonusOption, ICharaInfo, AnyBonus, Constes, Passives, DBEquipTable, Passive
 } from "~/src/interface";
 import { CharaList, ICharaData, DBCharaTable } from "~/src/character";
 import { WeaponList, IWeaponData, DBWeaponTable } from "~/src/weapon";
@@ -13,7 +13,7 @@ import { roundFloat, roundRate } from "~/plugins/utils";
 export const DamageScaleTable: ReadonlyRecord<konst.DamageScale, ReadonlyArray<number>> = {
     //    [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
     phys: [100.0, 108.0, 116.0, 127.5, 135.0, 145.0, 157.5, 170.0, 182.5, 197.5, 211.5, 225.5, 239.5, 253.5, 267.5],
-    elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0, 212.5, 225.0, 237.5],
+    elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0, 212.5, 225.0, 237.5], // 確定
     xiao: [100.0, 106.0, 112.0, 119.5, 125.5, 131.5, 139.5, 147.0, 155.0, 162.5, 170.5, 178.0, 186.0, 193.5, 201.0],
     //     [    1,      2,     3,      4,     5,     6,      7,     8,      9,    10,     11,    12,     13,    14,     15]
     hutao: [100.0, 106.75, 113.5, 122.75, 129.5, 137.5, 147.75, 158.0, 168.25, 178.5, 188.75, 199.0, 209.25, 219.5, 229.75],
@@ -328,7 +328,7 @@ export const TypeToBonus = {
     element(type: konst.ElementType) {
         return type + "_dmg" as konst.ElementBonusType;
     },
-    combat(type: konst.CombatType) {
+    combat(type: konst.AnyCombatType) {
         return type + "_dmg" as konst.CombatBonusType;
     },
     reaction(type: konst.ReactionType) {
@@ -449,7 +449,7 @@ export class BasicBonus extends BonusBase {
 
     public get effect() {
         const items = this.types;
-        let str = this.types.map(type => this.getLabel(type)).join("・");
+        let str = this.types.map(type => this.getLabel(type)).join("/");
         if (RateBonus.check(items[0])) {
             return `${str} +${roundFloat(this.value)}%`;
         }
@@ -468,7 +468,7 @@ export class BasicBonus extends BonusBase {
 
 // 固定割合ボーナス
 export class FlatBonus extends BonusBase {
-    private readonly dest: konst.FlatBonusDest;
+    private readonly dest: ReadonlyArray<konst.FlatBonusDest>;
     private readonly base: konst.FlatBonusBase;
     private readonly value: number;
     private readonly scale: konst.DamageScale | "";
@@ -477,7 +477,7 @@ export class FlatBonus extends BonusBase {
     constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IFlatBonus) {
         super(i18n, index, group, source, data);
         const dest = data.dest;
-        this.dest = dest;
+        this.dest = Array.isArray(dest) ? dest : [dest];
         this.base = data.base;
         this.value = data.value;
         this.scale = data.scale ?? "";
@@ -486,20 +486,20 @@ export class FlatBonus extends BonusBase {
 
     // TODO: 多言語対応
     public get effect() {
-        let str: string;
-        switch (this.dest) {
-            case konst.FlatBonusDest.Combat:
-            case konst.FlatBonusDest.CombatDmg:
-                str = this.i18n.t("bonus.combat_dmg") as string;
-                break;
-            case konst.FlatBonusDest.Skill:
-            case konst.FlatBonusDest.Burst:
-                str = this.getLabel(TypeToBonus.combat(this.dest));
-                break;
-            default:
-                str = this.getLabel(this.dest);
-                break;
+        let dest: string[] = [];
+        for (const val of this.dest) {
+            switch (val) {
+                case konst.FlatBonusDest.Combat:
+                case konst.FlatBonusDest.Skill:
+                case konst.FlatBonusDest.Burst:
+                    dest.push(this.getLabel(TypeToBonus.combat(val)));
+                    break;
+                default:
+                    dest.push(this.getLabel(val));
+                    break;
+            }
         }
+        let str = dest.join("/");
         const value = roundFloat(this.value);
         switch (this.base) {
             case konst.FlatBonusBase.None:
@@ -565,24 +565,26 @@ export class FlatBonus extends BonusBase {
                 }
             }
 
-            switch (this.dest) {
-                case konst.FlatBonusDest.Combat:
-                    status.flat[konst.CombatType.Normal] += value;
-                    status.flat[konst.CombatType.Heavy] += value;
-                    status.flat[konst.CombatType.Plunge] += value;
-                    break;
-                case konst.FlatBonusDest.Skill:
-                case konst.FlatBonusDest.Burst:
-                    status.flat[this.dest] += value;
-                    break;
-                case konst.FlatBonusDest.CombatDmg:
-                    status.param[konst.CombatBonusType.Normal] += value;
-                    status.param[konst.CombatBonusType.Heavy] += value;
-                    status.param[konst.CombatBonusType.Plunge] += value;
-                    break;
-                default:
-                    status.param[this.dest] += value;
-                    break;
+            for (const dest of this.dest) {
+                switch (dest) {
+                    case konst.FlatBonusDest.Combat:
+                        status.flat[konst.CombatType.Normal] += value;
+                        status.flat[konst.CombatType.Heavy] += value;
+                        status.flat[konst.CombatType.Plunge] += value;
+                        break;
+                    case konst.FlatBonusDest.Skill:
+                    case konst.FlatBonusDest.Burst:
+                        status.flat[dest] += value;
+                        break;
+                    case konst.FlatBonusDest.CombatDmg:
+                        status.param[konst.CombatBonusType.Normal] += value;
+                        status.param[konst.CombatBonusType.Heavy] += value;
+                        status.param[konst.CombatBonusType.Plunge] += value;
+                        break;
+                    default:
+                        status.param[dest] += value;
+                        break;
+                }
             }
         }
     }
@@ -602,7 +604,7 @@ export class ReductBonus extends BonusBase {
 
     // TODO: 多言語対応
     public get effect() {
-        const types = this.types.map(type => this.i18n.t("reduct." + type)).join("・");
+        const types = this.types.map(type => this.i18n.t("reduct." + type)).join("/");
         return `${types} -${roundRate(this.value)}`;
     }
 
@@ -627,7 +629,7 @@ export class EnchantBonus extends BonusBase {
     }
 
     public get effect() {
-        const dest = this.dest.map(dest => this.i18n.t("combat." + dest)).join("・");
+        const dest = this.dest.map(dest => this.i18n.t("combat." + dest)).join("/");
         return `${dest}に${this.i18n.t("element." + this.type)}元素付与`;
     }
 
@@ -719,18 +721,19 @@ export class BonusBuilder {
             const passive = chara.passive[origin];
             if (passive) {
                 switch (origin) {
-                    case Passives[2]:
+                    case Passive.Ascension1:
                         if ((21 <= level) || (data.level === "20+")) {
                             bonus.push(...this.append(passive, 100 + (idx * 10), origin, source));
                         }
                         break;
-                    case Passives[3]:
+                    case Passive.Ascension4:
                         if ((61 <= level) || (data.level === "60+")) {
                             bonus.push(...this.append(passive, 100 + (idx * 10), origin, source));
                         }
                         break;
                     default:
                         bonus.push(...this.append(passive, 100 + (idx * 10), origin, source));
+                        break;
                 }
             }
         }

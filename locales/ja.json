@@ -78,6 +78,7 @@
         "dismiss_x_text": "は使用中のため解散できません。"
     },
     "origin": {
+        "dash": "ダッシュ",
         "skill": "元素スキル",
         "burst": "元素爆発",
         "asc1st": "天賦",
@@ -109,7 +110,7 @@
         "normal": "通常攻撃",
         "heavy": "重撃",
         "plunge": "落下攻撃",
-        "combat": "通常攻撃・重撃",
+        "combat": "通常攻撃/重撃",
         "skill": "元素スキル",
         "burst": "元素爆発"
     },
@@ -154,7 +155,7 @@
         "normal_dmg": "通常攻撃ダメージ",
         "heavy_dmg": "重撃ダメージ",
         "plunge_dmg": "落下攻撃ダメージ",
-        "combat_dmg": "通常攻撃・重撃・落下ダメージ",
+        "combat_dmg": "通常攻撃/重撃/落下ダメージ",
         "skill_dmg": "元素スキルダメージ",
         "burst_dmg": "元素爆発ダメージ",
         "burning_dmg": "燃焼ダメージ",
@@ -215,6 +216,8 @@
     "chara": {
         "TravelAnemo": "旅人(風)",
         "TravelGeo": "旅人(岩)",
+        "TravelElect": "旅人(雷)",
+        "Aloy": "アーロイ",
         "Albedo": "アルベド",
         "Amber": "アンバー",
         "Barbara": "バーバラ",
@@ -223,20 +226,27 @@
         "Chongyun": "重雲",
         "Diluc": "ディルック",
         "Diona": "ディオナ",
+        "Eula": "エウルア",
         "Fischl": "フィッシュル",
         "Ganyu": "甘雨",
         "Hutao": "胡桃",
         "Jean": "ジン",
+        "Kaedehara": "楓原万葉",
         "Kaeya": "ガイア",
         "Keqing": "刻晴",
+        "Kamisato": "神里綾華",
         "Klee": "クレー",
+        "Kujo": "九条裟羅",
         "Lisa": "リサ",
         "Mona": "モナ",
         "Ningguang": "凝光",
         "Noelle": "ノエル",
         "Qiqi": "七七",
+        "Raiden": "雷電将軍",
         "Razor": "レザー",
         "Rosaria": "ロサリア",
+        "Sangonomiya": "珊瑚宮心海",
+        "Sayu": "早柚",
         "Sucrose": "スクロース",
         "Tartaglia": "タルタリヤ",
         "Venti": "ウェンティ",
@@ -245,6 +255,7 @@
         "Xingqiu": "行秋",
         "Xinyan": "辛炎",
         "Yanfei": "煙緋",
+        "Yoimiya": "宵宮",
         "Zhongli": "鍾離"
     },
     "weapon": {
@@ -583,7 +594,21 @@
                 "ダメージデータを保存できるように修正",
                 "元素反応のダメージ計算を修正",
                 "モバイル版の仮対応",
-                "多言語対応（一部）"
+                "多言語対応（一部）",
+                {
+                    "title": "以下のキャラクターを追加",
+                    "items": [
+                        "アーロイ",
+                        "エウルア",
+                        "楓原万葉",
+                        "神里綾華",
+                        "九条裟羅",
+                        "雷電将軍",
+                        "珊瑚宮心海",
+                        "早柚",
+                        "宵宮"
+                    ]
+                }
             ]
         },
         "v1_0_0": {

@@ -36,7 +36,7 @@ export interface IFlatBonusBound {
 
 export interface IFlatBonusBase extends IBonusOption {
     readonly extra: "flat";
-    readonly dest: konst.FlatBonusDest;
+    readonly dest: ReadonlyArrayable<konst.FlatBonusDest>;
     readonly base: konst.FlatBonusBase;
     readonly value: ReadonlyArrayable<number>;
     readonly bound?: IFlatBonusBound;
@@ -80,7 +80,11 @@ export interface ICombat {
     readonly based?: konst.DamageBased;
 }
 
-export const Passives = ["skill", "burst", "asc1st", "asc4th"] as const;
+export const Passive = {
+    Ascension1: "asc1st",
+    Ascension4: "asc4th",
+} as const;
+export const Passives = ["dash", "skill", "burst", "asc1st", "asc4th"] as const;
 export interface IPassive extends
     Partial<ReadonlyRecord<typeof Passives[number], ReadonlyArrayable<AnyBonus>>> {
 }
@@ -93,6 +97,7 @@ export interface IConste extends
 export interface ICharaInfo {
     readonly star: number;
     readonly element: konst.ElementType;
+    readonly energy?: number;
     readonly weapon: konst.WeaponType;
     readonly status: ReadonlyRecord<konst.StatusType, ReadonlyArray<number>>;
     readonly special: konst.StatusBonusType | konst.ElementBonusType;

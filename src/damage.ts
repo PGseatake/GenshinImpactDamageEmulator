@@ -160,6 +160,9 @@ export class CombatAttribute {
         // 攻撃力
         let attackPower: number;
         switch (this.based) {
+            case DamageBased.Hp:
+                attackPower = status.hp;
+                break;
             case DamageBased.Def:
                 attackPower = status.def;
                 break;

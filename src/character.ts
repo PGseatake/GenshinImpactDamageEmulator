@@ -4,7 +4,9 @@ import { BonusValue, IIdentify, INameable, ICommentable, ICharaInfo } from "~/sr
 export const CharaNames = [
     "TravelAnemo",
     "TravelGeo",
+    "TravelElect",
     "Albedo",
+    "Aloy",
     "Amber",
     "Barbara",
     "Beidou",
@@ -12,20 +14,27 @@ export const CharaNames = [
     "Chongyun",
     "Diluc",
     "Diona",
+    "Eula",
     "Fischl",
     "Ganyu",
     "Hutao",
     "Jean",
+    "Kaedehara", // Kazuha,
     "Kaeya",
     "Keqing",
+    "Kamisato", // Ayaka
     "Klee",
+    "Kujo", // Sara
     "Lisa",
     "Mona",
     "Ningguang",
     "Noelle",
     "Qiqi",
+    "Raiden", // Shogun
     "Razor",
     "Rosaria",
+    "Sangonomiya", // kokomi
+    "Sayu",
     "Sucrose",
     "Tartaglia",
     "Venti",
@@ -34,6 +43,7 @@ export const CharaNames = [
     "Xingqiu",
     "Xinyan",
     "Yanfei",
+    "Yoimiya",
     "Zhongli",
 ] as const;
 export type CharaName = typeof CharaNames[number];
@@ -51,16 +61,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 6411, 7164,
                 7648, 8401,
                 8885, 9638,
-                10122, 10875
+                10122, 10875,
             ],
             atk: [
                 18, 46,
-                60, 88,
-                98, 112,
-                126, 140,
+                59, 88,
+                98, 113,
+                125, 140,
                 149, 164,
                 174, 188,
-                198, 213
+                198, 212,
             ],
             def: [
                 57, 147,
@@ -69,8 +79,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 405, 450,
                 480, 527,
                 558, 605,
-                635, 682
-            ]
+                635, 683,
+            ],
         },
         special: konst.StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
@@ -81,7 +91,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 53.0 },
                 { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 58.3 },
                 { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 70.8 },
-                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [55.9, 72.2] },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [55.9, 60.7, 72.2] },
                 { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 63.9 },
                 { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 128 },
                 { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
@@ -95,7 +105,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "竜巻ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 80.8 },
                 { name: "付加元素ダメージ", type: konst.CombatType.Burst, elem: konst.CombatElementType.Contact, scale: konst.DamageScale.Elem, value: 24.8 },
-            ]
+            ],
         },
         passive: {
             // 4. 通常攻撃の最後の一撃が風の刃を放ち、風の刃は途中の敵に60%攻撃力の風ダメージを与える。
@@ -113,8 +123,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Anemo, value: 20.0, limit: "元素爆発のダメージを受けた時" },
                 //    元素変化があった場合､該当の元素耐性-20%
                 { extra: konst.ExtraBonusType.Reduct, type: konst.CombatElementType.Contact, value: 20.0, limit: "元素変化があった時" },
-            ]
-        }
+            ],
+        },
     },
     TravelGeo: {
         star: 5,
@@ -128,16 +138,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 6411, 7164,
                 7648, 8401,
                 8885, 9638,
-                10122, 10875
+                10122, 10875,
             ],
             atk: [
                 18, 46,
-                60, 88,
-                98, 112,
-                126, 140,
+                59, 88,
+                98, 113,
+                125, 140,
                 149, 164,
                 174, 188,
-                198, 213
+                198, 212,
             ],
             def: [
                 57, 147,
@@ -146,7 +156,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 405, 450,
                 480, 527,
                 558, 605,
-                635, 682
+                635, 683,
             ]
         },
         special: konst.StatusBonusType.AtkBuf,
@@ -158,7 +168,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 53.0 },
                 { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 58.3 },
                 { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 70.8 },
-                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [55.9, 72.2] },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [55.9, 60.7, 72.2] },
                 { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 63.9 },
                 { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 128 },
                 { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
@@ -168,7 +178,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "地震波1回のダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 148 },
-            ]
+            ],
         },
         passive: {
             // 4. 星落としの剣のクールタイム-2秒
@@ -183,7 +193,80 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 星落としの剣のスキルLv.3
             // 6. 岩潮幾重の岩の山の継続時間+5秒
             //    星落としの剣荒星の継続時間+10秒
-        }
+        },
+    },
+    TravelElect: {
+        star: 5,
+        element: konst.ElementType.Elect,
+        weapon: konst.WeaponType.Sword,
+        status: {
+            hp: [
+                912, 2342,
+                3024, 4529,
+                5013, 5766,
+                6411, 7164,
+                7648, 8401,
+                8885, 9638,
+                10122, 10875,
+            ],
+            atk: [
+                18, 46,
+                59, 88,
+                98, 113,
+                125, 140,
+                149, 164,
+                174, 188,
+                198, 212,
+            ],
+            def: [
+                57, 147,
+                190, 284,
+                315, 362,
+                405, 450,
+                480, 527,
+                558, 605,
+                635, 683,
+            ],
+        },
+        special: konst.StatusBonusType.AtkBuf,
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 44.5 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.4 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 53.0 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 58.3 },
+                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 70.8 },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [55.9, 60.7, 72.2] },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 63.9 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 128 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 79 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 114.4 },
+                { name: "威光の落雷ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 32.8 },
+            ],
+        },
+        passive: {
+            // skill. 豊穣の勾玉　キャラクターが近寄ると、豊穣の勾玉を吸収し、下記効果を獲得する。
+            // 元素エネルギーが回復する。継続時間内、元素チャージ効率がアップする。
+            skill: { items: konst.FlatBonusDest.EnRec, value: 20.0, limit: "豊穣の勾玉を吸収した時", times: 6 },
+            // 4. 周囲のチームメンバー（旅人自身を除く）が雷影剣で生成された豊穣の勾玉を拾うと、雷影剣のクールタイム-1.5秒
+            // 5. 旅人自身の元素チャージ効率の10%を基準に、雷影剣が生成した豊穣の勾玉による元素チャージ効率をアップする
+            asc4th: { extra: konst.ExtraBonusType.Flat, base: konst.FlatBonusBase.EnRec, dest: konst.FlatBonusDest.EnRec, value: 10.0, limit: "豊穣の勾玉を吸収した時", times: 6, target: konst.BonusTarget.All },
+        },
+        conste: {
+            // 1. 雷影剣発動時に生成する豊穣の勾玉の数を3つにアップ。
+            // 2. 電光雷轟の威光の落雷が敵に命中すると、敵の雷元素耐性-15%、継続時間8秒。
+            lv2: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Elect, value: 15, limit: "威光の落雷が敵に命中した時", times: 8 },
+            // 3. 電光雷轟のスキルLv.+3
+            // 4. キャラクターが雷影剣で生成した豊穣の勾玉を獲得した時、該当キャラクターの元素エネルギーが35%未満の場合、豊穣の勾玉で回復できる元素エネルギー+100%。
+            // 5. 雷影剣のスキルLv.+3
+            // 6. 電光雷轟が威光の落雷を2回引き起こすたび、次の威光の落雷を大幅に強化し、本来の200%分のダメージを与え、さらに現在のキャラクターの元素エネルギーを1ポイント回復する。
+        },
     },
     Albedo: {
         star: 5,
@@ -197,7 +280,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 7675, 8579,
                 9207, 10119,
                 10746, 11669,
-                12296, 13226
+                12296, 13226,
             ],
             atk: [
                 20, 51,
@@ -206,7 +289,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 146, 163,
                 175, 192,
                 204, 222,
-                234, 251
+                233, 251,
             ],
             def: [
                 68, 177,
@@ -215,7 +298,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 508, 568,
                 610, 670,
                 712, 773,
-                815, 876
+                815, 876,
             ]
         },
         special: konst.ElementBonusType.Geo,
@@ -239,7 +322,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "爆発ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 367 },
                 { name: "生滅の花ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 72 },
-            ]
+            ],
         },
         passive: {
             // 4. 創生術・擬似陽華の刹那の花がHP50％以下の敵にダメージを与えた場合、ダメージ量+25％
@@ -260,6 +343,88 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 誕生式・大地の潮のスキルLv.+3
             // 6. 陽華のエリア内にいるフィールド上のキャラクターが、結晶反応で生成されたシールド状態にある時、与えるダメージ+17%。
             lv6: { items: konst.AnyBonusType.Damage, value: 17.0, limit: "元素爆発エリア内で結晶反応によるシールド状態の時" },
+        },
+    },
+    Aloy: {
+        star: 5,
+        element: konst.ElementType.Cryo,
+        weapon: konst.WeaponType.Bow,
+        status: {
+            hp: [
+                848, 2201,
+                2928, 4382,
+                4899, 5636,
+                6325, 7070,
+                7587, 8339,
+                8856, 9616,
+                10133, 10899,
+            ],
+            atk: [
+                18, 47,
+                63, 94,
+                105, 121,
+                136, 152,
+                163, 179,
+                190, 206,
+                217, 234,
+            ],
+            def: [
+                53, 137,
+                182, 272,
+                304, 350,
+                393, 439,
+                471, 517,
+                550, 597,
+                629, 676,
+            ]
+        },
+        special: konst.CriticalBonusType.Damage,
+        spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [21.1, 23.8] },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.1 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 52.8 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 65.6 },
+                { name: "狙い撃ち", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
+                { name: "フルチャージ狙い撃ち", type: konst.CombatType.Heavy, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
+            ],
+            skill: [
+                { name: "氷の爆弾ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 178 },
+                { name: "冷凍爆弾ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 40 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 28.1 },
+            ],
+        },
+        passive: {
+            // skill. コイル
+            // ・層数を基準に、アーロイの通常攻撃ダメージをアップさせる。
+            // ・コイルを4層所有する時、アーロイのコイル効果は全てクリアされ、「アイスラッシュ」を獲得する。
+            // 通常攻撃ダメージをさらにアップさせ、通常攻撃が氷元素ダメージに変化する。
+            skill: [
+                { extra: konst.ExtraBonusType.Flat, base: konst.FlatBonusBase.None, dest: konst.FlatBonusDest.NormalDmg, value: 5.85, limit: "氷の爆弾または冷凍爆弾が敵に命中した時", scale: konst.DamageScale.Xiao, stack: 3, times: 10 },
+                { extra: konst.ExtraBonusType.Flat, base: konst.FlatBonusBase.None, dest: konst.FlatBonusDest.NormalDmg, value: 29.2, limit: "アイスラッシュを獲得した時", scale: konst.DamageScale.Xiao, times: 10 },
+                { extra: konst.ExtraBonusType.Enchant, elem: konst.EnchantType.Cryo, limit: "アイスラッシュを獲得した時", dest: [konst.CombatType.Normal], times: 10 },
+            ],
+            // 4. アーロイが凍てついた大地のコイル効果を獲得した時、アーロイの攻撃力+16％、周囲にいるチーム内他のキャラクターの攻撃力+8％、持続時間10秒。
+            asc1st: [
+                { items: konst.FlatBonusDest.AtkBuf, value: 16, limit: "アーロイが凍てついた大地のコイル効果を獲得した時", times: 10 },
+                { items: konst.FlatBonusDest.AtkBuf, value: 8, limit: "アーロイが凍てついた大地のコイル効果を獲得した時", times: 10, target: konst.BonusTarget.Other },
+            ],
+            // 5. 凍てついた大地のアイスラッシュ状態にある時、1秒毎に氷元素ダメージ+3.5％、この方式での氷元素ダメージアップ効果は35％まで。
+            asc4th: { items: konst.FlatBonusDest.CryoDmg, value: 3.5, limit: "アイスラッシュ状態の時1秒毎", stack: 10, times: 10 },
+        },
+        conste: {
+            // 1. 
+            // 2. 
+            // 3. 
+            // 4. 
+            // 5. 
+            // 6. 
         }
     },
     Amber: {
@@ -274,16 +439,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 5578, 6233,
                 6654, 7309,
                 7730, 8385,
-                8806, 9461
+                8806, 9461,
             ],
             atk: [
                 19, 48,
                 62, 93,
                 103, 118,
-                132, 147,
+                131, 147,
                 157, 172,
                 182, 198,
-                208, 223
+                208, 223,
             ],
             def: [
                 50, 129,
@@ -292,8 +457,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 354, 396,
                 422, 464,
                 491, 532,
-                559, 601
-            ]
+                559, 601,
+            ],
         },
         special: konst.StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
@@ -316,7 +481,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "矢の雨1回のダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 28.1 },
                 { name: "矢の雨の合計ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 505 },
-            ]
+            ],
         },
         passive: {
             // 4. 矢の雨の会心率+10%、影響範囲+30%。
@@ -332,7 +497,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 爆弾人形のスキルLv.+3
             // 6. 矢の雨を発動した10秒間、チーム全員の移動速度+15%、攻撃力+15%。
             lv6: { items: konst.StatusBonusType.AtkBuf, value: 15.0, limit: "元素爆発を発動した時", times: 10, target: konst.BonusTarget.All },
-        }
+        },
     },
     Barbara: {
         star: 4,
@@ -346,16 +511,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 5770, 6448,
                 6884, 7561,
                 7996, 8674,
-                9110, 9787
+                9110, 9787,
             ],
             atk: [
-                14, 34,
-                44, 67,
-                74, 84,
+                13, 34,
+                44, 66,
+                73, 84,
                 94, 105,
                 112, 123,
                 130, 141,
-                149, 159
+                148, 159,
             ],
             def: [
                 56, 144,
@@ -364,7 +529,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 394, 441,
                 470, 517,
                 546, 593,
-                623, 669
+                623, 669,
             ]
         },
         special: konst.StatusBonusType.HpBuf,
@@ -383,7 +548,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             skill: [
                 { name: "水玉ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 58.4 },
             ],
-            burst: []
+            burst: [],
         },
         passive: {
             // 4. 公演、開始歌声の輪が継続している間、スタミナ消費-12%。
@@ -400,7 +565,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    ・死亡したキャラを復活させる
             //    ・該当キャラのHPが100%回復される。
             //    この効果は15分ごとに1回のみ発動可能。
-        }
+        },
     },
     Beidou: {
         star: 4,
@@ -414,16 +579,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 7694, 8597,
                 9178, 10081,
                 10662, 11565,
-                12146, 13050
+                12146, 13050,
             ],
             atk: [
-                19, 49,
+                19, 48,
                 63, 94,
-                104, 120,
+                104, 119,
                 133, 148,
                 158, 174,
-                184, 199,
-                210, 225
+                184, 200,
+                210, 225,
             ],
             def: [
                 54, 140,
@@ -432,8 +597,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 382, 427,
                 456, 501,
                 530, 575,
-                603, 648
-            ]
+                603, 648,
+            ],
         },
         special: konst.ElementBonusType.Elect,
         spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
@@ -458,7 +623,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 122 },
                 { name: "落雷ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 96 },
-            ]
+            ],
         },
         passive: {
             // 4. 攻撃された時に発動した浪追い反撃は最大ダメージ上昇効果がある。
@@ -475,7 +640,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 雷斫りのスキルLv.+3
             // 6. 雷斫り継続中、周囲の敵の雷耐性-15%
             lv6: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Elect, value: 15.0, limit: "元素爆発継続中・周囲の敵" },
-        }
+        },
     },
     Bennett: {
         star: 4,
@@ -489,16 +654,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 7309, 8168,
                 8719, 9577,
                 10129, 10987,
-                11539, 12397
+                11539, 12397,
             ],
             atk: [
                 16, 41,
                 53, 80,
-                88, 102,
+                88, 101,
                 113, 126,
-                135, 148,
+                134, 148,
                 156, 169,
-                178, 191
+                178, 191,
             ],
             def: [
                 65, 166,
@@ -507,7 +672,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 455, 508,
                 542, 596,
                 630, 684,
-                718, 771
+                718, 771,
             ]
         },
         special: konst.StatusBonusType.EnRec,
@@ -532,7 +697,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 233 },
-            ]
+            ],
         },
         passive: {
             // burst. ･エリア内のキャラのHPが最大値の70%を下回ると、HPが継続回復する。回復量はベネットのHP上限によって決まる。
@@ -553,9 +718,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 6. 素晴らしい旅エリア内の片手剣、両手剣、長柄武器キャラの炎ダメージ+15％、通常攻撃と重撃ダメージを炎ダメージに変換する。
             lv6: [
                 { items: konst.ElementBonusType.Pyro, value: 15.0, limit: "元素爆発エリア内の近接武器キャラ", target: konst.BonusTarget.Melee },
-                { extra: konst.ExtraBonusType.Enchant, elem: konst.ElementType.Pyro, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素爆発エリア内の近接武器キャラ", target: konst.BonusTarget.Melee },
-            ]
-        }
+                { extra: konst.ExtraBonusType.Enchant, elem: konst.EnchantType.Pyro, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素爆発エリア内の近接武器キャラ", target: konst.BonusTarget.Melee },
+            ],
+        },
     },
     Chongyun: {
         star: 4,
@@ -569,16 +734,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 6475, 7236,
                 7725, 8485,
                 8974, 9734,
-                10223, 10984
+                10223, 10984,
             ],
             atk: [
                 19, 48,
                 62, 93,
-                103, 119,
-                132, 147,
-                158, 172,
+                103, 118,
+                131, 147,
+                157, 172,
                 182, 198,
-                208, 223
+                208, 223,
             ],
             def: [
                 54, 140,
@@ -587,7 +752,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 382, 427,
                 456, 501,
                 530, 575,
-                603, 648
+                603, 648,
             ]
         },
         special: konst.StatusBonusType.AtkBuf,
@@ -609,11 +774,11 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 142 },
-            ]
+            ],
         },
         passive: {
             // skill. 氷爆による寒気が重華積霜エリアになり、エリア内の片手剣、大剣、長柄武器キャラの通常攻撃、重撃と落下攻撃ダメージは氷元素ダメージになる。
-            skill: { extra: konst.ExtraBonusType.Enchant, elem: konst.ElementType.Cryo, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素スキルエリア内の近接武器キャラ", target: konst.BonusTarget.Melee },
+            skill: { extra: konst.ExtraBonusType.Enchant, elem: konst.EnchantType.Cryo, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素スキルエリア内の近接武器キャラ", target: konst.BonusTarget.Melee },
             // 4. 霊刃・重華積霜エリア内にいる時、片手剣、両手剣、長柄武器キャラの通常攻撃と攻撃速度が8%上昇する。
             // 5. 霊刃・重華積霜エリアが消えた時、自動的に付近の敵を攻撃する霊刃を召喚し、霊刃・重華積霜のスキルダメージ100%の氷範囲ダメージを与える。
             //    命中された敵の氷耐性が10%減少する、継続時間8秒。
@@ -627,7 +792,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 霊刃・重華積霜のスキルLv.+3
             // 6. 霊刃・雲開星落がHPの百分率が重雲より低い時に命中した時、ダメージが15%上昇。その他、使用する時にさらに追加で霊刃を1本を召喚する。
             lv6: { items: konst.CombatBonusType.Burst, value: 15.0, limit: "HPの割合が重雲より低い敵" },
-        }
+        },
     },
     Diluc: {
         star: 5,
@@ -641,16 +806,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 7533, 8421,
                 9036, 9932,
                 10547, 11453,
-                12068, 12981
+                12068, 12981,
             ],
             atk: [
                 26, 68,
                 90, 135,
                 151, 173,
-                195, 217,
+                194, 217,
                 233, 256,
-                272, 296,
-                312, 335
+                272, 295,
+                311, 335,
             ],
             def: [
                 61, 158,
@@ -659,8 +824,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 455, 509,
                 546, 600,
                 637, 692,
-                729, 784
-            ]
+                729, 784,
+            ],
         },
         special: konst.CriticalBonusType.Rate,
         spvalue: [0.0, 0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
@@ -685,11 +850,11 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "斬撃ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 204 },
                 { name: "継続ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 60.0 },
                 { name: "爆発ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 204 }
-            ]
+            ],
         },
         passive: {
             // burst. 武器に凝集した列焔により、ディルックの通常攻撃と重撃ダメージは炎ダメージに変わる。継続時間8秒。
-            burst: { extra: konst.ExtraBonusType.Enchant, elem: konst.ElementType.Pyro, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素爆発発動後", times: 8 },
+            burst: { extra: konst.ExtraBonusType.Enchant, elem: konst.EnchantType.Pyro, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素爆発発動後", times: 8 },
             // 4. 重撃のスタミナ消費-50%、最大継続時間+3秒。
             // 5. 黎明による炎元素バフの継続時間+4秒。さらに効果継続中にディルックの与える炎ダメージ+20%。
             asc4th: { items: konst.ElementBonusType.Pyro, value: 20.0, limit: "元素爆発の炎元素付与継続中", times: 12 },
@@ -705,7 +870,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 黎明のスキルLv.+3
             // 6. 逆焔の刃発動後、6秒以内の通常攻撃の攻撃速度+30％、攻撃ダメージ+30％、2回まで。逆焔の刃によって通常攻撃のコンボ数がリセットされることはなくなる。
             lv6: { items: konst.CombatBonusType.Normal, value: 30.0, limit: "元素スキル発動後2回まで", times: 6 },
-        }
+        },
     },
     Diona: {
         star: 4,
@@ -719,26 +884,26 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 5642, 6305,
                 6731, 7393,
                 7818, 8481,
-                8907, 9570
+                8907, 9570,
             ],
             atk: [
                 18, 46,
-                59, 89,
+                59, 88,
                 98, 113,
                 125, 140,
                 149, 164,
-                173, 188,
-                198, 213
+                174, 188,
+                198, 212,
             ],
             def: [
                 50, 129,
                 167, 250,
-                277, 319,
+                277, 318,
                 354, 396,
                 422, 464,
                 491, 532,
-                559, 601
-            ]
+                559, 601,
+            ],
         },
         special: konst.ElementBonusType.Cryo,
         spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
@@ -761,7 +926,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 80 },
                 { name: "エリアの継続ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 52.6 },
-            ]
+            ],
         },
         passive: {
             // 4. フリーズキャッツクローのシールドが存在する時、キャラクターの移動速度+10％、スタミナ消費-10％。
@@ -779,7 +944,90 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    ・HPが50％またその以下の時、被回復量が30％上昇。
             //    ・HPが50％以上の時、元素熟知が200上昇。
             lv6: { items: konst.StatusBonusType.Elem, value: 200, limit: "元素爆発エリア内でHP50%以上のキャラ", target: konst.BonusTarget.All },
-        }
+        },
+    },
+    Eula: {
+        star: 5,
+        element: konst.ElementType.Cryo,
+        weapon: konst.WeaponType.Claymore,
+        status: {
+            hp: [
+                1030, 2671,
+                3554, 5317,
+                5944, 6839,
+                7675, 8579,
+                9207, 10119,
+                10746, 11669,
+                12296, 13226,
+            ],
+            atk: [
+                27, 69,
+                92, 138,
+                154, 177,
+                199, 222,
+                238, 262,
+                278, 302,
+                318, 342,
+            ],
+            def: [
+                58, 152,
+                202, 302,
+                337, 388,
+                438, 487,
+                523, 574,
+                610, 662,
+                698, 751,
+            ],
+        },
+        special: konst.CriticalBonusType.Damage,
+        spvalue: [0.0, 0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 89.7 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 93.6 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [56.8, 56.8] },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 112.6 },
+                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [71.8, 71.8] },
+                { name: "連続重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 68.8 },
+                { name: "重撃終了ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 124 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 74.6 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 149 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 186 },
+            ],
+            skill: [
+                { name: "一回押しダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 146 },
+                { name: "長押しダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 246 },
+                { name: "氷渦の剣ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 96, multi: 2 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 246 },
+                { name: "光臨の剣", type: konst.CombatType.Burst, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 367.0 },
+                { name: "エネルギー1重ごとのダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 75.0, multi: 30 },
+                { name: "エネルギー最大時のダメージ(参考)", type: konst.CombatType.Burst, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 2617 },
+            ],
+        },
+        passive: {
+            // skill. 冷酷な心を消費すると、周囲の敵の物理耐性及び氷元素耐性をダウンさせる。
+            skill: [
+                { items: konst.StatusBonusType.DefBuf, value: 30, limit: "冷酷な心を消費した時", stack: 2, times: 7 },
+                // TODO: valueを配列 16% 17% 18% 19% 20% 21% 22% 23% 24% 25%
+                { extra: konst.ExtraBonusType.Reduct, type: [konst.ElementType.Cryo, konst.ElementType.Phys], value: 16, limit: "冷酷な心を消費した時", times: 7 },
+            ],
+            // 4. 長押しで氷潮の渦を発動した時、一度に冷酷な心を2つ消費すると、直ちに爆発する光臨の剣の欠片を創造する。
+            // 光臨の剣の欠片は、氷浪の光剣で創造される光臨の剣の基礎ダメージ50% 分の物理ダメージを与える。
+            // 5. 氷浪の光剣を発動した時、氷潮の渦のクールタイムがリセットされ、冷酷な心を1つ獲得する。
+        },
+        conste: {
+            // 1. 氷潮の渦の冷酷な心を消費するとエウルアの物理ダメージ+30%、継続時間6秒
+            // 冷酷な心を1つ消費する毎に継続時間+ 6秒、最大18秒まで。
+            lv1: { items: konst.ElementBonusType.Phys, value: 30.0, limit: "氷潮の渦の冷酷な心を消費した時", times: 6 },
+            // 2. 氷彫の渦の長押しのクールタイムを短縮し、一回押しと同じクールタイムにする。
+            // 3. 氷浪の光剣のスキルLv.+3
+            // 4. HP50%未満の敵に対する光臨の剣のダメージ+25%
+            // lv4: { },
+            // 5. 氷潮の渦のスキルLv.+3
+            // 6. 氷浪の光剣で創造した光臨の剣は、直ちにエネルギーを5つ獲得する。通常攻撃、元素スキルまたは元素爆発によりエネルギーを獲得する際、50％の確率でさらに1つ獲得する。
+        },
     },
     Fischl: {
         star: 4,
@@ -793,16 +1041,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 5418, 6054,
                 6463, 7099,
                 7508, 8144,
-                8553, 9189
+                8553, 9189,
             ],
             atk: [
-                21, 53,
+                20, 53,
                 68, 102,
                 113, 130,
                 144, 161,
                 172, 189,
                 200, 216,
-                227, 245
+                227, 244,
             ],
             def: [
                 50, 128,
@@ -811,8 +1059,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 350, 391,
                 418, 459,
                 485, 526,
-                553, 594
-            ]
+                553, 594,
+            ],
         },
         special: konst.StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
@@ -834,8 +1082,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "召喚ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 115 },
             ],
             burst: [
-                { name: "落雷ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 208 }
-            ]
+                { name: "落雷ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 208 },
+            ],
         },
         passive: {
             // 4. フィッシュルのチャージした狙い撃ち射撃がオズに命中すると、オズは周囲の敵に聖裁の雷を放ち、射撃ダメージ152.7%相当の雷範囲ダメージを与える。
@@ -851,7 +1099,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    スキル終了時、フィッシュルのHPを20%回復する。
             // 5. 夜の幻現のスキルLv.+3
             // 6. オズの存在時間+2秒。オズは出場している自身のキャラクターと共に攻撃し、攻撃力の30%の雷ダメージを与える。
-        }
+        },
     },
     Ganyu: {
         star: 5,
@@ -862,10 +1110,10 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 763, 1978,
                 2632, 3939,
                 4403, 5066,
-                5686, 6555,
+                5686, 6355,
                 6820, 7495,
                 7960, 8643,
-                9108, 9797
+                9108, 9797,
             ],
             atk: [
                 26, 68,
@@ -874,7 +1122,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 194, 217,
                 233, 256,
                 272, 295,
-                311, 335
+                311, 335,
             ],
             def: [
                 49, 127,
@@ -883,8 +1131,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 366, 409,
                 439, 482,
                 512, 556,
-                586, 630
-            ]
+                586, 630,
+            ],
         },
         special: konst.CriticalBonusType.Damage,
         spvalue: [0.0, 0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
@@ -909,7 +1157,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "氷柱ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 70 }
-            ]
+            ],
         },
         passive: {
             // 4. 霜華の矢を放った後の5秒以内に放たれた霜華の矢と霜華満開の会心率+20%
@@ -929,7 +1177,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    エリアを出た後、継続時間3秒。
             // 5. 山沢麟跡のスキルLv.+3
             // 6. 山沢麟跡を発動すると、30秒以内に放つ最初の霜華の矢が、チャージせずに発動可能になる。
-        }
+        },
     },
     Hutao: {
         star: 5,
@@ -943,7 +1191,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 9026, 10089,
                 10826, 11899,
                 12637, 13721,
-                14459, 15552
+                14459, 15552,
             ],
             atk: [
                 8, 21,
@@ -952,7 +1200,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 62, 69,
                 74, 81,
                 86, 94,
-                99, 106
+                99, 106,
             ],
             def: [
                 68, 177,
@@ -961,8 +1209,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 508, 568,
                 610, 670,
                 712, 773,
-                815, 876
-            ]
+                815, 876,
+            ],
         },
         special: konst.CriticalBonusType.Damage,
         spvalue: [0.0, 0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
@@ -979,11 +1227,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Hutao, value: 131 },
                 { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Hutao, value: 163 },
             ],
-            skill: [],
+            skill: [
+                { name: "血梅香ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 64 },
+            ],
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Xiao, value: 303 },
                 { name: "低HP時スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Xiao, value: 379 },
-            ]
+            ],
         },
         passive: {
             // skill. 胡桃のHP上限を基準に攻撃力が上昇する。この効果で得られる攻撃力上昇の最大値は、胡桃の基礎攻撃力の400%まで。
@@ -1000,7 +1250,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     limit: "元素スキル発動後",
                     times: 9
                 },
-                { extra: konst.ExtraBonusType.Enchant, elem: konst.ElementType.Pyro, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素スキル発動後", times: 9 },
+                { extra: konst.ExtraBonusType.Enchant, elem: konst.EnchantType.Pyro, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素スキル発動後", times: 9 },
             ],
             // 4. 蝶導来世による冥蝶の舞状態終了後、チーム全員(胡桃自身を除く)の会心率+12%、継続時間8秒。
             asc1st: { items: konst.CriticalBonusType.Rate, value: 12, limit: "元素スキル終了後", times: 8, target: konst.BonusTarget.Other },
@@ -1016,7 +1266,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    また、次の10秒間、胡桃の全元素耐性及び物理耐性+200%、会心率+100%、中断耐性大幅アップ。
             //    この効果は胡桃のHPが1の時に自動で発動される。60秒毎に1回のみ発動可能。
             lv6: { items: konst.CriticalBonusType.Rate, value: 100, limit: "戦闘不能に至るダメージを受けた時", times: 10 },
-        }
+        },
     },
     Jean: {
         star: 5,
@@ -1030,16 +1280,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 8528, 9533,
                 10230, 11243,
                 11940, 12965,
-                13662, 14695
+                13662, 14695,
             ],
             atk: [
-                19, 49,
-                65, 96,
+                19, 48,
+                64, 96,
                 108, 124,
                 139, 155,
                 166, 183,
-                195, 211,
-                222, 239
+                194, 211,
+                222, 239,
             ],
             def: [
                 60, 155,
@@ -1048,8 +1298,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 446, 499,
                 535, 588,
                 624, 678,
-                715, 769
-            ]
+                715, 769,
+            ],
         },
         special: konst.StatusBonusType.HealBuf,
         spvalue: [0.0, 0.0, 0.0, 5.55, 11.1, 11.1, 16.65, 22.2],
@@ -1071,7 +1321,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "爆発ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 425 },
                 { name: "エリア出入りダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 78.4 },
-            ]
+            ],
         },
         passive: {
             // 4. ジンの通常攻撃が命中する時、50%の確率でチーム全員のHPを回復する。回復量はジンの攻撃力15%。
@@ -1086,7 +1336,96 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv4: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Anemo, value: 40.0, limit: "元素爆発エリア内の敵" },
             // 5. 風圧剣のスキルLv.+3
             // 6. 蒲公英の風エリア内、キャラの受けるダメージ-35%。エリアを出た後、この効果は3回攻撃を受けた後、または10秒後に消える。
-        }
+        },
+    },
+    Kaedehara: {
+        star: 5,
+        element: konst.ElementType.Anemo,
+        weapon: konst.WeaponType.Sword,
+        status: {
+            hp: [
+                1039, 2695,
+                3586, 5366,
+                5999, 6902,
+                7747, 8659,
+                9292, 10213,
+                10846, 11777,
+                12410, 13348,
+            ],
+            atk: [
+                23, 60,
+                80, 119,
+                133, 153,
+                172, 192,
+                206, 227,
+                241, 262,
+                276, 297,
+            ],
+            def: [
+                63, 163,
+                217, 324,
+                363, 417,
+                468, 523,
+                562, 617,
+                656, 712,
+                750, 807,
+            ],
+        },
+        special: konst.StatusBonusType.Elem,
+        spvalue: [0.0, 0.0, 0.0, 28.8, 57.6, 57.6, 86.4, 115.2],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 45.0 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 45.2 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [25.8, 31.0] },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 60.7 },
+                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 25.4, multi: 3 },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [43.0, 74.6] },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 81.8 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 164 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 204 },
+            ],
+            skill: [
+                { name: "一回押しスキルダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 192 },
+                { name: "長押しスキルダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 261 },
+            ],
+            burst: [
+                { name: "斬撃ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 262 },
+                { name: "継続ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 120 },
+                { name: "付加元素ダメージ", type: konst.CombatType.Burst, elem: konst.CombatElementType.Contact, scale: konst.DamageScale.Elem, value: 36 },
+            ],
+        },
+        passive: {
+            // skill: 元素スキル・千早振る後の落下攻撃のダメージは風元素ダメージへと変わる。
+            skill: { extra: konst.ExtraBonusType.Enchant, elem: konst.EnchantType.Anemo, dest: [konst.CombatType.Plunge], limit: "元素スキル発動後" },
+            // 4. 千早振るを発動時、水元素/炎元素/氷元素/雷元素と接触した場合、
+            // その千早振る後の落下攻撃・乱れ嵐斬に元素変化が起き、攻撃力200% 分の該当元素ダメージを追加で与える。
+            // このダメージは落下攻撃とみなされる。
+            // 5. 楓原万葉が拡散反応を起こした後、楓原万葉の元素熟知の数値が1につき、チーム全員に対し、拡散させた元素ダメージ+0.04%、継続時間8秒。
+            // asc4th: { extra: konst.ExtraBonusType.Flat, base: konst.FlatBonusBase.Elem, dest: konst.FlatBonusDest.Contact, value: 0.04, times: 8 },
+            // TODO: 実装
+        },
+        conste: {
+            // 1. 千早振るのクールタイム-10%。万葉の一刀を発動した後、千早振るのクールタイムがリセットされる。
+            // 2. 万葉の一刀の流風秋野で下記の効果を発動する。
+            // ・継続時間内、楓原万葉自身の元素熟知 + 200。
+            // ・流風秋野の中にいるフィールド上キャラクターの元素熟知 + 200。
+            lv2: [
+                { items: konst.StatusBonusType.Elem, value: 200, limit: "元素爆発発動後", times: 8 },
+                { items: konst.StatusBonusType.Elem, value: 200, limit: "元素爆発の範囲内にいる時", times: 8, target: konst.BonusTarget.Other },
+            ],
+            // 3. 千早振るのスキルLv.+3
+            // 4. 楓原万葉の元素エネルギーが45以下の時、下記の効果を獲得する。
+            // ・一回押し／長押しで千早振るを発動した時、元素エネルギーを3／4回復する。
+            // ・滑翔状態の時、1秒毎に元素エネルギーを2回復する。
+            // 5. 万葉の一刀のスキルLv.+3
+            // 6. 楓原万葉が千早振るまたは万葉の一刀を発動した後の5秒間、風元素付与を獲得する、
+            // また楓原万葉の元素熟知の数値が1につき、自身の通常攻撃、重撃、落下攻撃のダメージ+ 0.2 %。
+            lv6: [
+                { extra: konst.ExtraBonusType.Flat, base: konst.FlatBonusBase.Elem, dest: konst.FlatBonusDest.CombatDmg, value: 0.2, times: 5 },
+                { extra: konst.ExtraBonusType.Enchant, elem: konst.EnchantType.Anemo, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "元素スキル発動後", times: 5 },
+            ],
+        },
     },
     Kaeya: {
         star: 4,
@@ -1100,16 +1439,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 6860, 7666,
                 8184, 8990,
                 9508, 10312,
-                10830, 11636
+                10830, 11636,
             ],
             atk: [
                 19, 48,
                 62, 93,
                 103, 118,
                 131, 147,
-                156, 172,
-                181, 196,
-                205, 220
+                157, 172,
+                182, 198,
+                208, 223,
             ],
             def: [
                 66, 171,
@@ -1118,14 +1457,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 467, 522,
                 557, 612,
                 647, 702,
-                737, 792
-            ]
+                737, 792,
+            ],
         },
         special: konst.StatusBonusType.EnRec,
         spvalue: [0.0, 0.0, 0.0, 20.0 / 3, 40.0 / 3, 40.0 / 3, 20.0, 80.0 / 3],
         talent: {
             combat: [
-                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 53.8 },
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 53.7 },
                 { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 51.7 },
                 { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 65.3 },
                 { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 70.9 },
@@ -1140,7 +1479,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 77.6 },
-            ]
+            ],
         },
         passive: {
             // 4. 霜の襲撃が敵1体に命中する度に、攻撃力の15%相当のHPを回復する。
@@ -1149,7 +1488,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         },
         conste: {
             // 1. 氷元素の影響を受けた敵に対して、ガイアの通常攻撃と重撃の会心率+15%
-            // TODO: lv1: { items: [CriticalBonusType.Normal, CriticalBonusType.Heavy], value: 15.0, limit: "氷元素の影響を受けた敵" },
+            lv1: { items: [konst.CriticalBonusType.Normal, konst.CriticalBonusType.Heavy], value: 15.0, limit: "氷元素の影響を受けた敵" },
             // 2. 凛冽なる戯れ継続中に敵を撃破したとき、継続時間+2.5秒、最大15秒まで
             // 3. 霜の襲撃のスキルLv.+3
             // 4. ガイアのHPが20％の時に自動発動される。
@@ -1157,7 +1496,84 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    シールドは氷ダメージに対して250％の吸収効果がある。60秒毎に1回のみ発動可能。
             // 5. 凛冽なる輪舞のスキルLv.+3
             // 6. 凛冽なる戯れの寒氷の柱が1本追加され、発動するときは元素エネルギーが15回復する。
-        }
+        },
+    },
+    Kamisato: {
+        star: 5,
+        element: konst.ElementType.Cryo,
+        weapon: konst.WeaponType.Sword,
+        status: {
+            hp: [
+                1001, 2597,
+                3455, 5170,
+                5779, 6649,
+                7462, 8341,
+                8951, 9838,
+                10448, 11345,
+                11954, 12858,
+            ],
+            atk: [
+                27, 79,
+                92, 138,
+                154, 177,
+                198, 222,
+                238, 262,
+                278, 302,
+                318, 342,
+            ],
+            def: [
+                61, 158,
+                211, 315,
+                352, 405,
+                455, 509,
+                546, 600,
+                637, 692,
+                729, 794,
+            ],
+        },
+        special: konst.CriticalBonusType.Damage,
+        spvalue: [0.0, 0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 45.7 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 48.7 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 62.6 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 22.6, multi: 3 },
+                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 78.2 },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 55.1, multi: 3 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 64 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 128 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 239 },
+            ],
+            burst: [
+                { name: "斬撃ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 112 },
+                { name: "咲きダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 168 },
+            ],
+        },
+        passive: {
+            // dash. 氷の力を剣に集中させ、一定時間氷元素付与を獲得する。
+            dash: { extra: konst.ExtraBonusType.Enchant, elem: konst.EnchantType.Cryo, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "霧歩が終了した後", times: 5 },
+            // 4. 神里流・氷華を発動した後の6秒間、神里綾華の通常攻撃と重撃のダメージ+30%。
+            asc1st: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 30, limit: "元素スキルが命中した時", times: 6 },
+            // 5. 神里流・霰歩終了後に発生する氷が敵に命中すると、神里綾華は下記効果を獲得する。
+            // ・スタミナを10ポイント獲得する。
+            // ・氷元素ダメージ + 18 %、継続時間10秒。
+            asc4th: { items: konst.ElementBonusType.Cryo, value: 18, limit: "霰歩終了後に発生する氷が敵に命中した時", times: 10 },
+        },
+        conste: {
+            // 1. 神里綾華の通常攻撃または重撃が敵に氷元素ダメージを与えた時、50%の確率で神里流・氷華のクールタイム-0.3秒。
+            // 2. 神里流・霜滅発動時、追加で2つの小さい霜見雪関扉を放ち、それぞれ本来の20%分のダメージを与える。
+            // 3. 神里流・霜滅のスキルLv.+3
+            // 4. 神里流・霜滅の霜見雪関扉のダメージを受けた敵の防御力-30%、継続時間6秒。
+            lv4: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductType.Defence, value: 30, limit: "元素爆発が命中した敵", times: 6 },
+            // 5. 神里流・氷華のスキルLv.+3
+            // 6. 10秒毎に、神里綾華は「薄氷の舞」状態を獲得し、重撃ダメージが298%アップする。
+            // 重撃が敵に命中してから0.5秒後、「薄氷の舞」の効果はクリアされ、クールタイムのカウントが開始される。
+            lv6: { items: konst.CombatBonusType.Heavy, value: 298, limit: "薄氷の舞を獲得した時" },
+        },
     },
     Keqing: {
         star: 5,
@@ -1165,31 +1581,31 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
-                983, 2634,
-                3512, 5268,
+                1020, 2646,
+                3521, 5268,
                 5889, 6776,
                 7604, 8500,
                 9121, 10025,
                 10647, 11561,
-                12182, 13105
+                12182, 13103,
             ],
             atk: [
-                26, 66,
-                88, 130,
+                25, 65,
+                87, 130,
                 145, 167,
-                188, 209,
+                187, 209,
                 225, 247,
                 262, 285,
-                300, 323
+                300, 323,
             ],
             def: [
-                63, 162,
+                63, 161,
                 215, 321,
                 359, 413,
                 464, 519,
                 556, 612,
                 649, 705,
-                743, 800
+                743, 799,
             ]
         },
         special: konst.CriticalBonusType.Damage,
@@ -1219,7 +1635,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         },
         passive: {
             // 4. 雷楔継続中に再び星辰帰位を発動すると、刻晴は雷元素バフを獲得する。継続時間5秒。
-            asc1st: { extra: konst.ExtraBonusType.Enchant, elem: konst.ElementType.Elect, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "星辰帰位を発動後", times: 5 },
+            asc1st: { extra: konst.ExtraBonusType.Enchant, elem: konst.EnchantType.Elect, dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge], limit: "星辰帰位を発動後", times: 5 },
             // 5. 天街巡遊継続中、刻晴の会心率+15%、元素チャージ効率+15%、継続時間8秒。
             asc4th: { items: [konst.CriticalBonusType.Rate, konst.StatusBonusType.EnRec], value: 15.0, limit: "元素爆発継続中", times: 8 },
         },
@@ -1233,7 +1649,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 6. 通常攻撃、重撃、元素スキルまたは元素爆発を発動する時、刻晴の与える雷元素ダメージ+6%、継続時間8秒。
             lv6: { items: konst.ElementBonusType.Elect, value: 6.0, limit: "通常攻撃、重撃、元素スキルまたは元素爆発を発動する時", times: 8 },
             //    通常攻撃、重撃、元素スキルまたは元素爆発の発動による効果はそれぞれ別々でカウントされる。
-        }
+        },
     },
     Klee: {
         star: 5,
@@ -1247,16 +1663,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 5970, 6673,
                 7161, 7870,
                 8358, 9076,
-                9563, 10287
+                9563, 10287,
             ],
             atk: [
                 24, 63,
                 84, 125,
                 140, 161,
-                181, 202,
-                217, 238,
+                180, 202,
+                216, 238,
                 253, 274,
-                289, 311
+                289, 311,
             ],
             def: [
                 48, 124,
@@ -1265,8 +1681,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 357, 399,
                 428, 470,
                 500, 542,
-                572, 615
-            ]
+                572, 615,
+            ],
         },
         special: konst.ElementBonusType.Pyro,
         spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
@@ -1286,13 +1702,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "ドッカン花火ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 42.6 },
-            ]
+            ],
         },
         passive: {
             // 4. ボンボン爆弾と通常攻撃が敵にダメージを与える時、50%の確率でクレーが爆裂花火を獲得する。
             //    重撃を発動する時はスタミナの変わりに爆裂花火を優先的に消費し、さらに与えるダメージ+50%
+            asc1st: { items: konst.CombatBonusType.Heavy, value: 50.0, limit: "爆裂花火を消費した時", times: 25 },
             // 5. クレーの重撃が会心発生した後、チーム全員の元素エネルギーが2回復する。
-            asc4th: { items: konst.CombatBonusType.Heavy, value: 50.0, limit: "爆裂花火を消費した時", times: 25 },
         },
         conste: {
             // 1. 攻撃やスキル発動の際に、一定確率で花火を召喚し敵を攻撃、ドッカン花火攻撃力の120%ダメージを与える。
@@ -1304,7 +1720,80 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 6. ドッカン花火状態中、クレーは3秒毎にチーム全員（クレーを除く）の元素エネルギーを3回復する。
             //    ドッカン花火発動後25秒間、チーム全員の炎ダメージ+10%。
             lv6: { items: konst.ElementBonusType.Pyro, value: 10.0, limit: "元素爆発発動後", times: 25, target: konst.BonusTarget.All },
-        }
+        },
+    },
+    Kujo: {
+        star: 4,
+        element: konst.ElementType.Elect,
+        weapon: konst.WeaponType.Bow,
+        status: {
+            hp: [
+                802, 2061,
+                2661, 3985,
+                4411, 5074,
+                5642, 6305,
+                6731, 7393,
+                7818, 8481,
+                8907, 9570,
+            ],
+            atk: [
+                16, 42,
+                54, 81,
+                90, 104,
+                115, 129,
+                137, 151,
+                160, 173,
+                182, 195,
+            ],
+            def: [
+                53, 135,
+                175, 262,
+                289, 333,
+                370, 414,
+                442, 485,
+                513, 556,
+                584, 628,
+            ],
+        },
+        special: konst.StatusBonusType.AtkBuf,
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 36.9 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 38.7 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 48.5 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 50.4 },
+                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 58.1 },
+                { name: "狙い撃ち", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
+                { name: "フルチャージ狙い撃ち", type: konst.CombatType.Heavy, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
+            ],
+            skill: [
+                { name: "天狗呪雷・伏ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 125.8 },
+            ],
+            burst: [
+                { name: "天狗呪雷・金剛破ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 409.6 },
+                { name: "天狗呪雷・雷礫ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 34.1 },
+            ],
+        },
+        passive: {
+            // skill: 天狗の神速で後方へ移動し、烏羽の加護を呼びかける。18秒間続く「烏羽護持」を獲得する。九条裟羅がフルチャージを終えた矢を放つと、「烏羽護持」を消費し、命中した位置に「烏羽」を残す。
+            //「烏羽」は短時間後に天狗呪雷・伏を引き起こし、範囲内の敵に雷元素ダメージを与え、範囲内のフィールド上キャラクターの攻撃力を、九条裟羅の基礎攻撃力を基準にアップさせる。
+            // 43% 46% 49% 54% 57% 60% 64% 69% 73% 77% 82% 86% 91%
+            skill: { extra: konst.ExtraBonusType.Flat, dest: konst.StatusBonusType.Atk, base: konst.FlatBonusBase.Atk, value: 43.0, scale: konst.DamageScale.Elem, limit: "元素スキルエリア内のキャラ", target: konst.BonusTarget.All }
+            // 4. 烏天狗雷霆召呪による「烏羽護持」の時、狙い撃ちのチャージ時間-60%。
+            // 5. 天狗呪雷・伏は敵に命中すると、九条裟羅の元素チャージ効率を基準にし、その100%の元素チャージ効率毎に、チーム全員の元素エネルギーを1.2回復する。この効果は3秒毎に1回のみ発動可能。
+        },
+        conste: {
+            // 1. 天狗呪雷はキャラクターに攻撃力アップ効果を付与し、または敵に命中すると、烏天狗雷霆召呪のクールタイム-1秒。
+            // 2. 烏天狗雷霆召呪を発動した時、九条裟羅が元々いた位置に微弱な天狗呪雷・伏の｢烏羽｣を発動し、本来の30%のダメージを与える。
+            // 3. 煌煌千道鎮式のスキルLv.+3
+            // 4. 煌煌千道鎮式による天狗呪雷・雷礫の数が6つに増加する。
+            // 5. 烏天狗雷霆召呪のスキルLv.+3
+            // 6. 天狗呪雷による攻撃力アップ状態のキャラクターは、雷元素ダメージの会心ダメージ+60%。
+        },
     },
     Lisa: {
         star: 4,
@@ -1316,18 +1805,18 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 2661, 3985,
                 4411, 5074,
                 5642, 6305,
-                6730, 7393,
+                6731, 7393,
                 7818, 8481,
-                8906, 9569
+                8907, 9570,
             ],
             atk: [
-                20, 50,
-                65, 96,
+                19, 50,
+                64, 96,
                 107, 123,
-                137, 153,
-                164, 180,
-                191, 207,
-                218, 234
+                136, 153,
+                163, 179,
+                189, 205,
+                215, 232,
             ],
             def: [
                 48, 123,
@@ -1336,7 +1825,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 338, 378,
                 403, 443,
                 468, 508,
-                533, 573
+                534, 573,
             ]
         },
         special: konst.StatusBonusType.Elem,
@@ -1361,7 +1850,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "放電ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 36.6 }
-            ]
+            ],
         },
         passive: {
             // 4. 重撃が命中した時、敵に蒼雷の誘雷効果を付与する。
@@ -1378,7 +1867,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 薔薇の雷光が攻撃する時、放つ稲妻が1～3本に増加する。
             // 5. 蒼雷のスキルLv.+3
             // 6. 登場時、周囲の敵に蒼雷の誘雷効果を3重付与する。この効果は5秒毎に1回のみ発動する。
-        }
+        },
     },
     Mona: {
         star: 5,
@@ -1392,16 +1881,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 6041, 6752,
                 7246, 7964,
                 8458, 9184,
-                9677, 10409
+                9677, 10409,
             ],
             atk: [
-                24, 58,
-                77, 116,
-                129, 149,
+                22, 58,
+                77, 115,
+                129, 148,
                 167, 186,
-                199, 219,
+                200, 220,
                 233, 253,
-                266, 286
+                267, 287,
             ],
             def: [
                 51, 132,
@@ -1410,8 +1899,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 379, 424,
                 455, 500,
                 531, 576,
-                607, 653
-            ]
+                607, 653,
+            ],
         },
         special: konst.StatusBonusType.EnRec,
         spvalue: [0.0, 0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
@@ -1432,9 +1921,12 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "泡影破裂ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 442 },
-            ]
+            ],
         },
         passive: {
+            // burst: 星異状態継続中、受けるダメージがアップする
+            // TODO: value配列 times複数
+            burst: { items: konst.AnyBonusType.Damage, value: 42, limit: "星異状態継続中", times: 4 },
             // 4. 虚実流動状態に入った2秒後、周囲に敵がいる場合は自動的に虚影を1つ生成する。
             //    虚影は2秒間存在し破裂する。破裂ダメージは水中幻願のダメージの50%。
             // 5. モナの与える水ダメージが増加する。増加量はモナの元素チャージ効率の20%に相当する。
@@ -1443,7 +1935,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         conste: {
             // 1. チーム内の自身のキャラクターの攻撃が星異状態の敵に命中した8秒間、水元素の関連反応の効果が上昇する：
             //    ・感電反応ダメージ+15%、蒸発反応ダメージ+15%。水元素の拡散反応によるダメージ+15%。凍結反応の継続時間+15%
-            lv1: { items: [konst.ReactionBonusType.Echarge, konst.ReactionBonusType.Vaporize/*contact hydro*/], value: 15.0 },
+            lv1: { items: [konst.ReactionBonusType.Echarge, konst.ReactionBonusType.Vaporize/*contact hydro*/], value: 15.0, times: 8 },
             // 2. 通常攻撃が命中した時、20%の確率で自動的に重撃を発動する。
             // 3. 星命定軌のスキルLv.+3
             // 4. チーム内の自身のキャラクターが星異状態の敵を攻撃する時、会心率+15%。
@@ -1451,7 +1943,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 水中幻願のスキルLv.+3
             // 6. モナが虚実流動状態に入った後、1秒移動する毎に、次の重撃ダメージ+60%。最大180%まで、継続時間8秒。
             lv6: { items: konst.CombatBonusType.Heavy, value: 60.0, limit: "虚実流動で1秒移動する毎", times: 8, stack: 3 },
-        }
+        },
     },
     Ningguang: {
         star: 4,
@@ -1465,16 +1957,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 5770, 6448,
                 6884, 7561,
                 7996, 8674,
-                9110, 9787
+                9110, 9787,
             ],
             atk: [
                 18, 46,
-                59, 89,
-                98, 112,
+                59, 88,
+                98, 113,
                 125, 140,
-                150, 164,
-                173, 188,
-                198, 212
+                149, 164,
+                174, 188,
+                198, 212,
             ],
             def: [
                 48, 123,
@@ -1483,7 +1975,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 338, 378,
                 403, 443,
                 468, 508,
-                533, 573
+                533, 573,
             ]
         },
         special: konst.ElementBonusType.Geo,
@@ -1502,7 +1994,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "宝石ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 87.0 },
-            ]
+            ],
         },
         passive: {
             // 4. 星璇がついている間に、凝光の重撃はスタミナを消費しない。
@@ -1516,7 +2008,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 璇璣屏付近のキャラクターの全元素耐性+10%
             // 5. 璇璣屏のスキルLv.+3
             // 6. 天権崩玉を放つ時、凝光は七枚の星璇を生成する。
-        }
+        },
     },
     Noelle: {
         star: 4,
@@ -1530,16 +2022,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 7117, 7953,
                 8490, 9325,
                 9862, 10698,
-                11235, 12071
+                11235, 12071,
             ],
             atk: [
                 16, 41,
                 53, 80,
-                88, 102,
+                88, 101,
                 113, 126,
-                135, 148,
-                156, 170,
-                178, 191
+                134, 148,
+                156, 169,
+                178, 191,
             ],
             def: [
                 67, 172,
@@ -1548,8 +2040,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 471, 526,
                 562, 617,
                 652, 708,
-                743, 799
-            ]
+                743, 799,
+            ],
         },
         special: konst.StatusBonusType.DefBuf,
         spvalue: [0.0, 0.0, 0.0, 7.5, 15.0, 15.0, 22.5, 30.0],
@@ -1571,9 +2063,10 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "爆発ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 67.2 },
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 92.8 },
-            ]
+            ],
         },
         passive: {
+            burst: { extra: konst.ExtraBonusType.Flat, dest: konst.StatusBonusType.Atk, base: konst.StatusBonusType.Def, value: 40, scale: konst.DamageScale.Elem, limit: "元素爆発継続中" },
             // 4. ノエルが待機時、出場中のキャラクターのHPが30%以下になると自動発動される：
             //    出場している自身のキャラクターに、ノエルの防御力400%相当のダメージを吸収シールドを付与する、継続時間20秒。該当効果は60秒毎に1回のみ発動する。
             // 5. 通常攻撃または重撃が4回命中するたびに、護心鎧のクールタイム-1秒。
@@ -1589,7 +2082,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 6. 大掃除発動で、ノエルの防御力50%相当の攻撃力を追加でアップする。
             lv6: { extra: konst.ExtraBonusType.Flat, dest: konst.StatusBonusType.Atk, base: konst.StatusBonusType.Def, value: 50.0, limit: "元素爆発継続中" },
             //    スキル継続中、敵1体倒すたびに、継続時間+1秒、最大10秒まで
-        }
+        },
     },
     Qiqi: {
         star: 5,
@@ -1606,13 +2099,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 11499, 12368
             ],
             atk: [
-                23, 58,
+                22, 58,
                 77, 115,
-                129, 149,
+                129, 148,
                 167, 186,
-                200, 219,
+                200, 220,
                 233, 253,
-                266, 297
+                267, 287,
             ],
             def: [
                 72, 186,
@@ -1621,8 +2114,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 535, 598,
                 642, 706,
                 749, 814,
-                857, 992
-            ]
+                857, 992,
+            ],
         },
         special: konst.StatusBonusType.HealBuf,
         spvalue: [0.0, 0.0, 0.0, 5.55, 11.1, 11.1, 16.65, 22.2],
@@ -1644,7 +2137,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 285 },
-            ]
+            ],
         },
         passive: {
             // 4. 仙法・寒病鬼差状態時のキャラクターが元素反応を起こした時、被回復量+20%、継続時間8秒。
@@ -1659,7 +2152,103 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 仙法・寒病鬼差のスキルLv.3
             // 6. 仙法·救苦度厄を発動する時、近くにいるチーム内全ての戦闘不能状態のキャラクターを復活させ、HPの50%を回復する。
             //    この効果は15分毎に1回のみ発動可能。
-        }
+        },
+    },
+    Raiden: {
+        star: 5,
+        element: konst.ElementType.Elect,
+        weapon: konst.WeaponType.Polearm,
+        status: {
+            hp: [
+                1005, 2606,
+                3468, 5189,
+                5801, 6675,
+                7491, 8373,
+                8985, 9875,
+                10487, 11388,
+                12000, 12907,
+            ],
+            atk: [
+                26, 68,
+                91, 136,
+                152, 175,
+                196, 219,
+                235, 258,
+                274, 298,
+                314, 337,
+            ],
+            def: [
+                61, 159,
+                212, 317,
+                355, 408,
+                458, 512,
+                549, 604,
+                641, 696,
+                737, 789,
+            ],
+        },
+        special: konst.StatusBonusType.EnRec,
+        spvalue: [0.0, 0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 39.6 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 39.7 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 49.9 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [29.0, 29.0] },
+                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 65.4 },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 99.6 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 63.9 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 128 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 117.2 },
+                { name: "連携攻撃ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 42.0 },
+            ],
+            burst: [
+                { name: "夢想の一太刀基礎ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 401 },
+                { name: "1段ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Hutao, value: 44.7 },
+                { name: "2段ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Hutao, value: 44.0 },
+                { name: "3段ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Hutao, value: 53.8 },
+                { name: "4段ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Hutao, value: [30.9, 31.0] },
+                { name: "5段ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Hutao, value: 73.9 },
+                { name: "重撃ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Hutao, value: [61.6, 74.4] },
+                { name: "落下期間のダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Phys, value: 63.9 },
+                { name: "低空落下ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Phys, value: 128 },
+                { name: "高空落下ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Phys, value: 160 },
+            ],
+        },
+        passive: {
+            // skill: ・雷罰悪曜の眼を持つキャラクターは継続時間内に、元素爆発の元素エネルギーを基準に、元素爆発ダメージがアップする。
+            // skill: { },
+            // burst: 周囲のチーム全員（雷電将軍自身を除く）が元素爆発を発動すると、元素爆発の元素エネルギーを元に雷電将軍の諸願百目の輪に願力を蓄積する。
+            // 蓄積できる願力は最大60層まで。
+            burst: {
+                extra: konst.ExtraBonusType.Flat,
+                dest: konst.StatusBonusType.AtkBuf,
+                base: konst.FlatBonusBase.None,
+                value: 0.73,
+                scale: konst.DamageScale.Elem,
+                limit: "元素爆発発動中",
+                stack: 60,
+                times: 7
+            },
+            // 4. 周囲にいるチーム内キャラクターが元素オーブまたは元素粒子を獲得した時、諸願百目の輪に願力を2層蓄積する。
+            // 5. 元素チャージ効率が100%を超えている場合、超えた分1%につき、雷電将軍は以下の効果を獲得する。
+            // ・夢想の一心状態で提供する元素エネルギー回復+0.6%。雷元素ダメージ+0.4%。
+        },
+        conste: {
+            // 1. 諸願百目の輪の願力をより早く蓄積できるようになる。
+            // 雷元素タイプのキャラクターによる元素爆発が蓄積する願力+ 80 %。他の元素タイプのキャラクターによる元素爆発が蓄積する願力+ 20 %。
+            // 2. 奥義・夢想真説の夢想の一太刀と夢想の一心による攻撃は敵の防御力60%を無視する。
+            lv2: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductType.Defence, value: 60, limit: "元素爆発継続中" },
+            // 3. 奥義・夢想真説のスキルLv.+3
+            // 4. 奥義・夢想真説による夢想の一心状態終了後、周囲のチーム全員（雷電将軍自身を除く）の攻撃力+30%、継続時間10秒。
+            lv4: { items: konst.StatusBonusType.AtkBuf, value: 30, limit: "元素爆発終了後", times: 10, target: konst.BonusTarget.Other },
+            // 5. 神変・悪曜開眼のスキルLv.+3
+            // 6. 奥義・夢想真説による夢想の一心状態の時、雷電将軍の通常攻撃、重撃、落下攻撃が敵に命中すると、
+            // 周囲のチーム全員（雷電将軍自身を除く）の元素爆発のクールタイム-1秒。この効果は1秒毎に1回のみ可能で、継続時間内に最大5回まで発動可能。
+        },
     },
     Razor: {
         star: 4,
@@ -1673,16 +2262,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 7052, 7881,
                 8413, 9241,
                 9773, 10602,
-                11134, 11962
+                11134, 11962,
             ],
             atk: [
-                20, 51,
+                20, 50,
                 65, 97,
                 108, 124,
                 138, 154,
                 164, 180,
                 191, 207,
-                217, 234
+                217, 234,
             ],
             def: [
                 63, 162,
@@ -1691,8 +2280,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 443, 495,
                 528, 580,
                 613, 665,
-                699, 751
-            ]
+                699, 751,
+            ],
         },
         special: konst.ElementBonusType.Phys,
         spvalue: [0.0, 0.0, 0.0, 7.5, 15.0, 15.0, 22.5, 30.0],
@@ -1705,7 +2294,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "連続重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 62.5 },
                 { name: "重撃終了ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 113 },
                 { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 82.0 },
-                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 164 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 162 },
                 { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 205 },
             ],
             skill: [
@@ -1732,7 +2321,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 鋭い爪と蒼雷のスキルLv.+3
             // 6. 10秒毎に、レザーの大剣が自動的にエネルギーを溜め、次の通常攻撃に落雷を引き起こし、攻撃力の100％の雷ダメージを与える。
             //    雷牙状態でない時、落雷が敵に命中すると、レザーに鋭い爪と蒼雷の雷の印を1重付与する。
-        }
+        },
     },
     Rosaria: {
         star: 4,
@@ -1746,7 +2335,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 7245, 8096,
                 8643, 9493,
                 10040, 10891,
-                11438, 12289
+                11438, 12289,
             ],
             atk: [
                 20, 52,
@@ -1755,7 +2344,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 141, 158,
                 169, 185,
                 196, 213,
-                223, 240
+                223, 240,
             ],
             def: [
                 60, 153,
@@ -1764,8 +2353,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 418, 468,
                 499, 548,
                 580, 629,
-                661, 710
-            ]
+                661, 710,
+            ],
         },
         special: konst.StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
@@ -1787,7 +2376,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: [104, 152] },
                 { name: "氷槍継続ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 132 },
-            ]
+            ],
         },
         passive: {
             // 4. 罪喰いの懺悔で敵の背後から攻撃すると、ロサリアの会心率+12%、継続時間5秒。
@@ -1812,9 +2401,166 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 3. 罪喰いの懺悔のスキルLv.+3。
             // 4. 罪喰いの懺悔で会心が発生すると、ロサリア自身の元素エネルギーが5回復する。この効果は、1回の罪喰いの懺悔で1度のみ発動可能。
             // 5. 臨終の聖礼のスキルLv.+3。
-            // 6. 臨終の聖礼を発動すると、敵の物理耐性-20%、継続時間10秒。
-            lv6: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Phys, value: 20.0, limit: "元素爆発発動後", times: 10 },
+            // 6. 臨終の聖礼の攻撃が敵に命中すると、敵の物理耐性-20%、継続時間10秒。
+            lv6: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Phys, value: 20.0, limit: "元素爆発が敵に命中した時", times: 10 },
+        },
+    },
+    Sangonomiya: {
+        star: 5,
+        element: konst.ElementType.Hydro,
+        weapon: konst.WeaponType.Catalyst,
+        status: {
+            hp: [
+                1049, 2720,
+                3619, 5416,
+                6055, 6966,
+                7818, 8783,
+                9377, 10306,
+                10945, 11885,
+                12524, 13471,
+            ],
+            atk: [
+                18, 47,
+                63, 94,
+                105, 121,
+                136, 152,
+                163, 179,
+                190, 207,
+                218, 234,
+            ],
+            def: [
+                51, 133,
+                174, 264,
+                295, 340,
+                381, 426,
+                457, 503,
+                534, 580,
+                611, 657,
+            ],
+        },
+        special: konst.ElementBonusType.Hydro,
+        spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 68.4 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 61.5 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 94.3 },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 148 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 56.8 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 114 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 142 },
+            ],
+            skill: [
+                { name: "波紋ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 109.2 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 10.4, based: konst.DamageBased.Hp },
+            ],
+        },
+        passive: {
+            // 4. 海人の羽衣発動時、フィールド上に珊瑚宮心海自身の化海月が存在する場合、化海月の継続時間をリセットする。
+            // 5. 海人の羽衣の儀来羽衣状態にある時、珊瑚宮心海のHP上限を基準にアップする通常攻撃と重撃のダメージがさらに増えるようになる。アップする量は珊瑚宮心海の与える治療効果の15%となる。
+            asc4th: {
+                extra: konst.ExtraBonusType.Flat,
+                dest: [konst.FlatBonusDest.NormalDmg, konst.FlatBonusDest.HeavyDmg],
+                base: konst.FlatBonusBase.HealBuf,
+                value: 15,
+                limit: "元素爆発継続中"
+            },
+        },
+        conste: {
+            // 1. 海人の羽衣による「儀来羽衣」状態の時、珊瑚宮心海の通常攻撃の最後の一撃は追加で遊魚を一匹召喚し、珊瑚宮心海のHP上限30%分の水元素ダメージを与える。
+            // このダメージは通常攻撃ダメージとみなされない。
+            // 2. 珊瑚宮心海のHP上限を基準に、HP50%以下のキャラクターに対し、下記方式による回復量がアップする。
+            // 3. 海人の羽衣のスキルLv.+3
+            // 4. 海人の羽衣による儀来羽衣状態の時、珊瑚宮心海の通常攻撃の攻撃速度+10%。そして通常攻撃が敵に命中すると、元素エネルギーを0.8ポイント回復する。
+            // この効果は0.2秒毎に1回のみ発動可能。
+            // 5. 海月の誓いのスキルLv.+3
+            // 6. 海人の羽衣による儀来羽衣状態の時、珊瑚宮心海の通常攻撃または重撃でHP80%以上のキャラクターに治療を行うと、水元素ダメージ+40%、継続時間4秒。
+            lv6: { items: konst.ElementBonusType.Hydro, value: 40, limit: "通常攻撃または重撃でHP80%以上のキャラクターに治療をした時", times: 4 },
         }
+    },
+    Sayu: {
+        star: 4,
+        element: konst.ElementType.Anemo,
+        weapon: konst.WeaponType.Claymore,
+        status: {
+            hp: [
+                994, 2553,
+                3296, 4937,
+                5464, 6285,
+                6988, 7809,
+                8337, 9157,
+                9684, 10505,
+                11033, 11854,
+            ],
+            atk: [
+                20, 53,
+                68, 102,
+                113, 130,
+                144, 161,
+                172, 189,
+                200, 216,
+                227, 244,
+            ],
+            def: [
+                62, 160,
+                207, 310,
+                343, 395,
+                439, 491,
+                524, 575,
+                608, 660,
+                693, 745,
+            ],
+        },
+        special: konst.StatusBonusType.Elem,
+        spvalue: [0.0, 0.0, 0.0, 24, 48, 48, 72, 96],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 72.2 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 71.4 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [43.3, 43.4] },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 98.1 },
+                { name: "連続重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 62.5 },
+                { name: "重撃終了ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 113 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 74.6 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 149 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 186 },
+            ],
+            skill: [
+                { name: "風々輪ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 36.0 },
+                { name: "風々輪・旋舞蹴一回押しダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 158.4 },
+                { name: "風々輪・旋舞蹴長押しダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 217.6 },
+                { name: "風々輪・追加元素ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 16.8 },
+                { name: "風々輪・旋舞蹴長押し追加元素ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 76.2 },
+            ],
+            burst: [
+                { name: "スキル発動ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 117 },
+                { name: "むじむじだるまダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 52 },
+            ],
+        },
+        passive: {
+            // 4. 早柚がフィールド上で拡散反応を起こした時、チーム内の自身のキャラクターまたは周囲の味方のHPを300回復する。
+            // また、早柚の元素熟知の数値が1につき、さらにHPを1.2回復する。
+            // 5. 嗚呼流・影貉繚乱のむじむじだるまは下記効果を獲得する。
+            // ・キャラクターのHPを回復するとき、該当キャラクターの近くに出場している他キャラクターも回復量20％に相当するHPを回復する。
+            // ・敵を攻撃するとき、与えるダメージ範囲を拡大する。
+        },
+        conste: {
+            // 1. 嗚呼流・影貉繚乱のむじむじだるまは、キャラクターのHPを無視し、周囲の敵への攻撃とキャラクターへのHP回復行動の２つを同時に行う。
+            // 2. 嗚呼流・風隠急進で下記の効果を獲得する。
+            // ・一回押しの時の風々輪・旋舞蹴のダメージ＋3.3％。
+            // ・長押しの風々輪状態では、0.5秒ごとに風々輪・旋舞蹴のダメージ＋3.3％。この方式でアップできる風々輪・旋舞蹴のダメージは66％まで。
+            lv2: { items: konst.CombatBonusType.Skill, value: 3.3, limit: "元素スキル継続中0.5秒毎", stack: 20 },
+            // 3. 嗚呼流・影貉繚乱のスキルLv.+3
+            // 4. 早柚がフィールド上で拡散反応を起こした時、元素エネルギーを1.2ポイント回復する。この効果は2秒毎に1回のみ発動可能。
+            // 5. 嗚呼流・風隠急進のスキルLv.+3
+            // 6. 早柚自身の嗚呼流・影貉繚乱によって召喚されたむじむじだるまの攻撃力と回復量は、早柚の元素熟知によって決まる。早柚の元素熟知の数値が１につき、下記効果が発動する。
+            // ・むじむじだるまのダメージは攻撃力0.2％分アップする。この方式でアップできるダメージは攻撃力400％まで。
+            // ・むじむじだるまによるHP回復量＋3。この方式でアップできる回復量は6000まで。
+            // TODO: 元素熟知 x 0.2 x 基礎攻撃力 <= 基礎攻撃力 x 400
+            // lv6: { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Burst, base: konst.FlatBonusBase.Atk, bound: { base: konst.FlatBonusBase.Atk, value: 400 }, limit: "むじむじだるまの攻撃" },
+        },
     },
     Sucrose: {
         star: 4,
@@ -1828,16 +2574,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 5450, 6090,
                 6501, 7141,
                 7552, 8192,
-                8603, 9243
+                8603, 9243,
             ],
             atk: [
                 14, 37,
                 47, 71,
-                79, 90,
+                78, 90,
                 100, 112,
-                120, 132,
+                120, 131,
                 139, 151,
-                159, 170
+                158, 170,
             ],
             def: [
                 59, 151,
@@ -1846,8 +2592,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 414, 463,
                 494, 543,
                 574, 623,
-                654, 703
-            ]
+                654, 703,
+            ],
         },
         special: konst.ElementBonusType.Anemo,
         spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
@@ -1868,7 +2614,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "継続ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 148 },
                 { name: "付加元素ダメージ", type: konst.CombatType.Burst, elem: konst.CombatElementType.Contact, scale: konst.DamageScale.Elem, value: 44 },
-            ]
+            ],
         },
         passive: {
             // 4. スクロースが拡散反応を起こした時、該当元素のチームメンバー全員（スクロース自身を除く）の元素熟知+50、継続時間8秒。
@@ -1884,7 +2630,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 禁・風霊作成・七五同構弐型のスキルLv.+3
             // 6. 禁・風霊作成・七五同構弐型に元素変化があった場合、スキル継続中にチーム全員の該当元素ダメージ+20%。
             // TODO: lv6: { items: CombatElementType.Contact, value: 20, limit: "元素爆発に元素変化があった場合、スキル継続中" },
-        }
+        },
     },
     Tartaglia: {
         star: 5,
@@ -1898,16 +2644,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 7604, 8500,
                 9121, 10025,
                 10647, 11561,
-                12182, 13103
+                12182, 13103,
             ],
             atk: [
-                24, 61,
+                23, 61,
                 81, 121,
-                136, 156,
-                175, 196,
+                135, 156,
+                175, 195,
                 210, 231,
                 245, 266,
-                280, 301
+                280, 301,
             ],
             def: [
                 63, 165,
@@ -1916,8 +2662,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 473, 528,
                 567, 623,
                 662, 719,
-                757, 815
-            ]
+                757, 815,
+            ],
         },
         special: konst.ElementBonusType.Hydro,
         spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
@@ -1933,26 +2679,26 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "フルチャージ狙い撃ち", type: konst.CombatType.Heavy, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 124 },
                 { name: "断流・閃 ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 12.4, multi: 3 },
                 { name: "断流・破 ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 62.0 },
-                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
-                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
-                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 63.9 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 128 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
             ],
             skill: [
                 { name: "状態切替時に与えるダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 72.0 },
-                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 38.9 },
-                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 41.6 },
-                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 56.3 },
-                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 59.9 },
-                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 55.3 },
-                { name: "6段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: [35.4, 37.7] },
-                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: [60.2, 72.0] },
-                { name: "断流・斬 ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 60.0 },
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 38.9 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 41.6 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 56.3 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 59.9 },
+                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 55.3 },
+                { name: "6段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: [35.4, 37.7] },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: [60.2, 72.0] },
+                { name: "断流・斬 ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 60.0 },
             ],
             burst: [
                 { name: "スキルダメージ・近接", type: konst.CombatType.Burst, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 464 },
                 { name: "スキルダメージ・遠隔", type: konst.CombatType.Burst, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 378 },
                 { name: "断流・爆 ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 120 },
-            ]
+            ],
         },
         passive: {
             // 4. 断流効果の継続時間が8秒延長する。
@@ -1967,7 +2713,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    この効果によって発動された断流・斬と断流・閃は、この二つのスキル本来の発動時間制限を受けない。また、本来のスキルへの発動時間制限にも影響を与えない。
             // 5. 極悪技・尽滅閃のスキルLv.+3
             // 6. 極悪技・尽滅閃発動時、魔王の武装・荒波のクールタイムをリセットする。この効果は遠隔モードに戻った後に発動する。
-        }
+        },
     },
     Venti: {
         star: 5,
@@ -1980,17 +2726,17 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 4734, 5446,
                 6112, 6832,
                 7331, 8058,
-                8557, 9291,
-                9790, 10531
+                8557, 9292,
+                9790, 10531,
             ],
             atk: [
-                21, 53,
+                20, 53,
                 71, 106,
                 118, 136,
-                153, 170,
-                183, 202,
-                214, 233,
-                245, 265
+                153, 171,
+                183, 201,
+                214, 232,
+                245, 263,
             ],
             def: [
                 52, 135,
@@ -1998,9 +2744,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 301, 346,
                 388, 434,
                 465, 512,
-                543, 591,
-                622, 670
-            ]
+                543, 590,
+                622, 669,
+            ],
         },
         special: konst.StatusBonusType.EnRec,
         spvalue: [0.0, 0.0, 0.0, 8.0, 16.0, 16.0, 24.0, 32.0],
@@ -2025,7 +2771,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "継続ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 37.6 },
                 { name: "付加元素ダメージ", type: konst.CombatType.Burst, elem: konst.CombatElementType.Contact, scale: konst.DamageScale.Elem, value: 18.8 },
-            ]
+            ],
         },
         passive: {
             // 4. 高天の歌を長押しした後、上昇気流が発生する、継続時間20秒。
@@ -2046,7 +2792,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 高天の歌のスキルLv.+3
             // 6. 風神の詩の影響を受ける敵の風属性-20%。元素変化があった場合、変化した元素の耐性-20%。
             lv6: { extra: konst.ExtraBonusType.Reduct, type: [konst.ElementType.Anemo, konst.ReductType.Contact], value: 20.0, limit: "元素爆発の影響を受ける敵" },
-        }
+        },
     },
     Xiangling: {
         star: 4,
@@ -2060,16 +2806,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 6411, 7164,
                 7648, 8401,
                 8885, 9638,
-                10112, 10875
+                10112, 10875,
             ],
             atk: [
-                19, 49,
+                19, 48,
                 63, 94,
                 104, 119,
-                133, 149,
-                159, 174,
+                133, 148,
+                158, 174,
                 184, 200,
-                210, 225
+                210, 225,
             ],
             def: [
                 56, 144,
@@ -2078,8 +2824,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 394, 441,
                 470, 517,
                 546, 593,
-                623, 669
-            ]
+                623, 669,
+            ],
         },
         special: konst.StatusBonusType.Elem,
         spvalue: [0, 0, 0, 24, 48, 48, 72, 96],
@@ -2103,7 +2849,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "振り回しによる2段ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 88.0 },
                 { name: "振り回しによる3段ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 110 },
                 { name: "旋火輪ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 112 },
-            ]
+            ],
         },
         passive: {
             // 4. グゥオパァーの噴火距離が20％上昇する。
@@ -2119,7 +2865,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. グゥオパァー出撃のスキルLv.+3
             // 6. 旋火輪継続中、チーム全員の炎ダメージが15％上昇する。
             lv6: { items: konst.ElementBonusType.Pyro, value: 15.0, limit: "元素爆発継続中", target: konst.BonusTarget.All },
-        }
+        },
     },
     Xiao: {
         star: 5,
@@ -2133,16 +2879,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 7391, 8262,
                 8866, 9744,
                 10348, 11236,
-                11840, 12736
+                11840, 12736,
             ],
             atk: [
-                26, 71,
+                27, 71,
                 94, 141,
                 157, 181,
                 203, 227,
                 243, 267,
                 284, 308,
-                325, 349
+                325, 349,
             ],
             def: [
                 62, 161,
@@ -2151,8 +2897,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 464, 519,
                 556, 612,
                 649, 705,
-                743, 799
-            ]
+                743, 799,
+            ],
         },
         special: konst.CriticalBonusType.Rate,
         spvalue: [0.0, 0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
@@ -2172,7 +2918,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             skill: [
                 { name: "スキルダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 253 },
             ],
-            burst: []
+            burst: [],
         },
         passive: {
             // burst. 魈のジャンプ力が大幅にアップする。
@@ -2194,7 +2940,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 靖妖儺舞のスキルLv.+3。
             // 6. 靖妖儺舞状態の時、落下攻撃が2体以上の敵に命中すると、風輪両立の使用回数+1。
             //    その後の1秒間以内は、クールタイム関係なく風輪両立を発動できる。
-        }
+        },
     },
     Xingqiu: {
         star: 4,
@@ -2208,16 +2954,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 6027, 6735,
                 7190, 7897,
                 8352, 9060,
-                9515, 10223
+                9515, 10223,
             ],
             atk: [
-                17, 44,
+                17, 43,
                 56, 84,
                 93, 107,
                 119, 133,
                 142, 156,
                 165, 179,
-                188, 202
+                188, 202,
             ],
             def: [
                 64, 163,
@@ -2225,9 +2971,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 349, 402,
                 447, 499,
                 533, 585,
-                619, 672,
-                706, 759
-            ]
+                619, 671,
+                705, 758,
+            ],
         },
         special: konst.StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
@@ -2248,7 +2994,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "剣雨のダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 54.3 },
-            ]
+            ],
         },
         passive: {
             // 4. 雨すだれの剣が破壊、または継続時間が終了したとき、行秋のHP上限の6％を基準に出場キャラのHPを回復する。
@@ -2261,10 +3007,10 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv2: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Hydro, value: 15.0, limit: "元素爆発の攻撃を受けた敵", times: 4 },
             // 3. 古華剣・裁雨留虹のスキルLv.+3
             // 4. 古華剣・裁雨留虹継続中、古華剣・画雨籠山の与えるダメージ+50％。
-            lv4: { items: konst.CombatBonusType.Skill, value: 15.0, limit: "元素爆発継続中" },
+            lv4: { items: konst.CombatBonusType.Skill, value: 50.0, limit: "元素爆発継続中" },
             // 5. 古華剣・画雨籠山のスキルLv.+3
             // 6. 古華剣・裁雨留虹が剣雨攻撃を2回発動する度に、次の剣雨攻撃が大幅に強化され、敵に命中する時、行秋の元素エネルギーを3回復する。
-        }
+        },
     },
     Xinyan: {
         star: 4,
@@ -2297,7 +3043,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 562, 617,
                 652, 708,
                 743, 799
-            ]
+            ],
         },
         special: konst.StatusBonusType.AtkBuf,
         spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
@@ -2320,7 +3066,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Phys, scale: konst.DamageScale.Elem, value: 341 },
                 { name: "継続炎ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 40.0 }
-            ]
+            ],
         },
         passive: {
             // 4. 情熱の薙ぎ払いのシールド発動に必要な命中数を減少する：
@@ -2339,7 +3085,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 反逆の弾きのスキルLv.+3
             // 6. 辛炎の重撃によるスタミナ消費-30%。重撃を発動する時、辛炎の防御力50%分の攻撃力が増加する。
             // TODO: lv6: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk/*for Heavy*/, base: FlatBonusBase.Def, value: 50.0 },
-        }
+        },
     },
     Yanfei: {
         star: 4,
@@ -2353,7 +3099,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 5514, 6161,
                 6578, 7225,
                 7641, 8289,
-                8705, 9352
+                8705, 9352,
             ],
             atk: [
                 20, 52,
@@ -2362,7 +3108,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 141, 158,
                 169, 185,
                 196, 213,
-                223, 240
+                223, 240,
             ],
             def: [
                 49, 126,
@@ -2371,8 +3117,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 346, 387,
                 413, 453,
                 480, 520,
-                546, 587
-            ]
+                546, 587,
+            ],
         },
         special: konst.ElementBonusType.Pyro,
         spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
@@ -2381,7 +3127,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 58.0 },
                 { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 52.0 },
                 { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 76.0 },
-                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Xiao, value: [98, 116, 133, 150, 166] },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Xiao, value: [98, 116, 133, 150, 168] },
                 { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Phys, value: 56.8 },
                 { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Phys, value: 114 },
                 { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Phys, value: 142 },
@@ -2391,12 +3137,12 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 182 },
-            ]
+            ],
         },
         passive: {
             // burst: 烈焔を引き起こし、周囲の敵を襲う。炎元素範囲ダメージを与え、煙緋に最大数の丹火の印と灼灼効果を付与する。
             //        重撃ダメージをアップする。
-            burst: { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.HeavyDmg, base: konst.FlatBonusBase.None, value: 33.0, scale: konst.DamageScale.Elem, limit: "元素爆発発動後", times: 15 },
+            burst: { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.HeavyDmg, base: konst.FlatBonusBase.None, value: 33.3, limit: "元素爆発発動後", times: 15 },
             // 4. 煙緋が重撃で丹火の印を消費した時、丹火の印1枚につき炎元素ダメージ+5%、継続時間6秒。
             //    効果持続中に再び重撃を放つと、既存の効果が先にクリアされる。
             asc1st: { items: konst.ElementBonusType.Pyro, value: 5.0, limit: "重撃で丹火の印を消費した時", times: 6, stack: 6 },
@@ -2413,7 +3159,84 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    このシールドは炎元素ダメージに対して250% の吸収効果がある。
             // 5. 契約成立のスキルLv.+3
             // 6. 煙緋が所持できる丹火の印の最大枚数+1
-        }
+        },
+    },
+    Yoimiya: {
+        star: 5,
+        element: konst.ElementType.Pyro,
+        weapon: konst.WeaponType.Bow,
+        status: {
+            hp: [
+                791, 2053,
+                2731, 4086,
+                4568, 5256,
+                5899, 6593,
+                7075, 7777,
+                8259, 8968,
+                9450, 10164,
+            ],
+            atk: [
+                25, 65,
+                87, 130,
+                145, 167,
+                187, 209,
+                225, 247,
+                262, 285,
+                300, 323,
+            ],
+            def: [
+                48, 124,
+                165, 247,
+                276, 318,
+                357, 399,
+                428, 470,
+                500, 542,
+                572, 615,
+            ],
+        },
+        special: konst.CriticalBonusType.Rate,
+        spvalue: [0.0, 0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 35.6, multi: 2 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 68.4 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 88.9 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 46.4, multi: 2 },
+                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 105.9 },
+                { name: "狙い撃ち", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
+                { name: "フルチャージ狙い撃ち", type: konst.CombatType.Heavy, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
+            ],
+            skill: [],
+            burst: [
+                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 127 },
+                { name: "琉金の炎爆発ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 122 },
+            ],
+        },
+        passive: {
+            // 4. 焔硝の庭火舞いの効果継続時間中、宵宮の通常攻撃が命中すると、炎元素ダメージ+2%、継続時間3秒、最大10重まで。
+            asc1st: { items: konst.ElementBonusType.Pyro, value: 2, limit: "元素スキル継続中、通常攻撃が命中した時", stack: 10 },
+            // 5. 琉金の雲間草を発動した後の15秒内、周囲のチーム全員（宵宮自身を除く）の攻撃力+10%。
+            // また、宵宮が琉金の雲間草を発動時に固有天賦「袖火百景図」の重ねた数をもとに、1重ごとにさらに攻撃力を1 % アップする。
+            asc4th: [
+                { items: konst.StatusBonusType.AtkBuf, value: 10, limit: "元素爆発発動時", target: konst.BonusTarget.Other },
+                { items: konst.StatusBonusType.AtkBuf, value: 1, limit: "元素スキル継続中、通常攻撃が命中した時", stack: 10, target: konst.BonusTarget.Other },
+            ],
+        },
+        conste: {
+            // 1. 琉金の雲間草の琉金の炎の継続時間+4秒。
+            // また、宵宮自身が発動した琉金の炎の影響を受けた敵が継続時間内に倒されると、宵宮の攻撃力+ 20 %、継続時間20秒。
+            lv1: { items: konst.StatusBonusType.AtkBuf, value: 20, limit: "琉金の炎の影響を受けた敵が倒された時", times: 20 },
+            // 2. 宵宮の炎元素ダメージで会心が発生した後の6秒間、宵宮の炎元素ダメージ+25%。
+            lv2: { items: konst.ElementBonusType.Pyro, value: 25, limit: "宵宮の炎元素ダメージで会心が発生した時", times: 6 },
+            // 3. 焔硝の庭火舞いのスキルLv.+3
+            // 4. 宵宮自身が発動した琉金の炎が爆発を起こすと、焔硝の庭火舞いのクールタイム-1.2秒。
+            // 5. 琉金の雲間のスキルLv.+3
+            // 6. 焔硝の庭火舞いの継続時間中、宵宮自身の通常攻撃は50%の確率で熾焔の矢を1本追加で発射し、本来の60%分のダメージを与える。
+            // このダメージは通常攻撃とみなされる。
+        },
     },
     Zhongli: {
         star: 5,
@@ -2427,7 +3250,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 8528, 9533,
                 10230, 11243,
                 11940, 12965,
-                13662, 14695
+                13662, 14695,
             ],
             atk: [
                 20, 51,
@@ -2436,17 +3259,17 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 146, 163,
                 175, 192,
                 204, 222,
-                233, 251
+                233, 251,
             ],
             def: [
                 57, 149,
-                196, 297,
+                198, 297,
                 332, 382,
                 428, 479,
                 514, 564,
                 599, 651,
-                686, 738
-            ]
+                686, 738,
+            ],
         },
         special: konst.ElementBonusType.Geo,
         spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
@@ -2470,7 +3293,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Zhongli, value: 401.4 },
-            ]
+            ],
         },
         passive: {
             // 4. 玉璋シールドはダメージを受けた際に防御効果を発動する。
@@ -2481,7 +3304,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Combat, base: konst.StatusBonusType.Hp, value: 1.39 },
                 { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Skill, base: konst.StatusBonusType.Hp, value: 1.9 },
                 { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Burst, base: konst.StatusBonusType.Hp, value: 100.0 / 3 },
-            ]
+            ],
         },
         conste: {
             // 1. 地心の岩柱は最大2個同時に存在できる。
@@ -2490,7 +3313,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 天星の影響範囲が20%拡大する。さらに天星の石化効果の継続時間2秒延長する。
             // 5. 天星のスキルLv.+3
             // 6. 玉璋シールドがダメージを受けた時、そのダメージ量の40%分のHPを回復させる。一回の回復上限はキャラクターのHP上限の8%。
-        }
+        },
     },
 } as const;
 

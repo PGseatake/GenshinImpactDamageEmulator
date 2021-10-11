@@ -88,6 +88,7 @@ export const CombatType = {
     Burst: "burst",
 } as const;
 export type CombatType = typeof CombatType[keyof typeof CombatType];
+export type AnyCombatType = CombatType | "combat";
 
 export const CombatElementType = {
     Contact: "contact"
@@ -279,6 +280,7 @@ export const DamageScale = {
 export type DamageScale = typeof DamageScale[keyof typeof DamageScale];
 
 export const DamageBased = {
+    Hp: "hp",
     Atk: "atk",
     Def: "def"
 } as const;
@@ -295,17 +297,21 @@ export const FlatBonusDest = {
     // StatusType 実数
     Atk: "atk",
     Elem: "elem",
+    EnRec: "en_rec",
     // CombatType 実数
     Combat: "combat",
     Skill: "skill",
     Burst: "burst",
     // StatusType 割合
+    AtkBuf: "atk_buf",
     CriRate: "cri_rate",
     // CombatBonusType 割合
     CombatDmg: "combat_dmg",
+    NormalDmg: "normal_dmg",
     HeavyDmg: "heavy_dmg",
     // ElementBonusType 割合
     HydroDmg: "hydro_dmg",
+    CryoDmg: "cryo_dmg",
 } as const;
 export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
 
@@ -316,6 +322,7 @@ export const FlatBonusBase = {
     Def: "def", // 最終値
     Elem: "elem",
     EnRec: "en_rec",
+    HealBuf: "heal_buf",
     CriRate: "cri_rate", // 最終値
 } as const;
 export type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
@@ -325,5 +332,6 @@ export const EnchantType = {
     Pyro: "pyro",
     Elect: "elect",
     Cryo: "cryo",
+    Anemo: "anemo",
 } as const;
 export type EnchantType = typeof EnchantType[keyof typeof EnchantType];
