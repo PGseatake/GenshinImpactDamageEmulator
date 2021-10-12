@@ -317,6 +317,7 @@ export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
 
 export const FlatBonusBase = {
     None: "none",
+    // Energy: "energy",
     Hp: "hp", // 最終値
     Atk: "atk", // 基礎値
     Def: "def", // 最終値

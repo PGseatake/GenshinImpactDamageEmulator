@@ -52,6 +52,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     TravelAnemo: {
         star: 5,
         element: konst.ElementType.Anemo,
+        energy: 60,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -129,6 +130,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     TravelGeo: {
         star: 5,
         element: konst.ElementType.Geo,
+        energy: 60,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -198,6 +200,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     TravelElect: {
         star: 5,
         element: konst.ElementType.Elect,
+        energy: 60,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -271,6 +274,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Albedo: {
         star: 5,
         element: konst.ElementType.Geo,
+        energy: 40,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -348,6 +352,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Aloy: {
         star: 5,
         element: konst.ElementType.Cryo,
+        energy: 40,
         weapon: konst.WeaponType.Bow,
         status: {
             hp: [
@@ -430,6 +435,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Amber: {
         star: 4,
         element: konst.ElementType.Pyro,
+        energy: 40,
         weapon: konst.WeaponType.Bow,
         status: {
             hp: [
@@ -502,6 +508,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Barbara: {
         star: 4,
         element: konst.ElementType.Hydro,
+        energy: 80,
         weapon: konst.WeaponType.Catalyst,
         status: {
             hp: [
@@ -570,6 +577,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Beidou: {
         star: 4,
         element: konst.ElementType.Elect,
+        energy: 80,
         weapon: konst.WeaponType.Claymore,
         status: {
             hp: [
@@ -645,6 +653,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Bennett: {
         star: 4,
         element: konst.ElementType.Pyro,
+        energy: 60,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -725,6 +734,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Chongyun: {
         star: 4,
         element: konst.ElementType.Cryo,
+        energy: 40,
         weapon: konst.WeaponType.Claymore,
         status: {
             hp: [
@@ -797,6 +807,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Diluc: {
         star: 5,
         element: konst.ElementType.Pyro,
+        energy: 40,
         weapon: konst.WeaponType.Claymore,
         status: {
             hp: [
@@ -875,6 +886,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Diona: {
         star: 4,
         element: konst.ElementType.Cryo,
+        energy: 80,
         weapon: konst.WeaponType.Bow,
         status: {
             hp: [
@@ -949,6 +961,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Eula: {
         star: 5,
         element: konst.ElementType.Cryo,
+        energy: 80,
         weapon: konst.WeaponType.Claymore,
         status: {
             hp: [
@@ -1032,6 +1045,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Fischl: {
         star: 4,
         element: konst.ElementType.Elect,
+        energy: 60,
         weapon: konst.WeaponType.Bow,
         status: {
             hp: [
@@ -1104,6 +1118,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Ganyu: {
         star: 5,
         element: konst.ElementType.Cryo,
+        energy: 60,
         weapon: konst.WeaponType.Bow,
         status: {
             hp: [
@@ -1182,6 +1197,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Hutao: {
         star: 5,
         element: konst.ElementType.Pyro,
+        energy: 60,
         weapon: konst.WeaponType.Polearm,
         status: {
             hp: [
@@ -1271,6 +1287,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Jean: {
         star: 5,
         element: konst.ElementType.Anemo,
+        energy: 80,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -1341,6 +1358,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Kaedehara: {
         star: 5,
         element: konst.ElementType.Anemo,
+        energy: 60,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -1430,6 +1448,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Kaeya: {
         star: 4,
         element: konst.ElementType.Cryo,
+        energy: 60,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -1501,6 +1520,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Kamisato: {
         star: 5,
         element: konst.ElementType.Cryo,
+        energy: 80,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -1578,6 +1598,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Keqing: {
         star: 5,
         element: konst.ElementType.Elect,
+        energy: 40,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -1654,6 +1675,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Klee: {
         star: 5,
         element: konst.ElementType.Pyro,
+        energy: 60,
         weapon: konst.WeaponType.Catalyst,
         status: {
             hp: [
@@ -1725,6 +1747,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Kujo: {
         star: 4,
         element: konst.ElementType.Elect,
+        energy: 80,
         weapon: konst.WeaponType.Bow,
         status: {
             hp: [
@@ -1798,6 +1821,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Lisa: {
         star: 4,
         element: konst.ElementType.Elect,
+        energy: 80,
         weapon: konst.WeaponType.Catalyst,
         status: {
             hp: [
@@ -1872,6 +1896,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Mona: {
         star: 5,
         element: konst.ElementType.Hydro,
+        energy: 60,
         weapon: konst.WeaponType.Catalyst,
         status: {
             hp: [
@@ -1948,6 +1973,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Ningguang: {
         star: 4,
         element: konst.ElementType.Geo,
+        energy: 40,
         weapon: konst.WeaponType.Catalyst,
         status: {
             hp: [
@@ -2013,6 +2039,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Noelle: {
         star: 4,
         element: konst.ElementType.Geo,
+        energy: 60,
         weapon: konst.WeaponType.Claymore,
         status: {
             hp: [
@@ -2087,6 +2114,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Qiqi: {
         star: 5,
         element: konst.ElementType.Cryo,
+        energy: 80,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -2157,6 +2185,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Raiden: {
         star: 5,
         element: konst.ElementType.Elect,
+        energy: 90,
         weapon: konst.WeaponType.Polearm,
         status: {
             hp: [
@@ -2220,7 +2249,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         },
         passive: {
             // skill: ・雷罰悪曜の眼を持つキャラクターは継続時間内に、元素爆発の元素エネルギーを基準に、元素爆発ダメージがアップする。
-            // skill: { },
+            // skill: {
+            //     extra: konst.ExtraBonusType.Flat,
+            //     dest: konst.FlatBonusDest.Burst,
+            //     base: konst.FlatBonusBase.Energy,
+            //     value: 0.3,
+            //     limit: "元素スキル継続中",
+            //     target: konst.BonusTarget.All
+            // },
             // burst: 周囲のチーム全員（雷電将軍自身を除く）が元素爆発を発動すると、元素爆発の元素エネルギーを元に雷電将軍の諸願百目の輪に願力を蓄積する。
             // 蓄積できる願力は最大60層まで。
             burst: {
@@ -2253,6 +2289,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Razor: {
         star: 4,
         element: konst.ElementType.Elect,
+        energy: 80,
         weapon: konst.WeaponType.Claymore,
         status: {
             hp: [
@@ -2326,6 +2363,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Rosaria: {
         star: 4,
         element: konst.ElementType.Cryo,
+        energy: 60,
         weapon: konst.WeaponType.Polearm,
         status: {
             hp: [
@@ -2408,6 +2446,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Sangonomiya: {
         star: 5,
         element: konst.ElementType.Hydro,
+        energy: 70,
         weapon: konst.WeaponType.Catalyst,
         status: {
             hp: [
@@ -2483,6 +2522,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Sayu: {
         star: 4,
         element: konst.ElementType.Anemo,
+        energy: 80,
         weapon: konst.WeaponType.Claymore,
         status: {
             hp: [
@@ -2565,6 +2605,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Sucrose: {
         star: 4,
         element: konst.ElementType.Anemo,
+        energy: 80,
         weapon: konst.WeaponType.Catalyst,
         status: {
             hp: [
@@ -2635,6 +2676,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Tartaglia: {
         star: 5,
         element: konst.ElementType.Hydro,
+        energy: 60,
         weapon: konst.WeaponType.Bow,
         status: {
             hp: [
@@ -2718,6 +2760,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Venti: {
         star: 5,
         element: konst.ElementType.Anemo,
+        energy: 60,
         weapon: konst.WeaponType.Bow,
         status: {
             hp: [
@@ -2797,6 +2840,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Xiangling: {
         star: 4,
         element: konst.ElementType.Pyro,
+        energy: 80,
         weapon: konst.WeaponType.Polearm,
         status: {
             hp: [
@@ -2870,6 +2914,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Xiao: {
         star: 5,
         element: konst.ElementType.Anemo,
+        energy: 70,
         weapon: konst.WeaponType.Polearm,
         status: {
             hp: [
@@ -2945,6 +2990,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Xingqiu: {
         star: 4,
         element: konst.ElementType.Hydro,
+        energy: 80,
         weapon: konst.WeaponType.Sword,
         status: {
             hp: [
@@ -3015,6 +3061,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Xinyan: {
         star: 4,
         element: konst.ElementType.Pyro,
+        energy: 60,
         weapon: konst.WeaponType.Claymore,
         status: {
             hp: [
@@ -3090,6 +3137,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Yanfei: {
         star: 4,
         element: konst.ElementType.Pyro,
+        energy: 80,
         weapon: konst.WeaponType.Catalyst,
         status: {
             hp: [
@@ -3164,6 +3212,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Yoimiya: {
         star: 5,
         element: konst.ElementType.Pyro,
+        energy: 60,
         weapon: konst.WeaponType.Bow,
         status: {
             hp: [
@@ -3241,6 +3290,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
     Zhongli: {
         star: 5,
         element: konst.ElementType.Geo,
+        energy: 40,
         weapon: konst.WeaponType.Polearm,
         status: {
             hp: [

@@ -97,7 +97,7 @@ export interface IConste extends
 export interface ICharaInfo {
     readonly star: number;
     readonly element: konst.ElementType;
-    readonly energy?: number;
+    readonly energy: number;
     readonly weapon: konst.WeaponType;
     readonly status: ReadonlyRecord<konst.StatusType, ReadonlyArray<number>>;
     readonly special: konst.StatusBonusType | konst.ElementBonusType;
