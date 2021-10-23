@@ -874,7 +874,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 1. HPが50%より上回る敵に対して、ディルックの与えるダメージ+15％。
             lv1: { items: konst.AnyBonusType.Damage, value: 15.0, limit: "HP50%より上回る敵" },
             // 2. ディルックがダメージを受けると、攻撃力+10%、攻撃速度+5％、継続時間10秒。該当効果は最大3重まで、1.5秒に1回のみ発動可能。
-            lv2: { items: konst.StatusBonusType.AtkBuf, value: 10.0, limit: "ダメージを受けた時", times: 10, stack: 3 },
+            lv2: { items: konst.StatusBonusType.AtkBuf, value: 10.0, limit: "ダメージを受けた時", stack: 3, times: 10 },
             // 3. 逆焔の刃のスキルLv.+3
             // 4. リズム的に逆焔の刃を発動させることで、ダメージを大幅に上げることができる。逆焔の刃発動2秒後、次の逆焔の刃のダメージ+40％、継続時間2秒。
             lv4: { items: konst.CombatBonusType.Skill, value: 40.0, limit: "元素スキル発動2秒後", times: 2 },
@@ -1967,7 +1967,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv4: { items: konst.CriticalBonusType.Rate, value: 15.0, limit: "星異状態の敵を攻撃する時", target: konst.BonusTarget.All },
             // 5. 水中幻願のスキルLv.+3
             // 6. モナが虚実流動状態に入った後、1秒移動する毎に、次の重撃ダメージ+60%。最大180%まで、継続時間8秒。
-            lv6: { items: konst.CombatBonusType.Heavy, value: 60.0, limit: "虚実流動で1秒移動する毎", times: 8, stack: 3 },
+            lv6: { items: konst.CombatBonusType.Heavy, value: 60.0, limit: "虚実流動で1秒移動する毎", stack: 3, times: 8 },
         },
     },
     Ningguang: {
@@ -2973,7 +2973,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 靖妖儺舞状態の時、魈の与える全ダメージ+5%。また、スキル継続中、3秒毎に与える全ダメージが更に+5%。最大25％まで。
             asc1st: { items: konst.AnyBonusType.Damage, value: 5.0, limit: "元素爆発継続中3秒毎", stack: 5 },
             // 5. 風輪両立発動後の7秒間、風輪両立によるダメージ+15%。継続時間7秒、最大3重まで、重複で発動すると継続時間がリセットされる。
-            asc4th: { items: konst.CombatBonusType.Skill, value: 15.0, limit: "元素スキル発動後", times: 7, stack: 3 },
+            asc4th: { items: konst.CombatBonusType.Skill, value: 15.0, limit: "元素スキル発動後", stack: 3, times: 7 },
         },
         conste: {
             // 1. 風輪両立の使用可能回数+1。
@@ -3193,7 +3193,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.HeavyDmg, base: konst.FlatBonusBase.None, value: 33.3, limit: "元素爆発発動後", times: 15 },
             // 4. 煙緋が重撃で丹火の印を消費した時、丹火の印1枚につき炎元素ダメージ+5%、継続時間6秒。
             //    効果持続中に再び重撃を放つと、既存の効果が先にクリアされる。
-            asc1st: { items: konst.ElementBonusType.Pyro, value: 5.0, limit: "重撃で丹火の印を消費した時", times: 6, stack: 6 },
+            asc1st: { items: konst.ElementBonusType.Pyro, value: 5.0, limit: "重撃で丹火の印を消費した時", stack: 6, times: 6 },
             // 5. 煙緋が自ら発動した重撃が敵に対して会心した時、追加で自身の攻撃力80%分の炎元素範囲ダメージを与える。
             //    このダメージは重撃によるダメージとみなされる。
         },

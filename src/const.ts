@@ -300,6 +300,7 @@ export const FlatBonusDest = {
     EnRec: "en_rec",
     // CombatType 実数
     Combat: "combat",
+    Normal: "normal",
     Skill: "skill",
     Burst: "burst",
     // StatusType 割合
@@ -309,6 +310,7 @@ export const FlatBonusDest = {
     CombatDmg: "combat_dmg",
     NormalDmg: "normal_dmg",
     HeavyDmg: "heavy_dmg",
+    BurstDmg: "burst_dmg",
     // ElementBonusType 割合
     HydroDmg: "hydro_dmg",
     CryoDmg: "cryo_dmg",

@@ -369,8 +369,8 @@ export class BonusBase {
     public readonly group: string; // table-dataのグループ
     public readonly extra: konst.ExtraBonusType | undefined;
     public readonly limit: string;
-    public readonly times: number;
     public readonly stack: number;
+    public readonly times: number;
     public readonly target: konst.BonusTarget;
     public readonly source: string;
     public data: IBonusData;
@@ -382,8 +382,8 @@ export class BonusBase {
         this.group = group;
         this.extra = extra;
         this.limit = limit ?? "";
-        this.times = times ?? 0;
         this.stack = stack ?? 0;
+        this.times = times ?? 0;
         this.target = target ?? konst.BonusTarget.Self;
         this.source = source;
         this.data = { index: index, apply: this.always, stack: stack ?? 1 };
@@ -490,6 +490,7 @@ export class FlatBonus extends BonusBase {
         for (const val of this.dest) {
             switch (val) {
                 case konst.FlatBonusDest.Combat:
+                case konst.FlatBonusDest.Normal:
                 case konst.FlatBonusDest.Skill:
                 case konst.FlatBonusDest.Burst:
                     dest.push(this.getLabel(TypeToBonus.combat(val)));
@@ -572,6 +573,7 @@ export class FlatBonus extends BonusBase {
                         status.flat[konst.CombatType.Heavy] += value;
                         status.flat[konst.CombatType.Plunge] += value;
                         break;
+                    case konst.FlatBonusDest.Normal:
                     case konst.FlatBonusDest.Skill:
                     case konst.FlatBonusDest.Burst:
                         status.flat[dest] += value;

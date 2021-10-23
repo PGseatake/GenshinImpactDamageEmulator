@@ -8,8 +8,8 @@ export type BonusValue = {
 export interface IBonusOption {
     readonly extra?: konst.ExtraBonusType;
     readonly limit?: string;
-    readonly times?: number;
     readonly stack?: number;
+    readonly times?: number;
     readonly target?: konst.BonusTarget;
 }
 
@@ -109,7 +109,7 @@ export interface ICharaInfo {
 
 export interface IArtifactInfo {
     readonly set2?: IBasicBonus;
-    readonly set4?: ReadonlyArrayable<IBasicBonus>;
+    readonly set4?: ReadonlyArrayable<IBasicBonus | IFlatBonus>;
 }
 
 export interface IWeaponInfo {
