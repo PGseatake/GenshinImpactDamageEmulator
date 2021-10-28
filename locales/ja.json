@@ -591,24 +591,37 @@
         "shield": "シールド",
         "wakeup": "寝起き",
         "Slime": "スライム・{0}",
+        "Specters": "フライム・{0}",
         "Hilichurl": "ヒルチャール",
         "Mitachurl": "ヒルチャール・暴徒",
         "Samachurl": "ヒルチャールシャーマン・{0}",
         "Lawachurl": {
             "cryo": "ヒルチャール・霜鎧の王",
-            "geo": "ヒルチャール・岩兜の王"
+            "geo": "ヒルチャール・岩兜の王",
+            "elect": "ヒルチャール・雷兜の王"
         },
         "RuinGuard": "遺跡守衛",
         "RuinGrader": "遺跡重機",
         "RuinHunter": "遺跡狩人",
+        "RuinCruiser": "遺跡巡視者",
+        "RuinDestroyer": "遺跡殲滅者",
+        "RuinDefender": "遺跡防衛者",
+        "RuinScout": "遺跡偵察者",
         "WhopperFlower": "トリックフラワー・{0}",
         "FatuiSkirmisher": "ファデュイ先遣隊",
         "FatuiAgent": "ファデュイ・デットエージェント",
         "FatuiCicinMage": "ファデュイ・{0}蛍術師",
+        "FatuiMirrorMaiden": "ファデュイ・ミラーメイデン",
         "TreasureHoarder": "盗賊団",
+        "Nobushi": "野伏",
+        "Kairagi": "海乱鬼",
+        "Rifthound": "獣域ハウンド・{0}",
+        "RifthoundWhelp": "獣域ウェルプ・{0}",
         "GeovishapHatchling": "ベビーヴィシャップ・岩",
         "Geovishap": "ヴィシャップ・岩",
         "AbyssMage": "アビスの魔術師",
+        "AbyssHeralds": "アビスの使徒・激流",
+        "AbyssLectors": "アビスの詠唱者・紫電",
         "EyeoftheStorm": "狂風のコア",
         "Cicin": "{0}蛍",
         "SnowboarKing": "雪のイノシシ王",
@@ -626,7 +639,11 @@
         "Tartaglia3": "タルタリヤ・第3段階",
         "Azhdaha1": "若陀龍王・第1段階",
         "Azhdaha2": "若陀龍王・第2段階",
-        "Azhdaha3": "若陀龍王・第3段階"
+        "Azhdaha3": "若陀龍王・第3段階",
+        "MaguuKenki": "魔偶剣鬼",
+        "PerpetualArray": "恒常からくり陣形",
+        "Signora1": "シニョーラ・第1段階",
+        "Signora2": "シニョーラ・第2段階"
     },
     "limit": {},
     "releasenote": {
@@ -640,6 +657,7 @@
                 "元素反応のダメージ計算を修正",
                 "モバイル版の仮対応",
                 "多言語対応（一部）",
+                "若陀龍王の耐性の誤りを修正",
                 {
                     "title": "以下のキャラクターを追加",
                     "items": [
@@ -685,6 +703,26 @@
                         "蒼白の炎",
                         "絶縁の旗印",
                         "追憶のしめ縄"
+                    ]
+                },
+                {
+                    "title": "以下の敵を追加",
+                    "items": [
+                        "ヒルチャール・雷兜の王",
+                        "遺跡巡視者",
+                        "遺跡殲滅者",
+                        "遺跡防衛者",
+                        "遺跡偵察者",
+                        "トリックフラワー・雷",
+                        "ファデュイ・ミラーメイデン",
+                        "野伏",
+                        "海乱鬼",
+                        "獣域ハウンド・岩/雷",
+                        "獣域ウェルプ・岩/雷",
+                        "アビスの使徒・激流",
+                        "アビスの詠唱者・紫電",
+                        "魔偶剣鬼",
+                        "恒常からくり陣形"
                     ]
                 }
             ]
