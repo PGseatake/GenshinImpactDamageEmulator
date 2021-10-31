@@ -23,9 +23,10 @@
             />チームメニューでチームメンバーを選択します。
           </li>
           <li>
+            <v-icon v-text="icons.damage" />ダメージメニューで上部の
             <v-icon
-              v-text="icons.damage"
-            />ダメージメニューで敵キャラ・チームメンバーなどを選んで、ダメージを計算します。
+              v-text="icons.append"
+            />をクリック、敵キャラ・チームメンバーなどを選んで、ダメージを計算します。
           </li>
         </ol>
       </v-card-text>
@@ -82,6 +83,7 @@ import {
   mdiContentSave,
   mdiExport,
   mdiImport,
+  mdiPlaylistPlus,
   mdiRing,
   mdiSword,
   mdiTranslate,
@@ -104,6 +106,7 @@ export default class PageIndex extends Vue {
     import: mdiImport,
     export: mdiExport,
     locale: mdiTranslate,
+    append: mdiPlaylistPlus,
   };
 
   get version() {
