@@ -441,6 +441,7 @@ export class BonusBase {
             switch (this.target) {
                 case konst.BonusTarget.All:
                 case konst.BonusTarget.Self:
+                case konst.BonusTarget.Enemy:
                     return true;
                 case konst.BonusTarget.Next:
                 case konst.BonusTarget.Other:

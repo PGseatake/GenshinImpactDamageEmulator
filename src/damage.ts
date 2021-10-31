@@ -39,14 +39,15 @@ export class Enemy {
 
     value(type: ElementType) {
         return (
-            this.info.resist[type] +
+            this.info.resist[type] -
+            this.reduct[type] +
             this.data.fixed +
             ((type === this.data.elem && this.info.value) || 0)
         );
     }
 
     resist(type: ElementType) {
-        let rate = this.value(type) - this.reduct[type];
+        let rate = this.value(type);
         if (rate < 0) {
             return (100 - rate / 2) / 100;
         } else if (75 <= rate) {
@@ -150,7 +151,9 @@ export class CombatAttribute {
             reaction = undefined;
         }
         // 元素付与
-        if (elem === ElementType.Phys && status.enchant.type) {
+        if (elem === ElementType.Phys &&
+            status.enchant.type &&
+            status.enchant.dest.includes(this.type)) {
             elem = status.enchant.type;
         }
 
