@@ -92,7 +92,7 @@ export default {
   },
 
   router: {
-    base: "/GenshinImpactDamageEmulatorV2/",
+    base: "/GenshinImpactDamageEmulator/",
     middleware: 'route'
   },
 
