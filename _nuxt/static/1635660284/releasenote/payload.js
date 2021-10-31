@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/releasenote", {data:[{}],fetch:{},mutations:[]});

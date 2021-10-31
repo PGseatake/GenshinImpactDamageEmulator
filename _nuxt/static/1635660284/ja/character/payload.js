@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/ja/character", {data:[{}],fetch:{},mutations:[]});

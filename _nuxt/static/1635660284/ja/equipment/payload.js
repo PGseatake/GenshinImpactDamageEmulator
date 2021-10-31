@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/ja/equipment", {data:[{}],fetch:{},mutations:[]});

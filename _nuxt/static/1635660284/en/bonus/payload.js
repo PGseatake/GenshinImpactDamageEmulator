@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/en/bonus", {data:[{}],fetch:{},mutations:[]});
