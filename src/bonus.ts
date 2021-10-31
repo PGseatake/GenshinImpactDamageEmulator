@@ -160,6 +160,7 @@ export class Status {
         this.enchant.self = false;
 
         // 基礎値
+        this.param[konst.StatusBonusType.EnRec] = 100;
         this.param[konst.CriticalBonusType.Damage] = 50;
         this.param[konst.CriticalBonusType.Rate] = 5;
 

@@ -100,6 +100,9 @@ export default class StatusTable extends Vue {
           base = b;
         } else {
           switch (type) {
+            case StatusBonusType.EnRec:
+              base = 100;
+              break;
             case CriticalBonusType.Damage:
               base = 50;
               break;
