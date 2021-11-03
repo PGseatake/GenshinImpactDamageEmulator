@@ -151,7 +151,7 @@
         >{{ popupText }}</v-snackbar
       >
       <v-footer class="justify-end">
-        <span>Ver. 2.0.0</span>
+        <span>{{ $t("footer") }}</span>
       </v-footer>
 
       <!-- インポートダイアログ -->
