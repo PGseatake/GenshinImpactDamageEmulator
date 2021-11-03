@@ -37,6 +37,7 @@ export const CharaNames = [
     "Sayu",
     "Sucrose",
     "Tartaglia",
+    "Thoma",
     "Venti",
     "Xiangling",
     "Xiao",
@@ -2755,6 +2756,91 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    この効果によって発動された断流・斬と断流・閃は、この二つのスキル本来の発動時間制限を受けない。また、本来のスキルへの発動時間制限にも影響を与えない。
             // 5. 極悪技・尽滅閃のスキルLv.+3
             // 6. 極悪技・尽滅閃発動時、魔王の武装・荒波のクールタイムをリセットする。この効果は遠隔モードに戻った後に発動する。
+        },
+    },
+    Thoma: {
+        star: 4,
+        element: konst.ElementType.Pyro,
+        energy: 80,
+        weapon: konst.WeaponType.Polearm,
+        status: {
+            hp: [
+                866, 2225,
+                2872, 4302,
+                4762, 5478,
+                6091, 6806,
+                7266, 7981,
+                8440, 9156,
+                9616, 10331,
+            ],
+            atk: [
+                17, 43,
+                56, 84,
+                93, 107,
+                119, 133,
+                142, 156,
+                165, 179,
+                188, 202,
+            ],
+            def: [
+                63, 162,
+                209, 313,
+                346, 398,
+                443, 495,
+                528, 580,
+                613, 665,
+                699, 751,
+            ],
+        },
+        special: konst.StatusBonusType.AtkBuf,
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 44.4 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.6 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 26.8, multi: 2 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 67.4 },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 113 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 63.9 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 128 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 146 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 88 },
+                { name: "熾炎崩滅ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 58 },
+            ],
+        },
+        passive: {
+            // 4. フィールド上キャラクターが烈炎侍立シールドを獲得または更新した時、シールド強化+5%、継続時間6秒。
+            // この効果は0.3秒毎に1回のみ発動可能、最大5重まで。
+            // 5. 真紅熾炎の大鎧の熾炎崩滅によるダメージがトーマのHP上限2.2%分アップする。
+            // asc4th: {
+            //     extra: konst.ExtraBonusType.Flat,
+            //     dest: konst.FlatBonusDest.Burst,
+            //     base: konst.FlatBonusBase.Hp,
+            //     value: 2.2,
+            //     limit: "元素爆発継続中",
+            // },
+        },
+        conste: {
+            // 1. トーマ自身の烈炎侍立シールドに守られたキャラクター（トーマ自身を除く）が攻撃を受けた時、トーマ自身の烈炎侍立のクールタイム-3秒、真紅熾炎の大鎧のクールタイム-3秒。
+            // この効果は20秒に1回のみ発動可能。
+            // 2. 真紅熾炎の大鎧の継続時間+3秒。
+            // 3. 烈炎侍立のスキルLv.+3
+            // 4. 真紅熾炎の大鎧を発動すると、トーマの元素エネルギーを15ポイント回復する。
+            // 5. 真紅熾炎の大鎧のスキルLv.+3
+            // 6. 烈炎侍立シールドを獲得または更新した時、チーム全員の通常攻撃、重撃及び落下攻撃ダメージ+15%、継続時間6秒。
+            lv6: {
+                extra: konst.ExtraBonusType.Flat,
+                dest: konst.FlatBonusDest.CombatDmg,
+                base: konst.FlatBonusBase.None,
+                value: 15.0,
+                limit: "元素スキル継続中",
+                target: konst.BonusTarget.All,
+            },
         },
     },
     Venti: {

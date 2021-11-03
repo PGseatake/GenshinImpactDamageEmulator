@@ -250,6 +250,7 @@
         "Sayu": "早柚",
         "Sucrose": "スクロース",
         "Tartaglia": "タルタリヤ",
+        "Thoma": "トーマ",
         "Venti": "ウェンティ",
         "Xiangling": "香菱",
         "Xiao": "魈",
@@ -323,6 +324,7 @@
             "PrototypeGrudge": "星鎌・試作",
             "KitainCrossSpear": "喜多院十文字槍",
             "DragonspineSpear": "ドラゴンスピア",
+            "WavebreakersFin": "斬波のひれ長",
             "RoyalSpear": "旧貴族猟槍",
             "FavoniusLance": "西風長槍",
             "LithicSpear": "千岩長槍",
@@ -344,6 +346,7 @@
             "Predator": "プレデター",
             "PrototypeCrescent": "澹月・試作",
             "Hamayumi": "破魔の弓",
+            "MouunsMoon": "曚雲の月",
             "MitternachtsWaltz": "幽夜のワルツ",
             "WindblumeOde": "風花の頌歌",
             "AlleyHunter": "ダークアレイの狩人",
@@ -647,6 +650,26 @@
     },
     "limit": {},
     "releasenote": {
+        "v2_1_0": {
+            "date": "2021/10/xx",
+            "items": [
+                "元素反応ダメージを調整",
+                "聖遺物に「与える治療効果」ボーナスを追加",
+                {
+                    "title": "以下のキャラクターを追加",
+                    "items": [
+                        "トーマ"
+                    ]
+                },
+                {
+                    "title": "以下の武器を追加",
+                    "items": [
+                        "斬波のひれ長",
+                        "曚雲の月"
+                    ]
+                }
+            ]
+        },
         "v2_0_0": {
             "date": "2021/10/31",
             "items": [

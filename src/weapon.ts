@@ -600,6 +600,7 @@ const PolearmNames = [
     "PrototypeGrudge",
     "KitainCrossSpear",
     "DragonspineSpear",
+    "WavebreakersFin",
     "RoyalSpear",
     "FavoniusLance",
     "LithicSpear",
@@ -738,6 +739,22 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         // 敵が氷元素の影響を受けている場合、攻撃力の200%のダメージを受ける。この効果は10秒毎に1回のみ発動可能。
         // passive: null
     },
+    WavebreakersFin: {
+        star: 4,
+        atk: WeaponAtk4[45],
+        second: konst.StatusBonusType.AtkBuf,
+        secval: [3.0, 5.3, 7.7, 8.9, 10.1, 11.4, 12.6, 13.8],
+        // チーム全員の元素エネルギー上限の合計を基に、元素爆発ダメージをアップさせる。
+        // 1ポイン卜につき、装備したキャラクターの元素爆発ダメージ+0.12~0.24%。
+        // この方式アップできる元素爆発ダメージは最大40~80%まで。
+        // passive: {
+        //     extra: konst.ExtraBonusType.Flat,
+        //     dest: konst.CombatBonusType.Burst,
+        //     base: konst.StatusBonusType.EnRec, // チーム全員
+        //     value: 0.12,
+        //     bound: { base: konst.FlatBonusBase.None, value: 40 },
+        // },
+    },
     RoyalSpear: {
         star: 4,
         atk: WeaponAtk4[44],
@@ -830,6 +847,7 @@ const BowNames = [
     "Predator",
     "PrototypeCrescent",
     "Hamayumi",
+    "MouunsMoon",
     "MitternachtsWaltz",
     "WindblumeOde",
     "AlleyHunter",
@@ -990,6 +1008,22 @@ const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
             { items: konst.CombatBonusType.Normal, value: [16, 20, 24, 28, 32], limit: "元素エネルギーが満タンの時" },
             { items: konst.CombatBonusType.Heavy, value: [12, 15, 18, 21, 24], limit: "元素エネルギーが満タンの時" },
         ],
+    },
+    MouunsMoon: {
+        star: 4,
+        atk: WeaponAtk4[44],
+        second: konst.StatusBonusType.AtkBuf,
+        secval: [6.0, 10.6, 15.5, 17.9, 20.3, 22.7, 25.1, 27.6],
+        // チーム全員の元素エネルギー上限の合計を基に、元素爆発ダメージをアップさせる。
+        // 1ポイン卜につき、装備したキャラクターの元素爆発ダメージ+0.12~0.24%。
+        // この方式アップできる元素爆発ダメージは最大40~80%まで。
+        // passive: {
+        //     extra: konst.ExtraBonusType.Flat,
+        //     dest: konst.CombatBonusType.Burst,
+        //     base: konst.StatusBonusType.EnRec, // チーム全員
+        //     value: 0.12,
+        //     bound: { base: konst.FlatBonusBase.None, value: 40 },
+        // },
     },
     MitternachtsWaltz: {
         star: 4,
