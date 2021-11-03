@@ -288,7 +288,7 @@ type ArtifactParam = {
     readonly slope: number;
     readonly substep?: number;
 };
-type ArtifactParamType = "hp" | "atk" | "def" | "atk_buf" | "def_buf" | "en_rec" | "cri_rate" | "cri_dmg";
+type ArtifactParamType = "hp" | "atk" | "def" | "atk_buf" | "def_buf" | "en_rec" | "cri_rate" | "cri_dmg" | "heal_buf";
 type ArtifactParamData = ReadonlyRecord<ArtifactParamType, ArtifactParam>;
 
 const ArtifactParamList: Readonly<ArtifactParamData[]> = [
@@ -302,6 +302,7 @@ const ArtifactParamList: Readonly<ArtifactParamData[]> = [
         en_rec: { intercept: 5.8, slope: 1.65 }, // 元素チャージ効率
         cri_rate: { intercept: 3.5, slope: 0.989010989 }, // 会心率
         cri_dmg: { intercept: 7.0, slope: 1.980769231 }, // 会心ダメージ
+        heal_buf: { intercept: 4.0, slope: 1.145054945 }, // 与える治療効果
     },
     // ☆☆☆☆
     {
@@ -313,6 +314,7 @@ const ArtifactParamList: Readonly<ArtifactParamData[]> = [
         en_rec: { intercept: 7.0, slope: 1.980882353, substep: 0.52 },
         cri_rate: { intercept: 4.2, slope: 1.1875, substep: 0.31 },
         cri_dmg: { intercept: 8.4, slope: 2.377696078, substep: 0.62 },
+        heal_buf: { intercept: 4.8, slope: 1.371813725 },
     },
     // ☆☆☆☆☆
     {
@@ -322,8 +324,9 @@ const ArtifactParamList: Readonly<ArtifactParamData[]> = [
         atk_buf: { intercept: 7, slope: 1.980909091, substep: 0.58 },
         def_buf: { intercept: 8.7, slope: 2.477402597, substep: 0.73 },
         en_rec: { intercept: 7.8, slope: 2.2, substep: 0.65 },
-        cri_rate: { intercept: 4.7, slope: 1.330779221, substep: 0.39 },
-        cri_dmg: { intercept: 9.3, slope: 2.644805195, substep: 0.78 },
+        cri_rate: { intercept: 4.7, slope: 1.321, substep: 0.39 },
+        cri_dmg: { intercept: 9.3, slope: 2.646363636, substep: 0.78 },
+        heal_buf: { intercept: 5.4, slope: 1.525324675 },
     }
 ] as const;
 // TODO: ここまで
@@ -349,6 +352,7 @@ function getArtifactParam(type: konst.AnyBonusType, star: number, level: number)
         case konst.StatusBonusType.AtkBuf:
         case konst.StatusBonusType.DefBuf:
         case konst.StatusBonusType.EnRec:
+        case konst.StatusBonusType.HealBuf:
         case konst.CriticalBonusType.Rate:
         case konst.CriticalBonusType.Damage:
             return param[type];
