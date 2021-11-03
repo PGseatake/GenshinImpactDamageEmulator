@@ -54,15 +54,6 @@
       </v-card-text>
     </v-card>
     <v-card class="mt-2">
-      <v-card-title>注意点</v-card-title>
-      <v-card-text class="text--primary">
-        <ul>
-          <li>このページの利用は自己責任でお願いします。</li>
-          <li>一部のパラメーターは、ゲーム内の数値と若干の誤差があります。</li>
-        </ul>
-      </v-card-text>
-    </v-card>
-    <v-card class="mt-2">
       <v-card-title>アップデート</v-card-title>
       <v-card-text class="text--primary py-0">
         <release-root :version="version" :root="root" :value="true" />
@@ -70,6 +61,15 @@
       <v-card-actions>
         <v-btn to="/releasenote" text class="ml-4">リリースノート</v-btn>
       </v-card-actions>
+    </v-card>
+    <v-card class="mt-2">
+      <v-card-title>注意点</v-card-title>
+      <v-card-text class="text--primary">
+        <ul>
+          <li>当サイトの利用は自己責任でお願いします。</li>
+          <li>一部のパラメーターはゲーム内の数値と誤差があります。</li>
+        </ul>
+      </v-card-text>
     </v-card>
   </v-container>
 </template>
