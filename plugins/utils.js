@@ -6,6 +6,9 @@ import { convert } from '~/src/convert';
 
 export function roundRate(value) {
     if (value < 100) {
+        if (value < 1) {
+            return (Math.round(value * 100) / 100).toFixed(2) + "%";
+        }
         return (Math.round(value * 10) / 10).toFixed(1) + "%";
     }
     return Math.round(value).toFixed() + "%";
@@ -13,6 +16,9 @@ export function roundRate(value) {
 
 export function roundFloat(value) {
     if (value < 100) {
+        if (value < 1) {
+            return (Math.round(value * 100) / 100).toFixed(2);
+        }
         return (Math.round(value * 10) / 10).toFixed(1);
     }
     return Math.round(value).toFixed();

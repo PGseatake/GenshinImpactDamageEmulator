@@ -124,7 +124,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv6: [
                 { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Anemo, value: 20.0, limit: "元素爆発のダメージを受けた時" },
                 //    元素変化があった場合､該当の元素耐性-20%
-                { extra: konst.ExtraBonusType.Reduct, type: konst.CombatElementType.Contact, value: 20.0, limit: "元素変化があった時" },
+                {
+                    extra: konst.ExtraBonusType.Reduct,
+                    type: konst.CombatElementType.Contact,
+                    value: 20.0,
+                    limit: "元素変化があった時",
+                    target: konst.BonusTarget.All,
+                },
             ],
         },
     },
@@ -1421,8 +1427,15 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // その千早振る後の落下攻撃・乱れ嵐斬に元素変化が起き、攻撃力200% 分の該当元素ダメージを追加で与える。
             // このダメージは落下攻撃とみなされる。
             // 5. 楓原万葉が拡散反応を起こした後、楓原万葉の元素熟知の数値が1につき、チーム全員に対し、拡散させた元素ダメージ+0.04%、継続時間8秒。
-            // asc4th: { extra: konst.ExtraBonusType.Flat, base: konst.FlatBonusBase.Elem, dest: konst.FlatBonusDest.Contact, value: 0.04, times: 8 },
-            // TODO: 実装
+            asc4th: {
+                extra: konst.ExtraBonusType.Flat,
+                base: konst.FlatBonusBase.Elem,
+                dest: konst.FlatBonusDest.Contact,
+                value: 0.04,
+                limit: "拡散反応を起こした時",
+                times: 8,
+                target: konst.BonusTarget.All,
+            },
         },
         conste: {
             // 1. 千早振るのクールタイム-10%。万葉の一刀を発動した後、千早振るのクールタイムがリセットされる。
@@ -2920,7 +2933,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv4: { items: konst.ElementBonusType.Anemo, value: 25.0, limit: "元素オーブまたは元素粒子を獲得した時", times: 10 },
             // 5. 高天の歌のスキルLv.+3
             // 6. 風神の詩の影響を受ける敵の風属性-20%。元素変化があった場合、変化した元素の耐性-20%。
-            lv6: { extra: konst.ExtraBonusType.Reduct, type: [konst.ElementType.Anemo, konst.ReductType.Contact], value: 20.0, limit: "元素爆発の影響を受ける敵" },
+            lv6: { extra: konst.ExtraBonusType.Reduct, type: [konst.ElementType.Anemo, konst.AnyReductType.Contact], value: 20.0, limit: "元素爆発の影響を受ける敵", target: konst.BonusTarget.All },
         },
     },
     Xiangling: {
@@ -3435,6 +3448,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 玉璋シールドはダメージを受けた際に防御効果を発動する。
             //    玉璋シールドに守られたキャラクターのシールド強化+5%。
             //    シールドが消えるまで、最大5回強度を上げることができる。
+            // 玉璋シールドに守られたキャラクターは、付近範囲内の敵の全元素耐性と物理耐性-20%。この効果は重ねがけ不可。
+            skill: { extra: konst.ExtraBonusType.Reduct, type: konst.AnyReductType.All, value: 20, limit: "玉璋シールドに守られたキャラクターの周囲の敵", target: konst.BonusTarget.All },
             // 5. 天星のダメージ量が鍾離のHP上限の33%分上昇する。
             asc4th: [
                 { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Combat, base: konst.StatusBonusType.Hp, value: 1.39 },

@@ -5,8 +5,8 @@ import {
     CombatElementType,
     DamageBased,
     isAmplifyReaction,
-    NoneElementType,
     NoneReactionType,
+    NoneContactType,
 } from "~/src/const";
 import { ICombat, IIdentify } from "~/src/interface";
 import {
@@ -21,7 +21,7 @@ import { roundRate } from "~/plugins/utils";
 export interface IDamageData extends IIdentify, IEnemyData {
     team: string;
     member: string;
-    contact: NoneElementType;
+    contact: NoneContactType;
     reaction: NoneReactionType;
 }
 export type DBDamageTable = { damage: IDamageData[]; };
@@ -185,6 +185,22 @@ export class CombatAttribute {
         const combatScale = toScale(combatBonus + elementBonus + damageBonus);
         const critical = status.critical(this.type);
         const criticalScale = toScale(critical.damage);
+
+        // let debug = {
+        //     name: this.name,
+        //     type: this.type,
+        //     elem: this.elem,
+        //     value: this.value,
+        //     attackPower,
+        //     enemyDefence,
+        //     enemyResist,
+        //     combatBonus,
+        //     elementBonus,
+        //     damageBonus,
+        //     combatScale,
+        //     critical,
+        // };
+        // console.log(debug);
 
         const atk = attackPower * combatScale;
         const def = enemyDefence * enemyResist;

@@ -192,8 +192,9 @@ export class Status {
     public flat: StatusFlat;
     public reduct: StatusReduct;
     public enchant: StatusEnchant;
+    public contact: konst.NoneContactType;
 
-    constructor(data: IStatus) {
+    constructor(data: IStatus, contact: konst.NoneContactType) {
         this.chara = null;
         this.talent = data.talent;
         this.base = data.base;
@@ -201,6 +202,7 @@ export class Status {
         this.flat = data.flat;
         this.reduct = data.reduct;
         this.enchant = data.enchant;
+        this.contact = contact;
     }
 
     equip(member: Member, db: DBWeaponTable & DBArtifactTable) {
@@ -487,7 +489,7 @@ export class BonusBase {
         this.data.stack = data.stack || 1;
     }
 
-    public getLabel(type: konst.AnyBonusType) {
+    public getLabel(type: konst.AnyBonusType | "contact") {
         return String(this.i18n.t("bonus." + type)).replace("(%)", "");
     }
 
@@ -670,6 +672,12 @@ export class FlatBonus extends BonusBase {
                         status.param[konst.CombatBonusType.Heavy] += value;
                         status.param[konst.CombatBonusType.Plunge] += value;
                         break;
+                    case konst.FlatBonusDest.Contact:
+                        if (status.contact) {
+                            const type = TypeToBonus.element(status.contact);
+                            status.param[type] += value * 100;
+                        }
+                        break;
                     default:
                         status.param[dest] += value;
                         break;
@@ -681,7 +689,7 @@ export class FlatBonus extends BonusBase {
 
 // 耐性減衰ボーナス
 export class ReductBonus extends BonusBase {
-    private readonly types: Readonly<konst.ReductType[]>;
+    private readonly types: Readonly<konst.AnyReductType[]>;
     private readonly value: number;
 
     constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IReductBonus) {
@@ -700,7 +708,21 @@ export class ReductBonus extends BonusBase {
     public apply(status: Status) {
         if (this.isApply(status)) {
             for (const type of this.types) {
-                status.reduct[type] += this.value;
+                switch (type) {
+                    case konst.AnyReductType.Contact:
+                        if (status.contact) {
+                            status.reduct[status.contact] += this.value;
+                        }
+                        break;
+                    case konst.AnyReductType.All:
+                        for (const elem of konst.ReductTypes) {
+                            status.reduct[elem] += this.value;
+                        }
+                        break;
+                    default:
+                        status.reduct[type] += this.value;
+                        break;
+                }
             }
         }
     }

@@ -86,7 +86,7 @@ export default class DamageTable extends Vue {
   }
 
   get items() {
-    let status = new Status(this.status);
+    let status = new Status(this.status, this.data.contact);
     status.chara = this.member.chara;
     let enemy = new Enemy(this.data, this.status.reduct);
     let items: IAttribute[] = [];

@@ -54,7 +54,7 @@ export interface IWeaponFlatBonus extends IFlatBonusBase {
 
 export interface IReductBonus extends IBonusOption {
     readonly extra: "reduct";
-    readonly type: ReadonlyArrayable<konst.ReductType>;
+    readonly type: ReadonlyArrayable<konst.AnyReductType>;
     readonly value: number;
     // readonly limit?: string;
     // readonly times?: number;

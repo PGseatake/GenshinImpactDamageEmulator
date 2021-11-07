@@ -68,7 +68,7 @@
 
 <script lang="ts">
 import { Vue, Component, Emit, Prop } from "vue-property-decorator";
-import { ElementType, NoneElementType, NoneReactionType } from "~/src/const";
+import { ContactTypes, NoneElementType, NoneReactionType } from "~/src/const";
 import { ITeamData, IMember, Members, Member, getTeamName } from "~/src/team";
 
 type TextValue = {
@@ -93,13 +93,7 @@ export default class SelectMember extends Vue {
   team: ITeamData | null = null;
   member: IMember = { info: null, chara: null, equip: null };
 
-  readonly contacts = [
-    "",
-    ElementType.Pyro,
-    ElementType.Hydro,
-    ElementType.Elect,
-    ElementType.Cryo,
-  ];
+  readonly contacts = ["", ...ContactTypes];
 
   @Emit("change")
   onChange(member: IMember, team: ITeamData | null) {}

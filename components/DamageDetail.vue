@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { ExtraBonusType } from "~/src/const";
 import { DBEquipTable } from "~/src/interface";
 import { DBCharaTable, ICharaData } from "~/src/character";
@@ -159,7 +159,6 @@ export default class DamageDetail extends Vue {
       geo: 0,
       phys: 0,
       defence: 0,
-      contact: 0,
     },
     enchant: {
       type: "",
@@ -167,6 +166,11 @@ export default class DamageDetail extends Vue {
       self: false,
     },
   };
+
+  @Watch("data.contact")
+  onChangeContact() {
+    this.onChangeBonus();
+  }
 
   get large() {
     return this.$vuetify.breakpoint.lg || this.$vuetify.breakpoint.xl;
@@ -183,7 +187,7 @@ export default class DamageDetail extends Vue {
     let part: { enchant: StatusEnchant } = {
       enchant: { type: "", dest: [], self: false },
     };
-    let status = new Status(part as IStatus);
+    let status = new Status(part as IStatus, this.data.contact);
     for (const bonus of this.bonus) {
       if (bonus.extra === ExtraBonusType.Enchant) {
         bonus.apply(status);
@@ -237,7 +241,7 @@ export default class DamageDetail extends Vue {
   }
 
   onChangeBonus() {
-    let status = new Status(this.status);
+    let status = new Status(this.status, this.data.contact);
     status.equip(new Member(this.member), this.db);
     for (const bonus of this.bonus) {
       if (bonus.extra !== ExtraBonusType.Flat) {

@@ -107,13 +107,26 @@ export type ResistType = ElementType | typeof ResistType[keyof typeof ResistType
 export const ReductTypes = [
     ...ElementTypes,
     "defence",
-    "contact",
 ] as const;
 export const ReductType = {
     Defence: "defence",
-    Contact: "contact",
 } as const;
 export type ReductType = ElementType | typeof ReductType[keyof typeof ReductType];
+
+export const AnyReductType = {
+    Contact: "contact",
+    All: "all",
+} as const;
+export type AnyReductType = ReductType | typeof AnyReductType[keyof typeof AnyReductType];
+
+export const ContactTypes = [
+    "pyro",
+    "hydro",
+    "elect",
+    "cryo",
+] as const;
+export type ContactType = typeof ContactTypes[number];
+export type NoneContactType = ContactType | "";
 
 export type AmplifyReactionType = "vaporize" | "melt";
 export function isAmplifyReaction(type: ReactionType): type is AmplifyReactionType {
@@ -125,7 +138,6 @@ export function isAmplifyReaction(type: ReactionType): type is AmplifyReactionTy
     return false;
 }
 export type TransformReactionType = "burning" | "swirl" | "echarge" | "shutter" | "conduct" | "overload";
-
 
 export type StatusType = "hp" | "atk" | "def";
 
@@ -247,7 +259,6 @@ export const BonusTypes = [
     "overload_dmg",
 ] as const;
 
-
 export const ItemBonusType = {
     HpBuf: "hp_buf",
     AtkBuf: "atk_buf",
@@ -314,6 +325,7 @@ export const FlatBonusDest = {
     // ElementBonusType 割合
     HydroDmg: "hydro_dmg",
     CryoDmg: "cryo_dmg",
+    Contact: "contact", // TODO: 現状拡散のみ対応
 } as const;
 export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
 

@@ -166,7 +166,8 @@
         "echarge_dmg": "感電ダメージ",
         "shutter_dmg": "氷砕きダメージ",
         "conduct_dmg": "超電導ダメージ",
-        "overload_dmg": "過負荷ダメージ"
+        "overload_dmg": "過負荷ダメージ",
+        "contact": "拡散させた元素"
     },
     "bonus_short": {
         "none": "なし",
@@ -204,7 +205,8 @@
         "cryo": "氷耐性",
         "geo": "岩耐性",
         "defence": "防御力",
-        "contact": "元素反応した元素耐性"
+        "contact": "元素変化した元素耐性",
+        "all": "全元素耐性と物理耐性"
     },
     "damage": {
         "phase": "状態",
@@ -649,8 +651,15 @@
         "Signora2": "シニョーラ・第2段階"
     },
     "limit": {},
-    "footer": "Ver. 2.1.0",
+    "footer": "Ver. 2.1.1",
     "releasenote": {
+        "v2_1_1": {
+            "date": "2021/11/07",
+            "items": [
+                "鍾離の元素スキルによる元素耐性ボーナスを追加",
+                "拡散・元素変化によるボーナスを調整"
+            ]
+        },
         "v2_1_0": {
             "date": "2021/11/03",
             "items": [
