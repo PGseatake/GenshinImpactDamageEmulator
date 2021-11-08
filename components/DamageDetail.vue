@@ -27,6 +27,8 @@
             </v-col>
           </v-row>
         </v-col>
+        <!-- ダミースペース -->
+        <v-col v-if="large" cols="4" />
         <!-- ボーナス -->
         <v-col cols="auto" class="pa-1">
           <bonus-table :items="bonus" :check="true" @change="onChangeBonus" />
