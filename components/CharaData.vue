@@ -240,7 +240,7 @@ export default class CharaData extends Vue {
     item.hp = ascension.calc14(level, status.hp);
     item.atk = ascension.calc14(level, status.atk);
     item.def = ascension.calc14(level, status.def);
-    item.special.value = ascension.calc8(level, spvalue);
+    item.special.value = ascension.step8(level, spvalue);
   }
 }
 </script>
