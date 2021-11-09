@@ -109,7 +109,7 @@ export interface ICharaInfo {
 
 export interface IArtifactInfo {
     readonly set2?: IBasicBonus;
-    readonly set4?: ReadonlyArrayable<IBasicBonus | IFlatBonus>;
+    readonly set4?: ReadonlyArrayable<IBasicBonus | IFlatBonus | IReductBonus>;
 }
 
 export interface IWeaponInfo {

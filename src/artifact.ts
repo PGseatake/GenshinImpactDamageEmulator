@@ -190,7 +190,16 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         // 風元素ダメージ+15%
         set2: { items: konst.ElementBonusType.Anemo, value: 15 },
         // 拡散反応によるダメージ+60%。拡散された元素タイプを基準に、影響を受けた敵の元素耐性-40%、継続時間10秒
-        set4: { items: konst.ReactionBonusType.Swirl, value: 60 },
+        set4: [
+            { items: konst.ReactionBonusType.Swirl, value: 60 },
+            {
+                extra: konst.ExtraBonusType.Reduct,
+                type: konst.AnyReductType.Contact,
+                value: 40,
+                limit: "影響を受けた敵",
+                target: konst.BonusTarget.All,
+            },
+        ],
     },
     CrimsonWitch: {
         // 炎元素ダメージ+15%
@@ -282,7 +291,6 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
     },
 } as const;
 
-// TODO: 計算方法を見直す
 type ArtifactParam = {
     readonly intercept: number;
     readonly slope: number;
@@ -329,7 +337,6 @@ const ArtifactParamList: Readonly<ArtifactParamData[]> = [
         heal_buf: { intercept: 5.4, slope: 1.525324675 },
     }
 ] as const;
-// TODO: ここまで
 
 const ArtifactLevel = [12, 16, 20];
 
