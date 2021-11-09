@@ -390,7 +390,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 629, 676,
             ]
         },
-        special: konst.CriticalBonusType.Damage,
+        special: konst.ElementBonusType.Cryo,
         spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
         talent: {
             combat: [
@@ -409,7 +409,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "冷凍爆弾ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 40 },
             ],
             burst: [
-                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 28.1 },
+                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 359 },
             ],
         },
         passive: {
