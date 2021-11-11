@@ -489,7 +489,7 @@ export class BonusBase {
         this.data.stack = data.stack || 1;
     }
 
-    public getLabel(type: konst.AnyBonusType | "contact") {
+    public getLabel(type: konst.AnyBonusType | "swirl" | "contact") {
         return String(this.i18n.t("bonus." + type)).replace("(%)", "");
     }
 
@@ -672,10 +672,17 @@ export class FlatBonus extends BonusBase {
                         status.param[konst.CombatBonusType.Heavy] += value;
                         status.param[konst.CombatBonusType.Plunge] += value;
                         break;
-                    case konst.FlatBonusDest.Contact:
+                    // TODO: とりあえず楓原万葉専用
+                    case konst.FlatBonusDest.Swirl:
                         if (status.contact) {
                             const type = TypeToBonus.element(status.contact);
                             status.param[type] += value * 100;
+                        }
+                        break;
+                    case konst.FlatBonusDest.Contact:
+                        if (status.contact) {
+                            const type = TypeToBonus.element(status.contact);
+                            status.param[type] += value;
                         }
                         break;
                     default:

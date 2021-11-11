@@ -1429,8 +1429,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 楓原万葉が拡散反応を起こした後、楓原万葉の元素熟知の数値が1につき、チーム全員に対し、拡散させた元素ダメージ+0.04%、継続時間8秒。
             asc4th: {
                 extra: konst.ExtraBonusType.Flat,
+                dest: konst.FlatBonusDest.Swirl,
                 base: konst.FlatBonusBase.Elem,
-                dest: konst.FlatBonusDest.Contact,
                 value: 0.04,
                 limit: "拡散反応を起こした時",
                 times: 8,

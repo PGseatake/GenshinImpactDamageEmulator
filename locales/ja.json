@@ -167,7 +167,8 @@
         "shutter_dmg": "氷砕きダメージ",
         "conduct_dmg": "超電導ダメージ",
         "overload_dmg": "過負荷ダメージ",
-        "contact": "拡散させた元素"
+        "swirl": "拡散させた元素ダメージ",
+        "contact": "変化した元素ダメージ"
     },
     "bonus_short": {
         "none": "なし",

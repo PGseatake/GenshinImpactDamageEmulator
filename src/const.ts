@@ -325,7 +325,8 @@ export const FlatBonusDest = {
     // ElementBonusType 割合
     HydroDmg: "hydro_dmg",
     CryoDmg: "cryo_dmg",
-    Contact: "contact", // TODO: 現状拡散のみ対応
+    Swirl: "swirl",
+    Contact: "contact",
 } as const;
 export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
 
