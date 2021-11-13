@@ -312,6 +312,7 @@ export const FlatBonusDest = {
     // CombatType 実数
     Combat: "combat",
     Normal: "normal",
+    Heavy: "heavy",
     Skill: "skill",
     Burst: "burst",
     // StatusType 割合

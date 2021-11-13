@@ -580,6 +580,7 @@ export class FlatBonus extends BonusBase {
             switch (val) {
                 case konst.FlatBonusDest.Combat:
                 case konst.FlatBonusDest.Normal:
+                case konst.FlatBonusDest.Heavy:
                 case konst.FlatBonusDest.Skill:
                 case konst.FlatBonusDest.Burst:
                     dest.push(this.getLabel(TypeToBonus.combat(val)));
@@ -663,6 +664,7 @@ export class FlatBonus extends BonusBase {
                         status.flat[konst.CombatType.Plunge] += value;
                         break;
                     case konst.FlatBonusDest.Normal:
+                    case konst.FlatBonusDest.Heavy:
                     case konst.FlatBonusDest.Skill:
                     case konst.FlatBonusDest.Burst:
                         status.flat[dest] += value;

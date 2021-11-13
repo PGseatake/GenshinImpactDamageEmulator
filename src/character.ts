@@ -2800,6 +2800,36 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
         },
         passive: {
+            // burst. ・珊瑚宮心海の通常攻撃、重撃、及び元素スキルの「化海月」によるダメージをアップさせる。ダメージアップ量は珊瑚宮心海のHP上限によって決まる。
+            burst: [
+                {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.Normal,
+                    base: konst.FlatBonusBase.Hp,
+                    value: 4.8,
+                    scale: konst.DamageScale.Elem,
+                    limit: "元素爆発継続中",
+                    times: 10,
+                },
+                {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.Heavy,
+                    base: konst.FlatBonusBase.Hp,
+                    value: 6.8,
+                    scale: konst.DamageScale.Elem,
+                    limit: "元素爆発継続中",
+                    times: 10,
+                },
+                {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.Skill,
+                    base: konst.FlatBonusBase.Hp,
+                    value: 7.1,
+                    scale: konst.DamageScale.Elem,
+                    limit: "元素爆発継続中",
+                    times: 10,
+                },
+            ],
             // 4. 海人の羽衣発動時、フィールド上に珊瑚宮心海自身の化海月が存在する場合、化海月の継続時間をリセットする。
             // 5. 海人の羽衣の儀来羽衣状態にある時、珊瑚宮心海のHP上限を基準にアップする通常攻撃と重撃のダメージがさらに増えるようになる。アップする量は珊瑚宮心海の与える治療効果の15%となる。
             asc4th: {
@@ -2808,6 +2838,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 base: konst.FlatBonusBase.HealBuf,
                 value: 15,
                 limit: "元素爆発継続中",
+                times: 10,
             },
         },
         conste: {
@@ -2879,8 +2910,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "風々輪ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 36.0 },
                 { name: "風々輪・旋舞蹴一回押しダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 158.4 },
                 { name: "風々輪・旋舞蹴長押しダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 217.6 },
-                { name: "風々輪・追加元素ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 16.8 },
-                { name: "風々輪・旋舞蹴長押し追加元素ダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 76.2 },
+                { name: "風々輪・追加元素ダメージ", type: konst.CombatType.Skill, elem: konst.CombatElementType.Contact, scale: konst.DamageScale.Elem, value: 16.8 },
+                { name: "風々輪・旋舞蹴長押し追加元素ダメージ", type: konst.CombatType.Skill, elem: konst.CombatElementType.Contact, scale: konst.DamageScale.Elem, value: 76.2 },
             ],
             burst: [
                 { name: "スキル発動ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 117 },
