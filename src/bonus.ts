@@ -722,7 +722,7 @@ export class ReductBonus extends BonusBase {
                         }
                         break;
                     case konst.AnyReductType.All:
-                        for (const elem of konst.ReductTypes) {
+                        for (const elem of konst.ElementTypes) {
                             status.reduct[elem] += this.value;
                         }
                         break;
