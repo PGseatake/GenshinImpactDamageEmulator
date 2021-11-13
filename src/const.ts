@@ -349,5 +349,6 @@ export const EnchantType = {
     Elect: "elect",
     Cryo: "cryo",
     Anemo: "anemo",
+    Geo: "geo",
 } as const;
 export type EnchantType = typeof EnchantType[keyof typeof EnchantType];

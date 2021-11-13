@@ -2363,14 +2363,22 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
         },
         passive: {
-            burst: {
-                extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.Atk,
-                base: konst.StatusBonusType.Def,
-                value: 40,
-                scale: konst.DamageScale.Elem,
-                limit: "元素爆発継続中",
-            },
+            burst: [
+                {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.StatusBonusType.Atk,
+                    base: konst.StatusBonusType.Def,
+                    value: 40, // TODO: 配列
+                    scale: konst.DamageScale.Elem,
+                    limit: "元素爆発継続中",
+                },
+                {
+                    extra: konst.ExtraBonusType.Enchant,
+                    elem: konst.EnchantType.Geo,
+                    limit: "元素爆発継続中",
+                    dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge],
+                },
+            ],
             // 4. ノエルが待機時、出場中のキャラクターのHPが30%以下になると自動発動される：
             //    出場している自身のキャラクターに、ノエルの防御力400%相当のダメージを吸収シールドを付与する、継続時間20秒。該当効果は60秒毎に1回のみ発動する。
             // 5. 通常攻撃または重撃が4回命中するたびに、護心鎧のクールタイム-1秒。
