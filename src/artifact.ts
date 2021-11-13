@@ -85,6 +85,8 @@ export const ArtifactNames = [
     "PaleFlame",
     "SeveredFate",
     "Shimenawa",
+    "OceanHuedClam",
+    "HuskOpulentDreams",
 ] as const;
 export type ArtifactName = typeof ArtifactNames[number];
 
@@ -288,6 +290,18 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         set2: { items: konst.StatusBonusType.AtkBuf, value: 18 },
         // 元素スキルを発動した時、キャラクターの元素エネルギーが15以上の場合、元素エネルギーを15消費し、次の10秒間通常攻撃、重撃、落下攻撃ダメージ+50%
         set4: { items: konst.CombatBonusType.Combat, value: 50, limit: "元素スキルを発動してさらに元素エネルギーが15以上の時", times: 10 }
+    },
+    OceanHuedClam: {
+        // 与える治療効果+15%
+        set2: { items: konst.StatusBonusType.HealBuf, value: 15 },
+        //
+        // set4: {},
+    },
+    HuskOpulentDreams: {
+        // 防御力+30%
+        set2: { items: konst.StatusBonusType.DefBuf, value: 30 },
+        // 
+        set4: { items: [konst.StatusBonusType.DefBuf, konst.ElementBonusType.Geo], value: 6, limit: "岩元素攻撃が命中した時", stack: 4, times: 6 }
     },
 } as const;
 
