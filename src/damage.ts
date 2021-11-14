@@ -98,7 +98,7 @@ class Damage {
     }
 
     private calc(val: number) {
-        return (((val * this.atk + this.flat) * this.def) / 100).toFixed();
+        return (((val * this.atk * this.def) / 100) + this.flat).toFixed();
     }
 }
 
