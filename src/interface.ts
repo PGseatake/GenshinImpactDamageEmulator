@@ -13,7 +13,7 @@ export interface IBonusOption {
     readonly target?: konst.BonusTarget;
 }
 
-export interface IBonusBase extends IBonusOption {
+export interface IBasicBonus extends IBonusOption {
     readonly extra?: undefined;
     readonly items: ReadonlyArrayable<konst.BonusType>;
     readonly value: ReadonlyArrayable<number>;
@@ -22,10 +22,7 @@ export interface IBonusBase extends IBonusOption {
     // readonly stack?: number;
     // readonly target?: konst.BonusTarget;
 }
-export interface IBasicBonus extends IBonusBase {
-    readonly value: number;
-}
-export interface IWeaponBonus extends IBonusBase {
+export interface IWeaponBonus extends IBasicBonus {
     readonly value: ReadonlyArray<number>;
 }
 
@@ -34,7 +31,7 @@ export interface IFlatBonusBound {
     readonly value: number;
 }
 
-export interface IFlatBonusBase extends IBonusOption {
+export interface IFlatBonus extends IBonusOption {
     readonly extra: "flat";
     readonly dest: ReadonlyArrayable<konst.FlatBonusDest>;
     readonly base: konst.FlatBonusBase;
@@ -45,17 +42,14 @@ export interface IFlatBonusBase extends IBonusOption {
     // readonly times?: number;
     // readonly stack?: number;
 }
-export interface IFlatBonus extends IFlatBonusBase {
-    readonly value: number;
-}
-export interface IWeaponFlatBonus extends IFlatBonusBase {
+export interface IWeaponFlatBonus extends IFlatBonus {
     readonly value: ReadonlyArray<number>;
 }
 
 export interface IReductBonus extends IBonusOption {
     readonly extra: "reduct";
     readonly type: ReadonlyArrayable<konst.AnyReductType>;
-    readonly value: number;
+    readonly value: ReadonlyArrayable<number>;
     // readonly limit?: string;
     // readonly times?: number;
 }

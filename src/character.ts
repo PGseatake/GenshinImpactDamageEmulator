@@ -805,7 +805,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // burst. ･エリア内のキャラのHPが最大値の70%を下回ると、HPが継続回復する。回復量はベネットのHP上限によって決まる。
             //        ･エリア内のキャラのHPが最大値の70%以上の場合、ベネットの基礎攻撃力を基準に、一定比例の攻撃力がアップする。
             //        ･エリア内のキャラに炎元素付着効果を付与する。
-            //        56% 60% 64% 70% 74% 78% 84% 90% 95% 101% 106% 112% 119%
             burst: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.StatusBonusType.Atk,
@@ -1164,11 +1163,10 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     stack: 2,
                     times: 7,
                 },
-                // TODO: valueを配列 16% 17% 18% 19% 20% 21% 22% 23% 24% 25%
                 {
                     extra: konst.ExtraBonusType.Reduct,
                     type: [konst.ElementType.Cryo, konst.ElementType.Phys],
-                    value: 16,
+                    value: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25],
                     limit: "冷酷な心を消費した時",
                     times: 7,
                 },
@@ -2044,7 +2042,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         passive: {
             // skill: 天狗の神速で後方へ移動し、烏羽の加護を呼びかける。18秒間続く「烏羽護持」を獲得する。九条裟羅がフルチャージを終えた矢を放つと、「烏羽護持」を消費し、命中した位置に「烏羽」を残す。
             //「烏羽」は短時間後に天狗呪雷・伏を引き起こし、範囲内の敵に雷元素ダメージを与え、範囲内のフィールド上キャラクターの攻撃力を、九条裟羅の基礎攻撃力を基準にアップさせる。
-            // 43% 46% 49% 54% 57% 60% 64% 69% 73% 77% 82% 86% 91%
             skill: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.StatusBonusType.Atk,
@@ -2204,8 +2201,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         },
         passive: {
             // burst: 星異状態継続中、受けるダメージがアップする
-            // TODO: value配列 times複数
-            burst: { items: konst.AnyBonusType.Damage, value: 42, limit: "星異状態継続中", times: 4, target: konst.BonusTarget.All },
+            burst: {
+                items: konst.AnyBonusType.Damage,
+                value: 42, // [42, 44, 46, 48, 50, 52, 54, 56, 58, 60],
+                limit: "星異状態継続中",
+                times: 4, // TODO: 配列
+                target: konst.BonusTarget.All,
+            },
             // 4. 虚実流動状態に入った2秒後、周囲に敵がいる場合は自動的に虚影を1つ生成する。
             //    虚影は2秒間存在し破裂する。破裂ダメージは水中幻願のダメージの50%。
             // 5. モナの与える水ダメージが増加する。増加量はモナの元素チャージ効率の20%に相当する。
@@ -2363,13 +2365,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
         },
         passive: {
+            // burst. ・攻撃ダメージは岩ダメージに変化する。
+            // ・ノエルの防御力を基準に攻撃力がアップする。
             burst: [
                 {
                     extra: konst.ExtraBonusType.Flat,
                     dest: konst.StatusBonusType.Atk,
                     base: konst.StatusBonusType.Def,
-                    value: 40, // TODO: 配列
-                    scale: konst.DamageScale.Elem,
+                    value: [40, 43, 46, 50, 53, 56, 60, 64, 68, 72, 76, 80, 85, 90],
                     limit: "元素爆発継続中",
                 },
                 {
@@ -2539,15 +2542,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
         },
         passive: {
-            // skill: ・雷罰悪曜の眼を持つキャラクターは継続時間内に、元素爆発の元素エネルギーを基準に、元素爆発ダメージがアップする。
-            // skill: {
-            //     extra: konst.ExtraBonusType.Flat,
-            //     dest: konst.FlatBonusDest.Burst,
-            //     base: konst.FlatBonusBase.Energy,
-            //     value: 0.3,
-            //     limit: "元素スキル継続中",
-            //     target: konst.BonusTarget.All
-            // },
+            // skill: 雷罰悪曜の眼を持つキャラクターは継続時間内に、元素爆発の元素エネルギーを基準に、元素爆発ダメージがアップする。
+            skill: {
+                extra: konst.ExtraBonusType.Flat,
+                dest: konst.FlatBonusDest.BurstDmg,
+                base: konst.FlatBonusBase.Energy,
+                value: [0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.30],
+                limit: "元素スキル継続中",
+                times: 25,
+                target: konst.BonusTarget.All,
+            },
             // burst: 周囲のチーム全員（雷電将軍自身を除く）が元素爆発を発動すると、元素爆発の元素エネルギーを元に雷電将軍の諸願百目の輪に願力を蓄積する。
             // 蓄積できる願力は最大60層まで。
             burst: {
@@ -3687,7 +3691,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.HeavyDmg,
                 base: konst.FlatBonusBase.None,
-                value: 33.3,
+                value: [33, 35, 37, 40, 42, 44, 47, 49, 52, 54, 57, 60, 62],
                 limit: "元素爆発発動後",
                 times: 15,
             },
@@ -3765,6 +3769,10 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
         },
         passive: {
+            // skill. TODO: 継続時間内、宵宮の通常攻撃で発射した矢は熾焔の矢となる。
+            // 炎元素ダメージに変化し、通常攻撃のダメージがアップする。
+            // 継続時間中、「通常攻撃・打ち上げ花火」の2段チャージで焔硝の矢を生成できなくなる。
+            // skill: [],
             // 4. 焔硝の庭火舞いの効果継続時間中、宵宮の通常攻撃が命中すると、炎元素ダメージ+2%、継続時間3秒、最大10重まで。
             asc1st: { items: konst.ElementBonusType.Pyro, value: 2, limit: "元素スキル継続中、通常攻撃が命中した時", stack: 10, times: 3 },
             // 5. 琉金の雲間草を発動した後の15秒内、周囲のチーム全員（宵宮自身を除く）の攻撃力+10%。
