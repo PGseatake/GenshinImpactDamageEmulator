@@ -203,7 +203,7 @@ import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { IEquipData, DBEquipTable } from "~/src/interface";
 import { ICharaData, DBCharaTable } from "~/src/character";
-import { Members } from "~/src/team";
+import { Team } from "~/src/team";
 
 @Component({
   name: "PageEquipment",
@@ -335,8 +335,8 @@ export default class PageEquipment extends Vue {
 
   exists(id: string): boolean {
     return !!this.$db.team.find((team) => {
-      for (const key of Members) {
-        if (team[key] === id) return true;
+      for (const member of new Team(team).member) {
+        if (member === id) return true;
       }
       return false;
     });

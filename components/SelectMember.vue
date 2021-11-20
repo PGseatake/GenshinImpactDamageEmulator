@@ -69,7 +69,7 @@
 <script lang="ts">
 import { Vue, Component, Emit, Prop } from "vue-property-decorator";
 import { ContactTypes, NoneElementType, NoneReactionType } from "~/src/const";
-import { ITeamData, IMember, Members, Member, getTeamName } from "~/src/team";
+import { ITeamData, IMember, Team } from "~/src/team";
 
 type TextValue = {
   text: string;
@@ -144,28 +144,22 @@ export default class SelectMember extends Vue {
   }
 
   get teams() {
-    const text = this.$t("menu.team");
     let items: { text: string; value: ITeamData }[] = [];
-    this.$db.team.forEach((t, i) =>
-      items.push({ text: getTeamName(text, t, i), value: t })
-    );
+    this.$db.team.forEach((t, i) => {
+      items.push({ text: new Team(t).getName(this.$i18n, i), value: t });
+    });
     return items;
   }
 
   get members() {
     let items: TextValue[] = [];
-    if (this.team) {
-      const team = this.team;
-      if (team) {
-        for (const key of Members) {
-          const member = Member.find(team[key], this.$db);
-          if (member.chara) {
-            items.push({
-              text: this.$t("chara." + member.chara.name) as string,
-              value: member,
-            });
-          }
-        }
+    const team = this.team;
+    if (team) {
+      for (const member of new Team(team).members(this.$db)) {
+        items.push({
+          text: this.$t("chara." + member.chara.name) as string,
+          value: member,
+        });
       }
     }
     return items;
@@ -183,7 +177,7 @@ export default class SelectMember extends Vue {
         this.team = team;
 
         this.changeMember(
-          Members.findIndex((val) => team[val] === item.member)
+          new Team(team).member.findIndex((val) => val === item.member)
         );
       }
     }

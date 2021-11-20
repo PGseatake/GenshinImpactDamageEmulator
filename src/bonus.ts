@@ -7,7 +7,7 @@ import {
 import { CharaName, CharaList, ICharaData, DBCharaTable } from "~/src/character";
 import { WeaponList, IWeaponData, DBWeaponTable } from "~/src/weapon";
 import { ArtifactName, ArtifactList, DBArtifactTable } from "~/src/artifact";
-import { Members, Member, ITeamData } from "~/src/team";
+import { ITeamData, Team, Member } from "~/src/team";
 import { Status } from "~/src/status";
 import { roundFloat, roundRate } from "~/plugins/utils";
 import { Arrayable } from "~/src/utility";
@@ -662,23 +662,20 @@ export class BonusBuilder {
     public build(team: ITeamData, db: Database) {
         let data: BonusBase[] = [];
         this.team = team.id;
-        for (const key of Members) {
-            const m = Member.find(team[key], db);
-            if (m.chara) {
-                this.chara = m.chara;
-                this.equip = m.equip!.id;
-                this.group = "chara." + m.chara.name;
+        for (const m of new Team(team).members(db)) {
+            this.chara = m.chara;
+            this.equip = m.equip.id;
+            this.group = "chara." + m.chara.name;
 
-                // キャラボーナス追加
-                const member = new Member(m);
-                data.push(...this.charaBonus());
-                // 武器ボーナス追加
-                const weapon = member.weapon(db);
-                data.push(...this.weaponBonus(weapon.type, weapon.data));
-                // 聖遺物ボーナス追加
-                const artifacts = member.artifacts(db).map((val) => val.name);
-                data.push(...this.artifactBonus(artifacts));
-            }
+            // キャラボーナス追加
+            const member = new Member(m);
+            data.push(...this.charaBonus());
+            // 武器ボーナス追加
+            const weapon = member.weapon(db);
+            data.push(...this.weaponBonus(weapon.type, weapon.data));
+            // 聖遺物ボーナス追加
+            const artifacts = member.artifacts(db).map((val) => val.name);
+            data.push(...this.artifactBonus(artifacts));
         }
         this.chara = null;
         // 超電導を追加 TODO: 多言語対応

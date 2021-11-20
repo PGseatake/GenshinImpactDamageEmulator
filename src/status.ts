@@ -3,7 +3,7 @@ import { ICharaInfo } from "~/src/interface";
 import { ICharaData } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
 import { SubBonus, DBArtifactTable } from "~/src/artifact";
-import { Member } from "~/src/team";
+import { IMember, Member } from "~/src/team";
 
 const ReactionScaleTable: ReadonlyPartial<Record<konst.ElementType, ReadonlyPartial<Record<konst.ReactionType, number>>>> = {
     pyro: {
@@ -100,10 +100,7 @@ export class Status {
         this.contact = contact;
     }
 
-    equip(member: Member, db: DBWeaponTable & DBArtifactTable) {
-        this.info = member.info;
-        this.chara = member.chara;
-
+    equip({ info, chara, equip }: IMember, db: DBWeaponTable & DBArtifactTable) {
         for (const type of konst.BonusTypes) {
             this.param[type] = 0;
         }
@@ -122,24 +119,27 @@ export class Status {
         this.param[konst.CriticalBonusType.Damage] = 50;
         this.param[konst.CriticalBonusType.Rate] = 5;
 
-        if (this.chara) {
-            this.talent.combat = this.chara.combat;
-            this.talent.skill = this.chara.skill;
-            this.talent.burst = this.chara.burst;
-            this.base.hp = this.chara.hp;
-            this.base.atk = this.chara.atk;
-            this.base.def = this.chara.def;
+        if (info && chara && equip) {
+            this.info = info;
+            this.chara = chara;
+            this.talent.combat = chara.combat;
+            this.talent.skill = chara.skill;
+            this.talent.burst = chara.burst;
+            this.base.hp = chara.hp;
+            this.base.atk = chara.atk;
+            this.base.def = chara.def;
 
             // キャラクタ
-            this.apply(this.chara.special);
+            this.apply(chara.special);
             // 武器
-            const { data } = member.weapon(db);
+            const m = new Member({ info, chara, equip });
+            const { data } = m.weapon(db);
             if (data) {
                 this.base.atk += data.atk;
                 this.apply(data.second);
             }
             // 聖遺物
-            const list = member.artifacts(db);
+            const list = m.artifacts(db);
             for (const data of list) {
                 this.apply(data.main);
                 for (const prop of SubBonus) {

@@ -59,10 +59,10 @@
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { ExtraBonusType } from "~/src/const";
 import { DBEquipTable } from "~/src/interface";
-import { DBCharaTable, ICharaData } from "~/src/character";
+import { CharaList, DBCharaTable, ICharaData } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
 import { DBArtifactTable } from "~/src/artifact";
-import { DBTeamTable, ITeamData, IMember, Member } from "~/src/team";
+import { DBTeamTable, ITeamData, IMember } from "~/src/team";
 import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
 import {
   Status,
@@ -204,14 +204,17 @@ export default class DamageDetail extends Vue {
     const { team, member } = this.data;
     const t = this.db.team.find((val) => val.id === team);
     if (t) {
-      const m = Member.find(member, this.db);
-      if (m.chara) {
-        this.member.info = m.info;
-        this.member.chara = m.chara;
-        this.member.equip = m.equip;
+      const e = this.db.equip.find((val) => val.id === member);
+      if (e) {
+        const c = this.db.chara.find((val) => val.id === e.chara);
+        if (c) {
+          this.member.info = CharaList[c.name];
+          this.member.chara = c;
+          this.member.equip = e;
 
-        this.rebuildBonus(t, m.chara);
-        this.onChangeBonus();
+          this.rebuildBonus(t, c);
+          this.onChangeBonus();
+        }
       }
     }
   }
@@ -242,7 +245,7 @@ export default class DamageDetail extends Vue {
 
   onChangeBonus() {
     let status = new Status(this.status, this.data.contact);
-    status.equip(new Member(this.member), this.db);
+    status.equip(this.member, this.db);
     for (const bonus of this.bonus) {
       if (bonus.extra !== ExtraBonusType.Flat) {
         bonus.apply(status);

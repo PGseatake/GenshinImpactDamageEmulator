@@ -1,20 +1,16 @@
-import { TranslateResult } from "vue-i18n";
+import { IVueI18n } from "vue-i18n/types";
 import { ElementType, WeaponType, ArtifactTypes } from "~/src/const";
 import { ICharaInfo, IIdentify, INameable, IEquipData, DBEquipTable } from "~/src/interface";
 import { CharaList, ICharaData, DBCharaTable } from "~/src/character";
 import { IArtifactData, DBArtifactTable } from "~/src/artifact";
 import { IWeaponData, DBWeaponTable } from "~/src/weapon";
 
-export const Members = ["member1", "member2", "member3", "member4"] as const;
+const Members = ["member1", "member2", "member3", "member4"] as const;
 
 export interface ITeamData extends IIdentify, INameable, Record<typeof Members[number], string> {
     resonance: ElementType[];
 }
 export type DBTeamTable = { team: ITeamData[]; };
-
-export function getTeamName(text: TranslateResult, data: ITeamData, idx: number) {
-    return data.name || `${text}${idx + 1}`;
-}
 
 export interface IMember {
     info: ICharaInfo | null;
@@ -22,20 +18,25 @@ export interface IMember {
     equip: IEquipData | null;
 }
 
+// IMemberのユーティリティクラス
 export class Member {
-    public info: ICharaInfo | null;
-    public chara: ICharaData | null;
-    public equip: IEquipData | null;
+    public info: ICharaInfo;
+    public chara: ICharaData;
+    public equip: IEquipData;
 
-    constructor({ info, chara, equip }: IMember) {
+    constructor({ info, chara, equip }: {
+        info: ICharaInfo;
+        chara: ICharaData;
+        equip: IEquipData;
+    }) {
         this.info = info;
         this.chara = chara;
         this.equip = equip;
     }
 
     weapon(db: DBWeaponTable): { type: WeaponType, data?: IWeaponData; } {
-        const id = this.equip!.weapon;
-        const type = this.info!.weapon;
+        const id = this.equip.weapon;
+        const type = this.info.weapon;
         const data = db[type].find((val) => val.id === id);
         return { type, data };
     }
@@ -43,7 +44,7 @@ export class Member {
     artifacts(db: DBArtifactTable): IArtifactData[] {
         let list: IArtifactData[] = [];
         for (const type of ArtifactTypes) {
-            const id = this.equip![type];
+            const id = this.equip[type];
             const data = db[type].find((val) => val.id === id);
             if (data) {
                 list.push(data);
@@ -51,17 +52,36 @@ export class Member {
         }
         return list;
     }
+}
 
-    static find(id: string, { equip, chara }: DBEquipTable & DBCharaTable) {
-        if (id) {
+// ITeamDataのユーティリティクラス
+export class Team {
+    public data: ITeamData;
+    public member: string[];
+
+    constructor(data: ITeamData) {
+        this.data = data;
+        this.member = [];
+        for (const m of Members) {
+            if (data[m]) {
+                this.member.push(data[m]);
+            }
+        }
+    }
+
+    public getName(i18n: IVueI18n, idx: number) {
+        return this.data.name || `${i18n.t("menu.team")}${idx + 1}`;
+    }
+
+    public * members({ equip, chara }: DBEquipTable & DBCharaTable) {
+        for (const id of this.member) {
             const e = equip.find((val) => val.id === id);
             if (e) {
                 const c = chara.find((val) => val.id === e.chara);
                 if (c) {
-                    return { info: CharaList[c.name], chara: c, equip: e };
+                    yield { info: CharaList[c.name], chara: c, equip: e };
                 }
             }
         }
-        return { info: null, chara: null, equip: null };
     }
 }
