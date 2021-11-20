@@ -53,7 +53,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { TalentType } from "~/src/const";
 import { ICombat } from "~/src/interface";
 import { IMember } from "~/src/team";
-import { IStatus, Status } from "~/src/bonus";
+import { IStatus, Status } from "~/src/status";
 import { IDamageData, CombatAttribute, Enemy } from "~/src/damage";
 
 interface IAttribute extends ICombat {

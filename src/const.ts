@@ -353,3 +353,18 @@ export const EnchantType = {
     Geo: "geo",
 } as const;
 export type EnchantType = typeof EnchantType[keyof typeof EnchantType];
+
+export const TypeToBonus = {
+    element(type: ElementType) {
+        return type + "_dmg" as ElementBonusType;
+    },
+    combat(type: AnyCombatType) {
+        return type + "_dmg" as CombatBonusType;
+    },
+    reaction(type: ReactionType) {
+        return type + "_dmg" as ReactionBonusType;
+    },
+    buffer(type: StatusBonusType) {
+        return type + "_buf" as StatusBonusType;
+    },
+} as const;

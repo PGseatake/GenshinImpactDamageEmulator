@@ -63,15 +63,13 @@ import { DBCharaTable, ICharaData } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
 import { DBArtifactTable } from "~/src/artifact";
 import { DBTeamTable, ITeamData, IMember, Member } from "~/src/team";
+import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
 import {
-  DBBonusTable,
-  BonusBase,
-  BonusBuilder,
   Status,
   IStatus,
   StatusEnchant,
   enumerateReaction,
-} from "~/src/bonus";
+} from "~/src/status";
 import { IEnemyData } from "~/src/enemy";
 import { Enemy, IDamageData } from "~/src/damage";
 

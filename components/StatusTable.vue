@@ -52,8 +52,10 @@ import {
   StatusBonusType,
   CriticalBonusType,
   CombatBonusType,
+  TypeToBonus,
 } from "~/src/const";
-import { TypeToBonus, RateBonus, StatusBase, StatusParam } from "~/src/bonus";
+import { StatusBase, StatusParam } from "~/src/status";
+import { RateBonus } from "~/src/bonus";
 
 const excludeTypes: ReadonlyArray<BonusType> = [
   StatusBonusType.HpBuf,

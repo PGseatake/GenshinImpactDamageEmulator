@@ -126,8 +126,8 @@
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { DataTableHeader } from "vuetify";
-import { StatusReduct } from "~/src/bonus";
 import { ElementType, NoneElementType, ResistTypes } from "~/src/const";
+import { StatusReduct } from "~/src/status";
 import {
   EnemyList,
   EnemyName,
