@@ -3,7 +3,7 @@ export const LevelMax = 90;
 export const LevelStep = [20, 40, 50, 60, 70, 80];
 export const LevelRange = [1, 20, 40, 50, 60, 70, 80, 90];
 
-function parseLevel(strLv: string): {
+export function parseLevel(strLv: string): {
   level: number;
   index: number;
 } {

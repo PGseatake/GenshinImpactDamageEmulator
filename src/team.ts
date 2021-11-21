@@ -17,6 +17,11 @@ export interface IMember {
     chara: ICharaData | null;
     equip: IEquipData | null;
 }
+export interface IRequiredMember {
+    info: ICharaInfo;
+    chara: ICharaData;
+    equip: IEquipData;
+}
 
 // IMemberのユーティリティクラス
 export class Member {
@@ -24,11 +29,7 @@ export class Member {
     public chara: ICharaData;
     public equip: IEquipData;
 
-    constructor({ info, chara, equip }: {
-        info: ICharaInfo;
-        chara: ICharaData;
-        equip: IEquipData;
-    }) {
+    constructor({ info, chara, equip }: IRequiredMember) {
         this.info = info;
         this.chara = chara;
         this.equip = equip;
@@ -41,7 +42,7 @@ export class Member {
         return { type, data };
     }
 
-    artifacts(db: DBArtifactTable): IArtifactData[] {
+    artifact(db: DBArtifactTable): IArtifactData[] {
         let list: IArtifactData[] = [];
         for (const type of ArtifactTypes) {
             const id = this.equip[type];

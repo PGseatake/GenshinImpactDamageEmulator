@@ -7,9 +7,6 @@
   </v-container>
 </template>
 
-<style lang="scss" scoped>
-</style>
-
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { DBEquipTable } from "~/src/interface";

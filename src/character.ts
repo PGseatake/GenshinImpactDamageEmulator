@@ -127,6 +127,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     type: konst.ElementType.Anemo,
                     value: 20.0,
                     limit: "元素爆発のダメージを受けた時",
+                    target: konst.BonusTarget.All,
                 },
                 //    元素変化があった場合､該当の元素耐性-20%
                 {
@@ -134,6 +135,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     type: konst.CombatElementType.Contact,
                     value: 20.0,
                     limit: "元素変化があった時",
+                    target: konst.BonusTarget.All,
                 },
             ],
         },
@@ -294,6 +296,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15,
                 limit: "威光の落雷が敵に命中した時",
                 times: 8,
+                target: konst.BonusTarget.All,
             },
             // 3. 電光雷轟のスキルLv.+3
             // 4. キャラクターが雷影剣で生成した豊穣の勾玉を獲得した時、該当キャラクターの元素エネルギーが35%未満の場合、豊穣の勾玉で回復できる元素エネルギー+100%。
@@ -740,7 +743,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 攻撃を受けた10秒内、北斗の通常攻撃は20%の雷ダメージが付与される。
             // 5. 雷斫りのスキルLv.+3
             // 6. 雷斫り継続中、周囲の敵の雷耐性-15%
-            lv6: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Elect, value: 15.0, limit: "元素爆発継続中・周囲の敵" },
+            lv6: {
+                extra: konst.ExtraBonusType.Reduct,
+                type: konst.ElementType.Elect,
+                value: 15.0,
+                limit: "元素爆発継続中・周囲の敵",
+                target: konst.BonusTarget.All,
+            },
         },
     },
     Bennett: {
@@ -915,6 +924,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 10.0,
                 limit: "元素スキルの霊刃が命中した敵",
                 times: 8,
+                target: konst.BonusTarget.All,
             },
         },
         conste: {
@@ -1169,6 +1179,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     value: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25],
                     limit: "冷酷な心を消費した時",
                     times: 7,
+                    target: konst.BonusTarget.All,
                 },
             ],
             // 4. 長押しで氷潮の渦を発動した時、一度に冷酷な心を2つ消費すると、直ちに爆発する光臨の剣の欠片を創造する。
@@ -1333,6 +1344,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "霜華の矢・霜華満開が命中した時",
                 times: 6,
+                target: konst.BonusTarget.All,
             },
             //    命中時に甘羽の元素エネルギーを2回復。二段チャージの重撃による元素エネルギーの回復効果は、1回の重撃で1度のみ発動可能。
             // 2. 山沢麟跡の発動回数+1
@@ -1519,7 +1531,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 2. 元素オーブまたは元素粒子を獲得時、チームにいる全てのキャラの移動速度、攻撃速度+15%、継続時間15秒。
             // 3. 蒲公英の風のスキルLv.+3
             // 4. 蒲公英の風エリア内、全ての敵の風元素耐性-40%。
-            lv4: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Anemo, value: 40.0, limit: "元素爆発エリア内の敵" },
+            lv4: {
+                extra: konst.ExtraBonusType.Reduct,
+                type: konst.ElementType.Anemo,
+                value: 40.0,
+                limit: "元素爆発エリア内の敵",
+                target: konst.BonusTarget.All,
+            },
             // 5. 風圧剣のスキルLv.+3
             // 6. 蒲公英の風エリア内、キャラの受けるダメージ-35%。エリアを出た後、この効果は3回攻撃を受けた後、または10秒後に消える。
         },
@@ -1804,6 +1822,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 30,
                 limit: "元素爆発が命中した敵",
                 times: 6,
+                target: konst.BonusTarget.All,
             },
             // 5. 神里流・氷華のスキルLv.+3
             // 6. 10秒毎に、神里綾華は「薄氷の舞」状態を獲得し、重撃ダメージが298%アップする。
@@ -1973,6 +1992,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 23.0,
                 limit: "ブービートラップダメージを受けた敵",
                 times: 10,
+                target: konst.BonusTarget.All,
             },
             // 3. ボンボン爆弾のスキルLv.+3
             // 4. ドッカン花火継続中にキャラを切り替えると、爆発が発生し、攻撃力の555%の炎範囲ダメージを与える。
@@ -2130,6 +2150,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "元素爆発の攻撃を受けた敵",
                 times: 10,
+                target: konst.BonusTarget.All,
             },
         },
         conste: {
@@ -2572,7 +2593,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 1. 諸願百目の輪の願力をより早く蓄積できるようになる。
             // 雷元素タイプのキャラクターによる元素爆発が蓄積する願力+ 80 %。他の元素タイプのキャラクターによる元素爆発が蓄積する願力+ 20 %。
             // 2. 奥義・夢想真説の夢想の一太刀と夢想の一心による攻撃は敵の防御力60%を無視する。
-            lv2: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductType.Defence, value: 60, limit: "元素爆発継続中" },
+            lv2: {
+                extra: konst.ExtraBonusType.Reduct,
+                type: konst.ReductType.Defence,
+                value: 60,
+                limit: "元素爆発継続中",
+                times: 7,
+                target: konst.BonusTarget.Self,
+            },
             // 3. 奥義・夢想真説のスキルLv.+3
             // 4. 奥義・夢想真説による夢想の一心状態終了後、周囲のチーム全員（雷電将軍自身を除く）の攻撃力+30%、継続時間10秒。
             lv4: { items: konst.StatusBonusType.AtkBuf, value: 30, limit: "元素爆発終了後", times: 10, target: konst.BonusTarget.Other },
@@ -2655,6 +2683,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "元素スキル一回押しで攻撃した時",
                 times: 7,
+                target: konst.BonusTarget.All,
             },
             // 5. 鋭い爪と蒼雷のスキルLv.+3
             // 6. 10秒毎に、レザーの大剣が自動的にエネルギーを溜め、次の通常攻撃に落雷を引き起こし、攻撃力の100％の雷ダメージを与える。
@@ -2747,6 +2776,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 20.0,
                 limit: "元素爆発が敵に命中した時",
                 times: 10,
+                target: konst.BonusTarget.All,
             },
         },
     },
@@ -3286,6 +3316,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     value: 12.0,
                     limit: "元素スキル発動後",
                     times: 10,
+                    target: konst.BonusTarget.All,
                 },
                 //    高天の歌によってノックバックされた敵は着地する前に、更に風耐性と物理耐性-12%
                 {
@@ -3293,6 +3324,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     type: [konst.ElementType.Anemo, konst.ElementType.Phys],
                     value: 12.0,
                     limit: "さらにノックバックした敵が着地する前",
+                    target: konst.BonusTarget.All,
                 },
             ],
             // 3. 風神の詩のスキルLv.+3
@@ -3305,6 +3337,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 type: [konst.ElementType.Anemo, konst.AnyReductType.Contact],
                 value: 20.0,
                 limit: "元素爆発の影響を受ける敵",
+                target: konst.BonusTarget.All,
             },
         },
     },
@@ -3379,6 +3412,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "グゥオパァーに攻撃された敵",
                 times: 6,
+                target: konst.BonusTarget.All,
             },
             // 2. 通常攻撃の最後一撃で敵に2秒継続する爆縮効果を与える。効果終了時に爆発し、敵に75％の炎範囲ダメージを与える。
             // 3. 旋火輪のスキルLv.+3
@@ -3541,6 +3575,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "元素爆発の攻撃を受けた敵",
                 times: 4,
+                target: konst.BonusTarget.All,
             },
             // 3. 古華剣・裁雨留虹のスキルLv.+3
             // 4. 古華剣・裁雨留虹継続中、古華剣・画雨籠山の与えるダメージ+50％。
@@ -3625,6 +3660,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "元素スキルのダメージを受けた敵",
                 times: 12,
+                target: konst.BonusTarget.All,
             },
             // 5. 反逆の弾きのスキルLv.+3
             // 6. 辛炎の重撃によるスタミナ消費-30%。重撃を発動する時、辛炎の防御力50%分の攻撃力が増加する。

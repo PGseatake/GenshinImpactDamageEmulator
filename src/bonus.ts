@@ -4,10 +4,11 @@ import {
     IBasicBonus, IFlatBonus, IFlatBonusBound, IEnchantBonus, IReductBonus,
     IBonusOption, AnyBonus, Constes, Passives, DBEquipTable, Passive
 } from "~/src/interface";
+import { parseLevel } from "~/src/ascension";
 import { CharaName, CharaList, ICharaData, DBCharaTable } from "~/src/character";
 import { WeaponList, IWeaponData, DBWeaponTable } from "~/src/weapon";
 import { ArtifactName, ArtifactList, DBArtifactTable } from "~/src/artifact";
-import { ITeamData, Team, Member } from "~/src/team";
+import { ITeamData, Team, Member, IRequiredMember } from "~/src/team";
 import { Status } from "~/src/status";
 import { roundFloat, roundRate } from "~/plugins/utils";
 import { Arrayable } from "~/src/utility";
@@ -140,7 +141,7 @@ export const TeamBonus: Partial<ReadonlyRecord<konst.ElementType, IBasicBonus>> 
 
 export class BonusBase {
     public readonly i18n: IVueI18n;
-    public readonly index: number;
+    public readonly key: number;
     public readonly group: string; // table-dataのグループ
     public readonly extra: konst.ExtraBonusType | undefined;
     public readonly limit: string;
@@ -151,10 +152,10 @@ export class BonusBase {
     public name: CharaName | "";
     public data: IBonusData;
 
-    constructor(i18n: IVueI18n, index: number, group: string, source: string,
+    constructor(i18n: IVueI18n, key: number, group: string, source: string,
         { extra, limit, times, stack, target }: IBonusOption) {
         this.i18n = i18n;
-        this.index = index;
+        this.key = key;
         this.group = group;
         this.extra = extra;
         this.limit = limit ?? "";
@@ -163,7 +164,7 @@ export class BonusBase {
         this.target = target ?? konst.BonusTarget.Self;
         this.source = source;
         this.name = "";
-        this.data = { index: index, apply: this.always, stack: stack ?? 1 };
+        this.data = { index: key, apply: this.always, stack: stack ?? 1 };
     }
 
     public get always() {
@@ -206,29 +207,30 @@ export class BonusBase {
     }
 
     public isMine(chara: ICharaData) {
-        return this.group === "general.everyone" || this.group.includes(chara.name);
+        switch (this.target) {
+            case konst.BonusTarget.All:
+                return true;
+            case konst.BonusTarget.Self:
+                return this.name === chara.name;
+            case konst.BonusTarget.Next:
+            case konst.BonusTarget.Other:
+                return this.name !== chara.name;
+            case konst.BonusTarget.Melee:
+                switch (CharaList[chara.name].weapon) {
+                    case konst.WeaponType.Sword:
+                    case konst.WeaponType.Claymore:
+                    case konst.WeaponType.Polearm:
+                        return true;
+                }
+                break;
+        }
+        return false;
     }
 
     public isApply(status: Status) {
         const chara = status.chara;
-        if (this.data.apply) {
-            switch (this.target) {
-                case konst.BonusTarget.All:
-                case konst.BonusTarget.Self:
-                case konst.BonusTarget.Enemy:
-                    return true;
-                case konst.BonusTarget.Next:
-                case konst.BonusTarget.Other:
-                    return this.name !== chara!.name;
-                case konst.BonusTarget.Melee:
-                    switch (CharaList[chara!.name].weapon) {
-                        case konst.WeaponType.Sword:
-                        case konst.WeaponType.Claymore:
-                        case konst.WeaponType.Polearm:
-                            return this.name === chara!.name;
-                    }
-                    break;
-            }
+        if (chara && this.data.apply) {
+            return this.isMine(chara);
         }
         return false;
     }
@@ -241,8 +243,8 @@ export class BasicBonus extends BonusBase {
     private readonly types: ReadonlyArray<konst.BonusType>;
     private readonly value: number;
 
-    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IBasicBonus, talent = 0) {
-        super(i18n, index, group, source, data);
+    constructor(i18n: IVueI18n, key: number, group: string, source: string, data: IBasicBonus, talent = 0) {
+        super(i18n, key, group, source, data);
         this.types = Arrayable.from(data.items);
         this.value = Arrayable.clamp(data.value, talent);
     }
@@ -274,8 +276,8 @@ export class FlatBonus extends BonusBase {
     private readonly scale: konst.DamageScale | "";
     private readonly bound: IFlatBonusBound | null;
 
-    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IFlatBonus, talent = 0) {
-        super(i18n, index, group, source, data);
+    constructor(i18n: IVueI18n, key: number, group: string, source: string, data: IFlatBonus, talent = 0) {
+        super(i18n, key, group, source, data);
         this.dest = Arrayable.from(data.dest);
         this.base = data.base;
         this.value = Arrayable.clamp(data.value, talent);
@@ -416,8 +418,8 @@ export class ReductBonus extends BonusBase {
     private readonly types: Readonly<konst.AnyReductType[]>;
     private readonly value: number;
 
-    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IReductBonus, talent = 0) {
-        super(i18n, index, group, source, { ...data, target: konst.BonusTarget.Enemy });
+    constructor(i18n: IVueI18n, key: number, group: string, source: string, data: IReductBonus, talent = 0) {
+        super(i18n, key, group, source, data);
         this.types = Arrayable.from(data.type);
         this.value = Arrayable.clamp(data.value, talent);
     }
@@ -456,8 +458,8 @@ export class EnchantBonus extends BonusBase {
     private readonly type: konst.EnchantType;
     private readonly dest: ReadonlyArray<konst.CombatType>;
 
-    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IEnchantBonus) {
-        super(i18n, index, group, source, data);
+    constructor(i18n: IVueI18n, key: number, group: string, source: string, data: IEnchantBonus) {
+        super(i18n, key, group, source, data);
         this.type = data.elem;
         this.dest = data.dest;
     }
@@ -490,34 +492,51 @@ type Database =
 
 export class BonusBuilder {
     private i18n: IVueI18n;
-    public chara: ICharaData | null;
     public team: string;
     public equip: string;
-    public group: string;
+    public index: number;
+    public chara: ICharaData | null;
     private bonus: IDict<IBonusData>;
     public output: IDict<IBonusData>;
 
     constructor(i18n: IVueI18n, bonus: IDict<IBonusData>) {
         this.i18n = i18n;
-        this.chara = null;
         this.team = "";
         this.equip = "";
-        this.group = "";
+        this.index = 0;
+        this.chara = null;
         this.bonus = bonus;
         this.output = {};
     }
 
+    private reset({ id }: ITeamData) {
+        this.team = id;
+        this.equip = "";
+        this.index = 0;
+        this.chara = null;
+    }
+
+    private member(member: IRequiredMember) {
+        this.index++;
+        this.equip = member.equip.id;
+        this.chara = member.chara;
+        return new Member(member);
+    }
+
+    private sortKey(index: number) {
+        return this.index * 1000 + index;
+    }
+
     private convert(data: AnyBonus, index: number, origin: string, source: string): BonusBase {
         let group: string;
-        switch (data.target ?? konst.BonusTarget.Self) {
+        switch (data.target || konst.BonusTarget.Self) {
             case konst.BonusTarget.Self:
-            case konst.BonusTarget.Melee:
-                group = this.group;
+                group = "chara." + (this.chara?.name || "");
                 source = "origin." + origin;
                 break;
             default:
                 group = "general.everyone";
-                index += 1000;
+                index += 10000;
                 break;
         }
 
@@ -534,20 +553,21 @@ export class BonusBuilder {
         let bonus: BonusBase;
         switch (data.extra) {
             case konst.ExtraBonusType.Flat:
-                bonus = new FlatBonus(this.i18n, index, group, source, data, talent);
+                bonus = new FlatBonus(this.i18n, this.sortKey(index), group, source, data, talent);
                 break;
             case konst.ExtraBonusType.Reduct:
-                bonus = new ReductBonus(this.i18n, index, group, source, data, talent);
+                bonus = new ReductBonus(this.i18n, this.sortKey(index), group, source, data, talent);
                 break;
             case konst.ExtraBonusType.Enchant:
-                bonus = new EnchantBonus(this.i18n, index, group, source, data);
+                bonus = new EnchantBonus(this.i18n, this.sortKey(index), group, source, data);
                 break;
             default:
-                bonus = new BasicBonus(this.i18n, index, group, source, data);
+                bonus = new BasicBonus(this.i18n, this.sortKey(index), group, source, data);
                 break;
         }
         bonus.name = this.chara?.name || "";
 
+        // ボーナスDBから保存情報を取得
         const key = `${this.team}.${this.equip}.${index}`;
         if (key in this.bonus) {
             bonus.reset(this.bonus[key]);
@@ -563,23 +583,24 @@ export class BonusBuilder {
         return [this.convert(data, index, origin, source)];
     }
 
-    public charaBonus(): BonusBase[] {
+    private charaBonus(): BonusBase[] {
         const data = this.chara!;
         const info = CharaList[data.name];
-        const level = parseInt(data.level.replace("+", "") || "1");
+        const level = parseLevel(data.level);
         const source = "chara." + data.name;
         let bonus: BonusBase[] = [];
+        // passive: 100 <= sort < 200
         for (const [idx, origin] of Passives.entries()) {
             const passive = info.passive[origin];
             if (passive) {
                 switch (origin) {
                     case Passive.Ascension1:
-                        if ((21 <= level) || (data.level === "20+")) {
+                        if (level.index >= 1) {
                             bonus.push(...this.append(passive, 100 + (idx * 10), origin, source));
                         }
                         break;
                     case Passive.Ascension4:
-                        if ((61 <= level) || (data.level === "60+")) {
+                        if (level.index >= 4) {
                             bonus.push(...this.append(passive, 100 + (idx * 10), origin, source));
                         }
                         break;
@@ -589,19 +610,21 @@ export class BonusBuilder {
                 }
             }
         }
+        // conste: 200 <= sort < 300
         for (const [idx, origin] of Constes.entries()) {
             const conste = info.conste[origin];
             const count = parseInt(origin.replace("lv", ""));
             if (conste) {
                 if (count <= data.conste) {
-                    bonus.push(...this.append(conste, 150 + idx * 10, origin, source));
+                    bonus.push(...this.append(conste, 200 + idx * 10, origin, source));
                 }
             }
         }
         return bonus;
     }
 
-    public weaponBonus(type: konst.WeaponType, data: IWeaponData | undefined): BonusBase[] {
+    // weapon: 300 <= key < 400
+    private weaponBonus({ type, data }: { type: konst.WeaponType, data?: IWeaponData; }): BonusBase[] {
         if (data) {
             const source = `weapon.${type}.${data.name}`;
             const weapon = WeaponList[type][data.name];
@@ -609,17 +632,18 @@ export class BonusBuilder {
             if (bonus) {
                 if (Array.isArray(bonus)) {
                     return bonus.map((value, i) => this.convert(
-                        { ...value, value: value.value[data.rank - 1] }, 200 + i, "weapon", source));
+                        { ...value, value: value.value[data.rank - 1] }, 300 + i, "weapon", source));
                 } else {
                     return [this.convert(
-                        { ...bonus, value: bonus.value[data.rank - 1] }, 200, "weapon", source)];
+                        { ...bonus, value: bonus.value[data.rank - 1] }, 300, "weapon", source)];
                 }
             }
         }
         return [];
     }
 
-    public artifactBonus(names: ArtifactName[]): BonusBase[] {
+    // artifact: 400 <= key < 500
+    private artifactBonus(names: ArtifactName[]): BonusBase[] {
         let bonus: BonusBase[] = [];
         let first = 0;
         while (first < names.length) {
@@ -632,13 +656,13 @@ export class BonusBuilder {
                 // 2セットの効果追加
                 if (2 <= same) {
                     if (artifact.set2) {
-                        bonus.push(...this.append(artifact.set2, 300, "artifact", source));
+                        bonus.push(...this.append(artifact.set2, 400, "artifact", source));
                     }
                 }
                 // 4セットの効果追加
                 if (4 <= same) {
                     if (artifact.set4) {
-                        bonus.push(...this.append(artifact.set4, 310, "artifact", source));
+                        bonus.push(...this.append(artifact.set4, 410, "artifact", source));
                     }
                 }
             }
@@ -647,38 +671,26 @@ export class BonusBuilder {
         return bonus;
     }
 
-    public resonanceBonus(elems: konst.ElementType[]): BonusBase[] {
+    // resonance: 10000 <= key < 10100
+    private resonanceBonus(elems: konst.ElementType[]): BonusBase[] {
         let bonus: BonusBase[] = [];
         for (const [idx, elem] of elems.entries()) {
             const base = TeamBonus[elem];
             if (base) {
                 const data = { ...base, target: konst.BonusTarget.All };
-                bonus.push(...this.append(data, 400 + idx, "resonance", "general.resonance"));
+                bonus.push(...this.append(data, idx + 1, "resonance", "general.resonance"));
             }
         }
         return bonus;
     }
 
     public build(team: ITeamData, db: Database) {
+        this.reset(team);
         let data: BonusBase[] = [];
-        this.team = team.id;
-        for (const m of new Team(team).members(db)) {
-            this.chara = m.chara;
-            this.equip = m.equip.id;
-            this.group = "chara." + m.chara.name;
-
-            // キャラボーナス追加
-            const member = new Member(m);
-            data.push(...this.charaBonus());
-            // 武器ボーナス追加
-            const weapon = member.weapon(db);
-            data.push(...this.weaponBonus(weapon.type, weapon.data));
-            // 聖遺物ボーナス追加
-            const artifacts = member.artifacts(db).map((val) => val.name);
-            data.push(...this.artifactBonus(artifacts));
-        }
-        this.chara = null;
-        // 超電導を追加 TODO: 多言語対応
+        // 元素共鳴ボーナス追加
+        data.push(...this.resonanceBonus(team.resonance));
+        // 超電導を追加 key = 10100
+        // TODO: 多言語対応
         {
             const bonus = {
                 extra: konst.ExtraBonusType.Reduct,
@@ -686,18 +698,20 @@ export class BonusBuilder {
                 value: 40,
                 limit: "超電導が発生した時",
                 times: 12,
-                target: konst.BonusTarget.All
+                target: konst.BonusTarget.All,
             };
-            data.push(...this.append(bonus, 250, "conduct", "reaction.conduct"));
+            data.push(...this.append(bonus, 100, "conduct", "reaction.conduct"));
         }
-        // 元素共鳴ボーナス追加
-        data.push(...this.resonanceBonus(team.resonance));
-        data.sort(
-            (a, b) =>
-                a.group.localeCompare(b.group) ||
-                a.index - b.index ||
-                a.source.localeCompare(b.source)
-        );
+        for (const m of new Team(team).members(db)) {
+            const member = this.member(m);
+            // キャラボーナス追加
+            data.push(...this.charaBonus());
+            // 武器ボーナス追加
+            data.push(...this.weaponBonus(member.weapon(db)));
+            // 聖遺物ボーナス追加
+            data.push(...this.artifactBonus(member.artifact(db).map((val) => val.name)));
+        }
+        data.sort((a, b) => a.key - b.key);
         return data;
     }
 }

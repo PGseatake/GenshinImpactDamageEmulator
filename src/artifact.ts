@@ -164,7 +164,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         // 攻撃力+18%
         set2: { items: konst.StatusBonusType.AtkBuf, value: 18 },
         // 該当聖遺物セットを装備したキャラが片手剣、両手剣、長柄武器キャラの場合、通常攻撃ダメージ+35%
-        set4: { items: konst.CombatBonusType.Normal, value: 35, limit: "片手剣、両手剣、長柄武器キャラの時", target: konst.BonusTarget.Melee },
+        set4: { items: konst.CombatBonusType.Normal, value: 35, limit: "片手剣、両手剣、長柄武器キャラの時" },
     },
     Troupe: {
         // 元素熟知+80
@@ -199,6 +199,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
                 type: konst.AnyReductType.Contact,
                 value: 40,
                 limit: "影響を受けた敵",
+                times: 10,
                 target: konst.BonusTarget.All,
             },
         ],

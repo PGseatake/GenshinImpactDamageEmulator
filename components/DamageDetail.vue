@@ -2,7 +2,7 @@
   <v-row no-gutters justify="center">
     <v-col cols="12" md="8" lg="9" class="px-2">
       <v-row no-gutters justify="center">
-        <!-- 敵 -->
+        <!-- 敵（大型の時には左に表示） -->
         <v-col v-if="large" cols="4">
           <enemy-table
             :damage="data.id"
@@ -27,17 +27,15 @@
             </v-col>
           </v-row>
         </v-col>
-        <!-- ダミースペース -->
-        <v-col v-if="large" cols="4" />
         <!-- ボーナス -->
-        <v-col cols="auto" class="pa-1">
-          <bonus-table :items="bonus" :check="true" @change="onChangeBonus" />
+        <v-col cols="12" class="pa-1">
+          <bonus-table :items="bonus" @change="onChangeBonus" />
         </v-col>
       </v-row>
     </v-col>
     <v-col cols="12" md="4" lg="3" class="px-2">
       <v-row dense justify="center" class="ma-0">
-        <!-- 敵 -->
+        <!-- 敵（小型の時は右に表示） -->
         <v-col v-if="!large" cols="12" sm="6" md="auto">
           <enemy-table
             :damage="data.id"

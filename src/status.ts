@@ -139,7 +139,7 @@ export class Status {
                 this.apply(data.second);
             }
             // 聖遺物
-            const list = m.artifacts(db);
+            const list = m.artifact(db);
             for (const data of list) {
                 this.apply(data.main);
                 for (const prop of SubBonus) {

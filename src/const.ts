@@ -277,7 +277,6 @@ export const BonusTarget = {
     Next: "next", // 次キャラ
     Other: "other", // 自キャラ以外
     Melee: "melee", // 片手剣・両手剣・長柄武器キャラ
-    Enemy: "enemy", // 敵
 } as const;
 export type BonusTarget = typeof BonusTarget[keyof typeof BonusTarget];
 
