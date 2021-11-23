@@ -274,13 +274,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         passive: {
             // skill. 豊穣の勾玉　キャラクターが近寄ると、豊穣の勾玉を吸収し、下記効果を獲得する。
             // 元素エネルギーが回復する。継続時間内、元素チャージ効率がアップする。
-            skill: { items: konst.FlatBonusDest.EnRec, value: 20.0, limit: "豊穣の勾玉を吸収した時", times: 6 },
+            skill: { items: konst.StatusBonusType.EnRec, value: 20.0, limit: "豊穣の勾玉を吸収した時", times: 6 },
             // 4. 周囲のチームメンバー（旅人自身を除く）が雷影剣で生成された豊穣の勾玉を拾うと、雷影剣のクールタイム-1.5秒
             // 5. 旅人自身の元素チャージ効率の10%を基準に、雷影剣が生成した豊穣の勾玉による元素チャージ効率をアップする
             asc4th: {
                 extra: konst.ExtraBonusType.Flat,
-                base: konst.FlatBonusBase.EnRec,
                 dest: konst.FlatBonusDest.EnRec,
+                base: konst.FlatBonusBase.EnRec,
                 value: 10.0,
                 limit: "豊穣の勾玉を吸収した時",
                 times: 6,
@@ -382,7 +382,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv2: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.Burst,
-                base: konst.StatusBonusType.Def,
+                base: konst.FlatBonusBase.Def,
                 value: 30.0,
                 limit: "生滅カウントに応じて元素爆発を発動した時",
                 stack: 4,
@@ -459,8 +459,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             skill: [
                 {
                     extra: konst.ExtraBonusType.Flat,
-                    base: konst.FlatBonusBase.None,
                     dest: konst.FlatBonusDest.NormalDmg,
+                    base: konst.FlatBonusBase.None,
                     value: 5.85,
                     limit: "氷の爆弾または冷凍爆弾が敵に命中した時",
                     scale: konst.DamageScale.Xiao,
@@ -469,8 +469,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 },
                 {
                     extra: konst.ExtraBonusType.Flat,
-                    base: konst.FlatBonusBase.None,
                     dest: konst.FlatBonusDest.NormalDmg,
+                    base: konst.FlatBonusBase.None,
                     value: 29.2,
                     limit: "アイスラッシュを獲得した時",
                     scale: konst.DamageScale.Xiao,
@@ -816,7 +816,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //        ･エリア内のキャラに炎元素付着効果を付与する。
             burst: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.Atk,
+                dest: konst.FlatBonusDest.Atk,
                 base: konst.FlatBonusBase.Atk,
                 value: 56.0,
                 scale: konst.DamageScale.Elem,
@@ -1421,7 +1421,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             skill: [
                 {
                     extra: konst.ExtraBonusType.Flat,
-                    dest: konst.StatusBonusType.Atk,
+                    dest: konst.FlatBonusDest.Atk,
                     base: konst.FlatBonusBase.Hp,
                     bound: { base: konst.FlatBonusBase.Atk, value: 400 },
                     scale: konst.DamageScale.Xiao,
@@ -1643,12 +1643,12 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // ・滑翔状態の時、1秒毎に元素エネルギーを2回復する。
             // 5. 万葉の一刀のスキルLv.+3
             // 6. 楓原万葉が千早振るまたは万葉の一刀を発動した後の5秒間、風元素付与を獲得する、
-            // また楓原万葉の元素熟知の数値が1につき、自身の通常攻撃、重撃、落下攻撃のダメージ+ 0.2 %。
+            // また楓原万葉の元素熟知の数値が1につき、自身の通常攻撃、重撃、落下攻撃のダメージ+0.2%。
             lv6: [
                 {
                     extra: konst.ExtraBonusType.Flat,
-                    base: konst.FlatBonusBase.Elem,
                     dest: konst.FlatBonusDest.CombatDmg,
+                    base: konst.FlatBonusBase.Elem,
                     value: 0.2,
                     times: 5,
                 },
@@ -2064,7 +2064,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //「烏羽」は短時間後に天狗呪雷・伏を引き起こし、範囲内の敵に雷元素ダメージを与え、範囲内のフィールド上キャラクターの攻撃力を、九条裟羅の基礎攻撃力を基準にアップさせる。
             skill: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.Atk,
+                dest: konst.FlatBonusDest.Atk,
                 base: konst.FlatBonusBase.Atk,
                 value: 43.0,
                 scale: konst.DamageScale.Elem,
@@ -2234,8 +2234,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. モナの与える水ダメージが増加する。増加量はモナの元素チャージ効率の20%に相当する。
             asc4th: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.ElementBonusType.Hydro,
-                base: konst.StatusBonusType.EnRec,
+                dest: konst.FlatBonusDest.HydroDmg,
+                base: konst.FlatBonusBase.EnRec,
                 value: 20.0,
             },
         },
@@ -2391,8 +2391,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 {
                     extra: konst.ExtraBonusType.Flat,
-                    dest: konst.StatusBonusType.Atk,
-                    base: konst.StatusBonusType.Def,
+                    dest: konst.FlatBonusDest.Atk,
+                    base: konst.FlatBonusBase.Def,
                     value: [40, 43, 46, 50, 53, 56, 60, 64, 68, 72, 76, 80, 85, 90],
                     limit: "元素爆発継続中",
                 },
@@ -2418,8 +2418,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 6. 大掃除発動で、ノエルの防御力50%相当の攻撃力を追加でアップする。
             lv6: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.Atk,
-                base: konst.StatusBonusType.Def,
+                dest: konst.FlatBonusDest.Atk,
+                base: konst.FlatBonusBase.Def,
                 value: 50.0,
                 limit: "元素爆発継続中",
             },
@@ -2577,7 +2577,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 蓄積できる願力は最大60層まで。
             burst: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.AtkBuf,
+                dest: konst.FlatBonusDest.AtkBuf,
                 base: konst.FlatBonusBase.None,
                 value: 0.73,
                 scale: konst.DamageScale.Elem,
@@ -2588,6 +2588,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 周囲にいるチーム内キャラクターが元素オーブまたは元素粒子を獲得した時、諸願百目の輪に願力を2層蓄積する。
             // 5. 元素チャージ効率が100%を超えている場合、超えた分1%につき、雷電将軍は以下の効果を獲得する。
             // ・夢想の一心状態で提供する元素エネルギー回復+0.6%。雷元素ダメージ+0.4%。
+            // asc4th: {}, TODO: 実装
         },
         conste: {
             // 1. 諸願百目の輪の願力をより早く蓄積できるようになる。
@@ -2753,8 +2754,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    この方法で獲得できる会心率アップ効果は、最大15%まで。
             asc4th: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.CriticalBonusType.Rate,
-                base: konst.CriticalBonusType.Rate,
+                dest: konst.FlatBonusDest.CriRate,
+                base: konst.FlatBonusBase.CriRate,
                 value: 15.0,
                 bound: { base: konst.FlatBonusBase.CriRate, value: 15.0 },
                 limit: "元素爆発発動後",
@@ -3048,8 +3049,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 「風霊作成·六三〇八」又は「禁·風霊作成·七五同構弐型」が敵に命中した時、スクロースの元素熟知の20%を基準に、チーム内キャラクター全員（スクロース自身を除く）の元素熟知を強化、継続時間8秒。
             asc4th: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.Elem,
-                base: konst.StatusBonusType.Elem,
+                dest: konst.FlatBonusDest.Elem,
+                base: konst.FlatBonusBase.Elem,
                 value: 20.0,
                 limit: "元素スキル・元素爆発が敵に命中した時",
                 times: 8,
@@ -3216,7 +3217,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. フィールド上キャラクターが烈炎侍立シールドを獲得または更新した時、シールド強化+5%、継続時間6秒。
             // この効果は0.3秒毎に1回のみ発動可能、最大5重まで。
             // 5. 真紅熾炎の大鎧の熾炎崩滅によるダメージがトーマのHP上限2.2%分アップする。
-            // asc4th: {
+            // asc4th: { TODO: 実装
             //     extra: konst.ExtraBonusType.Flat,
             //     dest: konst.FlatBonusDest.Burst,
             //     base: konst.FlatBonusBase.Hp,
@@ -3909,9 +3910,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             },
             // 5. 天星のダメージ量が鍾離のHP上限の33%分上昇する。
             asc4th: [
-                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Combat, base: konst.StatusBonusType.Hp, value: 1.39 },
-                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Skill, base: konst.StatusBonusType.Hp, value: 1.9 },
-                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Burst, base: konst.StatusBonusType.Hp, value: 100.0 / 3 },
+                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Combat, base: konst.FlatBonusBase.Hp, value: 1.39 },
+                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Skill, base: konst.FlatBonusBase.Hp, value: 1.9 },
+                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Burst, base: konst.FlatBonusBase.Hp, value: 100.0 / 3 },
             ],
         },
         conste: {

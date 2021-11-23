@@ -479,8 +479,8 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         // この方式アップできる元素爆発ダメージは最大40~80%まで。
         // passive: {
         //     extra: konst.ExtraBonusType.Flat,
-        //     dest: konst.CombatBonusType.Burst,
-        //     base: konst.StatusBonusType.EnRec, // チーム全員
+        //     dest: konst.FlatBonusDest.Burst,
+        //     base: konst.FlatBonusBase.EnRec, // チーム全員
         //     value: 0.12,
         //     bound: { base: konst.FlatBonusBase.None, value: 40 },
         // },
@@ -749,8 +749,8 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         // この方式アップできる元素爆発ダメージは最大40~80%まで。
         // passive: {
         //     extra: konst.ExtraBonusType.Flat,
-        //     dest: konst.CombatBonusType.Burst,
-        //     base: konst.StatusBonusType.EnRec, // チーム全員
+        //     dest: konst.FlatBonusDest.Burst,
+        //     base: konst.FlatBonusBase.EnRec, // チーム全員
         //     value: 0.12,
         //     bound: { base: konst.FlatBonusBase.None, value: 40 },
         // },
@@ -1019,8 +1019,8 @@ const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
         // この方式アップできる元素爆発ダメージは最大40~80%まで。
         // passive: {
         //     extra: konst.ExtraBonusType.Flat,
-        //     dest: konst.CombatBonusType.Burst,
-        //     base: konst.StatusBonusType.EnRec, // チーム全員
+        //     dest: konst.FlatBonusDest.Burst,
+        //     base: konst.FlatBonusBase.EnRec, // チーム全員
         //     value: 0.12,
         //     bound: { base: konst.FlatBonusBase.None, value: 40 },
         // },

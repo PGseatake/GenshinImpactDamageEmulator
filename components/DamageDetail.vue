@@ -55,21 +55,16 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { ExtraBonusType } from "~/src/const";
 import { DBEquipTable } from "~/src/interface";
-import { CharaList, DBCharaTable, ICharaData } from "~/src/character";
+import { DBCharaTable } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
 import { DBArtifactTable } from "~/src/artifact";
-import { DBTeamTable, ITeamData, IMember } from "~/src/team";
+import { DBTeamTable, ITeamData, IMember, Team } from "~/src/team";
 import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
-import {
-  Status,
-  IStatus,
-  StatusEnchant,
-  enumerateReaction,
-} from "~/src/status";
+import { Status, IStatus, enumerateReaction } from "~/src/status";
 import { IEnemyData } from "~/src/enemy";
 import { Enemy, IDamageData } from "~/src/damage";
+import { parseLevel } from "~/src/ascension";
 
 @Component({
   name: "DamageDetail",
@@ -91,13 +86,13 @@ export default class DamageDetail extends Vue {
     DBCharaTable &
     DBWeaponTable &
     DBArtifactTable;
-  member: IMember = {
+  tab = 0;
+  members: IMember[] = Array.from({ length: 4 }, () => ({
     info: null,
     chara: null,
     equip: null,
-  };
-  bonus: BonusBase[] = [];
-  status: IStatus = {
+  }));
+  params: IStatus[] = Array.from({ length: 4 }, () => ({
     talent: { combat: 0, skill: 0, burst: 0 },
     base: { hp: 0, atk: 0, def: 0 },
     param: {
@@ -163,7 +158,8 @@ export default class DamageDetail extends Vue {
       dest: [],
       self: false,
     },
-  };
+  }));
+  bonuses: BonusBase[] = [];
 
   @Watch("data.contact")
   onChangeContact() {
@@ -174,24 +170,32 @@ export default class DamageDetail extends Vue {
     return this.$vuetify.breakpoint.lg || this.$vuetify.breakpoint.xl;
   }
 
+  get member() {
+    return this.members[this.tab];
+  }
+
+  get status() {
+    return this.params[this.tab];
+  }
+
+  get bonus() {
+    const { chara } = this.member;
+    if (chara) {
+      return this.bonuses.filter((val) => val.isMine(chara));
+    }
+    return [];
+  }
+
   get defence() {
     let enemy = new Enemy(this.data, this.status.reduct);
-    return enemy.defence(
-      parseInt(this.member.chara?.level?.replace("+", "") || "1")
-    );
+    return enemy.defence(parseLevel(this.member.chara?.level).level);
   }
 
   get reactions() {
-    let part: { enchant: StatusEnchant } = {
-      enchant: { type: "", dest: [], self: false },
-    };
-    let status = new Status(part as IStatus, this.data.contact);
-    for (const bonus of this.bonus) {
-      if (bonus.extra === ExtraBonusType.Enchant) {
-        bonus.apply(status);
-      }
-    }
-    return ["", ...enumerateReaction(this.member.info, status.enchant.type)];
+    return [
+      "",
+      ...enumerateReaction(this.member.info, this.status.enchant.type),
+    ];
   }
 
   created() {
@@ -202,57 +206,80 @@ export default class DamageDetail extends Vue {
     const { team, member } = this.data;
     const t = this.db.team.find((val) => val.id === team);
     if (t) {
-      const e = this.db.equip.find((val) => val.id === member);
-      if (e) {
-        const c = this.db.chara.find((val) => val.id === e.chara);
-        if (c) {
-          this.member.info = CharaList[c.name];
-          this.member.chara = c;
-          this.member.equip = e;
+      this.changeTeam(t);
 
-          this.rebuildBonus(t, c);
+      for (let [i, m] of this.members.entries()) {
+        if (m.equip?.id === member) {
+          this.tab = i;
           this.onChangeBonus();
+          break;
         }
       }
     }
   }
 
-  private rebuildBonus(team: ITeamData, chara: ICharaData) {
+  private changeTeam(team: ITeamData) {
+    let i = 0;
+    for (let m of new Team(team).members(this.db)) {
+      let member = this.members[i];
+      member.info = m.info;
+      member.chara = m.chara;
+      member.equip = m.equip;
+      ++i;
+    }
+    for (; i < 4; ++i) {
+      let member = this.members[i];
+      member.info = null;
+      member.chara = null;
+      member.equip = null;
+    }
+
     let builder = new BonusBuilder(this.$i18n, this.db.bonus);
     let bonus = builder.build(team, this.db);
-    this.bonus.push(...bonus.filter((val) => val.isMine(chara)));
+    this.bonuses.splice(0);
+    this.bonuses.push(...bonus);
     this.db.bonus = { ...this.db.bonus, ...builder.output };
   }
 
-  onChangeMember(member: IMember, team: ITeamData | null) {
-    this.member.info = member.info;
-    this.member.chara = member.chara;
-    this.member.equip = member.equip;
-    this.data.team = team?.id || "";
-    this.data.member = member.equip?.id || "";
-    this.data.contact = "";
-    this.data.reaction = "";
-    this.bonus.splice(0);
-
-    const chara = member.chara;
-    if (team && chara) {
-      this.rebuildBonus(team, chara);
+  onChangeMember(team: ITeamData, member: IMember) {
+    if (this.data.team != team.id) {
+      this.data.team = team.id;
+      this.changeTeam(team);
     }
-    this.onChangeBonus();
+    this.data.member = "";
+    this.data.reaction = "";
+
+    const equip = member.equip;
+    if (equip) {
+      this.data.member = equip.id;
+
+      for (let [i, m] of this.members.entries()) {
+        if (m.equip?.id === equip.id) {
+          this.tab = i;
+          this.onChangeBonus();
+          break;
+        }
+      }
+    }
   }
 
   onChangeBonus() {
-    let status = new Status(this.status, this.data.contact);
-    status.equip(this.member, this.db);
-    for (const bonus of this.bonus) {
-      if (bonus.extra !== ExtraBonusType.Flat) {
-        bonus.apply(status);
+    let status: Status[] = [];
+    for (let [i, m] of this.members.entries()) {
+      let s = new Status(this.params[i], this.data.contact);
+      s.equip(m, this.db);
+      if (m.equip) {
+        for (const bonus of this.bonuses) {
+          bonus.apply(s, status, 0);
+        }
+        status.push(s);
       }
     }
-    // 固定割合ボーナスの適用は後回し
-    for (const bonus of this.bonus) {
-      if (bonus.extra === ExtraBonusType.Flat) {
-        bonus.apply(status);
+    for (let step = 1; step <= 2; ++step) {
+      for (let s of status) {
+        for (const bonus of this.bonuses) {
+          bonus.apply(s, status, step);
+        }
       }
     }
   }

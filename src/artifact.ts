@@ -280,7 +280,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         // 元素チャージ効率の25%を基準に、元素爆発ダメージがアップする。この方式でアップできるダメージは最大75%まで。
         set4: {
             extra: konst.ExtraBonusType.Flat,
-            dest: konst.CombatBonusType.Burst,
+            dest: konst.FlatBonusDest.BurstDmg,
             base: konst.FlatBonusBase.EnRec,
             value: 25,
             bound: { base: konst.FlatBonusBase.None, value: 75 },
@@ -302,7 +302,13 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         // 防御力+30%
         set2: { items: konst.StatusBonusType.DefBuf, value: 30 },
         // 
-        set4: { items: [konst.StatusBonusType.DefBuf, konst.ElementBonusType.Geo], value: 6, limit: "岩元素攻撃が命中した時", stack: 4, times: 6 }
+        set4: {
+            items: [konst.StatusBonusType.DefBuf, konst.ElementBonusType.Geo],
+            value: 6,
+            limit: "岩元素攻撃が命中した時",
+            stack: 4,
+            times: 6,
+        }
     },
 } as const;
 

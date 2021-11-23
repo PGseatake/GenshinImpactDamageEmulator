@@ -325,8 +325,8 @@ export const FlatBonusDest = {
     // ElementBonusType 割合
     HydroDmg: "hydro_dmg",
     CryoDmg: "cryo_dmg",
-    Swirl: "swirl",
     Contact: "contact",
+    Swirl: "swirl", // 楓原万葉専用
 } as const;
 export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
 
@@ -339,7 +339,7 @@ export const FlatBonusBase = {
     Elem: "elem",
     EnRec: "en_rec",
     HealBuf: "heal_buf",
-    CriRate: "cri_rate", // 最終値
+    CriRate: "cri_rate",
 } as const;
 export type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
 
