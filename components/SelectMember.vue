@@ -41,7 +41,7 @@
     <v-col cols="auto" class="pa-1">
       <v-select
         v-model="refReaction"
-        :items="reactionList"
+        :items="refReactions"
         :label="$t('damage.reaction')"
         :menu-props="{ auto: true, transition: false }"
         dense
@@ -71,11 +71,6 @@ import { Vue, Component, Emit, Prop } from "vue-property-decorator";
 import { ContactTypes, NoneElementType, NoneReactionType } from "~/src/const";
 import { ITeamData, IMember, Team } from "~/src/team";
 
-type TextValue = {
-  text: string;
-  value: IMember;
-};
-
 @Component({
   name: "SelectMember",
   components: {
@@ -96,7 +91,7 @@ export default class SelectMember extends Vue {
   readonly contacts = ["", ...ContactTypes];
 
   @Emit("change")
-  onChange(member: IMember, team: ITeamData | null) {}
+  onChange(team: ITeamData, member: IMember) {}
 
   get refMember() {
     return this.member;
@@ -119,6 +114,7 @@ export default class SelectMember extends Vue {
   set refLevel(value: string | null) {
     if (this.member?.chara && value) {
       this.member.chara.level = value;
+      this.onChangeMember();
     }
   }
 
@@ -136,7 +132,7 @@ export default class SelectMember extends Vue {
     this.$emit("update:reaction", value);
   }
 
-  get reactionList() {
+  get refReactions() {
     return this.reactions.map((val) => ({
       text: this.$t("reaction." + (val || "none")),
       value: val,
@@ -152,7 +148,7 @@ export default class SelectMember extends Vue {
   }
 
   get members() {
-    let items: TextValue[] = [];
+    let items: { text: string; value: IMember }[] = [];
     const team = this.team;
     if (team) {
       for (const member of new Team(team).members(this.$db)) {
@@ -183,9 +179,9 @@ export default class SelectMember extends Vue {
     }
   }
 
-  changeMember(index = 0) {
+  private changeMember(index = 0) {
     const members = this.members;
-    if (0 <= index && index < members.length) {
+    if (index >= 0) {
       const member = members[index].value;
       this.member.info = member.info;
       this.member.chara = member.chara;
@@ -203,7 +199,9 @@ export default class SelectMember extends Vue {
   }
 
   onChangeMember() {
-    this.onChange(this.member, this.team);
+    if (this.team) {
+      this.onChange(this.team, this.member);
+    }
   }
 }
 </script>

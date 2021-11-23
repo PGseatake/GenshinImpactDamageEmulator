@@ -4,6 +4,7 @@ import { ICharaData } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
 import { SubBonus, DBArtifactTable } from "~/src/artifact";
 import { IMember, Member } from "~/src/team";
+import { parseLevel } from "./ascension";
 
 const ReactionScaleTable: ReadonlyPartial<Record<konst.ElementType, ReadonlyPartial<Record<konst.ReactionType, number>>>> = {
     pyro: {
@@ -88,7 +89,7 @@ export class Status {
     public enchant: StatusEnchant;
     public contact: konst.NoneContactType;
 
-    constructor(data: IStatus, contact: konst.NoneContactType) {
+    constructor(data: IStatus, contact: konst.NoneContactType = "") {
         this.info = null;
         this.chara = null;
         this.talent = data.talent;
@@ -101,6 +102,8 @@ export class Status {
     }
 
     equip({ info, chara, equip }: IMember, db: DBWeaponTable & DBArtifactTable) {
+        this.info = info;
+        this.chara = chara;
         for (const type of konst.BonusTypes) {
             this.param[type] = 0;
         }
@@ -114,14 +117,12 @@ export class Status {
         this.enchant.dest.splice(0);
         this.enchant.self = false;
 
-        // 基礎値
-        this.param[konst.StatusBonusType.EnRec] = 100;
-        this.param[konst.CriticalBonusType.Damage] = 50;
-        this.param[konst.CriticalBonusType.Rate] = 5;
-
         if (info && chara && equip) {
-            this.info = info;
-            this.chara = chara;
+            // 基礎値
+            this.param[konst.StatusBonusType.EnRec] = 100;
+            this.param[konst.CriticalBonusType.Damage] = 50;
+            this.param[konst.CriticalBonusType.Rate] = 5;
+
             this.talent.combat = chara.combat;
             this.talent.skill = chara.skill;
             this.talent.burst = chara.burst;
@@ -157,7 +158,7 @@ export class Status {
     }
 
     get level() {
-        return parseInt(this.chara?.level?.replace("+", "") || "1");
+        return parseLevel(this.chara?.level).level;
     }
 
     get hp() {

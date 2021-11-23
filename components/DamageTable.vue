@@ -5,7 +5,7 @@
     :headers="headers"
     :items="items"
     :class="tableClass"
-    :items-per-page="1000"
+    :items-per-page="-1"
     group-by="talent"
     dense
     disable-sort
