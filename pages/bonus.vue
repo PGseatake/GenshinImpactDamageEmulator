@@ -7,16 +7,13 @@
   </v-container>
 </template>
 
-<style lang="scss" scoped>
-</style>
-
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { DBEquipTable } from "~/src/interface";
 import { DBCharaTable } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
 import { DBArtifactTable } from "~/src/artifact";
-import { DBTeamTable, getTeamName } from "~/src/team";
+import { DBTeamTable, Team } from "~/src/team";
 import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
 
 @Component({
@@ -48,10 +45,9 @@ export default class PageBonus extends Vue {
   }
 
   mounted() {
-    const text = this.$t("menu.team");
     let builder = new BonusBuilder(this.$i18n, this.db.bonus);
     this.db.team.forEach((t, i) => {
-      const key = getTeamName(text, t, i);
+      const key = new Team(t).getName(this.$i18n, i);
       const data = builder.build(t, this.db);
       this.teams.push({ key, data });
       this.tab = 0;

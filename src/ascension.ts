@@ -3,14 +3,15 @@ export const LevelMax = 90;
 export const LevelStep = [20, 40, 50, 60, 70, 80];
 export const LevelRange = [1, 20, 40, 50, 60, 70, 80, 90];
 
-function parseLevel(strLv: string): {
+export function parseLevel(strLv?: string): {
   level: number;
   index: number;
 } {
-  if (0 < strLv.indexOf("+")) {
-    const lv = parseInt(strLv.replace("+", ""));
-    return { level: lv, index: LevelStep.indexOf(lv) + 1 };
-  } else {
+  if (strLv) {
+    if (0 < strLv.indexOf("+")) {
+      const lv = parseInt(strLv.replace("+", ""));
+      return { level: lv, index: LevelStep.indexOf(lv) + 1 };
+    }
     const lv = parseInt(strLv);
     for (let i = 0, len = LevelStep.length; i < len; ++i) {
       if (lv <= LevelStep[i]) {
@@ -19,6 +20,7 @@ function parseLevel(strLv: string): {
     }
     return { level: lv, index: LevelStep.length };
   }
+  return { level: 0, index: 0 };
 }
 
 // 汎用

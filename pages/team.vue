@@ -181,7 +181,7 @@ import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { ElementType } from "~/src/const";
 import { DBEquipTable } from "~/src/interface";
 import { DBCharaTable } from "~/src/character";
-import { DBTeamTable, Members, Member, ITeamData } from "~/src/team";
+import { DBTeamTable, ITeamData, Team } from "~/src/team";
 import { SelectItem } from "~/components/SelectName.vue";
 
 @Component({
@@ -265,11 +265,8 @@ export default class PageTeam extends Vue {
 
   updateResonance(item: ITeamData) {
     let elements: ElementType[] = [];
-    for (const key of Members) {
-      const { info } = Member.find(item[key], this.db);
-      if (info) {
-        elements.push(info.element);
-      }
+    for (const { info } of new Team(item).members(this.db)) {
+      elements.push(info.element);
     }
     elements.sort();
     item.resonance.splice(0);

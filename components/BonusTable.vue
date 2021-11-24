@@ -5,10 +5,10 @@
     :headers="headers"
     :items="items"
     :class="tableClass"
-    :items-per-page="1000"
-    :show-select="check"
+    :items-per-page="-1"
     group-by="group"
     dense
+    show-select
     disable-sort
     fixed-header
     hide-default-footer
@@ -82,7 +82,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { DataTableHeader } from "vuetify";
 import { BonusBase } from "~/src/bonus";
 
 @Component({
@@ -94,20 +93,21 @@ import { BonusBase } from "~/src/bonus";
 })
 export default class BonusTable extends Vue {
   @Prop({ required: true }) items!: Array<BonusBase>;
-  @Prop({ default: false }) check!: boolean;
-
-  readonly headers: ReadonlyArray<DataTableHeader> = [
-    { text: this.$t("tab.source") as string, value: "source" },
-    { text: this.$t("tab.condition") as string, value: "condition" },
-    { text: this.$t("tab.stack") as string, value: "stack", align: "center" },
-    { text: this.$t("tab.times") as string, value: "times", align: "center" },
-  ];
 
   @Emit("change")
   onChange() {}
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get headers() {
+    return [
+      { text: this.$t("tab.source"), value: "source" },
+      { text: this.$t("tab.condition"), value: "condition" },
+      { text: this.$t("tab.stack"), value: "stack", align: "center" },
+      { text: this.$t("tab.times"), value: "times", align: "center" },
+    ];
   }
 
   get isSelectAll() {

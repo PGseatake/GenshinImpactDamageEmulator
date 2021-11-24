@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-tabs v-model="tab" centered show-arrows>
+    <v-tabs v-model="tab" centered center-active show-arrows>
       <v-tab v-for="(item, index) of db.damage" :key="item.id">
         {{ `${$t("general.data")}${index + 1}` }}
         <v-btn icon tile x-small @click.stop="onRemove(index)">
@@ -8,18 +8,14 @@
         </v-btn>
       </v-tab>
     </v-tabs>
-    <v-tabs-items v-model="tab">
-      <v-tab-item v-for="item of db.damage" :key="item.id">
-        <damage-detail :data="item" />
-      </v-tab-item>
-    </v-tabs-items>
+    <damage-detail v-if="exists" :data="item" :key="item.id" />
   </v-container>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { ElementType } from "~/src/const";
-import { DBTeamTable, Members } from "~/src/team";
+import { DBTeamTable, Team } from "~/src/team";
 import { EnemyNames } from "~/src/enemy";
 import { DBDamageTable, IDamageData } from "~/src/damage";
 import { mdiClose } from "@mdi/js";
@@ -51,6 +47,14 @@ export default class PageDamage extends Vue {
         this.tab = index;
       });
     }
+  }
+
+  get exists() {
+    return !!this.db.damage.length;
+  }
+
+  get item() {
+    return this.db.damage[this.tab];
   }
 
   get append() {
@@ -90,15 +94,12 @@ export default class PageDamage extends Vue {
       const t = this.db.team.find((val) => val.id === team);
       if (t) {
         let member = "";
-        for (const key of Members) {
-          const m = t[key];
-          if (m) {
-            if (m === data.member) {
-              // 変更なし
-              return undefined;
-            }
-            member = member || m;
+        for (const m of new Team(t).member) {
+          if (m === data.member) {
+            // 変更なし
+            return undefined;
           }
+          member = member || m;
         }
         // メンバー交代
         return { team, member };
@@ -106,12 +107,9 @@ export default class PageDamage extends Vue {
     }
 
     for (const t of this.db.team) {
-      for (const key of Members) {
-        const member = t[key];
-        if (member) {
-          // チーム交代
-          return { team: t.id, member };
-        }
+      for (const member of new Team(t).member) {
+        // チーム交代
+        return { team: t.id, member };
       }
     }
     // チームなし

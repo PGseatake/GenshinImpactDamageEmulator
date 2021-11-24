@@ -277,7 +277,6 @@ export const BonusTarget = {
     Next: "next", // 次キャラ
     Other: "other", // 自キャラ以外
     Melee: "melee", // 片手剣・両手剣・長柄武器キャラ
-    Enemy: "enemy", // 敵
 } as const;
 export type BonusTarget = typeof BonusTarget[keyof typeof BonusTarget];
 
@@ -326,8 +325,8 @@ export const FlatBonusDest = {
     // ElementBonusType 割合
     HydroDmg: "hydro_dmg",
     CryoDmg: "cryo_dmg",
-    Swirl: "swirl",
     Contact: "contact",
+    Swirl: "swirl", // 楓原万葉専用
 } as const;
 export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
 
@@ -340,7 +339,7 @@ export const FlatBonusBase = {
     Elem: "elem",
     EnRec: "en_rec",
     HealBuf: "heal_buf",
-    CriRate: "cri_rate", // 最終値
+    CriRate: "cri_rate",
 } as const;
 export type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
 
@@ -353,3 +352,18 @@ export const EnchantType = {
     Geo: "geo",
 } as const;
 export type EnchantType = typeof EnchantType[keyof typeof EnchantType];
+
+export const TypeToBonus = {
+    element(type: ElementType) {
+        return type + "_dmg" as ElementBonusType;
+    },
+    combat(type: AnyCombatType) {
+        return type + "_dmg" as CombatBonusType;
+    },
+    reaction(type: ReactionType) {
+        return type + "_dmg" as ReactionBonusType;
+    },
+    buffer(type: StatusBonusType) {
+        return type + "_buf" as StatusBonusType;
+    },
+} as const;

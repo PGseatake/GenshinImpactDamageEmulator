@@ -127,6 +127,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     type: konst.ElementType.Anemo,
                     value: 20.0,
                     limit: "元素爆発のダメージを受けた時",
+                    target: konst.BonusTarget.All,
                 },
                 //    元素変化があった場合､該当の元素耐性-20%
                 {
@@ -134,6 +135,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     type: konst.CombatElementType.Contact,
                     value: 20.0,
                     limit: "元素変化があった時",
+                    target: konst.BonusTarget.All,
                 },
             ],
         },
@@ -272,13 +274,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         passive: {
             // skill. 豊穣の勾玉　キャラクターが近寄ると、豊穣の勾玉を吸収し、下記効果を獲得する。
             // 元素エネルギーが回復する。継続時間内、元素チャージ効率がアップする。
-            skill: { items: konst.FlatBonusDest.EnRec, value: 20.0, limit: "豊穣の勾玉を吸収した時", times: 6 },
+            skill: { items: konst.StatusBonusType.EnRec, value: 20.0, limit: "豊穣の勾玉を吸収した時", times: 6 },
             // 4. 周囲のチームメンバー（旅人自身を除く）が雷影剣で生成された豊穣の勾玉を拾うと、雷影剣のクールタイム-1.5秒
             // 5. 旅人自身の元素チャージ効率の10%を基準に、雷影剣が生成した豊穣の勾玉による元素チャージ効率をアップする
             asc4th: {
                 extra: konst.ExtraBonusType.Flat,
-                base: konst.FlatBonusBase.EnRec,
                 dest: konst.FlatBonusDest.EnRec,
+                base: konst.FlatBonusBase.EnRec,
                 value: 10.0,
                 limit: "豊穣の勾玉を吸収した時",
                 times: 6,
@@ -294,6 +296,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15,
                 limit: "威光の落雷が敵に命中した時",
                 times: 8,
+                target: konst.BonusTarget.All,
             },
             // 3. 電光雷轟のスキルLv.+3
             // 4. キャラクターが雷影剣で生成した豊穣の勾玉を獲得した時、該当キャラクターの元素エネルギーが35%未満の場合、豊穣の勾玉で回復できる元素エネルギー+100%。
@@ -379,7 +382,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv2: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.Burst,
-                base: konst.StatusBonusType.Def,
+                base: konst.FlatBonusBase.Def,
                 value: 30.0,
                 limit: "生滅カウントに応じて元素爆発を発動した時",
                 stack: 4,
@@ -456,8 +459,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             skill: [
                 {
                     extra: konst.ExtraBonusType.Flat,
-                    base: konst.FlatBonusBase.None,
                     dest: konst.FlatBonusDest.NormalDmg,
+                    base: konst.FlatBonusBase.None,
                     value: 5.85,
                     limit: "氷の爆弾または冷凍爆弾が敵に命中した時",
                     scale: konst.DamageScale.Xiao,
@@ -466,8 +469,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 },
                 {
                     extra: konst.ExtraBonusType.Flat,
-                    base: konst.FlatBonusBase.None,
                     dest: konst.FlatBonusDest.NormalDmg,
+                    base: konst.FlatBonusBase.None,
                     value: 29.2,
                     limit: "アイスラッシュを獲得した時",
                     scale: konst.DamageScale.Xiao,
@@ -740,7 +743,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 攻撃を受けた10秒内、北斗の通常攻撃は20%の雷ダメージが付与される。
             // 5. 雷斫りのスキルLv.+3
             // 6. 雷斫り継続中、周囲の敵の雷耐性-15%
-            lv6: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Elect, value: 15.0, limit: "元素爆発継続中・周囲の敵" },
+            lv6: {
+                extra: konst.ExtraBonusType.Reduct,
+                type: konst.ElementType.Elect,
+                value: 15.0,
+                limit: "元素爆発継続中・周囲の敵",
+                target: konst.BonusTarget.All,
+            },
         },
     },
     Bennett: {
@@ -807,7 +816,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //        ･エリア内のキャラに炎元素付着効果を付与する。
             burst: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.Atk,
+                dest: konst.FlatBonusDest.Atk,
                 base: konst.FlatBonusBase.Atk,
                 value: 56.0,
                 scale: konst.DamageScale.Elem,
@@ -915,6 +924,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 10.0,
                 limit: "元素スキルの霊刃が命中した敵",
                 times: 8,
+                target: konst.BonusTarget.All,
             },
         },
         conste: {
@@ -1169,6 +1179,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     value: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25],
                     limit: "冷酷な心を消費した時",
                     times: 7,
+                    target: konst.BonusTarget.All,
                 },
             ],
             // 4. 長押しで氷潮の渦を発動した時、一度に冷酷な心を2つ消費すると、直ちに爆発する光臨の剣の欠片を創造する。
@@ -1333,6 +1344,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "霜華の矢・霜華満開が命中した時",
                 times: 6,
+                target: konst.BonusTarget.All,
             },
             //    命中時に甘羽の元素エネルギーを2回復。二段チャージの重撃による元素エネルギーの回復効果は、1回の重撃で1度のみ発動可能。
             // 2. 山沢麟跡の発動回数+1
@@ -1409,7 +1421,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             skill: [
                 {
                     extra: konst.ExtraBonusType.Flat,
-                    dest: konst.StatusBonusType.Atk,
+                    dest: konst.FlatBonusDest.Atk,
                     base: konst.FlatBonusBase.Hp,
                     bound: { base: konst.FlatBonusBase.Atk, value: 400 },
                     scale: konst.DamageScale.Xiao,
@@ -1519,7 +1531,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 2. 元素オーブまたは元素粒子を獲得時、チームにいる全てのキャラの移動速度、攻撃速度+15%、継続時間15秒。
             // 3. 蒲公英の風のスキルLv.+3
             // 4. 蒲公英の風エリア内、全ての敵の風元素耐性-40%。
-            lv4: { extra: konst.ExtraBonusType.Reduct, type: konst.ElementType.Anemo, value: 40.0, limit: "元素爆発エリア内の敵" },
+            lv4: {
+                extra: konst.ExtraBonusType.Reduct,
+                type: konst.ElementType.Anemo,
+                value: 40.0,
+                limit: "元素爆発エリア内の敵",
+                target: konst.BonusTarget.All,
+            },
             // 5. 風圧剣のスキルLv.+3
             // 6. 蒲公英の風エリア内、キャラの受けるダメージ-35%。エリアを出た後、この効果は3回攻撃を受けた後、または10秒後に消える。
         },
@@ -1625,12 +1643,12 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // ・滑翔状態の時、1秒毎に元素エネルギーを2回復する。
             // 5. 万葉の一刀のスキルLv.+3
             // 6. 楓原万葉が千早振るまたは万葉の一刀を発動した後の5秒間、風元素付与を獲得する、
-            // また楓原万葉の元素熟知の数値が1につき、自身の通常攻撃、重撃、落下攻撃のダメージ+ 0.2 %。
+            // また楓原万葉の元素熟知の数値が1につき、自身の通常攻撃、重撃、落下攻撃のダメージ+0.2%。
             lv6: [
                 {
                     extra: konst.ExtraBonusType.Flat,
-                    base: konst.FlatBonusBase.Elem,
                     dest: konst.FlatBonusDest.CombatDmg,
+                    base: konst.FlatBonusBase.Elem,
                     value: 0.2,
                     times: 5,
                 },
@@ -1804,6 +1822,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 30,
                 limit: "元素爆発が命中した敵",
                 times: 6,
+                target: konst.BonusTarget.All,
             },
             // 5. 神里流・氷華のスキルLv.+3
             // 6. 10秒毎に、神里綾華は「薄氷の舞」状態を獲得し、重撃ダメージが298%アップする。
@@ -1973,6 +1992,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 23.0,
                 limit: "ブービートラップダメージを受けた敵",
                 times: 10,
+                target: konst.BonusTarget.All,
             },
             // 3. ボンボン爆弾のスキルLv.+3
             // 4. ドッカン花火継続中にキャラを切り替えると、爆発が発生し、攻撃力の555%の炎範囲ダメージを与える。
@@ -2044,7 +2064,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //「烏羽」は短時間後に天狗呪雷・伏を引き起こし、範囲内の敵に雷元素ダメージを与え、範囲内のフィールド上キャラクターの攻撃力を、九条裟羅の基礎攻撃力を基準にアップさせる。
             skill: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.Atk,
+                dest: konst.FlatBonusDest.Atk,
                 base: konst.FlatBonusBase.Atk,
                 value: 43.0,
                 scale: konst.DamageScale.Elem,
@@ -2130,6 +2150,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "元素爆発の攻撃を受けた敵",
                 times: 10,
+                target: konst.BonusTarget.All,
             },
         },
         conste: {
@@ -2213,8 +2234,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. モナの与える水ダメージが増加する。増加量はモナの元素チャージ効率の20%に相当する。
             asc4th: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.ElementBonusType.Hydro,
-                base: konst.StatusBonusType.EnRec,
+                dest: konst.FlatBonusDest.HydroDmg,
+                base: konst.FlatBonusBase.EnRec,
                 value: 20.0,
             },
         },
@@ -2370,8 +2391,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: [
                 {
                     extra: konst.ExtraBonusType.Flat,
-                    dest: konst.StatusBonusType.Atk,
-                    base: konst.StatusBonusType.Def,
+                    dest: konst.FlatBonusDest.Atk,
+                    base: konst.FlatBonusBase.Def,
                     value: [40, 43, 46, 50, 53, 56, 60, 64, 68, 72, 76, 80, 85, 90],
                     limit: "元素爆発継続中",
                 },
@@ -2397,8 +2418,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 6. 大掃除発動で、ノエルの防御力50%相当の攻撃力を追加でアップする。
             lv6: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.Atk,
-                base: konst.StatusBonusType.Def,
+                dest: konst.FlatBonusDest.Atk,
+                base: konst.FlatBonusBase.Def,
                 value: 50.0,
                 limit: "元素爆発継続中",
             },
@@ -2556,7 +2577,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 蓄積できる願力は最大60層まで。
             burst: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.AtkBuf,
+                dest: konst.FlatBonusDest.AtkBuf,
                 base: konst.FlatBonusBase.None,
                 value: 0.73,
                 scale: konst.DamageScale.Elem,
@@ -2567,12 +2588,20 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 周囲にいるチーム内キャラクターが元素オーブまたは元素粒子を獲得した時、諸願百目の輪に願力を2層蓄積する。
             // 5. 元素チャージ効率が100%を超えている場合、超えた分1%につき、雷電将軍は以下の効果を獲得する。
             // ・夢想の一心状態で提供する元素エネルギー回復+0.6%。雷元素ダメージ+0.4%。
+            // asc4th: {}, TODO: 実装
         },
         conste: {
             // 1. 諸願百目の輪の願力をより早く蓄積できるようになる。
             // 雷元素タイプのキャラクターによる元素爆発が蓄積する願力+ 80 %。他の元素タイプのキャラクターによる元素爆発が蓄積する願力+ 20 %。
             // 2. 奥義・夢想真説の夢想の一太刀と夢想の一心による攻撃は敵の防御力60%を無視する。
-            lv2: { extra: konst.ExtraBonusType.Reduct, type: konst.ReductType.Defence, value: 60, limit: "元素爆発継続中" },
+            lv2: {
+                extra: konst.ExtraBonusType.Reduct,
+                type: konst.ReductType.Defence,
+                value: 60,
+                limit: "元素爆発継続中",
+                times: 7,
+                target: konst.BonusTarget.Self,
+            },
             // 3. 奥義・夢想真説のスキルLv.+3
             // 4. 奥義・夢想真説による夢想の一心状態終了後、周囲のチーム全員（雷電将軍自身を除く）の攻撃力+30%、継続時間10秒。
             lv4: { items: konst.StatusBonusType.AtkBuf, value: 30, limit: "元素爆発終了後", times: 10, target: konst.BonusTarget.Other },
@@ -2655,6 +2684,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "元素スキル一回押しで攻撃した時",
                 times: 7,
+                target: konst.BonusTarget.All,
             },
             // 5. 鋭い爪と蒼雷のスキルLv.+3
             // 6. 10秒毎に、レザーの大剣が自動的にエネルギーを溜め、次の通常攻撃に落雷を引き起こし、攻撃力の100％の雷ダメージを与える。
@@ -2724,8 +2754,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    この方法で獲得できる会心率アップ効果は、最大15%まで。
             asc4th: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.CriticalBonusType.Rate,
-                base: konst.CriticalBonusType.Rate,
+                dest: konst.FlatBonusDest.CriRate,
+                base: konst.FlatBonusBase.CriRate,
                 value: 15.0,
                 bound: { base: konst.FlatBonusBase.CriRate, value: 15.0 },
                 limit: "元素爆発発動後",
@@ -2747,6 +2777,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 20.0,
                 limit: "元素爆発が敵に命中した時",
                 times: 10,
+                target: konst.BonusTarget.All,
             },
         },
     },
@@ -3018,8 +3049,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 「風霊作成·六三〇八」又は「禁·風霊作成·七五同構弐型」が敵に命中した時、スクロースの元素熟知の20%を基準に、チーム内キャラクター全員（スクロース自身を除く）の元素熟知を強化、継続時間8秒。
             asc4th: {
                 extra: konst.ExtraBonusType.Flat,
-                dest: konst.StatusBonusType.Elem,
-                base: konst.StatusBonusType.Elem,
+                dest: konst.FlatBonusDest.Elem,
+                base: konst.FlatBonusBase.Elem,
                 value: 20.0,
                 limit: "元素スキル・元素爆発が敵に命中した時",
                 times: 8,
@@ -3186,7 +3217,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. フィールド上キャラクターが烈炎侍立シールドを獲得または更新した時、シールド強化+5%、継続時間6秒。
             // この効果は0.3秒毎に1回のみ発動可能、最大5重まで。
             // 5. 真紅熾炎の大鎧の熾炎崩滅によるダメージがトーマのHP上限2.2%分アップする。
-            // asc4th: {
+            // asc4th: { TODO: 実装
             //     extra: konst.ExtraBonusType.Flat,
             //     dest: konst.FlatBonusDest.Burst,
             //     base: konst.FlatBonusBase.Hp,
@@ -3286,6 +3317,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     value: 12.0,
                     limit: "元素スキル発動後",
                     times: 10,
+                    target: konst.BonusTarget.All,
                 },
                 //    高天の歌によってノックバックされた敵は着地する前に、更に風耐性と物理耐性-12%
                 {
@@ -3293,6 +3325,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     type: [konst.ElementType.Anemo, konst.ElementType.Phys],
                     value: 12.0,
                     limit: "さらにノックバックした敵が着地する前",
+                    target: konst.BonusTarget.All,
                 },
             ],
             // 3. 風神の詩のスキルLv.+3
@@ -3305,6 +3338,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 type: [konst.ElementType.Anemo, konst.AnyReductType.Contact],
                 value: 20.0,
                 limit: "元素爆発の影響を受ける敵",
+                target: konst.BonusTarget.All,
             },
         },
     },
@@ -3379,6 +3413,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "グゥオパァーに攻撃された敵",
                 times: 6,
+                target: konst.BonusTarget.All,
             },
             // 2. 通常攻撃の最後一撃で敵に2秒継続する爆縮効果を与える。効果終了時に爆発し、敵に75％の炎範囲ダメージを与える。
             // 3. 旋火輪のスキルLv.+3
@@ -3541,6 +3576,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "元素爆発の攻撃を受けた敵",
                 times: 4,
+                target: konst.BonusTarget.All,
             },
             // 3. 古華剣・裁雨留虹のスキルLv.+3
             // 4. 古華剣・裁雨留虹継続中、古華剣・画雨籠山の与えるダメージ+50％。
@@ -3625,6 +3661,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 value: 15.0,
                 limit: "元素スキルのダメージを受けた敵",
                 times: 12,
+                target: konst.BonusTarget.All,
             },
             // 5. 反逆の弾きのスキルLv.+3
             // 6. 辛炎の重撃によるスタミナ消費-30%。重撃を発動する時、辛炎の防御力50%分の攻撃力が増加する。
@@ -3873,9 +3910,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             },
             // 5. 天星のダメージ量が鍾離のHP上限の33%分上昇する。
             asc4th: [
-                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Combat, base: konst.StatusBonusType.Hp, value: 1.39 },
-                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Skill, base: konst.StatusBonusType.Hp, value: 1.9 },
-                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Burst, base: konst.StatusBonusType.Hp, value: 100.0 / 3 },
+                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Combat, base: konst.FlatBonusBase.Hp, value: 1.39 },
+                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Skill, base: konst.FlatBonusBase.Hp, value: 1.9 },
+                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Burst, base: konst.FlatBonusBase.Hp, value: 100.0 / 3 },
             ],
         },
         conste: {

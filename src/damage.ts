@@ -9,12 +9,8 @@ import {
     NoneContactType,
 } from "~/src/const";
 import { ICombat, IIdentify } from "~/src/interface";
-import {
-    Status,
-    StatusReduct,
-    DamageScaleTable,
-    ReactionFactorTable,
-} from "~/src/bonus";
+import { Status, StatusReduct } from "~/src/status";
+import { DamageScaleTable, ReactionFactorTable } from "~/src/bonus";
 import { EnemyList, IEnemyInfo, IEnemyData } from "~/src/enemy";
 import { roundRate } from "~/plugins/utils";
 

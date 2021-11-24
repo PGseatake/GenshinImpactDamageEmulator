@@ -2,12 +2,14 @@ import { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
 import {
     IBasicBonus, IFlatBonus, IFlatBonusBound, IEnchantBonus, IReductBonus,
-    IBonusOption, ICharaInfo, AnyBonus, Constes, Passives, DBEquipTable, Passive
+    IBonusOption, AnyBonus, Constes, Passives, DBEquipTable, Passive
 } from "~/src/interface";
+import { parseLevel } from "~/src/ascension";
 import { CharaName, CharaList, ICharaData, DBCharaTable } from "~/src/character";
 import { WeaponList, IWeaponData, DBWeaponTable } from "~/src/weapon";
-import { ArtifactName, ArtifactList, SubBonus, DBArtifactTable } from "~/src/artifact";
-import { Members, Member, ITeamData } from "~/src/team";
+import { ArtifactName, ArtifactList, DBArtifactTable } from "~/src/artifact";
+import { ITeamData, Team, Member, IRequiredMember } from "~/src/team";
+import { Status } from "~/src/status";
 import { roundFloat, roundRate } from "~/plugins/utils";
 import { Arrayable } from "~/src/utility";
 
@@ -113,299 +115,6 @@ export const ReactionFactorTable: ReadonlyRecord<konst.TransformReactionType, Re
     },
 } as const;
 
-export const ReactionScaleTable: ReadonlyPartial<Record<konst.ElementType, ReadonlyPartial<Record<konst.ReactionType, number>>>> = {
-    pyro: {
-        "vaporize": 1.5,
-        "overload": 1.0,
-        "melt": 2.0,
-    },
-    hydro: {
-        "vaporize": 2.0,
-        "echarge": 1.0,
-    },
-    elect: {
-        "overload": 1.0,
-        "echarge": 1.0,
-        "conduct": 1.0,
-    },
-    cryo: {
-        "melt": 1.5,
-        "conduct": 1.0,
-    },
-    anemo: {
-        "swirl": 1.0,
-    }
-} as const;
-
-export function enumerateReaction(chara: ICharaInfo | null, enchant: konst.EnchantType) {
-    let types: konst.ReactionType[] = [];
-    if (chara) {
-        let elems = [chara.element];
-        if (enchant && (enchant !== chara.element)) {
-            elems.push(enchant);
-        }
-
-        for (const elem of elems) {
-            const scales = ReactionScaleTable[elem];
-            if (scales) {
-                // 元素反応を追加
-                for (const type in scales) {
-                    types.push(type as konst.ReactionType);
-                }
-            }
-
-            // 氷砕きを追加
-            if (elem === konst.ElementType.Geo) {
-                types.push(konst.ReactionType.Shutter);
-            } else if (chara.weapon === konst.WeaponType.Claymore) {
-                types.push(konst.ReactionType.Shutter);
-            }
-        }
-    }
-    return types;
-}
-
-export type StatusTalent = Record<konst.TalentType, number>;
-export type StatusBase = Record<konst.StatusType, number>;
-export type StatusParam = Record<konst.BonusType, number>;
-export type StatusFlat = Record<konst.CombatType, number>;
-export type StatusReduct = Record<konst.ReductType, number>;
-export type StatusEnchant = {
-    type: konst.EnchantType;
-    dest: konst.CombatType[];
-    self: boolean;
-};
-
-export interface IStatus {
-    talent: StatusTalent;
-    base: StatusBase;
-    param: StatusParam;
-    flat: StatusFlat;
-    reduct: StatusReduct;
-    enchant: StatusEnchant;
-};
-
-export class Status {
-    public info: ICharaInfo | null;
-    public chara: ICharaData | null;
-    public talent: StatusTalent;
-    public base: StatusBase;
-    public param: StatusParam;
-    public flat: StatusFlat;
-    public reduct: StatusReduct;
-    public enchant: StatusEnchant;
-    public contact: konst.NoneContactType;
-
-    constructor(data: IStatus, contact: konst.NoneContactType) {
-        this.info = null;
-        this.chara = null;
-        this.talent = data.talent;
-        this.base = data.base;
-        this.param = data.param;
-        this.flat = data.flat;
-        this.reduct = data.reduct;
-        this.enchant = data.enchant;
-        this.contact = contact;
-    }
-
-    equip(member: Member, db: DBWeaponTable & DBArtifactTable) {
-        this.info = member.info;
-        this.chara = member.chara;
-
-        for (const type of konst.BonusTypes) {
-            this.param[type] = 0;
-        }
-        for (const type of konst.CombatTypes) {
-            this.flat[type] = 0;
-        }
-        for (const type of konst.ReductTypes) {
-            this.reduct[type] = 0;
-        }
-        this.enchant.type = "";
-        this.enchant.dest.splice(0);
-        this.enchant.self = false;
-
-        // 基礎値
-        this.param[konst.StatusBonusType.EnRec] = 100;
-        this.param[konst.CriticalBonusType.Damage] = 50;
-        this.param[konst.CriticalBonusType.Rate] = 5;
-
-        if (this.chara) {
-            this.talent.combat = this.chara.combat;
-            this.talent.skill = this.chara.skill;
-            this.talent.burst = this.chara.burst;
-            this.base.hp = this.chara.hp;
-            this.base.atk = this.chara.atk;
-            this.base.def = this.chara.def;
-
-            // キャラクタ
-            this.apply(this.chara.special);
-            // 武器
-            const { data } = member.weapon(db);
-            if (data) {
-                this.base.atk += data.atk;
-                this.apply(data.second);
-            }
-            // 聖遺物
-            const list = member.artifacts(db);
-            for (const data of list) {
-                this.apply(data.main);
-                for (const prop of SubBonus) {
-                    this.apply(data[prop]);
-                }
-            }
-        } else {
-            this.talent.combat = 0;
-            this.talent.skill = 0;
-            this.talent.burst = 0;
-            this.base.hp = 0;
-            this.base.atk = 0;
-            this.base.def = 0;
-        }
-    }
-
-    get level() {
-        return parseInt(this.chara?.level?.replace("+", "") || "1");
-    }
-
-    get hp() {
-        const a = this.param.hp;
-        const x = this.param.hp_buf;
-        const b = this.base.hp;
-        return a + b + (x * b) / 100;
-    }
-
-    get atk() {
-        const a = this.param.atk;
-        const x = this.param.atk_buf;
-        const b = this.base.atk;
-        return a + b + (x * b) / 100;
-    }
-
-    get def() {
-        const a = this.param.def;
-        const x = this.param.def_buf;
-        const b = this.base.def;
-        return a + b + (x * b) / 100;
-    }
-
-    private apply({ type, value }: { type: konst.AnyBonusType, value: number; }) {
-        if (type !== konst.BonusType.None) {
-            this.param[type] += value;
-        }
-    }
-
-    renchant(type: konst.EnchantType, dest: ReadonlyArray<konst.CombatType>, self: boolean) {
-        if (!self && this.enchant.type) {
-            switch (this.enchant.type) {
-                case konst.ElementType.Elect:
-                    if (type === konst.ElementType.Elect) {
-                        return;
-                    }
-                    // 雷->氷・炎
-                    break;
-                case konst.ElementType.Cryo:
-                    if (type !== konst.ElementType.Pyro) {
-                        return;
-                    }
-                    // 氷->炎
-                    break;
-                default:
-                    return;
-            }
-        }
-
-        this.enchant.type = type;
-        this.enchant.dest.splice(0);
-        this.enchant.dest.push(...dest);
-        this.enchant.self = self;
-    }
-
-    // 攻撃ダメージ値（％）
-    combatBonus(type: konst.CombatType) {
-        return this.param[TypeToBonus.combat(type)];
-    }
-
-    // 元素ダメージ値（％）
-    elementBonus(type: konst.ElementType) {
-        let rate = this.param[TypeToBonus.element(type)];
-        if (type !== konst.ElementType.Phys) {
-            rate += this.param.elem_dmg;
-        }
-        return rate;
-    }
-
-    // 元素熟知ダメージ値（％）
-    elementMaster(type: konst.ReactionType) {
-        switch (type) {
-            case konst.ReactionType.Melt:
-            case konst.ReactionType.Vaporize:
-                return 100 * this.param.elem / (1400 + this.param.elem) * 25 / 9;
-        }
-        return 100 * this.param.elem / (2000 + this.param.elem) * 16;
-    }
-
-    // 元素反応ダメージ値（％）
-    reactionBonus(type: konst.ReactionType) {
-        return this.param[TypeToBonus.reaction(type)];
-    }
-
-    // 元素反応のダメージ倍率
-    reactionScale(type: konst.ReactionType, act: konst.ElementType) {
-        if (type === konst.ReactionType.Shutter) {
-            switch (act) {
-                case konst.ElementType.Phys:
-                case konst.ElementType.Geo:
-                    return 1.0;
-            }
-        } else {
-            const scales = ReactionScaleTable[act];
-            if (scales) {
-                const value = scales[type];
-                if (value) {
-                    return value;
-                }
-            }
-        }
-        return 0.0;
-    }
-
-    // 会心値（％）
-    critical(type: konst.CombatType = konst.CombatType.Normal): {
-        rate: number;
-        damage: number;
-    } {
-        let rate = this.param.cri_rate;
-        switch (type) {
-            case konst.CombatType.Normal:
-                rate += this.param.normal_cri;
-                break;
-            case konst.CombatType.Heavy:
-                rate += this.param.heavy_cri;
-                break;
-            case konst.CombatType.Skill:
-                rate += this.param.skill_cri;
-                break;
-        }
-        return { rate, damage: this.param.cri_dmg };
-    }
-}
-
-export const TypeToBonus = {
-    element(type: konst.ElementType) {
-        return type + "_dmg" as konst.ElementBonusType;
-    },
-    combat(type: konst.AnyCombatType) {
-        return type + "_dmg" as konst.CombatBonusType;
-    },
-    reaction(type: konst.ReactionType) {
-        return type + "_dmg" as konst.ReactionBonusType;
-    },
-    buffer(type: konst.StatusBonusType) {
-        return type + "_buf" as konst.StatusBonusType;
-    },
-} as const;
-
 export const DirectBonus: ReadonlyArray<string> = [
     konst.BonusType.None,
     konst.StatusBonusType.Hp,
@@ -432,6 +141,7 @@ export const TeamBonus: Partial<ReadonlyRecord<konst.ElementType, IBasicBonus>> 
 
 export class BonusBase {
     public readonly i18n: IVueI18n;
+    public readonly key: number;
     public readonly index: number;
     public readonly group: string; // table-dataのグループ
     public readonly extra: konst.ExtraBonusType | undefined;
@@ -443,9 +153,10 @@ export class BonusBase {
     public name: CharaName | "";
     public data: IBonusData;
 
-    constructor(i18n: IVueI18n, index: number, group: string, source: string,
+    constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string,
         { extra, limit, times, stack, target }: IBonusOption) {
         this.i18n = i18n;
+        this.key = key;
         this.index = index;
         this.group = group;
         this.extra = extra;
@@ -455,7 +166,7 @@ export class BonusBase {
         this.target = target ?? konst.BonusTarget.Self;
         this.source = source;
         this.name = "";
-        this.data = { index: index, apply: this.always, stack: stack ?? 1 };
+        this.data = { index: key, apply: this.always, stack: stack ?? 1 };
     }
 
     public get always() {
@@ -487,6 +198,10 @@ export class BonusBase {
         this.data.stack = value;
     }
 
+    public get applyStep() {
+        return 0;
+    }
+
     public reset(data: IBonusData) {
         this.data = data;
         this.data.apply = this.always || data.apply;
@@ -498,34 +213,35 @@ export class BonusBase {
     }
 
     public isMine(chara: ICharaData) {
-        return this.group === "general.everyone" || this.group.includes(chara.name);
-    }
-
-    public isApply(status: Status) {
-        const chara = status.chara;
-        if (this.data.apply) {
-            switch (this.target) {
-                case konst.BonusTarget.All:
-                case konst.BonusTarget.Self:
-                case konst.BonusTarget.Enemy:
-                    return true;
-                case konst.BonusTarget.Next:
-                case konst.BonusTarget.Other:
-                    return this.name !== chara!.name;
-                case konst.BonusTarget.Melee:
-                    switch (CharaList[chara!.name].weapon) {
-                        case konst.WeaponType.Sword:
-                        case konst.WeaponType.Claymore:
-                        case konst.WeaponType.Polearm:
-                            return this.name === chara!.name;
-                    }
-                    break;
-            }
+        switch (this.target) {
+            case konst.BonusTarget.All:
+                return true;
+            case konst.BonusTarget.Self:
+                return this.name === chara.name;
+            case konst.BonusTarget.Next:
+            case konst.BonusTarget.Other:
+                return this.name !== chara.name;
+            case konst.BonusTarget.Melee:
+                switch (CharaList[chara.name].weapon) {
+                    case konst.WeaponType.Sword:
+                    case konst.WeaponType.Claymore:
+                    case konst.WeaponType.Polearm:
+                        return true;
+                }
+                break;
         }
         return false;
     }
 
-    public apply(status: Status) { }
+    public isApply(status: Status, step: number) {
+        const chara = status.chara;
+        if (chara && this.data.apply && this.applyStep === step) {
+            return this.isMine(chara);
+        }
+        return false;
+    }
+
+    public apply(dst: Status, src: Status[], step: number) { }
 }
 
 // 通常ボーナス
@@ -533,8 +249,8 @@ export class BasicBonus extends BonusBase {
     private readonly types: ReadonlyArray<konst.BonusType>;
     private readonly value: number;
 
-    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IBasicBonus, talent = 0) {
-        super(i18n, index, group, source, data);
+    constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: IBasicBonus, talent = 0) {
+        super(i18n, key, index, group, source, data);
         this.types = Arrayable.from(data.items);
         this.value = Arrayable.clamp(data.value, talent);
     }
@@ -548,11 +264,11 @@ export class BasicBonus extends BonusBase {
         return `${str} +${this.value}`;
     }
 
-    public apply(status: Status) {
-        if (this.isApply(status)) {
+    public apply(dst: Status, _: Status[], step: number) {
+        if (this.isApply(dst, step)) {
             const value = this.value;
             for (const type of this.types) {
-                status.param[type] += value * this.data.stack;
+                dst.param[type] += value * this.data.stack;
             }
         }
     }
@@ -566,8 +282,8 @@ export class FlatBonus extends BonusBase {
     private readonly scale: konst.DamageScale | "";
     private readonly bound: IFlatBonusBound | null;
 
-    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IFlatBonus, talent = 0) {
-        super(i18n, index, group, source, data);
+    constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: IFlatBonus, talent = 0) {
+        super(i18n, key, index, group, source, data);
         this.dest = Arrayable.from(data.dest);
         this.base = data.base;
         this.value = Arrayable.clamp(data.value, talent);
@@ -585,7 +301,7 @@ export class FlatBonus extends BonusBase {
                 case konst.FlatBonusDest.Heavy:
                 case konst.FlatBonusDest.Skill:
                 case konst.FlatBonusDest.Burst:
-                    dest.push(this.getLabel(TypeToBonus.combat(val)));
+                    dest.push(this.getLabel(konst.TypeToBonus.combat(val)));
                     break;
                 default:
                     dest.push(this.getLabel(val));
@@ -604,98 +320,126 @@ export class FlatBonus extends BonusBase {
         }
     }
 
-    public apply(status: Status) {
-        if (this.isApply(status)) {
-            let value = this.value;
-            switch (this.base) {
-                case konst.FlatBonusBase.None:
-                    break;
-                case konst.FlatBonusBase.Energy:
-                    value = (status.info?.energy || 0) * value;
-                    break;
-                case konst.FlatBonusBase.Hp:
-                    value = status.hp * value / 100;
-                    break;
-                case konst.FlatBonusBase.Atk:
-                    value = status.base.atk * value / 100;
-                    break;
-                case konst.FlatBonusBase.Def:
-                    value = status.def * value / 100;
-                    break;
-                default:
-                    value = status.param[this.base] * value / 100;
-                    break;
-            }
-            value *= this.data.stack;
-
-            // ダメージ倍率適用
-            if (this.scale) {
-                const burst = status.talent.burst || 1; // TODO: 元素爆発固定
-                value *= DamageScaleTable[this.scale][burst - 1] / 100;
-            }
-
-            // 最大値チェック
-            const bound = this.bound;
-            if (bound) {
-                switch (bound.base) {
-                    case konst.FlatBonusBase.Energy:
-                        break;
-                    // 直値
-                    case konst.FlatBonusBase.None:
-                        if (bound.value < value) {
-                            value = bound.value;
-                        }
-                        break;
-                    // 基礎攻撃力の倍率
-                    case konst.FlatBonusBase.Atk:
-                        const atk = status.base.atk * bound.value / 100;
-                        if (atk < value) {
-                            value = atk;
-                        }
-                        break;
-                    // 最終値の倍率
-                    default:
-                        const limit = status.param[bound.base] * bound.value / 100;
-                        if (limit < value) {
-                            value = limit;
-                        }
-                        break;
+    public get applyStep() {
+        switch (this.base) {
+            case konst.FlatBonusBase.Elem:
+            case konst.FlatBonusBase.EnRec:
+                if (!this.dest.includes(this.base)) {
+                    // 変換元と適用先が違うものは後回し
+                    return 2;
                 }
+        }
+        return 1;
+    }
+
+    private applyValue(dst: Status, src: Status) {
+        let value = this.value;
+        switch (this.base) {
+            case konst.FlatBonusBase.None:
+                break;
+            case konst.FlatBonusBase.Energy:
+                value = (dst.info?.energy || 0) * value; // 適用者の値を参照
+                break;
+            case konst.FlatBonusBase.Hp:
+                value = src.hp * value / 100;
+                break;
+            case konst.FlatBonusBase.Atk:
+                value = src.base.atk * value / 100;
+                break;
+            case konst.FlatBonusBase.Def:
+                value = src.def * value / 100;
+                break;
+            default:
+                value = src.param[this.base] * value / 100;
+                break;
+        }
+        return value * this.data.stack;
+    }
+
+    private applyScale(value: number, src: Status) {
+        const scale = this.scale;
+        if (scale) {
+            const burst = src.talent.burst || 1; // TODO: 元素爆発固定
+            value *= DamageScaleTable[scale][burst - 1] / 100;
+        }
+        return value;
+    }
+
+    private applyBound(value: number, src: Status) {
+        const bound = this.bound;
+        if (bound) {
+            switch (bound.base) {
+                // 無視
+                case konst.FlatBonusBase.Energy:
+                    break;
+                // 直値
+                case konst.FlatBonusBase.None:
+                    if (bound.value < value) {
+                        value = bound.value;
+                    }
+                    break;
+                // 基礎攻撃力の倍率
+                case konst.FlatBonusBase.Atk:
+                    const atk = src.base.atk * bound.value / 100;
+                    if (atk < value) {
+                        value = atk;
+                    }
+                    break;
+                // 最終値の倍率
+                default:
+                    const limit = src.param[bound.base] * bound.value / 100;
+                    if (limit < value) {
+                        value = limit;
+                    }
+                    break;
             }
+        }
+        return value;
+    }
+
+    public apply(dst: Status, src: Status[], step: number) {
+        if (this.isApply(dst, step)) {
+            const ref = src[this.index];
+
+            let value = this.applyValue(dst, ref);
+            // ダメージ倍率適用
+            value = this.applyScale(value, ref);
+            // 最大値チェック
+            value = this.applyBound(value, ref);
 
             for (const dest of this.dest) {
                 switch (dest) {
                     case konst.FlatBonusDest.Combat:
-                        status.flat[konst.CombatType.Normal] += value;
-                        status.flat[konst.CombatType.Heavy] += value;
-                        status.flat[konst.CombatType.Plunge] += value;
+                        dst.flat[konst.CombatType.Normal] += value;
+                        dst.flat[konst.CombatType.Heavy] += value;
+                        dst.flat[konst.CombatType.Plunge] += value;
                         break;
                     case konst.FlatBonusDest.Normal:
                     case konst.FlatBonusDest.Heavy:
                     case konst.FlatBonusDest.Skill:
                     case konst.FlatBonusDest.Burst:
-                        status.flat[dest] += value;
+                        dst.flat[dest] += value;
                         break;
                     case konst.FlatBonusDest.CombatDmg:
-                        status.param[konst.CombatBonusType.Normal] += value;
-                        status.param[konst.CombatBonusType.Heavy] += value;
-                        status.param[konst.CombatBonusType.Plunge] += value;
+                        dst.param[konst.CombatBonusType.Normal] += value;
+                        dst.param[konst.CombatBonusType.Heavy] += value;
+                        dst.param[konst.CombatBonusType.Plunge] += value;
+                        break;
+                    case konst.FlatBonusDest.Contact:
+                        if (dst.contact) {
+                            const type = konst.TypeToBonus.element(dst.contact);
+                            dst.param[type] += value;
+                        }
                         break;
                     // TODO: とりあえず楓原万葉専用
                     case konst.FlatBonusDest.Swirl:
-                        if (status.contact) {
-                            const type = TypeToBonus.element(status.contact);
-                            status.param[type] += value * 100;
-                        }
-                        break;
-                    case konst.FlatBonusDest.Contact:
-                        if (status.contact) {
-                            const type = TypeToBonus.element(status.contact);
-                            status.param[type] += value;
+                        if (dst.contact) {
+                            const type = konst.TypeToBonus.element(dst.contact);
+                            dst.param[type] += value * 100;
                         }
                         break;
                     default:
-                        status.param[dest] += value;
+                        dst.param[dest] += value;
                         break;
                 }
             }
@@ -708,8 +452,8 @@ export class ReductBonus extends BonusBase {
     private readonly types: Readonly<konst.AnyReductType[]>;
     private readonly value: number;
 
-    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IReductBonus, talent = 0) {
-        super(i18n, index, group, source, { ...data, target: konst.BonusTarget.Enemy });
+    constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: IReductBonus, talent = 0) {
+        super(i18n, key, index, group, source, data);
         this.types = Arrayable.from(data.type);
         this.value = Arrayable.clamp(data.value, talent);
     }
@@ -720,22 +464,22 @@ export class ReductBonus extends BonusBase {
         return `${types} -${roundRate(this.value)}`;
     }
 
-    public apply(status: Status) {
-        if (this.isApply(status)) {
+    public apply(dst: Status, _: Status[], step: number) {
+        if (this.isApply(dst, step)) {
             for (const type of this.types) {
                 switch (type) {
                     case konst.AnyReductType.Contact:
-                        if (status.contact) {
-                            status.reduct[status.contact] += this.value;
+                        if (dst.contact) {
+                            dst.reduct[dst.contact] += this.value;
                         }
                         break;
                     case konst.AnyReductType.All:
                         for (const elem of konst.ElementTypes) {
-                            status.reduct[elem] += this.value;
+                            dst.reduct[elem] += this.value;
                         }
                         break;
                     default:
-                        status.reduct[type] += this.value;
+                        dst.reduct[type] += this.value;
                         break;
                 }
             }
@@ -748,8 +492,8 @@ export class EnchantBonus extends BonusBase {
     private readonly type: konst.EnchantType;
     private readonly dest: ReadonlyArray<konst.CombatType>;
 
-    constructor(i18n: IVueI18n, index: number, group: string, source: string, data: IEnchantBonus) {
-        super(i18n, index, group, source, data);
+    constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: IEnchantBonus) {
+        super(i18n, key, index, group, source, data);
         this.type = data.elem;
         this.dest = data.dest;
     }
@@ -759,9 +503,9 @@ export class EnchantBonus extends BonusBase {
         return `${dest}に${this.i18n.t("element." + this.type)}元素付与`;
     }
 
-    public apply(status: Status) {
-        if (this.isApply(status)) {
-            status.renchant(this.type, this.dest, this.target === konst.BonusTarget.Self);
+    public apply(dst: Status, _: Status[], step: number) {
+        if (this.isApply(dst, step)) {
+            dst.renchant(this.type, this.dest, this.target === konst.BonusTarget.Self);
         }
     }
 }
@@ -782,34 +526,51 @@ type Database =
 
 export class BonusBuilder {
     private i18n: IVueI18n;
-    public chara: ICharaData | null;
-    public team: string;
-    public equip: string;
-    public group: string;
+    private team: string;
+    private equip: string;
+    private index: number;
+    private chara: ICharaData | null;
     private bonus: IDict<IBonusData>;
     public output: IDict<IBonusData>;
 
     constructor(i18n: IVueI18n, bonus: IDict<IBonusData>) {
         this.i18n = i18n;
-        this.chara = null;
         this.team = "";
         this.equip = "";
-        this.group = "";
+        this.index = -1;
+        this.chara = null;
         this.bonus = bonus;
         this.output = {};
     }
 
+    private reset({ id }: ITeamData) {
+        this.team = id;
+        this.equip = "";
+        this.index = -1;
+        this.chara = null;
+    }
+
+    private member(member: IRequiredMember) {
+        this.index++;
+        this.equip = member.equip.id;
+        this.chara = member.chara;
+        return new Member(member);
+    }
+
+    private sortKey(index: number) {
+        return (this.index + 1) * 1000 + index;
+    }
+
     private convert(data: AnyBonus, index: number, origin: string, source: string): BonusBase {
         let group: string;
-        switch (data.target ?? konst.BonusTarget.Self) {
+        switch (data.target || konst.BonusTarget.Self) {
             case konst.BonusTarget.Self:
-            case konst.BonusTarget.Melee:
-                group = this.group;
+                group = "chara." + (this.chara?.name || "");
                 source = "origin." + origin;
                 break;
             default:
                 group = "general.everyone";
-                index += 1000;
+                index += 10000;
                 break;
         }
 
@@ -826,20 +587,21 @@ export class BonusBuilder {
         let bonus: BonusBase;
         switch (data.extra) {
             case konst.ExtraBonusType.Flat:
-                bonus = new FlatBonus(this.i18n, index, group, source, data, talent);
+                bonus = new FlatBonus(this.i18n, this.sortKey(index), this.index, group, source, data, talent);
                 break;
             case konst.ExtraBonusType.Reduct:
-                bonus = new ReductBonus(this.i18n, index, group, source, data, talent);
+                bonus = new ReductBonus(this.i18n, this.sortKey(index), this.index, group, source, data, talent);
                 break;
             case konst.ExtraBonusType.Enchant:
-                bonus = new EnchantBonus(this.i18n, index, group, source, data);
+                bonus = new EnchantBonus(this.i18n, this.sortKey(index), this.index, group, source, data);
                 break;
             default:
-                bonus = new BasicBonus(this.i18n, index, group, source, data);
+                bonus = new BasicBonus(this.i18n, this.sortKey(index), this.index, group, source, data);
                 break;
         }
         bonus.name = this.chara?.name || "";
 
+        // ボーナスDBから保存情報を取得
         const key = `${this.team}.${this.equip}.${index}`;
         if (key in this.bonus) {
             bonus.reset(this.bonus[key]);
@@ -855,23 +617,24 @@ export class BonusBuilder {
         return [this.convert(data, index, origin, source)];
     }
 
-    public charaBonus(): BonusBase[] {
+    private charaBonus(): BonusBase[] {
         const data = this.chara!;
         const info = CharaList[data.name];
-        const level = parseInt(data.level.replace("+", "") || "1");
+        const level = parseLevel(data.level);
         const source = "chara." + data.name;
         let bonus: BonusBase[] = [];
+        // passive: 100 <= sort < 200
         for (const [idx, origin] of Passives.entries()) {
             const passive = info.passive[origin];
             if (passive) {
                 switch (origin) {
                     case Passive.Ascension1:
-                        if ((21 <= level) || (data.level === "20+")) {
+                        if (level.index >= 1) {
                             bonus.push(...this.append(passive, 100 + (idx * 10), origin, source));
                         }
                         break;
                     case Passive.Ascension4:
-                        if ((61 <= level) || (data.level === "60+")) {
+                        if (level.index >= 4) {
                             bonus.push(...this.append(passive, 100 + (idx * 10), origin, source));
                         }
                         break;
@@ -881,19 +644,21 @@ export class BonusBuilder {
                 }
             }
         }
+        // conste: 200 <= sort < 300
         for (const [idx, origin] of Constes.entries()) {
             const conste = info.conste[origin];
             const count = parseInt(origin.replace("lv", ""));
             if (conste) {
                 if (count <= data.conste) {
-                    bonus.push(...this.append(conste, 150 + idx * 10, origin, source));
+                    bonus.push(...this.append(conste, 200 + idx * 10, origin, source));
                 }
             }
         }
         return bonus;
     }
 
-    public weaponBonus(type: konst.WeaponType, data: IWeaponData | undefined): BonusBase[] {
+    // weapon: 300 <= key < 400
+    private weaponBonus({ type, data }: { type: konst.WeaponType, data?: IWeaponData; }): BonusBase[] {
         if (data) {
             const source = `weapon.${type}.${data.name}`;
             const weapon = WeaponList[type][data.name];
@@ -901,17 +666,18 @@ export class BonusBuilder {
             if (bonus) {
                 if (Array.isArray(bonus)) {
                     return bonus.map((value, i) => this.convert(
-                        { ...value, value: value.value[data.rank - 1] }, 200 + i, "weapon", source));
+                        { ...value, value: value.value[data.rank - 1] }, 300 + i, "weapon", source));
                 } else {
                     return [this.convert(
-                        { ...bonus, value: bonus.value[data.rank - 1] }, 200, "weapon", source)];
+                        { ...bonus, value: bonus.value[data.rank - 1] }, 300, "weapon", source)];
                 }
             }
         }
         return [];
     }
 
-    public artifactBonus(names: ArtifactName[]): BonusBase[] {
+    // artifact: 400 <= key < 500
+    private artifactBonus(names: ArtifactName[]): BonusBase[] {
         let bonus: BonusBase[] = [];
         let first = 0;
         while (first < names.length) {
@@ -924,13 +690,13 @@ export class BonusBuilder {
                 // 2セットの効果追加
                 if (2 <= same) {
                     if (artifact.set2) {
-                        bonus.push(...this.append(artifact.set2, 300, "artifact", source));
+                        bonus.push(...this.append(artifact.set2, 400, "artifact", source));
                     }
                 }
                 // 4セットの効果追加
                 if (4 <= same) {
                     if (artifact.set4) {
-                        bonus.push(...this.append(artifact.set4, 310, "artifact", source));
+                        bonus.push(...this.append(artifact.set4, 410, "artifact", source));
                     }
                 }
             }
@@ -939,41 +705,26 @@ export class BonusBuilder {
         return bonus;
     }
 
-    public resonanceBonus(elems: konst.ElementType[]): BonusBase[] {
+    // resonance: 10000 <= key < 10100
+    private resonanceBonus(elems: konst.ElementType[]): BonusBase[] {
         let bonus: BonusBase[] = [];
         for (const [idx, elem] of elems.entries()) {
             const base = TeamBonus[elem];
             if (base) {
                 const data = { ...base, target: konst.BonusTarget.All };
-                bonus.push(...this.append(data, 400 + idx, "resonance", "general.resonance"));
+                bonus.push(...this.append(data, idx + 1, "resonance", "general.resonance"));
             }
         }
         return bonus;
     }
 
     public build(team: ITeamData, db: Database) {
+        this.reset(team);
         let data: BonusBase[] = [];
-        this.team = team.id;
-        for (const key of Members) {
-            const m = Member.find(team[key], db);
-            if (m.chara) {
-                this.chara = m.chara;
-                this.equip = m.equip!.id;
-                this.group = "chara." + m.chara.name;
-
-                // キャラボーナス追加
-                const member = new Member(m);
-                data.push(...this.charaBonus());
-                // 武器ボーナス追加
-                const weapon = member.weapon(db);
-                data.push(...this.weaponBonus(weapon.type, weapon.data));
-                // 聖遺物ボーナス追加
-                const artifacts = member.artifacts(db).map((val) => val.name);
-                data.push(...this.artifactBonus(artifacts));
-            }
-        }
-        this.chara = null;
-        // 超電導を追加 TODO: 多言語対応
+        // 元素共鳴ボーナス追加
+        data.push(...this.resonanceBonus(team.resonance));
+        // 超電導を追加 key = 10100
+        // TODO: 多言語対応
         {
             const bonus = {
                 extra: konst.ExtraBonusType.Reduct,
@@ -981,18 +732,20 @@ export class BonusBuilder {
                 value: 40,
                 limit: "超電導が発生した時",
                 times: 12,
-                target: konst.BonusTarget.All
+                target: konst.BonusTarget.All,
             };
-            data.push(...this.append(bonus, 250, "conduct", "reaction.conduct"));
+            data.push(...this.append(bonus, 100, "conduct", "reaction.conduct"));
         }
-        // 元素共鳴ボーナス追加
-        data.push(...this.resonanceBonus(team.resonance));
-        data.sort(
-            (a, b) =>
-                a.group.localeCompare(b.group) ||
-                a.index - b.index ||
-                a.source.localeCompare(b.source)
-        );
+        for (const m of new Team(team).members(db)) {
+            const member = this.member(m);
+            // キャラボーナス追加
+            data.push(...this.charaBonus());
+            // 武器ボーナス追加
+            data.push(...this.weaponBonus(member.weapon(db)));
+            // 聖遺物ボーナス追加
+            data.push(...this.artifactBonus(member.artifact(db).map((val) => val.name)));
+        }
+        data.sort((a, b) => a.key - b.key);
         return data;
     }
 }
