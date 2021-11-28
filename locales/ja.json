@@ -284,6 +284,7 @@
             "PrototypeRancour": "斬岩・試作",
             "LionsRoar": "匣中龍吟",
             "IronSting": "鉄蜂の刺し",
+            "CinnabarSpindle": "シナバースピンドル",
             "FilletBlade": "チ虎魚の刀",
             "TravelersSword": "旅道の剣",
             "HarbingerDawn": "黎明の神剣",
@@ -664,8 +665,14 @@
         "Signora2": "シニョーラ・第2段階"
     },
     "limit": {},
-    "footer": "Ver. 2.1.5",
+    "footer": "Ver. 2.1.6",
     "releasenote": {
+        "v2_1_6": {
+            "date": "2021/11/28",
+            "items": [
+                "「シナバースピンドル」を追加"
+            ]
+        },
         "v2_1_5": {
             "date": "2021/11/24",
             "items": [

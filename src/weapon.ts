@@ -47,6 +47,7 @@ const SwordNames = [
     "PrototypeRancour",
     "LionsRoar",
     "IronSting",
+    "CinnabarSpindle",
     "FilletBlade",
     "TravelersSword",
     "HarbingerDawn",
@@ -268,6 +269,15 @@ const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
         secval: [36, 64, 93, 107, 122, 136, 151, 165],
         // 元素ダメージを与えた6秒間、キャラの与えるダメージ+6~12%、最大2重まで、1秒毎に1回のみ発動する。
         passive: { items: konst.AnyBonusType.Damage, value: [6, 7.5, 9, 10.5, 12], limit: "元素ダメージを与えた時", stack: 2, times: 6 },
+    },
+    CinnabarSpindle: {
+        star: 4,
+        atk: WeaponAtk4[41],
+        second: konst.StatusBonusType.DefBuf,
+        secval: [15.0, 26.5, 38.7, 44.7, 50.8, 56.8, 62.9, 69],
+        // 元素スキルダメージが防御力の40％分アップする。
+        // この効果は1.5秒毎に1回のみ発動可能で、元素スキルがダメージを与えた0.1秒後にクリアされる。
+        passive: { items: konst.StatusBonusType.DefBuf, value: [40, 50, 60, 70, 80], limit: "元素スキルがダメージを与えた時", times: 0.1 },
     },
     FilletBlade: {
         star: 3,
