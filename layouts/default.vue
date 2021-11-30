@@ -237,6 +237,12 @@ import {
 import { DBTableTypes } from "~/src/interface";
 import { convert } from "~/src/convert";
 
+declare global {
+  interface Navigator {
+    msSaveBlob?: (blob: any, defaultName?: string) => boolean;
+  }
+}
+
 interface IPage {
   icon: string;
   page: string;

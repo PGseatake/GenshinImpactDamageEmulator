@@ -5,7 +5,7 @@
     :headers="headers"
     :items="items"
     :class="tableClass"
-    :items-per-page="1000"
+    :items-per-page="-1"
     fixed-header
     hide-default-footer
   >
@@ -68,7 +68,7 @@
         :score="getScore(item, item.sub4)"
       />
     </template>
-    <template #[`item.remove`]="{ item }">
+    <template #[`item.action`]="{ item }">
       <v-btn fab x-small class="my-1" @click="onRemove(item)">
         <v-icon>{{ icons.remove }}</v-icon>
       </v-btn>
@@ -170,7 +170,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { DataTableHeader } from "vuetify/types";
 import { mdiDelete } from "@mdi/js";
 import { ArtifactType } from "~/src/const";
 import { BonusValue } from "~/src/interface";
@@ -200,22 +199,6 @@ export default class ArtifactData extends Vue {
   @Emit("remove")
   onRemove(item: IArtifactData) {}
 
-  readonly headers: ReadonlyArray<DataTableHeader> = [
-    { text: this.$t("general.name") as string, value: "name" },
-    { text: this.$t("general.star") as string, value: "star" },
-    { text: this.$t("general.level") as string, value: "level" },
-    { text: this.$t("general.main") as string, value: "main", sortable: false },
-    { text: this.$t("general.sub1") as string, value: "sub1", sortable: false },
-    { text: this.$t("general.sub2") as string, value: "sub2", sortable: false },
-    { text: this.$t("general.sub3") as string, value: "sub3", sortable: false },
-    { text: this.$t("general.sub4") as string, value: "sub4", sortable: false },
-    {
-      text: this.$t("dialog.remove") as string,
-      value: "remove",
-      sortable: false,
-      width: "50px",
-    },
-  ];
   readonly icons = {
     remove: mdiDelete,
   };
@@ -223,6 +206,20 @@ export default class ArtifactData extends Vue {
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get headers() {
+    return [
+      { text: this.$t("general.name"), value: "name" },
+      { text: this.$t("general.star"), value: "star" },
+      { text: this.$t("general.level"), value: "level" },
+      { text: this.$t("general.main"), value: "main", sortable: false },
+      { text: this.$t("general.sub1"), value: "sub1", sortable: false },
+      { text: this.$t("general.sub2"), value: "sub2", sortable: false },
+      { text: this.$t("general.sub3"), value: "sub3", sortable: false },
+      { text: this.$t("general.sub4"), value: "sub4", sortable: false },
+      { text: "", value: "action", sortable: false, width: "80px" },
+    ];
   }
 
   get names() {

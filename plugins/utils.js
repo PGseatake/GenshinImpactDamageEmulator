@@ -94,3 +94,7 @@ Vue.use(utils);
 Vue.use(Vuetify)
 
 Vue.config.devtools = true
+
+const opts = {}
+
+export default new Vuetify(opts)

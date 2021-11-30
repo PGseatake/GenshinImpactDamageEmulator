@@ -4,7 +4,7 @@
       :headers="headers"
       :items="db.equip"
       :class="tableClass"
-      :items-per-page="1000"
+      :items-per-page="-1"
       fixed-header
       disable-sort
       hide-default-footer
@@ -59,7 +59,7 @@
           type="circlet"
         />
       </template>
-      <template #[`item.remove`]="{ item }">
+      <template #[`item.action`]="{ item }">
         <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
           <v-icon>{{ icons.remove }}</v-icon>
         </v-btn>
@@ -199,7 +199,6 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { IEquipData, DBEquipTable } from "~/src/interface";
 import { ICharaData, DBCharaTable } from "~/src/character";
@@ -226,58 +225,22 @@ export default class PageEquipment extends Vue {
     remove: mdiDelete,
   };
 
-  readonly headers: ReadonlyArray<DataTableHeader> = [
-    {
-      text: this.$t("general.comment") as string,
-      value: "comment",
-      sortable: false,
-    },
-    {
-      text: this.$t("menu.character") as string,
-      value: "chara",
-      sortable: false,
-    },
-    {
-      text: this.$t("menu.weapon") as string,
-      value: "weapon",
-      sortable: false,
-    },
-    {
-      text: this.$t("tab.flower") as string,
-      value: "flower",
-      sortable: false,
-    },
-    {
-      text: this.$t("tab.feather") as string,
-      value: "feather",
-      sortable: false,
-    },
-    {
-      text: this.$t("tab.sands") as string,
-      value: "sands",
-      align: "start",
-      sortable: false,
-    },
-    {
-      text: this.$t("tab.goblet") as string,
-      value: "goblet",
-      sortable: false,
-    },
-    {
-      text: this.$t("tab.circlet") as string,
-      value: "circlet",
-      sortable: false,
-    },
-    {
-      text: this.$t("dialog.remove") as string,
-      value: "remove",
-      width: "50px",
-      sortable: false,
-    },
-  ];
-
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get headers() {
+    return [
+      { text: this.$t("general.comment"), value: "comment" },
+      { text: this.$t("menu.character"), value: "chara" },
+      { text: this.$t("menu.weapon"), value: "weapon" },
+      { text: this.$t("tab.flower"), value: "flower" },
+      { text: this.$t("tab.feather"), value: "feather" },
+      { text: this.$t("tab.sands"), value: "sands" },
+      { text: this.$t("tab.goblet"), value: "goblet" },
+      { text: this.$t("tab.circlet"), value: "circlet" },
+      { text: "", value: "action", width: "50px" },
+    ];
   }
 
   get names() {

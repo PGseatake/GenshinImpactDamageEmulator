@@ -146,7 +146,7 @@ export default class BonusValue extends Vue {
 
   get label() {
     if (this.types.includes(this.type)) {
-      return this.$t("bonus." + this.type);
+      return this.$t("bonus_short." + this.type);
     }
     return this.$t("bonus.none");
   }

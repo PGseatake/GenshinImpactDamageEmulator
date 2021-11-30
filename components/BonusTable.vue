@@ -26,6 +26,8 @@
         :key="-1"
         :value="isSelectAll"
         :ripple="false"
+        :on-icon="icons.on"
+        :off-icon="icons.off"
         hide-details
         @input="selectAll($event)"
       />
@@ -35,6 +37,8 @@
         :key="index"
         :value="item.checked"
         :ripple="false"
+        :on-icon="icons.on"
+        :off-icon="icons.off"
         hide-details
         @input="select(item, $event)"
       />
@@ -81,6 +85,7 @@
 </style>
 
 <script lang="ts">
+import { mdiCheckboxBlankOutline, mdiCheckboxMarked } from "@mdi/js";
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { BonusBase } from "~/src/bonus";
 
@@ -93,6 +98,11 @@ import { BonusBase } from "~/src/bonus";
 })
 export default class BonusTable extends Vue {
   @Prop({ required: true }) items!: Array<BonusBase>;
+
+  readonly icons = {
+    on: mdiCheckboxMarked,
+    off: mdiCheckboxBlankOutline,
+  };
 
   @Emit("change")
   onChange() {}

@@ -5,7 +5,7 @@
     :headers="headers"
     :items="items"
     :class="tableClass"
-    :items-per-page="1000"
+    :items-per-page="-1"
     dense
     disable-sort
     fixed-header
@@ -80,14 +80,16 @@ export default class StatusTable extends Vue {
   @Prop({ required: true }) param!: StatusParam;
   @Prop({ required: true }) base!: StatusBase;
 
-  readonly headers = [
-    { text: this.$t("general.status"), value: "type" },
-    { text: this.$t("general.total"), value: "total", align: "right" },
-    { text: this.$t("general.base"), value: "base", align: "right" },
-  ];
-
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get headers() {
+    return [
+      { text: this.$t("general.status"), value: "type" },
+      { text: this.$t("general.total"), value: "total", align: "right" },
+      { text: this.$t("general.base"), value: "base", align: "right" },
+    ];
   }
 
   get items() {

@@ -1,5 +1,5 @@
 <template>
-  <v-menu offset-y open-on-hover>
+  <v-menu offset-y open-on-hover max-height="300px">
     <template #activator="{ on, attrs }">
       <v-btn v-bind="{ ...attrs, ...$attrs }" v-on="on">
         <slot></slot>

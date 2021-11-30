@@ -59,7 +59,14 @@
         <release-root :version="version" :root="root" :value="true" />
       </v-card-text>
       <v-card-actions>
-        <v-btn to="/releasenote" text class="ml-4">リリースノート</v-btn>
+        <v-btn
+          small
+          depressed
+          to="/releasenote"
+          color="blue-grey"
+          class="ml-4"
+          >{{ $t("menu.releasenote") }}</v-btn
+        >
       </v-card-actions>
     </v-card>
     <v-card class="mt-2">

@@ -1,5 +1,5 @@
 <template>
-  <v-menu offset-y>
+  <v-menu offset-y max-height="300px">
     <template #activator="{ attrs, on }">
       <v-btn
         v-bind="attrs"

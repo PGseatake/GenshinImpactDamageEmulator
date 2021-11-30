@@ -89,6 +89,11 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    splitChunks: {
+      layouts: true,
+      pages: true,
+      commons: true
+    },
   },
 
   router: {

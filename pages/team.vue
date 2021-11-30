@@ -4,7 +4,7 @@
       :headers="headers"
       :items="db.team"
       :class="tableClass"
-      :items-per-page="1000"
+      :items-per-page="-1"
       disable-sort
       fixed-header
       hide-default-footer
@@ -49,7 +49,7 @@
       <template #[`item.resonance`]="{ item }">
         <resonance :items="item.resonance" />
       </template>
-      <template #[`item.remove`]="{ item }">
+      <template #[`item.action`]="{ item }">
         <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
           <v-icon>{{ icons.remove }}</v-icon>
         </v-btn>
@@ -176,7 +176,6 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { DataTableHeader } from "vuetify/types";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { ElementType } from "~/src/const";
 import { DBEquipTable } from "~/src/interface";
@@ -204,22 +203,20 @@ export default class PageTeam extends Vue {
     remove: mdiDelete,
   };
 
-  readonly headers: ReadonlyArray<DataTableHeader> = [
-    { text: this.$t("tab.team") as string, value: "name" },
-    { text: this.$t("tab.member") + "1", value: "member1" },
-    { text: this.$t("tab.member") + "2", value: "member2" },
-    { text: this.$t("tab.member") + "3", value: "member3" },
-    { text: this.$t("tab.member") + "4", value: "member4" },
-    { text: this.$t("general.resonance") as string, value: "resonance" },
-    {
-      text: this.$t("dialog.remove") as string,
-      value: "remove",
-      width: "50px",
-    },
-  ];
-
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get headers() {
+    return [
+      { text: this.$t("tab.team"), value: "name" },
+      { text: this.$t("tab.member") + "1", value: "member1" },
+      { text: this.$t("tab.member") + "2", value: "member2" },
+      { text: this.$t("tab.member") + "3", value: "member3" },
+      { text: this.$t("tab.member") + "4", value: "member4" },
+      { text: this.$t("general.resonance"), value: "resonance" },
+      { text: "", value: "action", width: "50px" },
+    ];
   }
 
   get items() {

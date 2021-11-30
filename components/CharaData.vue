@@ -5,7 +5,7 @@
     :headers="headers"
     :items="items"
     :class="tableClass"
-    :items-per-page="1000"
+    :items-per-page="-1"
     fixed-header
     hide-default-footer
   >
@@ -44,7 +44,7 @@
     <template #[`item.burst`]="{ item }">
       <select-range v-model="item.burst" :min="1" :max="15" />
     </template>
-    <template #[`item.remove`]="{ item }">
+    <template #[`item.action`]="{ item }">
       <v-btn fab x-small class="my-1" @click="onRemove(item)">
         <v-icon>{{ icons.remove }}</v-icon>
       </v-btn>
@@ -152,7 +152,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { DataTableHeader } from "vuetify/types";
 import { mdiDelete } from "@mdi/js";
 import * as ascension from "~/src/ascension";
 import { ICharaData, CharaList, CharaNames } from "~/src/character";
@@ -174,46 +173,28 @@ export default class CharaData extends Vue {
   @Emit("remove")
   onRemove(item: ICharaData) {}
 
-  readonly headers: ReadonlyArray<DataTableHeader> = [
-    { text: this.$t("general.name") as string, value: "name" },
-    { text: this.$t("general.conste") as string, value: "conste" },
-    { text: this.$t("general.level") as string, value: "level" },
-    { text: this.$t("bonus.hp") as string, value: "hp" },
-    { text: this.$t("bonus.atk") as string, value: "atk" },
-    { text: this.$t("bonus.def") as string, value: "def" },
-    {
-      text: this.$t("general.special") as string,
-      value: "special",
-      sortable: false,
-    },
-    {
-      text: this.$t("general.combat") as string,
-      value: "combat",
-      sortable: false,
-    },
-    {
-      text: this.$t("general.skill") as string,
-      value: "skill",
-      sortable: false,
-    },
-    {
-      text: this.$t("general.burst") as string,
-      value: "burst",
-      sortable: false,
-    },
-    {
-      text: this.$t("dialog.remove") as string,
-      value: "remove",
-      sortable: false,
-      width: "50px",
-    },
-  ];
   readonly icons: IReadonlyDict<string> = {
     remove: mdiDelete,
   };
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get headers() {
+    return [
+      { text: this.$t("general.name"), value: "name" },
+      { text: this.$t("general.conste"), value: "conste" },
+      { text: this.$t("general.level"), value: "level" },
+      { text: this.$t("bonus.hp"), value: "hp" },
+      { text: this.$t("bonus.atk"), value: "atk" },
+      { text: this.$t("bonus.def"), value: "def" },
+      { text: this.$t("general.special"), value: "special", sortable: false },
+      { text: this.$t("general.combat"), value: "combat", sortable: false },
+      { text: this.$t("general.skill"), value: "skill", sortable: false },
+      { text: this.$t("general.burst"), value: "burst", sortable: false },
+      { text: "", value: "action", sortable: false, width: "50px" },
+    ];
   }
 
   get names() {

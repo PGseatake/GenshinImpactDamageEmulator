@@ -5,7 +5,7 @@
     :headers="headers"
     :items="items"
     :class="tableClass"
-    :items-per-page="1000"
+    :items-per-page="-1"
     fixed-header
     hide-default-footer
   >
@@ -29,7 +29,7 @@
     <template #[`item.second`]="{ item }">
       <weapon-second :list="list" :name="item.name" v-bind.sync="item.second" />
     </template>
-    <template #[`item.remove`]="{ item }">
+    <template #[`item.action`]="{ item }">
       <v-btn fab x-small class="my-1" @click="onRemove(item)">
         <v-icon>{{ icons.remove }}</v-icon>
       </v-btn>
@@ -100,7 +100,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { DataTableHeader } from "vuetify/types";
 import { mdiDelete } from "@mdi/js";
 import { WeaponType } from "~/src/const";
 import * as ascension from "~/src/ascension";
@@ -124,30 +123,23 @@ export default class WeaponData extends Vue {
   @Emit("remove")
   onRemove(item: IWeaponData) {}
 
-  readonly headers: ReadonlyArray<DataTableHeader> = [
-    { text: this.$t("general.name") as string, value: "name" },
-    { text: this.$t("general.rank") as string, value: "rank" },
-    { text: this.$t("general.level") as string, value: "level" },
-    { text: this.$t("bonus.atk") as string, value: "atk" },
-    {
-      text: this.$t("general.second") as string,
-      value: "second",
-      sortable: false,
-    },
-    {
-      text: this.$t("dialog.remove") as string,
-      value: "remove",
-      sortable: false,
-      width: "50px",
-    },
-  ];
-
   readonly icons = {
     remove: mdiDelete,
   };
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get headers() {
+    return [
+      { text: this.$t("general.name"), value: "name" },
+      { text: this.$t("general.rank"), value: "rank" },
+      { text: this.$t("general.level"), value: "level" },
+      { text: this.$t("bonus.atk"), value: "atk" },
+      { text: this.$t("general.second"), value: "second", sortable: false },
+      { text: "", value: "action", sortable: false, width: "50px" },
+    ];
   }
 
   get names() {

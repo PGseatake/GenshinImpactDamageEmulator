@@ -67,7 +67,7 @@
         :headers="headers"
         :items="items"
         :mobile-breakpoint="0"
-        :items-per-page="1000"
+        :items-per-page="-1"
         dense
         disable-sort
         fixed-header
@@ -125,7 +125,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { DataTableHeader } from "vuetify";
 import { ElementType, NoneElementType, ResistTypes } from "~/src/const";
 import { StatusReduct } from "~/src/status";
 import {
@@ -165,23 +164,13 @@ export default class EnemyTable extends Vue {
   @Emit("change")
   onChange(data: IEnemyData) {}
 
-  readonly headers: ReadonlyArray<DataTableHeader> = [
-    {
-      text: this.$t("general.element") as string,
-      value: "type",
-      align: "center",
-    },
-    {
-      text: this.$t("damage.resist") as string,
-      value: "value",
-      align: "center",
-    },
-    {
-      text: this.$t("general.rate") as string,
-      value: "rate",
-      align: "center",
-    },
-  ];
+  get headers() {
+    return [
+      { text: this.$t("general.element"), value: "type", align: "center" },
+      { text: this.$t("damage.resist"), value: "value", align: "center" },
+      { text: this.$t("general.rate"), value: "rate", align: "center" },
+    ];
+  }
 
   get enemies(): TextValue[] {
     return EnemyNames.map((val) => ({

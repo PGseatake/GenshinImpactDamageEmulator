@@ -72,17 +72,19 @@ export default class DamageTable extends Vue {
   @Prop({ required: true }) member!: Readonly<IMember>;
   @Prop({ required: true }) status!: IStatus;
 
-  readonly headers = [
-    { text: "", value: "name" },
-    { text: this.$t("general.rate"), value: "rate", align: "right" },
-    { text: this.$t("general.damage"), value: "damage", align: "right" },
-    { text: this.$t("damage.critical"), value: "critical", align: "right" },
-    { text: this.$t("damage.reaction"), value: "element", align: "right" },
-    { text: this.$t("damage.critical"), value: "elem_cri", align: "right" },
-  ];
-
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get headers() {
+    return [
+      { text: "", value: "name" },
+      { text: this.$t("general.rate"), value: "rate", align: "right" },
+      { text: this.$t("general.damage"), value: "damage", align: "right" },
+      { text: this.$t("damage.critical"), value: "critical", align: "right" },
+      { text: this.$t("damage.reaction"), value: "element", align: "right" },
+      { text: this.$t("damage.critical"), value: "elem_cri", align: "right" },
+    ];
   }
 
   get items() {
