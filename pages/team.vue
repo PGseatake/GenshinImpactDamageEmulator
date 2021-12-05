@@ -2,7 +2,7 @@
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
     <v-data-table
       :headers="headers"
-      :items="db.team"
+      :items="items"
       :class="tableClass"
       :items-per-page="-1"
       disable-sort
@@ -21,28 +21,28 @@
       <template #[`item.member1`]="{ item }">
         <equip-detail
           :value.sync="item.member1"
-          :items="items"
+          :items="members"
           @change="onChangeItem(item)"
         />
       </template>
       <template #[`item.member2`]="{ item }">
         <equip-detail
           :value.sync="item.member2"
-          :items="items"
+          :items="members"
           @change="onChangeItem(item)"
         />
       </template>
       <template #[`item.member3`]="{ item }">
         <equip-detail
           :value.sync="item.member3"
-          :items="items"
+          :items="members"
           @change="onChangeItem(item)"
         />
       </template>
       <template #[`item.member4`]="{ item }">
         <equip-detail
           :value.sync="item.member4"
-          :items="items"
+          :items="members"
           @change="onChangeItem(item)"
         />
       </template>
@@ -62,7 +62,7 @@
 
     <dialog-append
       :disabled="!append"
-      title="menu.team"
+      type="team"
       max-width="300px"
       @accept="onAppend"
       @cancel="append = ''"
@@ -77,7 +77,7 @@
     </dialog-append>
     <dialog-remove
       :item="remove"
-      :title="$t('menu.team') + $t('dialog.dismiss')"
+      :title="$t('tab.team') + $t('dialog.dismiss')"
       max-width="300px"
       @accept="onRemove"
       @cancel="remove = null"
@@ -175,12 +175,10 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { ElementType } from "~/src/const";
-import { DBEquipTable } from "~/src/interface";
-import { DBCharaTable } from "~/src/character";
-import { DBTeamTable, ITeamData, Team } from "~/src/team";
+import { ITeamData, Team } from "~/src/team";
 import { SelectItem } from "~/components/SelectName.vue";
 
 @Component({
@@ -194,11 +192,11 @@ import { SelectItem } from "~/components/SelectName.vue";
   },
 })
 export default class PageTeam extends Vue {
-  db!: DBCharaTable & DBEquipTable & DBTeamTable;
+  items: ITeamData[] = [];
   append = "";
   remove: ITeamData | null = null;
 
-  readonly icons: IReadonlyDict<string> = {
+  readonly icons = {
     append: mdiPlaylistPlus,
     remove: mdiDelete,
   };
@@ -219,9 +217,9 @@ export default class PageTeam extends Vue {
     ];
   }
 
-  get items() {
+  get members() {
     let values: SelectItem[] = [];
-    const { equip, chara } = this.db;
+    const { equip, chara } = this.$db;
     for (const e of equip) {
       const c = chara.find((val) => val.id === e.chara);
       if (c) {
@@ -232,14 +230,14 @@ export default class PageTeam extends Vue {
   }
 
   get names() {
-    return this.items.map((item) => ({
+    return this.members.map((item) => ({
       text: this.$t("chara." + item.name),
       value: item.id,
     }));
   }
 
   get comment() {
-    const item = this.items.find((item) => item.id === this.append);
+    const item = this.members.find((item) => item.id === this.append);
     return item?.comment || "";
   }
 
@@ -251,8 +249,19 @@ export default class PageTeam extends Vue {
     }
   }
 
+  get storeAppend() {
+    return this.$store.getters.append;
+  }
+
+  @Watch("storeAppend")
+  onChangeAppend(value: any) {
+    if (value === true) {
+      this.$store.commit("setAppend", "team");
+    }
+  }
+
   created() {
-    this.db = this.$db;
+    this.items = this.$db.team;
     this.$store.commit("setAppendable", true);
   }
 
@@ -262,7 +271,7 @@ export default class PageTeam extends Vue {
 
   updateResonance(item: ITeamData) {
     let elements: ElementType[] = [];
-    for (const { info } of new Team(item).members(this.db)) {
+    for (const { info } of new Team(item).members(this.$db)) {
       elements.push(info.element);
     }
     elements.sort();
@@ -282,7 +291,7 @@ export default class PageTeam extends Vue {
   }
 
   onBeforeAppend() {
-    this.$store.commit("setAppend", true);
+    this.$store.commit("setAppend", "team");
   }
 
   onAppend() {
@@ -295,7 +304,7 @@ export default class PageTeam extends Vue {
       member4: "",
       resonance: [],
     };
-    this.$appendData(this.db.team, data);
+    this.$appendData(this.items, data);
     this.append = "";
   }
 
@@ -305,7 +314,7 @@ export default class PageTeam extends Vue {
 
   onRemove() {
     if (this.remove) {
-      this.$removeData(this.db.team, this.remove);
+      this.$removeData(this.items, this.remove);
       this.remove = null;
     }
   }

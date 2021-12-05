@@ -1,55 +1,80 @@
 <template>
-  <v-data-table
-    v-bind="$attrs"
-    v-on="$listeners"
-    :headers="headers"
-    :items="items"
-    :class="tableClass"
-    :items-per-page="-1"
-    fixed-header
-    hide-default-footer
-  >
-    <template #[`item.name`]="{ item }">
-      <name-comment
+  <div>
+    <v-data-table
+      v-bind="$attrs"
+      v-on="$listeners"
+      :headers="headers"
+      :items="items"
+      :class="tableClass"
+      :items-per-page="-1"
+      fixed-header
+      hide-default-footer
+    >
+      <template #[`item.name`]="{ item }">
+        <name-comment
+          :items="names"
+          :value.sync="item.name"
+          :comment.sync="item.comment"
+          @change="onChangeName(item)"
+        />
+      </template>
+      <template #[`item.conste`]="{ item }">
+        <select-range v-model="item.conste" :min="0" :max="6" />
+      </template>
+      <template #[`item.level`]="{ item }">
+        <ascension-level v-model="item.level" @change="onChangeLevel(item)" />
+      </template>
+      <template #[`item.hp`]="{ item }">
+        <number-field :value.sync="item.hp" :hide-label="true" />
+      </template>
+      <template #[`item.atk`]="{ item }">
+        <number-field :value.sync="item.atk" :hide-label="true" />
+      </template>
+      <template #[`item.def`]="{ item }">
+        <number-field :value.sync="item.def" :hide-label="true" />
+      </template>
+      <template #[`item.special`]="{ item }">
+        <chara-special :name="item.name" v-bind.sync="item.special" />
+      </template>
+      <template #[`item.combat`]="{ item }">
+        <select-range v-model="item.combat" :min="1" :max="15" />
+      </template>
+      <template #[`item.skill`]="{ item }">
+        <select-range v-model="item.skill" :min="1" :max="15" />
+      </template>
+      <template #[`item.burst`]="{ item }">
+        <select-range v-model="item.burst" :min="1" :max="15" />
+      </template>
+      <template #[`item.action`]="{ item }">
+        <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
+          <v-icon>{{ icons.remove }}</v-icon>
+        </v-btn>
+      </template>
+    </v-data-table>
+
+    <dialog-append
+      type="chara"
+      :disabled="!append"
+      max-width="300px"
+      @accept="onAppend"
+      @cancel="append = ''"
+    >
+      <v-select
+        v-model="append"
         :items="names"
-        :value.sync="item.name"
-        :comment.sync="item.comment"
-        @change="onChangeName(item)"
+        :menu-props="{ auto: true, transition: false }"
       />
-    </template>
-    <template #[`item.conste`]="{ item }">
-      <select-range v-model="item.conste" :min="0" :max="6" />
-    </template>
-    <template #[`item.level`]="{ item }">
-      <ascension-level v-model="item.level" @change="onChangeLevel(item)" />
-    </template>
-    <template #[`item.hp`]="{ item }">
-      <number-field :value.sync="item.hp" :hide-label="true" />
-    </template>
-    <template #[`item.atk`]="{ item }">
-      <number-field :value.sync="item.atk" :hide-label="true" />
-    </template>
-    <template #[`item.def`]="{ item }">
-      <number-field :value.sync="item.def" :hide-label="true" />
-    </template>
-    <template #[`item.special`]="{ item }">
-      <chara-special :name="item.name" v-bind.sync="item.special" />
-    </template>
-    <template #[`item.combat`]="{ item }">
-      <select-range v-model="item.combat" :min="1" :max="15" />
-    </template>
-    <template #[`item.skill`]="{ item }">
-      <select-range v-model="item.skill" :min="1" :max="15" />
-    </template>
-    <template #[`item.burst`]="{ item }">
-      <select-range v-model="item.burst" :min="1" :max="15" />
-    </template>
-    <template #[`item.action`]="{ item }">
-      <v-btn fab x-small class="my-1" @click="onRemove(item)">
-        <v-icon>{{ icons.remove }}</v-icon>
-      </v-btn>
-    </template>
-  </v-data-table>
+    </dialog-append>
+    <dialog-remove
+      type="chara"
+      :item="remove"
+      :name="removeName"
+      :exists="exists"
+      max-width="300px"
+      @accept="onRemove"
+      @cancel="remove = null"
+    />
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -151,10 +176,10 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop, Emit } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
 import * as ascension from "~/src/ascension";
-import { ICharaData, CharaList, CharaNames } from "~/src/character";
+import { ICharaData, CharaList, CharaNames, CharaName } from "~/src/character";
 
 @Component({
   name: "CharaData",
@@ -164,18 +189,17 @@ import { ICharaData, CharaList, CharaNames } from "~/src/character";
     SelectRange: () => import("~/components/SelectRange.vue"),
     CharaSpecial: () => import("~/components/CharaSpecial.vue"),
     AscensionLevel: () => import("~/components/AscensionLevel.vue"),
+    DialogAppend: () => import("~/components/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/DialogRemove.vue"),
   },
   inheritAttrs: false,
 })
 export default class CharaData extends Vue {
-  @Prop({ required: true }) items!: Array<ICharaData>;
+  items: ICharaData[] = [];
+  append: CharaName | "" = "";
+  remove: ICharaData | null = null;
 
-  @Emit("remove")
-  onRemove(item: ICharaData) {}
-
-  readonly icons: IReadonlyDict<string> = {
-    remove: mdiDelete,
-  };
+  readonly icons = { remove: mdiDelete };
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
@@ -204,6 +228,15 @@ export default class CharaData extends Vue {
     }));
   }
 
+  get removeName() {
+    const name = this.remove?.name;
+    return name ? this.$t(`chara.${name}`) : "";
+  }
+
+  created() {
+    this.items = this.$db.chara;
+  }
+
   onChangeName(item: ICharaData) {
     const { special } = CharaList[item.name];
     item.conste = 0;
@@ -222,6 +255,47 @@ export default class CharaData extends Vue {
     item.atk = ascension.calc14(level, status.atk);
     item.def = ascension.calc14(level, status.def);
     item.special.value = ascension.step8(level, spvalue);
+  }
+
+  onAppend() {
+    const name = this.append;
+    if (name) {
+      const item = CharaList[name];
+      const data: ICharaData = {
+        id: this.$makeUniqueId(),
+        name: name,
+        comment: "",
+        conste: 0,
+        level: "1",
+        hp: item.status.hp[0],
+        atk: item.status.atk[0],
+        def: item.status.def[0],
+        special: {
+          type: item.special,
+          value: item.spvalue[0],
+        },
+        combat: 1,
+        skill: 1,
+        burst: 1,
+      };
+      this.$appendData(this.items, data);
+      this.append = "";
+    }
+  }
+
+  onBeforeRemove(data: ICharaData) {
+    this.remove = data;
+  }
+
+  onRemove() {
+    if (this.remove) {
+      this.$removeData(this.items, this.remove);
+      this.remove = null;
+    }
+  }
+
+  exists(id: string): boolean {
+    return !!this.$db.equip.find((data) => data.chara === id);
   }
 }
 </script>

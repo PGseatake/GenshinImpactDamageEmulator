@@ -1,124 +1,42 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <chara-data :items="db.chara" @remove="onBeforeRemove" />
+    <chara-data />
 
-    <v-btn fab small @click="onBeforeAppend" class="ma-1">
+    <v-btn fab small @click.stop="onBeforeAppend" class="ma-1">
       <v-icon>{{ icons.append }}</v-icon>
     </v-btn>
-
-    <dialog-append
-      :disabled="!append"
-      title="menu.character"
-      max-width="300px"
-      @accept="onAppend"
-      @cancel="append = ''"
-    >
-      <v-select
-        v-model="append"
-        :items="names"
-        :menu-props="{ auto: true, transition: false }"
-      />
-    </dialog-append>
-    <dialog-remove
-      :title="$t('menu.character') + $t('dialog.remove')"
-      :item="remove"
-      :name="removeName"
-      :exists="exists"
-      max-width="300px"
-      @accept="onRemove"
-      @cancel="remove = null"
-    />
   </v-container>
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiPlaylistPlus } from "@mdi/js";
-import {
-  CharaList,
-  CharaName,
-  CharaNames,
-  ICharaData,
-  DBCharaTable,
-} from "~/src/character";
+import CharaData from "~/components/CharaData.vue";
 
 @Component({
   name: "PageCharacter",
-  components: {
-    CharaData: () => import("~/components/CharaData.vue"),
-    DialogAppend: () => import("~/components/DialogAppend.vue"),
-    DialogRemove: () => import("~/components/DialogRemove.vue"),
-  },
+  components: { CharaData },
 })
 export default class PageCharacter extends Vue {
-  db: DBCharaTable = { chara: [] };
-  append: CharaName | "" = "";
-  remove: ICharaData | null = null;
+  readonly icons = { append: mdiPlaylistPlus };
 
-  readonly icons: IReadonlyDict<string> = {
-    append: mdiPlaylistPlus,
-  };
-
-  get names() {
-    return CharaNames.map((name) => ({
-      text: this.$t("chara." + name),
-      value: name,
-    }));
+  get append() {
+    return this.$store.getters.append;
   }
 
-  get removeName() {
-    const name = this.remove?.name;
-    return name ? this.$t(`chara.${name}`) : "";
+  @Watch("append")
+  onChangeAppend(value: any) {
+    if (value === true) {
+      this.$store.commit("setAppend", "chara");
+    }
   }
 
   created() {
-    this.db = this.$db;
     this.$store.commit("setAppendable", true);
   }
 
   onBeforeAppend() {
-    this.$store.commit("setAppend", true);
-  }
-
-  onAppend() {
-    const name = this.append;
-    if (name) {
-      const item = CharaList[name];
-      const data: ICharaData = {
-        id: this.$makeUniqueId(),
-        name: name,
-        comment: "",
-        conste: 0,
-        level: "1",
-        hp: item.status.hp[0],
-        atk: item.status.atk[0],
-        def: item.status.def[0],
-        special: {
-          type: item.special,
-          value: item.spvalue[0],
-        },
-        combat: 1,
-        skill: 1,
-        burst: 1,
-      };
-      this.$appendData(this.db.chara, data);
-      this.append = "";
-    }
-  }
-
-  onBeforeRemove(data: ICharaData) {
-    this.remove = data;
-  }
-
-  onRemove() {
-    if (this.remove) {
-      this.$removeData(this.db.chara, this.remove);
-      this.remove = null;
-    }
-  }
-
-  exists(id: string): boolean {
-    return !!this.$db.equip.find((data) => data.chara === id);
+    this.$store.commit("setAppend", "chara");
   }
 }
 </script>

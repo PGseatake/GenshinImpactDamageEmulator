@@ -6,7 +6,7 @@
     @click:outside="onCancel"
   >
     <v-card>
-      <v-card-title>{{ $t(title) + $t("dialog.append") }}</v-card-title>
+      <v-card-title v-text="title" />
       <v-card-text>
         <slot />
       </v-card-text>
@@ -31,7 +31,7 @@ import { Vue, Component, Prop, Emit } from "vue-property-decorator";
   inheritAttrs: false,
 })
 export default class DialogAppend extends Vue {
-  @Prop({ required: true }) title!: string;
+  @Prop({ required: true }) type!: string;
   @Prop({ default: false }) disabled!: boolean;
 
   @Emit("accept")
@@ -44,8 +44,12 @@ export default class DialogAppend extends Vue {
     this.show = false;
   }
 
+  get title() {
+    return (this.$t("tab." + this.type) as string) + this.$t("dialog.append");
+  }
+
   get show() {
-    return this.$store.state.append;
+    return this.$store.state.append === this.type;
   }
   set show(value: boolean) {
     this.$store.commit("setAppend", value);

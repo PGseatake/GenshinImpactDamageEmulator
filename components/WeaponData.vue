@@ -1,40 +1,69 @@
 <template>
-  <v-data-table
-    v-bind="$attrs"
-    v-on="$listeners"
-    :headers="headers"
-    :items="items"
-    :class="tableClass"
-    :items-per-page="-1"
-    fixed-header
-    hide-default-footer
-  >
-    <template #[`item.name`]="{ item }">
-      <name-comment
+  <div>
+    <v-data-table
+      v-bind="$attrs"
+      v-on="$listeners"
+      :headers="headers"
+      :items="items"
+      :class="tableClass"
+      :items-per-page="-1"
+      fixed-header
+      hide-default-footer
+    >
+      <template #[`item.name`]="{ item }">
+        <name-comment
+          :items="names"
+          :value.sync="item.name"
+          :comment.sync="item.comment"
+          @change="onChangeName(item)"
+        />
+      </template>
+      <template #[`item.rank`]="{ item }">
+        <select-range v-model="item.rank" :min="1" :max="5" />
+      </template>
+      <template #[`item.level`]="{ item }">
+        <ascension-level v-model="item.level" @change="onChangeLevel(item)" />
+      </template>
+      <template #[`item.atk`]="{ item }">
+        <number-field :value.sync="item.atk" :hide-label="true" />
+      </template>
+      <template #[`item.second`]="{ item }">
+        <weapon-second
+          :list="list"
+          :name="item.name"
+          v-bind.sync="item.second"
+        />
+      </template>
+      <template #[`item.action`]="{ item }">
+        <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
+          <v-icon>{{ icons.remove }}</v-icon>
+        </v-btn>
+      </template>
+    </v-data-table>
+
+    <dialog-append
+      :type="type"
+      :disabled="!append"
+      max-width="300px"
+      @accept="onAppend"
+      @cancel="append = ''"
+    >
+      <v-select
+        v-model="append"
         :items="names"
-        :value.sync="item.name"
-        :comment.sync="item.comment"
-        @change="onChangeName(item)"
+        :menu-props="{ auto: true, transition: false }"
       />
-    </template>
-    <template #[`item.rank`]="{ item }">
-      <select-range v-model="item.rank" :min="1" :max="5" />
-    </template>
-    <template #[`item.level`]="{ item }">
-      <ascension-level v-model="item.level" @change="onChangeLevel(item)" />
-    </template>
-    <template #[`item.atk`]="{ item }">
-      <number-field :value.sync="item.atk" :hide-label="true" />
-    </template>
-    <template #[`item.second`]="{ item }">
-      <weapon-second :list="list" :name="item.name" v-bind.sync="item.second" />
-    </template>
-    <template #[`item.action`]="{ item }">
-      <v-btn fab x-small class="my-1" @click="onRemove(item)">
-        <v-icon>{{ icons.remove }}</v-icon>
-      </v-btn>
-    </template>
-  </v-data-table>
+    </dialog-append>
+    <dialog-remove
+      :type="type"
+      :item="remove"
+      :name="removeName"
+      :exists="exists"
+      max-width="300px"
+      @accept="onRemove"
+      @cancel="remove = null"
+    />
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -99,7 +128,7 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop, Emit } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
 import { WeaponType } from "~/src/const";
 import * as ascension from "~/src/ascension";
@@ -113,19 +142,19 @@ import { IWeaponData, WeaponNames, WeaponList } from "~/src/weapon";
     SelectRange: () => import("~/components/SelectRange.vue"),
     WeaponSecond: () => import("~/components/WeaponSecond.vue"),
     AscensionLevel: () => import("~/components/AscensionLevel.vue"),
+    DialogAppend: () => import("~/components/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/DialogRemove.vue"),
   },
   inheritAttrs: false,
 })
 export default class WeaponData extends Vue {
   @Prop({ required: true }) type!: WeaponType;
-  @Prop({ required: true }) items!: Array<IWeaponData>;
 
-  @Emit("remove")
-  onRemove(item: IWeaponData) {}
+  readonly icons = { remove: mdiDelete };
 
-  readonly icons = {
-    remove: mdiDelete,
-  };
+  items: IWeaponData[] = [];
+  append = "";
+  remove: IWeaponData | null = null;
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
@@ -153,6 +182,15 @@ export default class WeaponData extends Vue {
     return WeaponList[this.type];
   }
 
+  get removeName() {
+    const name = this.remove?.name;
+    return name ? this.$t(`weapon.${this.type}.${name}`) : "";
+  }
+
+  created() {
+    this.items = this.$db[this.type];
+  }
+
   onChangeName(item: IWeaponData) {
     const weapon = WeaponList[this.type][item.name];
     item.rank = 0;
@@ -165,6 +203,42 @@ export default class WeaponData extends Vue {
     const weapon = WeaponList[this.type][item.name];
     item.atk = ascension.calc14(item.level, weapon.atk);
     item.second.value = ascension.calc8(item.level, weapon.secval);
+  }
+
+  onAppend() {
+    const name = this.append;
+    if (name) {
+      const item = WeaponList[this.type][name];
+      const data: IWeaponData = {
+        id: this.$makeUniqueId(),
+        name: name,
+        comment: "",
+        rank: 1,
+        level: "1",
+        atk: item.atk[0],
+        second: {
+          type: item.second,
+          value: item.secval[0],
+        },
+      };
+      this.$appendData(this.items, data);
+      this.append = "";
+    }
+  }
+
+  onBeforeRemove(data: IWeaponData) {
+    this.remove = data;
+  }
+
+  onRemove() {
+    if (this.remove) {
+      this.$removeData(this.items, this.remove);
+      this.remove = null;
+    }
+  }
+
+  exists(id: string): boolean {
+    return !!this.$db.equip.find((data) => data.weapon === id);
   }
 }
 </script>

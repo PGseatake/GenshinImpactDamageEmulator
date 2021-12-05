@@ -1,79 +1,104 @@
 <template>
-  <v-data-table
-    v-bind="$attrs"
-    v-on="$listeners"
-    :headers="headers"
-    :items="items"
-    :class="tableClass"
-    :items-per-page="-1"
-    fixed-header
-    hide-default-footer
-  >
-    <template #[`item.name`]="{ item }">
-      <name-comment
+  <div>
+    <v-data-table
+      v-bind="$attrs"
+      v-on="$listeners"
+      :headers="headers"
+      :items="items"
+      :class="tableClass"
+      :items-per-page="-1"
+      fixed-header
+      hide-default-footer
+    >
+      <template #[`item.name`]="{ item }">
+        <name-comment
+          :items="names"
+          :value.sync="item.name"
+          :comment.sync="item.comment"
+        />
+      </template>
+      <template #[`item.star`]="{ item }">
+        <select-range
+          v-model="item.star"
+          :min="3"
+          :max="5"
+          @change="onChangeStar(item)"
+        />
+      </template>
+      <template #[`item.level`]="{ item }">
+        <select-range
+          v-model="item.level"
+          :min="0"
+          :max="item.star * 4"
+          @change="onChangeLevel(item)"
+        />
+      </template>
+      <template #[`item.main`]="{ item }">
+        <bonus-value
+          v-bind.sync="item.main"
+          :types="mains"
+          :score="getTotal(item)"
+          @change="onChangeMain(item)"
+        />
+      </template>
+      <template #[`item.sub1`]="{ item }">
+        <bonus-value
+          v-bind.sync="item.sub1"
+          :types="subs"
+          :score="getScore(item, item.sub1)"
+        />
+      </template>
+      <template #[`item.sub2`]="{ item }">
+        <bonus-value
+          v-bind.sync="item.sub2"
+          :types="subs"
+          :score="getScore(item, item.sub2)"
+        />
+      </template>
+      <template #[`item.sub3`]="{ item }">
+        <bonus-value
+          v-bind.sync="item.sub3"
+          :types="subs"
+          :score="getScore(item, item.sub3)"
+        />
+      </template>
+      <template #[`item.sub4`]="{ item }">
+        <bonus-value
+          v-bind.sync="item.sub4"
+          :types="subs"
+          :score="getScore(item, item.sub4)"
+        />
+      </template>
+      <template #[`item.action`]="{ item }">
+        <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
+          <v-icon>{{ icons.remove }}</v-icon>
+        </v-btn>
+      </template>
+    </v-data-table>
+
+    <dialog-append
+      :type="type"
+      :disabled="!append"
+      max-width="300px"
+      @accept="onAppend"
+      @cancel="append = ''"
+    >
+      <v-select
+        v-model="append"
         :items="names"
-        :value.sync="item.name"
-        :comment.sync="item.comment"
+        :menu-props="{ auto: true, transition: false }"
       />
-    </template>
-    <template #[`item.star`]="{ item }">
-      <select-range
-        v-model="item.star"
-        :min="3"
-        :max="5"
-        @change="onChangeStar(item)"
-      />
-    </template>
-    <template #[`item.level`]="{ item }">
-      <select-range
-        v-model="item.level"
-        :min="0"
-        :max="item.star * 4"
-        @change="onChangeLevel(item)"
-      />
-    </template>
-    <template #[`item.main`]="{ item }">
-      <bonus-value
-        v-bind.sync="item.main"
-        :types="mains"
-        :score="getTotal(item)"
-        @change="onChangeMain(item)"
-      />
-    </template>
-    <template #[`item.sub1`]="{ item }">
-      <bonus-value
-        v-bind.sync="item.sub1"
-        :types="subs"
-        :score="getScore(item, item.sub1)"
-      />
-    </template>
-    <template #[`item.sub2`]="{ item }">
-      <bonus-value
-        v-bind.sync="item.sub2"
-        :types="subs"
-        :score="getScore(item, item.sub2)"
-      />
-    </template>
-    <template #[`item.sub3`]="{ item }">
-      <bonus-value
-        v-bind.sync="item.sub3"
-        :types="subs"
-        :score="getScore(item, item.sub3)"
-      />
-    </template>
-    <template #[`item.sub4`]="{ item }">
-      <bonus-value
-        v-bind.sync="item.sub4"
-        :types="subs"
-        :score="getScore(item, item.sub4)"
-      />
-    </template>
-    <template #[`item.action`]="{ item }">
-      <v-btn fab x-small class="my-1" @click="onRemove(item)">
-        <v-icon>{{ icons.remove }}</v-icon>
-      </v-btn>
-    </template>
-  </v-data-table>
+    </dialog-append>
+    <dialog-remove
+      :type="type"
+      :item="remove"
+      :name="removeName"
+      :exists="exists"
+      max-width="300px"
+      @accept="onRemove"
+      @cancel="remove = null"
+    />
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -169,13 +194,14 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop, Emit } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
-import { ArtifactType } from "~/src/const";
+import { ArtifactType, BonusType } from "~/src/const";
 import { BonusValue } from "~/src/interface";
 import {
   IArtifactData,
   ArtifactNames,
+  ArtifactName,
   ArtifactMain,
   ArtifactSub,
   SubBonus,
@@ -189,20 +215,20 @@ import {
     BonusValue: () => import("~/components/BonusValue.vue"),
     NameComment: () => import("~/components/NameComment.vue"),
     SelectRange: () => import("~/components/SelectRange.vue"),
+    DialogAppend: () => import("~/components/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/DialogRemove.vue"),
   },
   inheritAttrs: false,
 })
 export default class ArtifactData extends Vue {
   @Prop({ required: true }) type!: ArtifactType;
-  @Prop({ required: true }) items!: Array<IArtifactData>;
 
-  @Emit("remove")
-  onRemove(item: IArtifactData) {}
-
-  readonly icons = {
-    remove: mdiDelete,
-  };
+  readonly icons = { remove: mdiDelete };
   readonly subs = ArtifactSub;
+
+  items: IArtifactData[] = [];
+  append: ArtifactName | "" = "";
+  remove: IArtifactData | null = null;
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
@@ -231,6 +257,15 @@ export default class ArtifactData extends Vue {
 
   get mains() {
     return ArtifactMain[this.type];
+  }
+
+  get removeName() {
+    const name = this.remove?.name;
+    return name ? this.$t(`artifact.${this.type}.${name}`) : "";
+  }
+
+  created() {
+    this.items = this.$db[this.type];
   }
 
   onChangeStar(item: IArtifactData) {
@@ -272,6 +307,56 @@ export default class ArtifactData extends Vue {
 
   updateMain(item: IArtifactData) {
     item.main.value = calcMain(item.main.type, item.star, item.level);
+  }
+
+  onAppend() {
+    const name = this.append;
+    if (name) {
+      const data: IArtifactData = {
+        id: this.$makeUniqueId(),
+        name: name,
+        comment: "",
+        star: 3,
+        level: 0,
+        main: {
+          type: ArtifactMain[this.type][0],
+          value: 0,
+        },
+        sub1: {
+          type: BonusType.None,
+          value: 0,
+        },
+        sub2: {
+          type: BonusType.None,
+          value: 0,
+        },
+        sub3: {
+          type: BonusType.None,
+          value: 0,
+        },
+        sub4: {
+          type: BonusType.None,
+          value: 0,
+        },
+      };
+      this.$appendData(this.items, data);
+      this.append = "";
+    }
+  }
+
+  onBeforeRemove(data: IArtifactData) {
+    this.remove = data;
+  }
+
+  onRemove() {
+    if (this.remove) {
+      this.$removeData(this.items, this.remove);
+      this.remove = null;
+    }
+  }
+
+  exists(id: string): boolean {
+    return !!this.$db.equip.find((data) => data[this.type] === id);
   }
 }
 </script>

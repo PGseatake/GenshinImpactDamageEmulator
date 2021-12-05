@@ -22,9 +22,11 @@
         "sands": "時の砂",
         "goblet": "空の杯",
         "circlet": "理の冠",
+        "chara": "キャラクター",
+        "equip": "装備",
+        "team": "チーム",
         "source": "発生元",
         "condition": "効果",
-        "team": "チーム名",
         "member": "メンバー",
         "stack": "重",
         "times": "継続時間"

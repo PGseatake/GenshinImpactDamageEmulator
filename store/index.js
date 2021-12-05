@@ -5,6 +5,12 @@ export const state = () => ({
     popupText: "",
 })
 
+export const getters = {
+    append(state) {
+        return state.append;
+    }
+}
+
 export const mutations = {
     setPage(state, value) {
         state.page = value;

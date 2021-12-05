@@ -2,7 +2,7 @@
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
     <v-data-table
       :headers="headers"
-      :items="db.equip"
+      :items="items"
       :class="tableClass"
       :items-per-page="-1"
       fixed-header
@@ -27,35 +27,35 @@
       <template #[`item.flower`]="{ item }">
         <artifact-detail
           :value.sync="item.flower"
-          :items="db.flower"
+          :items="$db.flower"
           type="flower"
         />
       </template>
       <template #[`item.feather`]="{ item }">
         <artifact-detail
           :value.sync="item.feather"
-          :items="db.feather"
+          :items="$db.feather"
           type="feather"
         />
       </template>
       <template #[`item.sands`]="{ item }">
         <artifact-detail
           :value.sync="item.sands"
-          :items="db.sands"
+          :items="$db.sands"
           type="sands"
         />
       </template>
       <template #[`item.goblet`]="{ item }">
         <artifact-detail
           :value.sync="item.goblet"
-          :items="db.goblet"
+          :items="$db.goblet"
           type="goblet"
         />
       </template>
       <template #[`item.circlet`]="{ item }">
         <artifact-detail
           :value.sync="item.circlet"
-          :items="db.circlet"
+          :items="$db.circlet"
           type="circlet"
         />
       </template>
@@ -71,8 +71,8 @@
     </v-btn>
 
     <dialog-append
+      type="equip"
       :disabled="!append"
-      title="menu.equipment"
       max-width="300px"
       @accept="onAppend"
       @cancel="append = ''"
@@ -86,7 +86,7 @@
       />
     </dialog-append>
     <dialog-remove
-      :title="$t('menu.equipment') + $t('dialog.remove')"
+      type="equip"
       :item="remove"
       :name="removeName"
       :exists="exists"
@@ -198,10 +198,10 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { IEquipData, DBEquipTable } from "~/src/interface";
-import { ICharaData, DBCharaTable } from "~/src/character";
+import { IEquipData } from "~/src/interface";
+import { ICharaData } from "~/src/character";
 import { Team } from "~/src/team";
 
 @Component({
@@ -216,11 +216,11 @@ import { Team } from "~/src/team";
   },
 })
 export default class PageEquipment extends Vue {
-  db: DBEquipTable & DBCharaTable = { equip: [], chara: [] };
+  items: IEquipData[] = [];
   append = "";
   remove: IEquipData | null = null;
 
-  readonly icons: IReadonlyDict<string> = {
+  readonly icons = {
     append: mdiPlaylistPlus,
     remove: mdiDelete,
   };
@@ -244,7 +244,7 @@ export default class PageEquipment extends Vue {
   }
 
   get names() {
-    return this.db.chara.map((chara) => ({
+    return this.$db.chara.map((chara) => ({
       text: this.$t("chara." + chara.name),
       value: chara.id,
     }));
@@ -260,13 +260,24 @@ export default class PageEquipment extends Vue {
     return chara?.name ? this.$t("chara." + chara.name) : "";
   }
 
+  get storeAppend() {
+    return this.$store.getters.append;
+  }
+
+  @Watch("storeAppend")
+  onChangeAppend(value: any) {
+    if (value === true) {
+      this.$store.commit("setAppend", "equip");
+    }
+  }
+
   created() {
-    this.db = this.$db;
+    this.items = this.$db.equip;
     this.$store.commit("setAppendable", true);
   }
 
   onBeforeAppend() {
-    this.$store.commit("setAppend", true);
+    this.$store.commit("setAppend", "equip");
   }
 
   onAppend() {
@@ -281,7 +292,7 @@ export default class PageEquipment extends Vue {
       goblet: "",
       circlet: "",
     };
-    this.$appendData(this.db.equip, data);
+    this.$appendData(this.items, data);
     this.append = "";
   }
 
@@ -291,7 +302,7 @@ export default class PageEquipment extends Vue {
 
   onRemove() {
     if (this.remove) {
-      this.$removeData(this.db.equip, this.remove);
+      this.$removeData(this.items, this.remove);
       this.remove = null;
     }
   }
@@ -307,7 +318,7 @@ export default class PageEquipment extends Vue {
 
   findChara(id?: string): ICharaData | undefined {
     if (id) {
-      return this.db.chara.find((chara) => chara.id === id);
+      return this.$db.chara.find((chara) => chara.id === id);
     }
     return undefined;
   }

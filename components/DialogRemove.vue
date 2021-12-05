@@ -8,10 +8,10 @@
       @click:outside="onCancel"
     >
       <v-card>
-        <v-card-title v-text="title" />
+        <v-card-title v-text="titleText" />
         <v-card-text>
           <slot name="enable" :item="item">
-            <div v-text="text + $t('dialog.remove_text')" />
+            <div v-text="nameText + $t('dialog.remove_text')" />
           </slot>
           <div v-text="$t('dialog.confirm_text')" />
         </v-card-text>
@@ -34,10 +34,10 @@
       @click:outside="onCancel"
     >
       <v-card>
-        <v-card-title v-text="title" />
+        <v-card-title v-text="titleText" />
         <v-card-text>
-          <slot name="disable" v-bind:item="item">
-            <div v-text="text + $t('dialog.remove_x_text')" />
+          <slot name="disable" :item="item">
+            <div v-text="nameText + $t('dialog.remove_x_text')" />
           </slot>
         </v-card-text>
         <v-card-actions>
@@ -60,9 +60,10 @@ import { IIdentify } from "~/src/interface";
   inheritAttrs: false,
 })
 export default class DialogRemove extends Vue {
-  @Prop({ required: true }) title!: string;
+  @Prop({ default: "" }) type!: string;
   @Prop({ default: null }) item!: IIdentify | null;
   @Prop({ default: "" }) name!: string;
+  @Prop({ default: "" }) title!: string;
   @Prop({ default: undefined }) exists?: (id: string) => boolean;
 
   cacheName = "";
@@ -77,7 +78,14 @@ export default class DialogRemove extends Vue {
     this.cacheName = this.name;
   }
 
-  get text() {
+  get titleText() {
+    return (
+      this.title ||
+      (this.$t("tab." + this.type) as string) + this.$t("dialog.remove")
+    );
+  }
+
+  get nameText() {
     return this.name || this.cacheName;
   }
 
