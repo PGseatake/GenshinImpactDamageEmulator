@@ -70,6 +70,15 @@
         />
       </template>
       <template #[`item.action`]="{ item }">
+        <v-btn
+          fab
+          x-small
+          class="my-1"
+          @click="onRandom(item)"
+          @click.middle="onRandom(item, true)"
+        >
+          <v-icon>{{ icons.random }}</v-icon>
+        </v-btn>
         <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
           <v-icon>{{ icons.remove }}</v-icon>
         </v-btn>
@@ -195,8 +204,8 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { mdiDelete } from "@mdi/js";
-import { ArtifactType, BonusType } from "~/src/const";
+import { mdiDelete, mdiShuffleVariant } from "@mdi/js";
+import { AnyBonusType, ArtifactType, BonusType } from "~/src/const";
 import { BonusValue } from "~/src/interface";
 import {
   IArtifactData,
@@ -207,7 +216,12 @@ import {
   SubBonus,
   calcMain,
   calcScore,
+  randomSubStep,
 } from "~/src/artifact";
+
+function randomRange(max: number): number {
+  return Math.floor(Math.random() * max);
+}
 
 @Component({
   name: "ArtifactData",
@@ -223,7 +237,7 @@ import {
 export default class ArtifactData extends Vue {
   @Prop({ required: true }) type!: ArtifactType;
 
-  readonly icons = { remove: mdiDelete };
+  readonly icons = { remove: mdiDelete, random: mdiShuffleVariant };
   readonly subs = ArtifactSub;
 
   items: IArtifactData[] = [];
@@ -352,6 +366,77 @@ export default class ArtifactData extends Vue {
     if (this.remove) {
       this.$removeData(this.items, this.remove);
       this.remove = null;
+    }
+  }
+
+  onRandom(item: IArtifactData, type?: boolean) {
+    switch (item.star) {
+      case 3:
+      case 4:
+      case 5:
+        if (type) {
+          // 効果の種類も入れ替える
+          this.shuffle(item, [
+            BonusType.None,
+            BonusType.None,
+            BonusType.None,
+            BonusType.None,
+          ]);
+        } else {
+          // 現在の効果に基づく
+          this.shuffle(
+            item,
+            SubBonus.map((val) => item[val].type)
+          );
+        }
+    }
+  }
+
+  shuffle(item: IArtifactData, types: AnyBonusType[]) {
+    const { star, level } = item;
+    const min = types.reduce(
+      (cnt, val) => (val === BonusType.None ? cnt : cnt + 1),
+      0
+    );
+    types.push(item.main.type); // メイン効果と同じものはでない
+    types.push(BonusType.None); // ArtifactSub[0]を除去する
+
+    // サブ効果の強化回数
+    var max = star - 1; // Lv.0の最大回数
+    max -= Math.round(Math.random()); // ランダムで1回少ない
+    max += Math.floor(level / 4);
+    max = Math.max(min, max);
+
+    const init = Math.min(max, 4);
+
+    // サブ効果のタイプを選択
+    const range = ArtifactSub.length;
+    for (var i = 0; i < init; ++i) {
+      while (types[i] === BonusType.None) {
+        const type = ArtifactSub[randomRange(range)];
+        if (!types.includes(type)) {
+          types[i] = type;
+        }
+      }
+    }
+
+    // 初期値設定
+    for (var i = 0; i < init; ++i) {
+      const type = types[i];
+      let bonus = item[SubBonus[i]];
+      bonus.type = type;
+      bonus.value = randomSubStep(type, star);
+    }
+    for (var i = init; i < 4; ++i) {
+      let bonus = item[SubBonus[i]];
+      bonus.type = BonusType.None;
+      bonus.value = 0;
+    }
+
+    // 強化値加算
+    for (var n = 4; n < max; ++n) {
+      const i = randomRange(4);
+      item[SubBonus[i]].value += randomSubStep(types[i], star);
     }
   }
 

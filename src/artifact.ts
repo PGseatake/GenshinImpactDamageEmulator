@@ -323,14 +323,14 @@ type ArtifactParamData = ReadonlyRecord<ArtifactParamType, ArtifactParam>;
 const ArtifactParamList: Readonly<ArtifactParamData[]> = [
     // ☆☆☆
     {
-        hp: { intercept: 430, slope: 121.8846154 }, // HP
-        atk: { intercept: 28, slope: 7.89010989 }, // 攻撃力
-        def: { intercept: 21, slope: 5.917582418 }, // 防御力,元素熟知
-        atk_buf: { intercept: 5.2, slope: 1.488461538 }, // HP(%),攻撃力(%),元素ダメージ
-        def_buf: { intercept: 6.6, slope: 1.854945055 }, // 防御力(%),物理ダメージ
-        en_rec: { intercept: 5.8, slope: 1.65 }, // 元素チャージ効率
-        cri_rate: { intercept: 3.5, slope: 0.989010989 }, // 会心率
-        cri_dmg: { intercept: 7.0, slope: 1.980769231 }, // 会心ダメージ
+        hp: { intercept: 430, slope: 121.8846154, substep: 14.3 }, // HP
+        atk: { intercept: 28, slope: 7.89010989, substep: 0.9 }, // 攻撃力
+        def: { intercept: 21, slope: 5.917582418, substep: 1.1 }, // 防御力,元素熟知
+        atk_buf: { intercept: 5.2, slope: 1.488461538, substep: 0.35 }, // HP(%),攻撃力(%),元素ダメージ
+        def_buf: { intercept: 6.6, slope: 1.854945055, substep: 0.44 }, // 防御力(%),物理ダメージ
+        en_rec: { intercept: 5.8, slope: 1.65, substep: 0.39 }, // 元素チャージ効率
+        cri_rate: { intercept: 3.5, slope: 0.989010989, substep: 0.23 }, // 会心率
+        cri_dmg: { intercept: 7.0, slope: 1.980769231, substep: 0.47 }, // 会心ダメージ
         heal_buf: { intercept: 4.0, slope: 1.145054945 }, // 与える治療効果
     },
     // ☆☆☆☆
@@ -417,6 +417,15 @@ export function calcScore(bonus: BonusValue, star: number, level: number): numbe
         return Math.round(bonus.value / param.substep);
     }
     return undefined;
+}
+
+export function randomSubStep(type: konst.AnyBonusType, star: number): number {
+    const param = getArtifactParam(type, star, 0);
+    if (param) {
+        const rand = 7 + Math.floor(Math.random() * 4); // 7~10
+        return param.substep! * rand;
+    }
+    return 0;
 }
 
 export const SubBonus = ["sub1", "sub2", "sub3", "sub4"] as const;
