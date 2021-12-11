@@ -299,8 +299,9 @@
             "SkywardPride": "天空の傲",
             "SongBrokenPines": "松韻の響く頃",
             "TheUnforged": "無工の剣",
-            "LuxuriousSeaLord": "銜玉の海皇",
             "KatsuragikiriNagamasa": "桂木斬長正",
+            "RedhornStonethresher": "赤角石塵滅砕",
+            "LuxuriousSeaLord": "銜玉の海皇",
             "BlackcliffSlasher": "黒岩の斬刀",
             "SnowTombedStarsilver": "雪葬の星銀",
             "SacrificialGreatsword": "祭礼の大剣",
@@ -611,6 +612,7 @@
         "down": "ダウン",
         "shield": "シールド",
         "wakeup": "寝起き",
+        "enter": "登場中",
         "Slime": "スライム・{0}",
         "Specters": "フライム・{0}",
         "Hilichurl": "ヒルチャール",
@@ -636,8 +638,10 @@
         "TreasureHoarder": "盗賊団",
         "Nobushi": "野伏",
         "Kairagi": "海乱鬼",
-        "Rifthound": "獣域ハウンド・{0}",
+        "RifthoundWhelpBefore": "獣域ウェルプ（喰魔前）",
         "RifthoundWhelp": "獣域ウェルプ・{0}",
+        "RifthoundBefore": "獣域ハウンド（喰魔前）",
+        "Rifthound": "獣域ハウンド・{0}",
         "GeovishapHatchling": "ベビーヴィシャップ・岩",
         "Geovishap": "ヴィシャップ・岩",
         "AbyssMage": "アビスの魔術師",
@@ -653,6 +657,10 @@
             "cryo": "急凍樹"
         },
         "PrimoGeovishap": "エンシェントヴィシャップ・岩",
+        "MaguuKenki": "魔偶剣鬼",
+        "PerpetualArray": "恒常からくり陣形",
+        "GoldenWolflord": "黄金王獣",
+        "GoldenWolflordLow": "黄金王獣（シールド）",
         "Dvalin": "トワリン",
         "Andrius": "アンドリアス",
         "Tartaglia1": "タルタリヤ・第1段階",
@@ -661,18 +669,26 @@
         "Azhdaha1": "若陀龍王・第1段階",
         "Azhdaha2": "若陀龍王・第2段階",
         "Azhdaha3": "若陀龍王・第3段階",
-        "MaguuKenki": "魔偶剣鬼",
-        "PerpetualArray": "恒常からくり陣形",
         "Signora1": "シニョーラ・第1段階",
         "Signora2": "シニョーラ・第2段階"
     },
     "limit": {},
-    "footer": "Ver. 2.1.6",
+    "footer": "Ver. 2.2.0",
     "releasenote": {
+        "v2_2_0": {
+            "date": "2021/12/11",
+            "items": [
+                "聖遺物のサブ効果をランダムで設定する機能を追加",
+                "両手剣「赤角石塵滅砕」を仮追加",
+                "両手剣「銜玉の海皇」の攻撃力を修正",
+                "敵「黄金王獣」を追加",
+                "敵「獣域ウェルプ」「獣域ハウンド」の元素耐性を調整"
+            ]
+        },
         "v2_1_6": {
             "date": "2021/11/28",
             "items": [
-                "「シナバースピンドル」を追加"
+                "片手剣「シナバースピンドル」を追加"
             ]
         },
         "v2_1_5": {
@@ -691,7 +707,8 @@
         },
         "v2_1_4": {
             "date": "2021/11/14",
-            "items": [{
+            "items": [
+                {
                     "title": "以下のキャラの元素爆発・スキルボーナスで天賦レベルを考慮するように修正",
                     "items": [
                         "エウルア：元素スキルの元素耐性ボーナス",
@@ -890,7 +907,8 @@
         },
         "v0_5_4": {
             "date": "2021/02/27",
-            "items": [{
+            "items": [
+                {
                     "title": "以下の武器・敵キャラを追加",
                     "items": [
                         "護摩の杖",
@@ -909,7 +927,8 @@
         },
         "v0_5_2": {
             "date": "2021/02/04",
-            "items": [{
+            "items": [
+                {
                     "title": "以下のキャラクター・武器を追加",
                     "items": [
                         "魈",
@@ -950,7 +969,8 @@
         },
         "v0_3_4": {
             "date": "2021/01/08",
-            "items": [{
+            "items": [
+                {
                     "title": "以下の敵キャラを追加",
                     "items": [
                         "ヒルチャールシャーマン・氷",
@@ -977,7 +997,8 @@
         },
         "v0_3_2": {
             "date": "2020/12/25",
-            "items": [{
+            "items": [
+                {
                     "title": "以下のキャラクター・装備品を追加",
                     "items": [
                         "アルベド",
@@ -999,7 +1020,8 @@
         },
         "v0_3_0": {
             "date": "2020/12/06",
-            "items": [{
+            "items": [
+                {
                     "title": "以下の武器を追加",
                     "items": [
                         "無工の剣",
@@ -1014,7 +1036,8 @@
         },
         "v0_2_0": {
             "date": "2020/12/03",
-            "items": [{
+            "items": [
+                {
                     "title": "以下のキャラクターを追加",
                     "items": [
                         "辛炎",

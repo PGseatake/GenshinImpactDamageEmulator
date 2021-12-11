@@ -37,8 +37,10 @@ export const EnemyNames = [
     "TreasureHoarder",
     "Nobushi",
     "Kairagi",
-    "Rifthound",
+    "RifthoundWhelpBefore",
     "RifthoundWhelp",
+    "RifthoundBefore",
+    "Rifthound",
     "GeovishapHatchling",
     "Geovishap",
     "AbyssMage",
@@ -51,6 +53,10 @@ export const EnemyNames = [
     "Oceanid",
     "Regisvine",
     "PrimoGeovishap",
+    "MaguuKenki",
+    "PerpetualArray",
+    "GoldenWolflord",
+    "GoldenWolflordLow",
     "Dvalin",
     "Andrius",
     "Tartaglia1",
@@ -59,8 +65,6 @@ export const EnemyNames = [
     "Azhdaha1",
     "Azhdaha2",
     "Azhdaha3",
-    "MaguuKenki",
-    "PerpetualArray",
     "Signora1",
     "Signora2",
 ] as const;
@@ -369,22 +373,17 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
             phys: -20,
         },
     },
-    Rifthound: {
+    RifthoundWhelpBefore: {
         resist: {
-            pyro: 25,
-            hydro: 25,
-            dendro: 25,
-            elect: 25,
-            anemo: 25,
-            cryo: 25,
-            geo: 25,
-            phys: 25
+            pyro: 20,
+            hydro: 20,
+            dendro: 20,
+            elect: 20,
+            anemo: 20,
+            cryo: 20,
+            geo: 20,
+            phys: 20
         },
-        element: [
-            ElementType.Elect,
-            ElementType.Geo,
-        ],
-        value: 65,
     },
     RifthoundWhelp: {
         resist: {
@@ -401,7 +400,41 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
             ElementType.Elect,
             ElementType.Geo,
         ],
-        value: 30,
+        value: -30,
+    },
+    RifthoundBefore: {
+        resist: {
+            pyro: 25,
+            hydro: 25,
+            dendro: 25,
+            elect: 25,
+            anemo: 25,
+            cryo: 25,
+            geo: 25,
+            phys: 25
+        },
+        element: [
+            ElementType.Elect,
+            ElementType.Geo,
+        ],
+        value: -65,
+    },
+    Rifthound: {
+        resist: {
+            pyro: 25,
+            hydro: 25,
+            dendro: 25,
+            elect: 25,
+            anemo: 25,
+            cryo: 25,
+            geo: 25,
+            phys: 25
+        },
+        element: [
+            ElementType.Elect,
+            ElementType.Geo,
+        ],
+        value: -65,
     },
     GeovishapHatchling: {
         resist: {
@@ -588,6 +621,60 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
             { label: "enemy.wakeup", fixed: 200 },
         ],
     },
+    MaguuKenki: {
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            dendro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 10,
+            phys: 10,
+        },
+    },
+    PerpetualArray: {
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            dendro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 10,
+            phys: 70,
+        },
+        phase: [
+            { label: "enemy.down", fixed: -50 },
+        ],
+    },
+    GoldenWolflord: {
+        resist: {
+            pyro: 25,
+            hydro: 25,
+            dendro: 25,
+            elect: 25,
+            anemo: 25,
+            cryo: 25,
+            geo: 25,
+            phys: 25,
+        },
+        phase: [
+            { label: "enemy.enter", fixed: 200 },
+        ],
+    },
+    GoldenWolflordLow: {
+        resist: {
+            pyro: 25,
+            hydro: 25,
+            dendro: 25,
+            elect: 25,
+            anemo: 25,
+            cryo: 25,
+            geo: -40,
+            phys: 25,
+        },
+    },
     Dvalin: {
         resist: {
             pyro: 10,
@@ -704,33 +791,6 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
         ],
         count: 2,
         value: 50,
-    },
-    MaguuKenki: {
-        resist: {
-            pyro: 10,
-            hydro: 10,
-            dendro: 10,
-            elect: 10,
-            anemo: 10,
-            cryo: 10,
-            geo: 10,
-            phys: 10,
-        },
-    },
-    PerpetualArray: {
-        resist: {
-            pyro: 10,
-            hydro: 10,
-            dendro: 10,
-            elect: 10,
-            anemo: 10,
-            cryo: 10,
-            geo: 10,
-            phys: 70,
-        },
-        phase: [
-            { label: "enemy.down", fixed: -50 },
-        ],
     },
     Signora1: {
         resist: {

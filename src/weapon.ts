@@ -334,8 +334,9 @@ const ClaymoreNames = [
     "SkywardPride",
     "SongBrokenPines",
     "TheUnforged",
-    "LuxuriousSeaLord",
     "KatsuragikiriNagamasa",
+    "RedhornStonethresher",
+    "LuxuriousSeaLord",
     "BlackcliffSlasher",
     "SnowTombedStarsilver",
     "SacrificialGreatsword",
@@ -416,15 +417,6 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
             { items: konst.StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "さらにシールド状態の時", stack: 5, times: 8 },
         ],
     },
-    LuxuriousSeaLord: {
-        star: 5,
-        atk: WeaponAtk5[46],
-        second: konst.StatusBonusType.AtkBuf,
-        secval: [12.0, 21.2, 30.9, 35.7, 40.6, 45.4, 50.3, 55.1],
-        // 元素爆発ダメージ+12％。
-        // 元素爆発が敵に命中すると、100％の確率でマグロを召喚し、衝撃を与え、攻撃力100％分の範囲ダメージを与える。この効果は15秒間に1回のみ発動可能。
-        passive: { items: konst.CombatBonusType.Burst, value: [12, 15, 18, 21, 24] },
-    },
     KatsuragikiriNagamasa: {
         star: 5,
         atk: WeaponAtk5[42],
@@ -434,6 +426,32 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         // 元素スキルが命中した時、キャラクターは元素エネルギーを3ポイント失う。
         // その後の6秒間、2秒毎に元素エネルギーを3ポイント獲得する。この効果は10秒毎に1回のみ発動でき、待機中のキャラクターも発動できる。
         passive: { items: konst.CombatBonusType.Skill, value: [6.0, 7.5, 9.0, 10.5, 12.0] },
+    },
+    RedhornStonethresher: {
+        star: 5,
+        atk: WeaponAtk5[44],
+        second: konst.StatusBonusType.CriDmg,
+        secval: [19.2, 34.0, 49.4, 57.2, 65.0, 72.6, 80.4, 88.2],
+        passive: [
+            // 防御力+28~%
+            { items: konst.StatusBonusType.DefBuf, value: [28, 28, 28, 28, 28] },
+            // 通常攻撃と重撃ダメージが防御力40~%分アップする。
+            {
+                extra: konst.ExtraBonusType.Flat,
+                dest: [konst.FlatBonusDest.Normal, konst.FlatBonusDest.Heavy],
+                base: konst.FlatBonusBase.Def,
+                value: [40, 40, 40, 40, 40],
+            },
+        ],
+    },
+    LuxuriousSeaLord: {
+        star: 4,
+        atk: WeaponAtk4[41],
+        second: konst.StatusBonusType.AtkBuf,
+        secval: [12.0, 21.2, 30.9, 35.7, 40.6, 45.4, 50.3, 55.1],
+        // 元素爆発ダメージ+12％。
+        // 元素爆発が敵に命中すると、100％の確率でマグロを召喚し、衝撃を与え、攻撃力100％分の範囲ダメージを与える。この効果は15秒間に1回のみ発動可能。
+        passive: { items: konst.CombatBonusType.Burst, value: [12, 15, 18, 21, 24] },
     },
     BlackcliffSlasher: {
         star: 4,
