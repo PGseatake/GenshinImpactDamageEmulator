@@ -48,16 +48,16 @@ export default class PageWeapon extends Vue {
   @Watch("append")
   onChangeAppend(value: any) {
     if (value === true) {
-      this.$store.commit("setAppend", this.type);
+      this.$store.commit("append", this.type);
     }
   }
 
   created() {
-    this.$store.commit("setAppendable", true);
+    this.$store.commit("appendable", true);
   }
 
   onBeforeAppend() {
-    this.$store.commit("setAppend", this.type);
+    this.$store.commit("append", this.type);
   }
 }
 </script>

@@ -25,7 +25,7 @@ import { LocaleMessages } from "vue-i18n/types";
 })
 export default class PageReleaseNote extends Vue {
   created() {
-    this.$store.commit("setAppendable", false);
+    this.$store.commit("appendable", false);
   }
 
   get items() {

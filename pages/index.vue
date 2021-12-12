@@ -132,7 +132,7 @@ export default class PageIndex extends Vue {
   }
 
   created() {
-    this.$store.commit("setAppendable", false);
+    this.$store.commit("appendable", false);
   }
 }
 </script>

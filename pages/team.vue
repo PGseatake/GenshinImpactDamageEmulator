@@ -256,13 +256,13 @@ export default class PageTeam extends Vue {
   @Watch("storeAppend")
   onChangeAppend(value: any) {
     if (value === true) {
-      this.$store.commit("setAppend", "team");
+      this.$store.commit("append", "team");
     }
   }
 
   created() {
     this.items = this.$db.team;
-    this.$store.commit("setAppendable", true);
+    this.$store.commit("appendable", true);
   }
 
   onChangeItem(item: ITeamData) {
@@ -291,7 +291,7 @@ export default class PageTeam extends Vue {
   }
 
   onBeforeAppend() {
-    this.$store.commit("setAppend", "team");
+    this.$store.commit("append", "team");
   }
 
   onAppend() {

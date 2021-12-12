@@ -61,11 +61,11 @@ export default class PageDamage extends Vue {
     return this.$store.state.append;
   }
   set append(value: boolean) {
-    this.$store.commit("setAppend", value);
+    this.$store.commit("append", value);
   }
 
   created() {
-    this.$store.commit("setAppendable", true);
+    this.$store.commit("appendable", true);
 
     let { damage } = this.db;
     for (let index = 0; index < damage.length; ) {

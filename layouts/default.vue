@@ -325,12 +325,12 @@ export default class Default extends Vue {
     if (value) {
       this.popupText = value;
       this.popupShow = true;
-      this.$store.commit("setPopupText", "");
+      this.$store.commit("popupText", "");
     }
   }
 
   created() {
-    this.toolList[0].func = () => this.$store.commit("setAppend", true);
+    this.toolList[0].func = () => this.$store.commit("append", true);
     this.toolList[1].func = this.onSave;
     this.toolList[2].func = () => (this.importShow = true);
     this.toolList[3].func = () => (this.exportShow = true);
@@ -362,7 +362,7 @@ export default class Default extends Vue {
   }
 
   popup(label: string) {
-    this.$store.commit("setPopupText", this.$t("popup." + label));
+    this.$store.commit("popupText", this.$t("popup." + label));
   }
 
   onSave() {

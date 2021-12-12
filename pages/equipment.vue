@@ -267,17 +267,17 @@ export default class PageEquipment extends Vue {
   @Watch("storeAppend")
   onChangeAppend(value: any) {
     if (value === true) {
-      this.$store.commit("setAppend", "equip");
+      this.$store.commit("append", "equip");
     }
   }
 
   created() {
     this.items = this.$db.equip;
-    this.$store.commit("setAppendable", true);
+    this.$store.commit("appendable", true);
   }
 
   onBeforeAppend() {
-    this.$store.commit("setAppend", "equip");
+    this.$store.commit("append", "equip");
   }
 
   onAppend() {
