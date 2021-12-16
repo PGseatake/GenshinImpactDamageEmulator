@@ -1,8 +1,8 @@
 import { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
 import {
-    IBasicBonus, IFlatBonus, IFlatBonusBound, IEnchantBonus, IReductBonus,
-    IBonusOption, AnyBonus, Constes, Passives, DBEquipTable, Passive
+    IBonusOption, IBasicBonus, IFlatBonus, IFlatBonusScale, IFlatBonusBound,
+    IEnchantBonus, IReductBonus, AnyBonus, Constes, Passives, DBEquipTable, Passive
 } from "~/src/interface";
 import { parseLevel } from "~/src/ascension";
 import { CharaName, CharaList, ICharaData, DBCharaTable } from "~/src/character";
@@ -279,7 +279,7 @@ export class FlatBonus extends BonusBase {
     private readonly dest: ReadonlyArray<konst.FlatBonusDest>;
     private readonly base: konst.FlatBonusBase;
     private readonly value: number;
-    private readonly scale: konst.DamageScale | "";
+    private readonly scale: IFlatBonusScale | null;
     private readonly bound: IFlatBonusBound | null;
 
     constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: IFlatBonus, talent = 0) {
@@ -287,7 +287,7 @@ export class FlatBonus extends BonusBase {
         this.dest = Arrayable.from(data.dest);
         this.base = data.base;
         this.value = Arrayable.clamp(data.value, talent);
-        this.scale = data.scale ?? "";
+        this.scale = data.scale ?? null;
         this.bound = data.bound ?? null;
     }
 
@@ -359,8 +359,8 @@ export class FlatBonus extends BonusBase {
     private applyScale(value: number, src: Status) {
         const scale = this.scale;
         if (scale) {
-            const burst = src.talent.burst || 1; // TODO: 元素爆発固定
-            value *= DamageScaleTable[scale][burst - 1] / 100;
+            const talent = src.talent[scale.talent] || 1;
+            value *= DamageScaleTable[scale.type][talent - 1] / 100;
         }
         return value;
     }

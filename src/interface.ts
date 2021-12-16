@@ -31,13 +31,18 @@ export interface IFlatBonusBound {
     readonly value: number;
 }
 
+export interface IFlatBonusScale {
+    type: konst.DamageScale;
+    talent: konst.TalentType;
+};
+
 export interface IFlatBonus extends IBonusOption {
     readonly extra: "flat";
     readonly dest: ReadonlyArrayable<konst.FlatBonusDest>;
     readonly base: konst.FlatBonusBase;
     readonly value: ReadonlyArrayable<number>;
     readonly bound?: IFlatBonusBound;
-    readonly scale?: konst.DamageScale;
+    readonly scale?: IFlatBonusScale;
     // readonly limit?: string;
     // readonly times?: number;
     // readonly stack?: number;
