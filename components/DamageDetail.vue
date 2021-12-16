@@ -269,13 +269,10 @@ export default class DamageDetail extends Vue {
       let s = new Status(this.params[i], this.data.contact);
       s.equip(m, this.db);
       if (m.equip) {
-        for (const bonus of this.bonuses) {
-          bonus.apply(s, status, 0);
-        }
         status.push(s);
       }
     }
-    for (let step = 1; step <= 2; ++step) {
+    for (let step = 0; step <= 2; ++step) {
       for (let s of status) {
         for (const bonus of this.bonuses) {
           bonus.apply(s, status, step);
