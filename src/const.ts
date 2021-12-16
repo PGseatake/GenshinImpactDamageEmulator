@@ -306,6 +306,7 @@ export type ExtraBonusType = typeof ExtraBonusType[keyof typeof ExtraBonusType];
 export const FlatBonusDest = {
     // StatusType 実数
     Atk: "atk",
+    Def: "def",
     Elem: "elem",
     EnRec: "en_rec",
     // CombatType 実数
@@ -332,6 +333,7 @@ export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
 
 export const FlatBonusBase = {
     None: "none",
+    Direct: "direct",
     Energy: "energy",
     Hp: "hp", // 最終値
     Atk: "atk", // 基礎値

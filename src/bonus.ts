@@ -313,6 +313,8 @@ export class FlatBonus extends BonusBase {
         switch (this.base) {
             case konst.FlatBonusBase.None:
                 return `${str} +${value}%`;
+            case konst.FlatBonusBase.Direct:
+                return `${str} +${value}`;
             case konst.FlatBonusBase.Atk:
                 return `${str} +${this.i18n.t("bonus.atk_base")}の${value}%分`;
             default:
@@ -322,6 +324,8 @@ export class FlatBonus extends BonusBase {
 
     public get applyStep() {
         switch (this.base) {
+            case konst.FlatBonusBase.Direct:
+                return 0;
             case konst.FlatBonusBase.Elem:
             case konst.FlatBonusBase.EnRec:
                 if (!this.dest.includes(this.base)) {
@@ -336,6 +340,7 @@ export class FlatBonus extends BonusBase {
         let value = this.value;
         switch (this.base) {
             case konst.FlatBonusBase.None:
+            case konst.FlatBonusBase.Direct:
                 break;
             case konst.FlatBonusBase.Energy:
                 value = (dst.info?.energy || 0) * value; // 適用者の値を参照
@@ -370,6 +375,7 @@ export class FlatBonus extends BonusBase {
         if (bound) {
             switch (bound.base) {
                 // 無視
+                case konst.FlatBonusBase.Direct:
                 case konst.FlatBonusBase.Energy:
                     break;
                 // 直値

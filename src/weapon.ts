@@ -433,14 +433,14 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         second: konst.StatusBonusType.CriDmg,
         secval: [19.2, 34.0, 49.4, 57.2, 65.0, 72.6, 80.4, 88.2],
         passive: [
-            // 防御力+28~%
-            { items: konst.StatusBonusType.DefBuf, value: [28, 28, 28, 28, 28] },
-            // 通常攻撃と重撃ダメージが防御力40~%分アップする。
+            // 防御力+28~56%
+            { items: konst.StatusBonusType.DefBuf, value: [28, 35, 42, 49, 56] },
+            // 通常攻撃と重撃ダメージが防御力40~80%分アップする。
             {
                 extra: konst.ExtraBonusType.Flat,
                 dest: [konst.FlatBonusDest.Normal, konst.FlatBonusDest.Heavy],
                 base: konst.FlatBonusBase.Def,
-                value: [40, 40, 40, 40, 40],
+                value: [40, 50, 60, 70, 80],
             },
         ],
     },

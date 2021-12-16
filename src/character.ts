@@ -8,6 +8,7 @@ export const CharaNames = [
     "Albedo",
     "Aloy",
     "Amber",
+    "Arataki", // Itto
     "Barbara",
     "Beidou",
     "Bennett",
@@ -17,6 +18,7 @@ export const CharaNames = [
     "Eula",
     "Fischl",
     "Ganyu",
+    "Goro",
     "Hutao",
     "Jean",
     "Kaedehara", // Kazuha,
@@ -33,7 +35,7 @@ export const CharaNames = [
     "Raiden", // Shogun
     "Razor",
     "Rosaria",
-    "Sangonomiya", // kokomi
+    "Sangonomiya", // Kokomi
     "Sayu",
     "Sucrose",
     "Tartaglia",
@@ -511,6 +513,106 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 
             // 6. 
         }
+    },
+    Arataki: {
+        star: 5,
+        element: konst.ElementType.Geo,
+        energy: 70,
+        weapon: konst.WeaponType.Claymore,
+        status: {
+            hp: [
+                1001, 2597,
+                3455, 5170,
+                5779, 6649,
+                7462, 8341,
+                8951, 9838,
+                10448, 11345,
+                11954, 12858,
+            ],
+            atk: [
+                18, 46,
+                61, 91,
+                102, 117,
+                132, 147,
+                158, 174,
+                185, 199,
+                211, 227,
+            ],
+            def: [
+                75, 194,
+                258, 386,
+                431, 496,
+                557, 622,
+                668, 734,
+                779, 846,
+                892, 959,
+            ],
+        },
+        special: konst.CriticalBonusType.Rate,
+        spvalue: [0.0, 0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 79.2 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 86.4 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 91.6 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 117.2 },
+                { name: "荒瀧逆袈裟連斬ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 91.2 },
+                { name: "荒瀧逆袈裟とどめダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 190.9 },
+                { name: "左一文字斬りダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 90.5 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 81.8 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 164 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 204 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 307 },
+            ],
+            burst: [],
+        },
+        passive: {
+            // 通常攻撃、重撃、落下攻撃ダメージは、元素付与によって他の元素に変化しない岩元素ダメージへと変わる。
+            // 荒瀧一斗自身の通常攻撃の攻撃速度がアップし、そして防御力を基準に攻撃力がアップする。
+            burst: [
+                {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.Atk,
+                    base: konst.FlatBonusBase.Def,
+                    value: 57.6,
+                    scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Burst },
+                    limit: "元素爆発継続中",
+                    times: 11,
+                },
+                {
+                    extra: konst.ExtraBonusType.Enchant,
+                    elem: konst.ElementType.Geo,
+                    dest: [konst.CombatType.Normal, konst.CombatType.Heavy, konst.CombatType.Plunge],
+                    limit: "元素爆発継続中",
+                }
+            ],
+            // 4. 荒瀧一斗が連続で「荒瀧逆袈裟」を発動した時、下記効果を獲得する。
+            // ・斬撃を繰り出すたびに、その後の斬撃の攻撃速度 +10%。この方式でアップできる攻撃速度は30% まで。
+            // ・中断耐性がアップ。
+            // これらの効果は連続斬撃が終了した時にクリアされる。
+            // 5. 「荒瀧逆袈裟」のダメージが荒瀧一斗の防御力35%分アップする。
+            asc4th: {
+                extra: konst.ExtraBonusType.Flat,
+                dest: konst.FlatBonusDest.Heavy, // TODO: 一部
+                base: konst.FlatBonusBase.Def,
+                value: 35.0,
+            },
+        },
+        conste: {
+            // 1. 最強鬼王・一斗轟臨!発動後、荒瀧一斗は「乱神の怪力」効果を2層獲得する。発動1秒後、1.5秒の間、荒瀧一斗は0.5秒毎に「乱心の怪力」効果をさらに1層獲得する。
+            // 2. 最強鬼王・一斗轟臨!を発動した後、チーム内に"岩元素"タイプキャラクターが1人いる毎に、クールタイム-1.5秒、荒瀧一斗の元素エネルギーを6ポイント回復する。
+            // この方式で短縮できるクールタイムは4.5秒までとなり、回復できる元素エネルギーは18ポイントまでとなる。
+            // 3. 魔殺絶技・岩牛発破!のスキルLv.+3。
+            // 4. 最強鬼王・一斗轟臨!!による「憤怒の鬼王」状態が終了すると、周囲チーム全員の防御力+20%、攻撃力+20%、継続時間10秒。
+            lv4: [
+                { items: [konst.StatusBonusType.DefBuf, konst.StatusBonusType.AtkBuf], value: 20, limit: "元素爆発終了後", times: 10, target: konst.BonusTarget.All },
+            ],
+            // 5. 最強鬼王・一斗轟臨!!のスキルLv.+3。
+            // 6. 荒瀧一斗の重撃の会心ダメージ+70%、また「荒瀧逆袈裟」を発動する時、50％の確率で「乱神の怪力」が消費されなくなる。
+            // lv6: { items: konst.CriticalBonusType.HeavyDmg, value: 70 }, TODO: 実装
+        },
     },
     Amber: {
         star: 4,
@@ -1355,6 +1457,110 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             //    エリアを出た後、継続時間3秒。
             // 5. 山沢麟跡のスキルLv.+3
             // 6. 山沢麟跡を発動すると、30秒以内に放つ最初の霜華の矢が、チャージせずに発動可能になる。
+        },
+    },
+    Goro: {
+        star: 4,
+        element: konst.ElementType.Geo,
+        energy: 80,
+        weapon: konst.WeaponType.Bow,
+        status: {
+            hp: [
+                802, 2061,
+                2661, 3985,
+                4411, 5074,
+                5642, 6305,
+                6731, 7393,
+                7818, 8481,
+                8907, 9570,
+            ],
+            atk: [
+                15, 39,
+                51, 76,
+                84, 97,
+                108, 120,
+                128, 141,
+                149, 162,
+                170, 183,
+            ],
+            def: [
+                54, 140,
+                180, 270,
+                299, 344,
+                382, 427,
+                456, 501,
+                530, 575,
+                603, 648,
+            ],
+        },
+        special: konst.ElementBonusType.Geo,
+        spvalue: [0.0, 0.0, 0.0, 6.0, 12.0, 12.0, 18.0, 24.0],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 37.8 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 37.2 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 49.5 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 59.0 },
+                { name: "狙い撃ち", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
+                { name: "フルチャージ狙い撃ち", type: konst.CombatType.Heavy, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
+            ],
+            skill: [
+                { name: "スキルダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 107.2 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 98, based: konst.DamageBased.Def },
+                { name: "岩晶崩滅ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 61, based: konst.DamageBased.Def },
+            ],
+        },
+        passive: {
+            // 発動時、チームにいる岩元素タイプキャラクターの人数に応じて、領域内のフィールド上キャラクターに下記効果を与える。
+            // ・1人の時・「堅牢」：防御力がアップ。
+            // ・2人の時・「破耐」：上記効果に加え、中断体制がアップ。
+            // ・3人の時・「粉砕」：上記効果に加え、岩元素ダメージがアップ。
+            skill: [
+                {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.Def,
+                    base: konst.FlatBonusBase.Direct,
+                    value: 206,
+                    scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Skill },
+                    limit: "岩元素キャラが1人以上の時、元素スキル継続中",
+                    target: konst.BonusTarget.All,
+                },
+                {
+                    items: konst.ElementBonusType.Geo,
+                    value: 15,
+                    limit: "岩元素キャラが3人以上の時、元素スキル継続中",
+                    target: konst.BonusTarget.All,
+                },
+            ],
+            // 4. 獣牙突撃陣形戦法を発動した後の12秒間、近くのチーム全員の防御力+25%。
+            asc1st: { items: konst.StatusBonusType.DefBuf, value: 25.0, limit: "元素爆発発動後", times: 12, target: konst.BonusTarget.All },
+            // 5. 防御力を基にゴローの以下攻撃のダメージが増加する。
+            // ・犬坂の遠吠え方円陣のスキルダメージが防御力156%分アップする。
+            // ・獣牙突撃陣形戦法のスキルダメージと岩晶崩滅のダメージが防御力15.6%分アップする。
+            asc4th: [
+                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Skill, base: konst.FlatBonusBase.Def, value: 156 },
+                { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Burst, base: konst.FlatBonusBase.Def, value: 15.6 },
+            ],
+        },
+        conste: {
+            // 1. ゴロー自身による大将の旗指物または大将威儀の領域にいるフィールド上キャラクター（ゴロー自身を除く）が敵に岩元素ダメージを与えると、
+            //    ゴロー自身の犬坂の遠吠え方円陣のクールタイム- 2秒。この効果は10秒毎に1回のみ発動可能。
+            // 2. 大将威儀の持続時間内、近くのフィールド上キャラクターが結晶反応による結晶の欠片を獲得すると、ゴロー自身の大将威儀の継続時間+1秒。
+            //    0.1秒毎に1回のみ発動可能、この方式で最大3秒まで延長できる。
+            // 3. 犬坂の遠吠え方円陣のスキルLv.+3
+            // 4. 大将威儀が「破耐」または「粉砕」効果を持つ時、1.5秒毎に領域内のフィールド上キャラクターのHPを回復する。
+            //    回復量はゴロー自身の防御力50%分に相当する。
+            // 5. 獣牙突撃陣形戦法のスキルLv.+3
+            // 6. 犬坂の遠吠え方円陣または獣牙突撃陣形戦法発動後の12秒間、発動時の領域状態に基づき、周囲チーム全員の岩元素ダメージの会心ダメージをアップする。
+            // ・「堅牢」：10 % アップ。
+            // ・「破耐」：20 % アップ。
+            // ・「粉砕」：40 % アップ。
+            // TODO: 実装
         },
     },
     Hutao: {
