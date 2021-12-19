@@ -135,6 +135,10 @@ export default class PageDamage extends Vue {
 
   onRemove(index: number) {
     this.db.damage.splice(index, 1);
+    const max = this.db.damage.length;
+    if (this.tab >= max) {
+      this.tab = max - 1;
+    }
   }
 }
 </script>
