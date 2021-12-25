@@ -13,11 +13,14 @@
     fixed-header
     hide-default-footer
   >
-    <template #[`group.header`]="{ group, headers }">
+    <template #[`group.header`]="{ group, headers, isOpen, toggle }">
       <td
         :colspan="headers.length"
         class="v-row-group__header text-subtitle-2 text-center"
       >
+        <v-icon size="20" @click="toggle"
+          >{{ isOpen ? icons.close : icons.open }}
+        </v-icon>
         {{ $t(group) }}
       </td>
     </template>
@@ -85,7 +88,12 @@
 </style>
 
 <script lang="ts">
-import { mdiCheckboxBlankOutline, mdiCheckboxMarked } from "@mdi/js";
+import {
+  mdiCheckboxBlankOutline,
+  mdiCheckboxMarked,
+  mdiChevronDown,
+  mdiChevronUp,
+} from "@mdi/js";
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { BonusBase } from "~/src/bonus";
 
@@ -102,6 +110,8 @@ export default class BonusTable extends Vue {
   readonly icons = {
     on: mdiCheckboxMarked,
     off: mdiCheckboxBlankOutline,
+    open: mdiChevronDown,
+    close: mdiChevronUp,
   };
 
   @Emit("change")
