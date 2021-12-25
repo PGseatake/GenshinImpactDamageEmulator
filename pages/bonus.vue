@@ -41,7 +41,7 @@ export default class PageBonus extends Vue {
 
   created() {
     this.db = this.$db;
-    this.$store.commit("setAppendable", false);
+    this.$store.commit("appendable", false);
   }
 
   mounted() {

@@ -7,13 +7,14 @@ export default ({ store, route }) => {
         "character",
         "weapon",
         "artifact",
+        "howto",
         "releasenote",
     ]
 
     const path = route.fullPath + "/";
     for (const page of pages) {
         if (path.includes(`/${page}/`)) {
-            store.commit("setPage", page);
+            store.commit("page", page);
             break;
         }
     }

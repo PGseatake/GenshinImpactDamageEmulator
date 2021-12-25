@@ -12,11 +12,14 @@
     fixed-header
     hide-default-footer
   >
-    <template #[`group.header`]="{ group, headers }">
+    <template #[`group.header`]="{ group, headers, isOpen, toggle }">
       <td
         :colspan="headers.length"
         class="v-row-group__header text-subtitle-2 text-center"
       >
+        <v-icon size="20" @click="toggle"
+          >{{ isOpen ? icons.close : icons.open }}
+        </v-icon>
         {{
           `${$t("combat." + group)} : ${$t("general.level")}${
             status.talent[group]
@@ -55,6 +58,7 @@ import { ICombat } from "~/src/interface";
 import { IMember } from "~/src/team";
 import { IStatus, Status } from "~/src/status";
 import { IDamageData, CombatAttribute, Enemy } from "~/src/damage";
+import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 
 interface IAttribute extends ICombat {
   talent: TalentType;
@@ -71,6 +75,8 @@ export default class DamageTable extends Vue {
   @Prop({ required: true }) data!: Readonly<IDamageData>;
   @Prop({ required: true }) member!: Readonly<IMember>;
   @Prop({ required: true }) status!: IStatus;
+
+  readonly icons = { open: mdiChevronDown, close: mdiChevronUp };
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;

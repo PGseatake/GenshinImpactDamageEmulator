@@ -1,60 +1,38 @@
 <template>
   <v-container>
-    <h2>Genshin Impact Damage Emulator</h2>
+    <h2>G.I.D.E. - Genshin Impact Damage Emulator</h2>
+    <!-- 使い方 -->
     <v-card>
-      <v-card-title>使い方</v-card-title>
+      <v-card-title>{{ $t("menu.howto") }}</v-card-title>
       <v-card-text class="text--primary">
         <ol>
           <li>
-            <v-icon v-text="icons.chara" />キャラクター、<v-icon
-              v-text="icons.weapon"
-            />武器、<v-icon
-              v-text="icons.artifact"
-            />聖遺物メニューで各種設定を行います。
+            <v-icon v-text="icons.chara" />{{ $t("menu.character")
+            }}<v-icon v-text="icons.weapon" />{{ $t("menu.weapon")
+            }}<v-icon v-text="icons.artifact" />{{
+              $t("menu.artifact") + $t("index.L1")
+            }}
           </li>
-          <li>
-            <v-icon
-              v-text="icons.equip"
-            />装備メニューでキャラクターの装備を選択します。
-          </li>
-          <li>
-            <v-icon
-              v-text="icons.team"
-            />チームメニューでチームメンバーを選択します。
-          </li>
-          <li>
-            <v-icon v-text="icons.damage" />ダメージメニューで上部の
-            <v-icon
-              v-text="icons.append"
-            />をクリック、敵キャラ・チームメンバーなどを選んで、ダメージを計算します。
-          </li>
+          <li><v-icon v-text="icons.equip" />{{ $t("index.L2") }}</li>
+          <li><v-icon v-text="icons.team" />{{ $t("index.L3") }}</li>
+          <li><v-icon v-text="icons.damage" />{{ $t("index.L4") }}</li>
         </ol>
       </v-card-text>
-      <v-card-text class="text--primary">
+      <v-card-text class="text--primary py-0">
         <ul>
-          <li>
-            <v-icon
-              v-text="icons.save"
-            />保存ボタンを押してデータを保存してください。
-          </li>
-          <li>
-            <v-icon
-              v-text="icons.export"
-            />エクスポートボタンを押して、外部ファイルにデータを保存可能です。
-          </li>
-          <li>
-            <v-icon
-              v-text="icons.import"
-            />インポートボタンを押して、外部ファイルのデータを読み込み可能です。
-          </li>
-          <li>
-            聖遺物の各効果上部の数値は、サブ効果をオリジナルの点数付けしたものです。
-          </li>
+          <li><v-icon v-text="icons.save" />{{ $t("index.L5") }}</li>
+          <li><v-icon v-text="icons.export" />{{ $t("index.L6") }}</li>
+          <li><v-icon v-text="icons.import" />{{ $t("index.L7") }}</li>
         </ul>
       </v-card-text>
+      <v-card-actions>
+        <v-btn small depressed to="/howto" color="blue-grey" class="ml-4">{{
+          $t("index.howto")
+        }}</v-btn>
+      </v-card-actions>
     </v-card>
     <v-card class="mt-2">
-      <v-card-title>アップデート</v-card-title>
+      <v-card-title>{{ $t("index.update") }}</v-card-title>
       <v-card-text class="text--primary py-0">
         <release-root :version="version" :root="root" :value="true" />
       </v-card-text>
@@ -70,11 +48,11 @@
       </v-card-actions>
     </v-card>
     <v-card class="mt-2">
-      <v-card-title>注意点</v-card-title>
+      <v-card-title>{{ $t("index.caution") }}</v-card-title>
       <v-card-text class="text--primary">
         <ul>
-          <li>当サイトの利用は自己責任でお願いします。</li>
-          <li>一部のパラメーターはゲーム内の数値と誤差があります。</li>
+          <li>{{ $t("index.C1") }}</li>
+          <li>{{ $t("index.C2") }}</li>
         </ul>
       </v-card-text>
     </v-card>
@@ -83,6 +61,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { LocaleMessageObject } from "vue-i18n/types";
 import {
   mdiAccount,
   mdiAccountMultiplePlus,
@@ -96,11 +75,8 @@ import {
   mdiTranslate,
   mdiTshirtCrew,
 } from "@mdi/js";
-import { LocaleMessageObject } from "vue-i18n/types";
 
-@Component({
-  name: "index",
-})
+@Component({ name: "PageIndex" })
 export default class PageIndex extends Vue {
   readonly icons = {
     chara: mdiAccount,
@@ -132,7 +108,7 @@ export default class PageIndex extends Vue {
   }
 
   created() {
-    this.$store.commit("setAppendable", false);
+    this.$store.commit("appendable", false);
   }
 }
 </script>

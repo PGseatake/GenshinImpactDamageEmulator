@@ -12,18 +12,18 @@ export const getters = {
 }
 
 export const mutations = {
-    setPage(state, value) {
+    page(state, value) {
         state.page = value;
     },
-    setAppend(state, value) {
+    append(state, value) {
         if (state.appendable) {
             state.append = value;
         }
     },
-    setAppendable(state, value) {
+    appendable(state, value) {
         state.appendable = value;
     },
-    setPopupText(state, value) {
+    popupText(state, value) {
         state.popupText = value;
     },
 }

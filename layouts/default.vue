@@ -222,6 +222,7 @@ import {
   mdiContentSave,
   mdiExpandAll,
   mdiExport,
+  mdiHelpCircleOutline,
   mdiHome,
   mdiImport,
   mdiMenu,
@@ -241,12 +242,6 @@ declare global {
   interface Navigator {
     msSaveBlob?: (blob: any, defaultName?: string) => boolean;
   }
-}
-
-interface IPage {
-  icon: string;
-  page: string;
-  to: string;
 }
 
 interface ITool {
@@ -274,7 +269,7 @@ export default class Default extends Vue {
   pageOpened = false;
   toolOpened = false;
   selectedPage = 0;
-  readonly pageList: IPage[] = [
+  readonly pageList = [
     { icon: mdiHome, page: "index", to: "/" },
     { icon: mdiTshirtCrew, page: "equipment", to: "/equipment" },
     { icon: mdiAccountMultiplePlus, page: "team", to: "/team" },
@@ -283,6 +278,7 @@ export default class Default extends Vue {
     { icon: mdiAccount, page: "character", to: "/character" },
     { icon: mdiSword, page: "weapon", to: "/weapon" },
     { icon: mdiRing, page: "artifact", to: "/artifact" },
+    { icon: mdiHelpCircleOutline, page: "howto", to: "/howto" },
     { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
   ];
   toolList: ITool[] = [
@@ -325,12 +321,12 @@ export default class Default extends Vue {
     if (value) {
       this.popupText = value;
       this.popupShow = true;
-      this.$store.commit("setPopupText", "");
+      this.$store.commit("popupText", "");
     }
   }
 
   created() {
-    this.toolList[0].func = () => this.$store.commit("setAppend", true);
+    this.toolList[0].func = () => this.$store.commit("append", true);
     this.toolList[1].func = this.onSave;
     this.toolList[2].func = () => (this.importShow = true);
     this.toolList[3].func = () => (this.exportShow = true);
@@ -362,7 +358,7 @@ export default class Default extends Vue {
   }
 
   popup(label: string) {
-    this.$store.commit("setPopupText", this.$t("popup." + label));
+    this.$store.commit("popupText", this.$t("popup." + label));
   }
 
   onSave() {

@@ -52,7 +52,7 @@ export default class DialogAppend extends Vue {
     return this.$store.state.append === this.type;
   }
   set show(value: boolean) {
-    this.$store.commit("setAppend", value);
+    this.$store.commit("append", value);
   }
 }
 </script>

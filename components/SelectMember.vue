@@ -162,7 +162,7 @@ export default class SelectMember extends Vue {
   }
 
   get comment() {
-    return this.member.chara?.comment || "-";
+    return this.member.equip?.comment || "-";
   }
 
   mounted() {

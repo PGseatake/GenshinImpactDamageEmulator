@@ -41,7 +41,6 @@ declare global {
 declare module "vue/types/vue" {
     interface Vue {
         $db: Database;
-        $bonuses: IDict<BonusBase>;
         $makeUniqueId: () => string;
         $appendData: (data: IIdentify[], item: IIdentify) => void;
         $removeData: (data: IIdentify[], item: IIdentify) => void;

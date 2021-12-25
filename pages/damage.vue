@@ -1,14 +1,29 @@
 <template>
   <v-container fluid>
-    <v-tabs v-model="tab" centered center-active show-arrows>
-      <v-tab v-for="(item, index) of db.damage" :key="item.id">
-        {{ `${$t("general.data")}${index + 1}` }}
-        <v-btn icon tile x-small @click.stop="onRemove(index)">
-          <v-icon>{{ icon }}</v-icon>
+    <template v-if="exists">
+      <v-tabs v-model="tab" centered center-active show-arrows>
+        <v-tab v-for="(item, index) of db.damage" :key="item.id">
+          {{ `${$t("general.data")}${index + 1}` }}
+          <v-btn
+            icon
+            tile
+            x-small
+            :ripple="false"
+            @click.stop="onRemove(index)"
+          >
+            <v-icon>{{ icons.remove }}</v-icon>
+          </v-btn>
+        </v-tab>
+      </v-tabs>
+      <damage-detail :data="item" :key="item.id" />
+    </template>
+    <v-row v-else justify="center">
+      <v-col cols="auto">
+        <v-btn fab small :ripple="false" @click="append = true">
+          <v-icon>{{ icons.append }}</v-icon>
         </v-btn>
-      </v-tab>
-    </v-tabs>
-    <damage-detail v-if="exists" :data="item" :key="item.id" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -18,7 +33,7 @@ import { ElementType } from "~/src/const";
 import { DBTeamTable, Team } from "~/src/team";
 import { EnemyNames } from "~/src/enemy";
 import { DBDamageTable, IDamageData } from "~/src/damage";
-import { mdiClose } from "@mdi/js";
+import { mdiClose, mdiPlaylistPlus } from "@mdi/js";
 
 type DamageItem = {
   team: string;
@@ -35,17 +50,18 @@ export default class PageDamage extends Vue {
   db: DBTeamTable & DBDamageTable = this.$db;
   tab = 0;
 
-  readonly icon = mdiClose;
+  readonly icons = {
+    append: mdiPlaylistPlus,
+    remove: mdiClose,
+  };
 
   @Watch("append")
   onChangeAppend(value: boolean) {
     if (value) {
       const index = this.db.damage.length;
       this.onAppend(this.verify({ team: "", member: "" })!);
-      this.$nextTick(() => {
-        this.append = false;
-        this.tab = index;
-      });
+      this.tab = index;
+      this.$nextTick(() => (this.append = false));
     }
   }
 
@@ -61,11 +77,11 @@ export default class PageDamage extends Vue {
     return this.$store.state.append;
   }
   set append(value: boolean) {
-    this.$store.commit("setAppend", value);
+    this.$store.commit("append", value);
   }
 
   created() {
-    this.$store.commit("setAppendable", true);
+    this.$store.commit("appendable", true);
 
     let { damage } = this.db;
     for (let index = 0; index < damage.length; ) {
@@ -135,6 +151,10 @@ export default class PageDamage extends Vue {
 
   onRemove(index: number) {
     this.db.damage.splice(index, 1);
+    const max = this.db.damage.length;
+    if (this.tab >= max) {
+      this.tab = max - 1;
+    }
   }
 }
 </script>

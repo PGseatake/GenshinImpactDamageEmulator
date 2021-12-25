@@ -21,25 +21,24 @@ export function roundRate(value) {
 const utils = {
     install(Vue) {
         Vue.prototype.$db = convert();
-        Vue.prototype.$bonuses = [];
 
-        Vue.prototype.$makeUniqueId = function() {
+        Vue.prototype.$makeUniqueId = () => {
             return Date.now().toString(16) +
                 Math.floor(0xFFFF * Math.random()).toString(16);
         }
 
-        Vue.prototype.$appendData = function(data, item) {
+        Vue.prototype.$appendData = (data, item) => {
             data.push(item);
         }
 
-        Vue.prototype.$removeData = function(data, item) {
+        Vue.prototype.$removeData = (data, item) => {
             const idx = data.findIndex((val) => val.id === item.id);
             if (0 <= idx) {
                 data.splice(idx, 1);
             }
         }
 
-        Vue.prototype.$formatBonus = function(i18n, data) {
+        Vue.prototype.$formatBonus = (i18n, data) => {
             if (data) {
                 const type = data.type || BonusType.None;
                 if (type !== BonusType.None) {
@@ -53,7 +52,7 @@ const utils = {
             return "";
         }
 
-        Vue.prototype.$starColor = function(star) {
+        Vue.prototype.$starColor = (star) => {
             switch (star) {
                 case 5:
                     return "amber darken-4";
@@ -63,7 +62,7 @@ const utils = {
             return "blue darken-1";
         }
 
-        Vue.prototype.$elementBGColor = function(elem) {
+        Vue.prototype.$elementBGColor = (elem) => {
             switch (elem) {
                 case ElementType.Pyro:
                     return "red darken-1";
