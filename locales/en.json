@@ -9,6 +9,7 @@
         "character": "Character",
         "weapon": "Weapon",
         "artifact": "Artifact",
+        "howto": "HowTo",
         "releasenote": "Release note"
     },
     "bonus": {

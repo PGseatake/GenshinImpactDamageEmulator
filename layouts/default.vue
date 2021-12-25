@@ -222,6 +222,7 @@ import {
   mdiContentSave,
   mdiExpandAll,
   mdiExport,
+  mdiHelpCircleOutline,
   mdiHome,
   mdiImport,
   mdiMenu,
@@ -241,12 +242,6 @@ declare global {
   interface Navigator {
     msSaveBlob?: (blob: any, defaultName?: string) => boolean;
   }
-}
-
-interface IPage {
-  icon: string;
-  page: string;
-  to: string;
 }
 
 interface ITool {
@@ -274,7 +269,7 @@ export default class Default extends Vue {
   pageOpened = false;
   toolOpened = false;
   selectedPage = 0;
-  readonly pageList: IPage[] = [
+  readonly pageList = [
     { icon: mdiHome, page: "index", to: "/" },
     { icon: mdiTshirtCrew, page: "equipment", to: "/equipment" },
     { icon: mdiAccountMultiplePlus, page: "team", to: "/team" },
@@ -283,6 +278,7 @@ export default class Default extends Vue {
     { icon: mdiAccount, page: "character", to: "/character" },
     { icon: mdiSword, page: "weapon", to: "/weapon" },
     { icon: mdiRing, page: "artifact", to: "/artifact" },
+    { icon: mdiHelpCircleOutline, page: "howto", to: "/howto" },
     { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
   ];
   toolList: ITool[] = [
