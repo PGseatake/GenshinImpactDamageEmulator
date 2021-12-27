@@ -9,12 +9,13 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - GenshinImpactDamageEmulator',
-    title: 'G.I.D.E.',
+    titleTemplate: '%s - Genshin Impact Damage Emulator',
+    title: '原神 ダメージエミュレーター',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' }
+      { name: "google-site-verification", content: "KlYYIXpwQoIznlz7DbJGnuS-q56mYN0JBxOpURUrRLU" },
+      { hid: 'description', name: 'description', content: 'オープンワールドゲーム『原神』のダメージ計算ツールです。使用するキャラクターや装備などを選び、ゲーム内の環境に近い状況でのダメージを計算します。' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }

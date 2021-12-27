@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <h2>G.I.D.E. - Genshin Impact Damage Emulator</h2>
+    <h1>G.I.D.E. - Genshin Impact Damage Emulator</h1>
+    <h2>{{ $t("index.title") }}</h2>
     <!-- 使い方 -->
     <v-card>
       <v-card-title>{{ $t("menu.howto") }}</v-card-title>
@@ -58,6 +59,16 @@
     </v-card>
   </v-container>
 </template>
+
+<style lang="scss" scoped>
+h1 {
+  font-size: 1.5em;
+}
+h2 {
+  font-size: 1.1em;
+  color: silver;
+}
+</style>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
