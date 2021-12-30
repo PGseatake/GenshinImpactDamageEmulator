@@ -8,10 +8,22 @@ import { DBBonusTable } from "~/src/bonus";
 import { DBTeamTable } from "~/src/team";
 import { DBDamageTable } from "~/src/damage";
 
+export type SettingBoolean = {
+    autosave: boolean;
+};
+export type SettingString = {
+    artifact: string;
+    critical: string;
+};
+export type DBSetting = {
+    setting: SettingBoolean & SettingString;
+};
+
 export type DBVersion = { version: "1.0"; };
 
 export type Database = DBVersion &
-    DBCharaTable & DBWeaponTable & DBArtifactTable & DBEquipTable & DBTeamTable & DBBonusTable & DBDamageTable;
+    DBCharaTable & DBWeaponTable & DBArtifactTable & DBEquipTable &
+    DBTeamTable & DBBonusTable & DBDamageTable & DBSetting;
 
 export const DBTableTypes = [
     "equip",
@@ -242,5 +254,10 @@ export default function convert(data?: DatabaseV002 | DatabaseV100): Database {
         team: [],
         bonus: {},
         damage: [],
+        setting: {
+            autosave: true,
+            artifact: "",
+            critical: "",
+        }
     };
 }

@@ -10,6 +10,7 @@
         "weapon": "Weapon",
         "artifact": "Artifact",
         "howto": "HowTo",
+        "setting": "Setting",
         "releasenote": "Release note"
     },
     "bonus": {

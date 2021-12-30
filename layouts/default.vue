@@ -215,6 +215,7 @@ import {
   mdiAccountMultiplePlus,
   mdiCalculatorVariant,
   mdiClose,
+  mdiCogOutline,
   mdiContentSave,
   mdiExpandAll,
   mdiExport,
@@ -257,10 +258,6 @@ export default class Default extends Vue {
   clipped = false;
   popupShow = false;
   popupText = "";
-  importShow = false;
-  importFile: File | null = null;
-  exportShow = false;
-  exportFile: string | null = "GIDE.json";
   pageOpened = false;
   toolOpened = false;
   selectedPage = 0;
@@ -275,6 +272,7 @@ export default class Default extends Vue {
     { icon: mdiSword, page: "weapon", to: "/weapon" },
     { icon: mdiRing, page: "artifact", to: "/artifact" },
     { icon: mdiHelpCircleOutline, page: "howto", to: "/howto" },
+    { icon: mdiCogOutline, page: "setting", to: "/setting" },
     { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
   ];
   readonly tools: ITool[] = [
@@ -312,8 +310,40 @@ export default class Default extends Vue {
     return this.$store.state.appendable;
   }
 
+  get importFile(): File | null {
+    return this.$store.state.importFile;
+  }
+  set importFile(value: File | null) {
+    this.$store.commit("importFile", value);
+  }
+
+  get importShow(): boolean {
+    return this.$store.state.importShow;
+  }
+  set importShow(value: boolean) {
+    this.$store.commit("importShow", value);
+  }
+
+  get exportFile(): string | null {
+    return this.$store.state.exportFile;
+  }
+  set exportFile(value: string | null) {
+    this.$store.commit("exportFile", value);
+  }
+
+  get exportShow(): boolean {
+    return this.$store.state.exportShow;
+  }
+  set exportShow(value: boolean) {
+    this.$store.commit("exportShow", value);
+  }
+
   get storePopup() {
-    return this.$store.state.popupText;
+    return this.$store.state.popup;
+  }
+
+  get storeReload() {
+    return this.$store.state.reload;
   }
 
   @Watch("storePopup")
@@ -321,8 +351,21 @@ export default class Default extends Vue {
     if (value) {
       this.popupText = value;
       this.popupShow = true;
-      this.$store.commit("popupText", "");
+      this.$nextTick(() => this.$store.commit("popup", ""));
     }
+  }
+
+  @Watch("storeReload")
+  onChangeStoreReload(value: boolean) {
+    if (value) {
+      window.removeEventListener("beforeunload", this.onBeforeUnload);
+      location.reload();
+    }
+  }
+
+  @Watch("$route")
+  onChangeRoute() {
+    this.autosave();
   }
 
   created() {
@@ -351,8 +394,16 @@ export default class Default extends Vue {
     localStorage.setItem("global_data", JSON.stringify(this.$db));
   }
 
+  autosave() {
+    if (this.$db.setting.autosave) {
+      this.save();
+      return true;
+    }
+    return false;
+  }
+
   popup(label: string) {
-    this.$store.commit("popupText", this.$t("popup." + label));
+    this.$store.commit("popup", this.$t("popup." + label));
   }
 
   onSave() {
@@ -362,34 +413,34 @@ export default class Default extends Vue {
   }
 
   onImport() {
-    if (this.importFile) {
+    const file = this.importFile;
+    if (file) {
       // jsonファイル読み込み
       let reader = new FileReader();
-      reader.readAsText(this.importFile);
+      reader.readAsText(file);
       reader.onload = () => {
         this.reflect(reader.result as string);
         this.save();
         this.popup("import");
-
-        window.removeEventListener("beforeunload", this.onBeforeUnload);
-        location.reload();
+        this.$store.commit("reload");
       };
     }
   }
 
   onExport() {
-    if (this.exportFile) {
+    const file = this.exportFile;
+    if (file) {
       let blob = new Blob([JSON.stringify(this.$db)], {
         type: "application/json",
       });
       if (navigator.msSaveBlob) {
-        navigator.msSaveBlob(blob, this.exportFile);
+        navigator.msSaveBlob(blob, file);
       } else {
         let link = document.createElement("a");
         document.body.appendChild(link);
         let url = (URL || webkitURL).createObjectURL(blob);
         link.href = url;
-        link.download = this.exportFile;
+        link.download = file;
         link.click();
         link.remove();
         (URL || webkitURL).revokeObjectURL(url);
@@ -399,8 +450,10 @@ export default class Default extends Vue {
   }
 
   onBeforeUnload(event: BeforeUnloadEvent) {
-    event.preventDefault();
-    event.returnValue = "";
+    if (!this.autosave()) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
   }
 }
 </script>
