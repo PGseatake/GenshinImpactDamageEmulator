@@ -8,6 +8,7 @@ export default ({ store, route }) => {
         "weapon",
         "artifact",
         "howto",
+        "setting",
         "releasenote",
     ]
 

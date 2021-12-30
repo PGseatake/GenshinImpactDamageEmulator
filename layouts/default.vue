@@ -24,17 +24,17 @@
         <v-list>
           <v-list-item-group v-model="selectedPage" mandatory color="primary">
             <v-list-item
-              v-for="(list, index) in pageList"
+              v-for="(item, index) in pages"
               exact
               :key="index"
               :ripple="false"
-              :to="localePath(list.to)"
+              :to="localePath(item.to)"
             >
               <v-list-item-action>
-                <v-icon v-text="list.icon" />
+                <v-icon v-text="item.icon" />
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title v-text="$t('menu.' + list.page)" />
+                <v-list-item-title v-text="$t('menu.' + item.page)" />
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
@@ -66,20 +66,20 @@
           </v-btn>
         </template>
         <template v-else>
-          <span v-for="(list, index) in toolList" :key="index">
-            <template v-if="list.type === 'locale'">
+          <span v-for="(item, index) in tools" :key="index">
+            <template v-if="item.type === 'locale'">
               <select-locale fab icon>
-                <v-icon v-text="list.icon" />
+                <v-icon v-text="item.icon" />
               </select-locale>
             </template>
-            <template v-else-if="list.type === 'append'">
-              <v-btn fab icon :disabled="!appendable" @click="list.func">
-                <v-icon v-text="list.icon" />
+            <template v-else-if="item.type === 'append'">
+              <v-btn fab icon :disabled="!appendable" @click="item.func">
+                <v-icon v-text="item.icon" />
               </v-btn>
             </template>
             <template v-else>
-              <v-btn fab icon @click="list.func">
-                <v-icon v-text="list.icon" />
+              <v-btn fab icon @click="item.func">
+                <v-icon v-text="item.icon" />
               </v-btn>
             </template>
           </span>
@@ -107,31 +107,27 @@
         <v-divider />
 
         <v-list nav class="px-0">
-          <v-list-item
-            v-for="(list, index) in toolList"
-            :key="index"
-            class="ma-0"
-          >
+          <v-list-item v-for="(item, index) in tools" :key="index" class="ma-0">
             <v-list-item-icon>
-              <template v-if="list.type === 'locale'">
+              <template v-if="item.type === 'locale'">
                 <select-locale fab icon small>
-                  <v-icon v-text="list.icon" />
+                  <v-icon v-text="item.icon" />
                 </select-locale>
               </template>
-              <template v-else-if="list.type === 'append'">
+              <template v-else-if="item.type === 'append'">
                 <v-btn
                   fab
                   icon
                   small
                   :disabled="!appendable"
-                  @click="list.func"
+                  @click="item.func"
                 >
-                  <v-icon v-text="list.icon" />
+                  <v-icon v-text="item.icon" />
                 </v-btn>
               </template>
               <template v-else>
-                <v-btn fab icon small @click="list.func">
-                  <v-icon v-text="list.icon" />
+                <v-btn fab icon small @click="item.func">
+                  <v-icon v-text="item.icon" />
                 </v-btn>
               </template>
             </v-list-item-icon>
@@ -219,6 +215,7 @@ import {
   mdiAccountMultiplePlus,
   mdiCalculatorVariant,
   mdiClose,
+  mdiCogOutline,
   mdiContentSave,
   mdiExpandAll,
   mdiExport,
@@ -235,8 +232,7 @@ import {
   mdiTranslate,
   mdiTshirtCrew,
 } from "@mdi/js";
-import { DBTableTypes } from "~/src/interface";
-import { convert } from "~/src/convert";
+import convert, { DBTableTypes } from "~/src/convert";
 
 declare global {
   interface Navigator {
@@ -262,14 +258,11 @@ export default class Default extends Vue {
   clipped = false;
   popupShow = false;
   popupText = "";
-  importShow = false;
-  importFile: File | null = null;
-  exportShow = false;
-  exportFile: string | null = "GIDE.json";
   pageOpened = false;
   toolOpened = false;
   selectedPage = 0;
-  readonly pageList = [
+
+  readonly pages = [
     { icon: mdiHome, page: "index", to: "/" },
     { icon: mdiTshirtCrew, page: "equipment", to: "/equipment" },
     { icon: mdiAccountMultiplePlus, page: "team", to: "/team" },
@@ -279,13 +272,18 @@ export default class Default extends Vue {
     { icon: mdiSword, page: "weapon", to: "/weapon" },
     { icon: mdiRing, page: "artifact", to: "/artifact" },
     { icon: mdiHelpCircleOutline, page: "howto", to: "/howto" },
+    { icon: mdiCogOutline, page: "setting", to: "/setting" },
     { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
   ];
-  toolList: ITool[] = [
-    { icon: mdiPlaylistPlus, func: undefined, type: "append" },
-    { icon: mdiContentSave, func: undefined },
-    { icon: mdiImport, func: undefined },
-    { icon: mdiExport, func: undefined },
+  readonly tools: ITool[] = [
+    {
+      icon: mdiPlaylistPlus,
+      type: "append",
+      func: () => this.$store.commit("append", true),
+    },
+    { icon: mdiContentSave, func: this.onSave },
+    { icon: mdiImport, func: () => (this.importShow = true) },
+    { icon: mdiExport, func: () => (this.exportShow = true) },
     { icon: mdiTranslate, type: "locale" },
   ];
   readonly icons = {
@@ -305,15 +303,47 @@ export default class Default extends Vue {
   }
 
   get page() {
-    return this.pageList[this.selectedPage].page;
+    return this.pages[this.selectedPage].page;
   }
 
   get appendable() {
     return this.$store.state.appendable;
   }
 
+  get importFile(): File | null {
+    return this.$store.state.importFile;
+  }
+  set importFile(value: File | null) {
+    this.$store.commit("importFile", value);
+  }
+
+  get importShow(): boolean {
+    return this.$store.state.importShow;
+  }
+  set importShow(value: boolean) {
+    this.$store.commit("importShow", value);
+  }
+
+  get exportFile(): string | null {
+    return this.$store.state.exportFile;
+  }
+  set exportFile(value: string | null) {
+    this.$store.commit("exportFile", value);
+  }
+
+  get exportShow(): boolean {
+    return this.$store.state.exportShow;
+  }
+  set exportShow(value: boolean) {
+    this.$store.commit("exportShow", value);
+  }
+
   get storePopup() {
-    return this.$store.state.popupText;
+    return this.$store.state.popup;
+  }
+
+  get storeReload() {
+    return this.$store.state.reload;
   }
 
   @Watch("storePopup")
@@ -321,23 +351,30 @@ export default class Default extends Vue {
     if (value) {
       this.popupText = value;
       this.popupShow = true;
-      this.$store.commit("popupText", "");
+      this.$nextTick(() => this.$store.commit("popup", ""));
     }
   }
 
-  created() {
-    this.toolList[0].func = () => this.$store.commit("append", true);
-    this.toolList[1].func = this.onSave;
-    this.toolList[2].func = () => (this.importShow = true);
-    this.toolList[3].func = () => (this.exportShow = true);
+  @Watch("storeReload")
+  onChangeStoreReload(value: boolean) {
+    if (value) {
+      window.removeEventListener("beforeunload", this.onBeforeUnload);
+      location.reload();
+    }
+  }
 
-    const index = this.pageList.findIndex(
-      (list) => list.page === this.$store.state.page
-    );
+  @Watch("$route")
+  onChangeRoute() {
+    this.autosave();
+  }
+
+  created() {
+    const page = this.$store.state.page;
+    const index = this.pages.findIndex((item) => item.page === page);
     this.selectedPage = index < 0 ? 0 : index;
   }
 
-  mounted() {
+  beforeMount() {
     window.addEventListener("beforeunload", this.onBeforeUnload);
     this.reflect(localStorage.getItem("global_data"));
   }
@@ -357,8 +394,16 @@ export default class Default extends Vue {
     localStorage.setItem("global_data", JSON.stringify(this.$db));
   }
 
+  autosave() {
+    if (this.$db.setting.autosave) {
+      this.save();
+      return true;
+    }
+    return false;
+  }
+
   popup(label: string) {
-    this.$store.commit("popupText", this.$t("popup." + label));
+    this.$store.commit("popup", this.$t("popup." + label));
   }
 
   onSave() {
@@ -368,34 +413,34 @@ export default class Default extends Vue {
   }
 
   onImport() {
-    if (this.importFile) {
+    const file = this.importFile;
+    if (file) {
       // jsonファイル読み込み
       let reader = new FileReader();
-      reader.readAsText(this.importFile);
+      reader.readAsText(file);
       reader.onload = () => {
         this.reflect(reader.result as string);
         this.save();
         this.popup("import");
-
-        window.removeEventListener("beforeunload", this.onBeforeUnload);
-        location.reload();
+        this.$store.commit("reload");
       };
     }
   }
 
   onExport() {
-    if (this.exportFile) {
+    const file = this.exportFile;
+    if (file) {
       let blob = new Blob([JSON.stringify(this.$db)], {
         type: "application/json",
       });
       if (navigator.msSaveBlob) {
-        navigator.msSaveBlob(blob, this.exportFile);
+        navigator.msSaveBlob(blob, file);
       } else {
         let link = document.createElement("a");
         document.body.appendChild(link);
         let url = (URL || webkitURL).createObjectURL(blob);
         link.href = url;
-        link.download = this.exportFile;
+        link.download = file;
         link.click();
         link.remove();
         (URL || webkitURL).revokeObjectURL(url);
@@ -405,8 +450,10 @@ export default class Default extends Vue {
   }
 
   onBeforeUnload(event: BeforeUnloadEvent) {
-    event.preventDefault();
-    event.returnValue = "";
+    if (!this.autosave()) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
   }
 }
 </script>
