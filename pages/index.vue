@@ -1,7 +1,24 @@
 <template>
   <v-container>
-    <h1>G.I.D.E. - Genshin Impact Damage Emulator</h1>
-    <h2>{{ $t("index.title") }}</h2>
+    <v-row no-gutters class="ma-0">
+      <v-col cols="auto">
+        <h1>G.I.D.E. - Genshin Impact Damage Emulator</h1>
+      </v-col>
+    </v-row>
+    <v-row no-gutters align="center" class="ma-0">
+      <v-col cols="auto">
+        <h2>{{ $t("index.title") }}</h2>
+      </v-col>
+      <v-spacer />
+      <v-col cols="auto">
+        <v-btn icon @click="outerLink('twitter')">
+          <v-icon v-text="icons.twitter" color="#1DA1F2" />
+        </v-btn>
+        <v-btn icon @click="outerLink('github')">
+          <v-icon v-text="icons.github" />
+        </v-btn>
+      </v-col>
+    </v-row>
     <!-- 使い方 -->
     <v-card>
       <v-card-title>{{ $t("menu.howto") }}</v-card-title>
@@ -79,12 +96,14 @@ import {
   mdiCalculatorVariant,
   mdiContentSave,
   mdiExport,
+  mdiGithub,
   mdiImport,
   mdiPlaylistPlus,
   mdiRing,
   mdiSword,
   mdiTranslate,
   mdiTshirtCrew,
+  mdiTwitter,
 } from "@mdi/js";
 
 @Component({ name: "PageIndex" })
@@ -101,6 +120,12 @@ export default class PageIndex extends Vue {
     export: mdiExport,
     locale: mdiTranslate,
     append: mdiPlaylistPlus,
+    twitter: mdiTwitter,
+    github: mdiGithub,
+  };
+  readonly links: IDict<string> = {
+    twitter: "https://twitter.com/PGseatake",
+    github: "https://github.com/PGseatake/GenshinImpactDamageEmulator",
   };
 
   get version() {
@@ -120,6 +145,10 @@ export default class PageIndex extends Vue {
 
   created() {
     this.$store.commit("appendable", false);
+  }
+
+  outerLink(prop: string) {
+    window.open(this.links[prop], "_blank");
   }
 }
 </script>
