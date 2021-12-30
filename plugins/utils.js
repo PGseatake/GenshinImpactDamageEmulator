@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuetify from 'vuetify/lib'
 import { BonusType, ElementType } from '~/src/const';
 import { DirectBonus } from '~/src/bonus';
-import { convert } from '~/src/convert';
+import convert from '~/src/convert';
 
 export function roundFloat(value) {
     if (value < 100) {

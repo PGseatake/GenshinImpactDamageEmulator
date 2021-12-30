@@ -3,7 +3,6 @@ import { IVueI18n } from "vue-i18n/types";
 import { ElementType } from "~/src/const";
 import { BonusValue, IIdentify } from "~/src/interface";
 import { Database } from "~/src/convert";
-import { BonusBase } from "~/src/bonus";
 
 export { };
 

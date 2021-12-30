@@ -134,15 +134,3 @@ export interface IEquipData extends IIdentify, ICommentable, Record<konst.Artifa
     weapon: string;
 }
 export type DBEquipTable = { equip: IEquipData[]; };
-
-export const DBTableTypes = [
-    "equip",
-    "team",
-    "bonus",
-    "damage",
-    "chara",
-    ...konst.WeaponTypes,
-    ...konst.ArtifactTypes,
-] as const;
-
-export type DBVersion = { version: "1.0"; };

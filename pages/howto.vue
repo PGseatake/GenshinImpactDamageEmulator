@@ -16,6 +16,7 @@
 </template>
 
 <script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
 import {
   mdiAccount,
   mdiAccountMultiplePlus,
@@ -25,7 +26,6 @@ import {
   mdiSword,
   mdiTshirtCrew,
 } from "@mdi/js";
-import { Vue, Component } from "vue-property-decorator";
 
 @Component({
   name: "PageHowto",

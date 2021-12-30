@@ -1,6 +1,6 @@
 import * as ascension from "~/src/ascension";
 import { BonusType, WeaponTypes, ArtifactType, ArtifactTypes } from "~/src/const";
-import { BonusValue, IEquipData, DBVersion, DBEquipTable } from "~/src/interface";
+import { BonusValue, IEquipData, DBEquipTable } from "~/src/interface";
 import { ArtifactName, ArtifactNames, ArtifactMain, ArtifactSub, calcMain, DBArtifactTable } from "~/src/artifact";
 import { CharaList, CharaName, DBCharaTable } from "~/src/character";
 import { WeaponList, DBWeaponTable } from "~/src/weapon";
@@ -8,8 +8,21 @@ import { DBBonusTable } from "~/src/bonus";
 import { DBTeamTable } from "~/src/team";
 import { DBDamageTable } from "~/src/damage";
 
+export type DBVersion = { version: "1.0"; };
+
 export type Database = DBVersion &
     DBCharaTable & DBWeaponTable & DBArtifactTable & DBEquipTable & DBTeamTable & DBBonusTable & DBDamageTable;
+
+export const DBTableTypes = [
+    "equip",
+    "team",
+    "bonus",
+    "damage",
+    "chara",
+    ...WeaponTypes,
+    ...ArtifactTypes,
+    "setting",
+] as const;
 
 interface ICharaV002 {
     name: CharaName,
@@ -197,7 +210,7 @@ function Ver002toVer100(before: DatabaseV002): Database {
     return after;
 }
 
-export function convert(data?: DatabaseV002 | DatabaseV100): Database {
+export default function convert(data?: DatabaseV002 | DatabaseV100): Database {
     if (data) {
         if (data.ver) {
             if (data.ver === "0.02") {

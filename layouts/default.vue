@@ -24,17 +24,17 @@
         <v-list>
           <v-list-item-group v-model="selectedPage" mandatory color="primary">
             <v-list-item
-              v-for="(list, index) in pageList"
+              v-for="(item, index) in pages"
               exact
               :key="index"
               :ripple="false"
-              :to="localePath(list.to)"
+              :to="localePath(item.to)"
             >
               <v-list-item-action>
-                <v-icon v-text="list.icon" />
+                <v-icon v-text="item.icon" />
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title v-text="$t('menu.' + list.page)" />
+                <v-list-item-title v-text="$t('menu.' + item.page)" />
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
@@ -66,20 +66,20 @@
           </v-btn>
         </template>
         <template v-else>
-          <span v-for="(list, index) in toolList" :key="index">
-            <template v-if="list.type === 'locale'">
+          <span v-for="(item, index) in tools" :key="index">
+            <template v-if="item.type === 'locale'">
               <select-locale fab icon>
-                <v-icon v-text="list.icon" />
+                <v-icon v-text="item.icon" />
               </select-locale>
             </template>
-            <template v-else-if="list.type === 'append'">
-              <v-btn fab icon :disabled="!appendable" @click="list.func">
-                <v-icon v-text="list.icon" />
+            <template v-else-if="item.type === 'append'">
+              <v-btn fab icon :disabled="!appendable" @click="item.func">
+                <v-icon v-text="item.icon" />
               </v-btn>
             </template>
             <template v-else>
-              <v-btn fab icon @click="list.func">
-                <v-icon v-text="list.icon" />
+              <v-btn fab icon @click="item.func">
+                <v-icon v-text="item.icon" />
               </v-btn>
             </template>
           </span>
@@ -107,31 +107,27 @@
         <v-divider />
 
         <v-list nav class="px-0">
-          <v-list-item
-            v-for="(list, index) in toolList"
-            :key="index"
-            class="ma-0"
-          >
+          <v-list-item v-for="(item, index) in tools" :key="index" class="ma-0">
             <v-list-item-icon>
-              <template v-if="list.type === 'locale'">
+              <template v-if="item.type === 'locale'">
                 <select-locale fab icon small>
-                  <v-icon v-text="list.icon" />
+                  <v-icon v-text="item.icon" />
                 </select-locale>
               </template>
-              <template v-else-if="list.type === 'append'">
+              <template v-else-if="item.type === 'append'">
                 <v-btn
                   fab
                   icon
                   small
                   :disabled="!appendable"
-                  @click="list.func"
+                  @click="item.func"
                 >
-                  <v-icon v-text="list.icon" />
+                  <v-icon v-text="item.icon" />
                 </v-btn>
               </template>
               <template v-else>
-                <v-btn fab icon small @click="list.func">
-                  <v-icon v-text="list.icon" />
+                <v-btn fab icon small @click="item.func">
+                  <v-icon v-text="item.icon" />
                 </v-btn>
               </template>
             </v-list-item-icon>
@@ -235,8 +231,7 @@ import {
   mdiTranslate,
   mdiTshirtCrew,
 } from "@mdi/js";
-import { DBTableTypes } from "~/src/interface";
-import { convert } from "~/src/convert";
+import convert, { DBTableTypes } from "~/src/convert";
 
 declare global {
   interface Navigator {
@@ -269,7 +264,8 @@ export default class Default extends Vue {
   pageOpened = false;
   toolOpened = false;
   selectedPage = 0;
-  readonly pageList = [
+
+  readonly pages = [
     { icon: mdiHome, page: "index", to: "/" },
     { icon: mdiTshirtCrew, page: "equipment", to: "/equipment" },
     { icon: mdiAccountMultiplePlus, page: "team", to: "/team" },
@@ -281,11 +277,15 @@ export default class Default extends Vue {
     { icon: mdiHelpCircleOutline, page: "howto", to: "/howto" },
     { icon: mdiNotePlus, page: "releasenote", to: "/releasenote" },
   ];
-  toolList: ITool[] = [
-    { icon: mdiPlaylistPlus, func: undefined, type: "append" },
-    { icon: mdiContentSave, func: undefined },
-    { icon: mdiImport, func: undefined },
-    { icon: mdiExport, func: undefined },
+  readonly tools: ITool[] = [
+    {
+      icon: mdiPlaylistPlus,
+      type: "append",
+      func: () => this.$store.commit("append", true),
+    },
+    { icon: mdiContentSave, func: this.onSave },
+    { icon: mdiImport, func: () => (this.importShow = true) },
+    { icon: mdiExport, func: () => (this.exportShow = true) },
     { icon: mdiTranslate, type: "locale" },
   ];
   readonly icons = {
@@ -305,7 +305,7 @@ export default class Default extends Vue {
   }
 
   get page() {
-    return this.pageList[this.selectedPage].page;
+    return this.pages[this.selectedPage].page;
   }
 
   get appendable() {
@@ -326,18 +326,12 @@ export default class Default extends Vue {
   }
 
   created() {
-    this.toolList[0].func = () => this.$store.commit("append", true);
-    this.toolList[1].func = this.onSave;
-    this.toolList[2].func = () => (this.importShow = true);
-    this.toolList[3].func = () => (this.exportShow = true);
-
-    const index = this.pageList.findIndex(
-      (list) => list.page === this.$store.state.page
-    );
+    const page = this.$store.state.page;
+    const index = this.pages.findIndex((item) => item.page === page);
     this.selectedPage = index < 0 ? 0 : index;
   }
 
-  mounted() {
+  beforeMount() {
     window.addEventListener("beforeunload", this.onBeforeUnload);
     this.reflect(localStorage.getItem("global_data"));
   }
