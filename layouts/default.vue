@@ -209,7 +209,8 @@ html {
 </style>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Vue, Component, Watch } from "nuxt-property-decorator";
+import { MetaInfo } from "vue-meta";
 import {
   mdiAccount,
   mdiAccountMultiplePlus,
@@ -366,6 +367,52 @@ export default class Default extends Vue {
   @Watch("$route")
   onChangeRoute() {
     this.autosave();
+  }
+
+  head(): MetaInfo {
+    const i18nHead = this.$nuxtI18nHead({ addSeoAttributes: true });
+    return {
+      title: this.$t("title") as string,
+      meta: [
+        ...i18nHead.meta,
+        {
+          hid: "description",
+          name: "description",
+          content: this.$t("description") as string,
+        },
+        {
+          hid: "author",
+          name: "author",
+          content: "PGseatake",
+        },
+        {
+          hid: "og:site_name",
+          name: "og:site_name",
+          content: this.$t("title") as string,
+        },
+        {
+          hid: "og:url",
+          name: "og:url",
+          content: `${this.$config.HOSTNAME}/GenshinImpactDamageEmulator${this.$route.path}`,
+        },
+        {
+          hid: "og:title",
+          name: "og:title",
+          content: this.$t("title") as string,
+        },
+        {
+          hid: "og:description",
+          name: "og:description",
+          content: this.$t("description") as string,
+        },
+        {
+          hid: "apple-mobile-web-app-title",
+          name: "apple-mobile-web-app-title",
+          content: this.$t("title") as string,
+        },
+      ],
+      link: i18nHead.link,
+    };
   }
 
   created() {

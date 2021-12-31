@@ -9,13 +9,13 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - Genshin Impact Damage Emulator',
+    titleTemplate: '%s',
     title: '原神 ダメージエミュレーター',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { name: "google-site-verification", content: "KlYYIXpwQoIznlz7DbJGnuS-q56mYN0JBxOpURUrRLU" },
-      { hid: 'description', name: 'description', content: 'オープンワールドゲーム『原神』のダメージ計算ツールです。使用するキャラクターや装備などを選び、ゲーム内の環境に近い状況でのダメージを計算します。' }
+      { name: "msvalidate.01", content: "2434296E4CC211BBCF7B8E71F6A60AB7" }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -31,6 +31,10 @@ export default {
     '~/plugins/utils.js',
   ],
 
+  publicRuntimeConfig: {
+    HOSTNAME: process.env.HOSTNAME || 'http://localhost:3000',
+  },
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -44,21 +48,31 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    ['nuxt-i18n',
-      {
-        locales: [
-          { code: 'ja', name: '日本語', iso: 'ja_JP', file: 'ja.json' },
-          { code: 'en', name: 'English', iso: 'en-US', file: 'en.json' }
-        ],
-        defaultLocale: 'ja',
-        langDir: 'locales/',
-        strategy: 'prefix_and_default',
-        vueI18n: {
-          fallbackLocale: 'ja'
-        },
-        vueI18nLoader: true,
-        lazy: true
-      }]
+    ['nuxt-i18n', {
+      baseUrl: (process.env.HOSTNAME || 'http://localhost:3000') + '/GenshinImpactDamageEmulator',
+      detectBrowserLanguage: false,
+      locales: [
+        { code: 'ja', name: '日本語', iso: 'ja-JP', file: 'ja.json' },
+        { code: 'en', name: 'English', iso: 'en-US', file: 'en.json' }
+      ],
+      defaultLocale: 'ja',
+      langDir: 'locales/',
+      strategy: 'prefix_and_default',
+      vueI18n: {
+        fallbackLocale: 'ja'
+      },
+      vueI18nLoader: true,
+      lazy: true,
+      seo: false,
+    }],
+    // ['@nuxtjs/sitemap', {
+    //   path: '/sitemap.xml',
+    //   hostname: process.env.HOSTNAME || 'http://localhost:3000',
+    //   i18n: true,
+    //   defaults: {
+    //     lastmod: new Date(),
+    //   }
+    // }],
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

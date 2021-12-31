@@ -1,13 +1,13 @@
 <template>
   <v-container>
-    <v-row no-gutters class="ma-0">
-      <v-col cols="auto">
+    <v-row no-gutters>
+      <v-col cols="auto" style="line-height: 1.7em">
         <h1>G.I.D.E. - Genshin Impact Damage Emulator</h1>
       </v-col>
     </v-row>
-    <v-row no-gutters align="center" class="ma-0">
-      <v-col cols="auto">
-        <h2>{{ $t("index.title") }}</h2>
+    <v-row no-gutters align="center">
+      <v-col cols="auto" class="pt-1">
+        <h2>{{ $t("subtitle") }}</h2>
       </v-col>
       <v-spacer />
       <v-col cols="auto">
