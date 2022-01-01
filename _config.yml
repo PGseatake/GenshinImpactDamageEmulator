@@ -1,0 +1,4 @@
+plugins_dir: ./_scripts
+
+plugins:
+- jekyll-sitemap
