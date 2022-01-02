@@ -1,0 +1,1 @@
+Sitemap: https://pgseatake.github.io/GenshinImpactDamageEmulator/sitemap.xml
