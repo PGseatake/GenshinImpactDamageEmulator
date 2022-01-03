@@ -274,6 +274,7 @@ export default class PageEquipment extends Vue {
   created() {
     this.items = this.$db.equip;
     this.$store.commit("appendable", true);
+    this.$store.commit("tabs", {});
   }
 
   onBeforeAppend() {

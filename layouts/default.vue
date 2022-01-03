@@ -84,6 +84,10 @@
             </template>
           </span>
         </template>
+
+        <template v-if="tabable" #extension>
+          <tab-category />
+        </template>
       </v-app-bar>
 
       <!-- サブメニュー -->
@@ -256,6 +260,10 @@ export default class Default extends Vue {
 
   get page() {
     return this.pages[this.selectedPage].page;
+  }
+
+  get tabable() {
+    return this.$store.getters.tabable;
   }
 
   get appendable() {

@@ -33,6 +33,7 @@ export default class PageCharacter extends Vue {
 
   created() {
     this.$store.commit("appendable", true);
+    this.$store.commit("tabs", {});
   }
 
   onBeforeAppend() {

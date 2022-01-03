@@ -1,5 +1,14 @@
 export const state = () => ({
     page: "",
+    tab: {
+        type: "",
+        items: [],
+        bonus: -1,
+        weapon: 0,
+        artifact: 0,
+        damage: 0,
+        howto: 0,
+    },
     append: false,
     appendable: true,
     importFile: null,
@@ -13,12 +22,31 @@ export const state = () => ({
 export const getters = {
     append(state) {
         return state.append;
-    }
+    },
+    tab(state) {
+        return state.tab[state.tab.type];
+    },
+    tabs(state) {
+        return state.tab.items;
+    },
+    tabable(state) {
+        return !!state.tab.items.length;
+    },
 }
 
 export const mutations = {
     page(state, value) {
         state.page = value;
+    },
+    tab(state, value) {
+        state.tab[state.tab.type] = value;
+    },
+    tabs(state, payload) {
+        state.tab.type = payload.tab || "";
+        state.tab.items.splice(0);
+        if (payload.items) {
+            state.tab.items.push(...payload.items);
+        }
     },
     append(state, value) {
         if (state.appendable) {

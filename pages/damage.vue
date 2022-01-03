@@ -82,6 +82,7 @@ export default class PageDamage extends Vue {
 
   created() {
     this.$store.commit("appendable", true);
+    this.$store.commit("tabs", {});
 
     let { damage } = this.db;
     for (let index = 0; index < damage.length; ) {

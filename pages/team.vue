@@ -263,6 +263,7 @@ export default class PageTeam extends Vue {
   created() {
     this.items = this.$db.team;
     this.$store.commit("appendable", true);
+    this.$store.commit("tabs", {});
   }
 
   onChangeItem(item: ITeamData) {

@@ -1,9 +1,6 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <v-tabs v-model="tab" centered center-active show-arrows>
-      <v-tab v-for="i of items" :key="i.name">{{ $t("menu." + i.name) }}</v-tab>
-    </v-tabs>
-    <v-tabs-items v-model="tab">
+    <v-tabs-items v-model="tab" :touchless="!$vuetify.breakpoint.xs">
       <v-tab-item :value="0"><howto-chara /></v-tab-item>
       <v-tab-item :value="1"><howto-weapon /></v-tab-item>
       <v-tab-item :value="2"><howto-artifact /></v-tab-item>
@@ -49,10 +46,23 @@ export default class PageHowto extends Vue {
     { icon: mdiExpandAll, name: "bonus" },
     { icon: mdiCalculatorVariant, name: "damage" },
   ];
-  tab = 0;
+
+  get tab() {
+    return this.$store.getters.tab;
+  }
+  set tab(value: number) {
+    this.$store.commit("tab", value);
+  }
 
   created() {
     this.$store.commit("appendable", false);
+    this.$store.commit("tabs", {
+      tab: "howto",
+      items: this.items.map((item) => ({
+        key: item.name,
+        label: "menu." + item.name,
+      })),
+    });
   }
 }
 </script>
