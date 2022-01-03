@@ -139,55 +139,12 @@
         <nuxt />
       </v-main>
 
-      <v-snackbar
-        app
-        v-model="popupShow"
-        timeout="3000"
-        content-class="text-center"
-        >{{ popupText }}</v-snackbar
-      >
       <v-footer class="justify-end">
         <span>{{ $t("footer") }}</span>
       </v-footer>
-
-      <!-- インポートダイアログ -->
-      <dialog-file
-        width="450px"
-        :file="importFile"
-        :show.sync="importShow"
-        :label="$t('dialog.import')"
-        :detail="$t('dialog.import_text')"
-        @accept="onImport"
-      >
-        <template v-slot>
-          <v-file-input
-            v-model="importFile"
-            clearable
-            truncate-length="40"
-            accept="application/json"
-            :clear-icon="icons.clear"
-            :prepend-icon="icons.file"
-          />
-        </template>
-      </dialog-file>
-      <!-- エクスポートダイアログ -->
-      <dialog-file
-        width="450px"
-        :file="exportFile"
-        :show.sync="exportShow"
-        :label="$t('dialog.export')"
-        :detail="$t('dialog.export_text')"
-        @accept="onExport"
-      >
-        <template v-slot>
-          <v-text-field
-            v-model="exportFile"
-            clearable
-            :clear-icon="icons.clear"
-            :prepend-icon="icons.file"
-          />
-        </template>
-      </dialog-file>
+      <popup-bar />
+      <dialog-import :icons="icons" :reflect="reflect" />
+      <dialog-export :icons="icons" />
     </v-app>
   </client-only>
 </template>
@@ -235,12 +192,6 @@ import {
 } from "@mdi/js";
 import convert, { DBTableTypes } from "~/src/convert";
 
-declare global {
-  interface Navigator {
-    msSaveBlob?: (blob: any, defaultName?: string) => boolean;
-  }
-}
-
 interface ITool {
   icon: string;
   type?: string;
@@ -250,15 +201,15 @@ interface ITool {
 @Component({
   name: "default",
   components: {
-    DialogFile: () => import("~/components/DialogFile.vue"),
+    PopupBar: () => import("~/components/PopupBar.vue"),
+    DialogImport: () => import("~/components/DialogImport.vue"),
+    DialogExport: () => import("~/components/DialogExport.vue"),
     SelectLocale: () => import("~/components/SelectLocale.vue"),
   },
 })
 export default class Default extends Vue {
   fixed = false;
   clipped = false;
-  popupShow = false;
-  popupText = "";
   pageOpened = false;
   toolOpened = false;
   selectedPage = 0;
@@ -283,15 +234,15 @@ export default class Default extends Vue {
       func: () => this.$store.commit("append", true),
     },
     { icon: mdiContentSave, func: this.onSave },
-    { icon: mdiImport, func: () => (this.importShow = true) },
-    { icon: mdiExport, func: () => (this.exportShow = true) },
+    { icon: mdiImport, func: () => this.$store.commit("importShow", true) },
+    { icon: mdiExport, func: () => this.$store.commit("exportShow", true) },
     { icon: mdiTranslate, type: "locale" },
   ];
   readonly icons = {
     menu: mdiMenu,
     tool: mdiTools,
-    clear: mdiClose,
-    file: mdiPaperclip,
+    clear: mdiClose, // dialog-exportで使用
+    file: mdiPaperclip, // dialog-exportで使用
   };
 
   get mobile() {
@@ -311,49 +262,8 @@ export default class Default extends Vue {
     return this.$store.state.appendable;
   }
 
-  get importFile(): File | null {
-    return this.$store.state.importFile;
-  }
-  set importFile(value: File | null) {
-    this.$store.commit("importFile", value);
-  }
-
-  get importShow(): boolean {
-    return this.$store.state.importShow;
-  }
-  set importShow(value: boolean) {
-    this.$store.commit("importShow", value);
-  }
-
-  get exportFile(): string | null {
-    return this.$store.state.exportFile;
-  }
-  set exportFile(value: string | null) {
-    this.$store.commit("exportFile", value);
-  }
-
-  get exportShow(): boolean {
-    return this.$store.state.exportShow;
-  }
-  set exportShow(value: boolean) {
-    this.$store.commit("exportShow", value);
-  }
-
-  get storePopup() {
-    return this.$store.state.popup;
-  }
-
   get storeReload() {
     return this.$store.state.reload;
-  }
-
-  @Watch("storePopup")
-  onChangeStorePopup(value: string) {
-    if (value) {
-      this.popupText = value;
-      this.popupShow = true;
-      this.$nextTick(() => this.$store.commit("popup", ""));
-    }
   }
 
   @Watch("storeReload")
@@ -454,51 +364,10 @@ export default class Default extends Vue {
     return false;
   }
 
-  popup(label: string) {
-    this.$store.commit("popup", this.$t("popup." + label));
-  }
-
   onSave() {
     this.save();
-    this.popup("save");
+    this.$store.commit("popup", this.$t("popup.save"));
     this.toolOpened = false;
-  }
-
-  onImport() {
-    const file = this.importFile;
-    if (file) {
-      // jsonファイル読み込み
-      let reader = new FileReader();
-      reader.readAsText(file);
-      reader.onload = () => {
-        this.reflect(reader.result as string);
-        this.save();
-        this.popup("import");
-        this.$store.commit("reload");
-      };
-    }
-  }
-
-  onExport() {
-    const file = this.exportFile;
-    if (file) {
-      let blob = new Blob([JSON.stringify(this.$db)], {
-        type: "application/json",
-      });
-      if (navigator.msSaveBlob) {
-        navigator.msSaveBlob(blob, file);
-      } else {
-        let link = document.createElement("a");
-        document.body.appendChild(link);
-        let url = (URL || webkitURL).createObjectURL(blob);
-        link.href = url;
-        link.download = file;
-        link.click();
-        link.remove();
-        (URL || webkitURL).revokeObjectURL(url);
-        this.popup("export");
-      }
-    }
   }
 
   onBeforeUnload(event: BeforeUnloadEvent) {
