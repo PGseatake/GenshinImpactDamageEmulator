@@ -370,41 +370,46 @@ export default class Default extends Vue {
   }
 
   head(): MetaInfo {
+    const baseUrl = this.$config.HOSTNAME + "/GenshinImpactDamageEmulator";
     const i18nHead = this.$nuxtI18nHead({ addSeoAttributes: true });
     return {
       title: this.$t("title") as string,
       meta: [
         ...i18nHead.meta,
+        { hid: "author", name: "author", content: "PGseatake" },
         {
           hid: "description",
           name: "description",
           content: this.$t("description") as string,
         },
         {
-          hid: "author",
-          name: "author",
-          content: "PGseatake",
+          hid: "og:url",
+          property: "og:url",
+          content: baseUrl + this.$route.path,
+        },
+        { hid: "og:type", property: "og:type", content: "website" },
+        {
+          hid: "og:title",
+          property: "og:title",
+          content: this.$t("title") as string,
         },
         {
           hid: "og:site_name",
-          name: "og:site_name",
-          content: this.$t("title") as string,
+          property: "og:site_name",
+          content: this.$t("subtitle") as string,
         },
         {
-          hid: "og:url",
-          name: "og:url",
-          content: `${this.$config.HOSTNAME}/GenshinImpactDamageEmulator${this.$route.path}`,
-        },
-        {
-          hid: "og:title",
-          name: "og:title",
-          content: this.$t("title") as string,
+          hid: "og:image",
+          property: "og:image",
+          content: baseUrl + "/img/GIDE.jpg",
         },
         {
           hid: "og:description",
-          name: "og:description",
+          property: "og:description",
           content: this.$t("description") as string,
         },
+        { name: "twitter:card", content: "summary" },
+        { name: "twitter:site", content: "@PGseatake" },
         {
           hid: "apple-mobile-web-app-title",
           name: "apple-mobile-web-app-title",

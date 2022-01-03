@@ -9,13 +9,14 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
+    headAttrs: { prefix: "og: http://ogp.me/ns#" },
     titleTemplate: '%s',
     title: '原神 ダメージエミュレーター',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: "google-site-verification", content: "KlYYIXpwQoIznlz7DbJGnuS-q56mYN0JBxOpURUrRLU" },
-      { name: "msvalidate.01", content: "2434296E4CC211BBCF7B8E71F6A60AB7" }
+      { name: 'google-site-verification', content: 'KlYYIXpwQoIznlz7DbJGnuS-q56mYN0JBxOpURUrRLU' },
+      { name: 'msvalidate.01', content: '2434296E4CC211BBCF7B8E71F6A60AB7' },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -112,7 +113,7 @@ export default {
   },
 
   router: {
-    base: "/GenshinImpactDamageEmulator/",
+    base: '/GenshinImpactDamageEmulator/',
     middleware: 'route'
   },
 
