@@ -1,4 +1,1 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://pgseatake.github.io/GenshinImpactDamageEmulator/static-sitemap.xml
+Sitemap: https://pgseatake.github.io/GenshinImpactDamageEmulator/sitemap.xml
