@@ -1,20 +1,6 @@
 <template>
   <v-container fluid>
-    <template v-if="exists">
-      <v-tabs v-model="tab" centered center-active show-arrows>
-        <v-tab v-for="(item, index) of db.damage" :key="item.id">
-          {{ `${$t("general.data")}${index + 1}` }}
-          <v-btn
-            icon
-            tile
-            x-small
-            :ripple="false"
-            @click.stop="onRemove(index)"
-          >
-            <v-icon>{{ icons.remove }}</v-icon>
-          </v-btn>
-        </v-tab>
-      </v-tabs>
+    <template v-if="item">
       <damage-detail :data="item" :key="item.id" />
     </template>
     <v-row v-else justify="center">
@@ -35,6 +21,12 @@ import { EnemyNames } from "~/src/enemy";
 import { DBDamageTable, IDamageData } from "~/src/damage";
 import { mdiClose, mdiPlaylistPlus } from "@mdi/js";
 
+type TabItem = {
+  key: string;
+  index: number;
+  text: (item: TabItem) => string;
+  close: (item: TabItem) => void;
+};
 type DamageItem = {
   team: string;
   member: string;
@@ -48,7 +40,6 @@ type DamageItem = {
 })
 export default class PageDamage extends Vue {
   db: DBTeamTable & DBDamageTable = this.$db;
-  tab = 0;
 
   readonly icons = {
     append: mdiPlaylistPlus,
@@ -65,12 +56,15 @@ export default class PageDamage extends Vue {
     }
   }
 
-  get exists() {
-    return !!this.db.damage.length;
-  }
-
   get item() {
     return this.db.damage[this.tab];
+  }
+
+  get tab() {
+    return this.$store.getters.tab;
+  }
+  set tab(value: number) {
+    this.$store.commit("tab", value);
   }
 
   get append() {
@@ -103,6 +97,8 @@ export default class PageDamage extends Vue {
         index++;
       }
     }
+
+    this.updateTabs();
   }
 
   private verify(data: DamageItem): DamageItem | undefined {
@@ -147,15 +143,30 @@ export default class PageDamage extends Vue {
         fixed: 0,
       };
       this.$appendData(this.db.damage, data);
+      this.updateTabs();
     }
   }
 
-  onRemove(index: number) {
-    this.db.damage.splice(index, 1);
-    const max = this.db.damage.length;
-    if (this.tab >= max) {
-      this.tab = max - 1;
-    }
+  onRemove(item: TabItem) {
+    this.db.damage.splice(item.index, 1);
+    this.updateTabs();
+  }
+
+  private updateTabs() {
+    const i18n = this.$i18n;
+    const text = (item: TabItem) =>
+      `${i18n.t("general.data")}${item.index + 1}`;
+
+    let items: TabItem[] = [];
+    this.db.damage.forEach((item, index) =>
+      items.push({
+        key: item.id,
+        index,
+        text,
+        close: this.onRemove,
+      })
+    );
+    this.$store.commit("tabs", { tab: "damage", items });
   }
 }
 </script>

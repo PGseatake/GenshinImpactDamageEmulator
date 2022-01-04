@@ -10,8 +10,14 @@ import { DBEquipTable } from "~/src/interface";
 import { DBCharaTable } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
 import { DBArtifactTable } from "~/src/artifact";
-import { DBTeamTable, Team } from "~/src/team";
+import { DBTeamTable } from "~/src/team";
 import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
+
+type TabItem = {
+  key: number;
+  name: string;
+  text: (item: TabItem) => string;
+};
 
 @Component({
   name: "PageBonus",
@@ -46,11 +52,15 @@ export default class PageBonus extends Vue {
   }
 
   mounted() {
-    let builder = new BonusBuilder(this.$i18n, this.db.bonus);
-    let names: { key: number; text: string }[] = [];
+    const i18n = this.$i18n;
+    const text = (item: TabItem) =>
+      item.name || `${i18n.t("menu.team")}${item.key + 1}`;
+
+    let names: TabItem[] = [];
+    let builder = new BonusBuilder(i18n, this.db.bonus);
     this.db.team.forEach((t, i) => {
       this.teams.push(builder.build(t, this.db));
-      names.push({ key: i, text: new Team(t).getName(this.$i18n, i) });
+      names.push({ key: i, name: t.name, text });
     });
     this.db.bonus = builder.output;
 
