@@ -145,6 +145,7 @@ export default class PageIndex extends Vue {
 
   created() {
     this.$store.commit("appendable", false);
+    this.$store.commit("tabs", {});
   }
 
   outerLink(prop: string) {

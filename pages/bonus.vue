@@ -1,8 +1,5 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <v-tabs v-model="tab" centered center-active show-arrows>
-      <v-tab v-for="{ key } of teams" :key="key">{{ key }}</v-tab>
-    </v-tabs>
     <bonus-table :items="items" />
   </v-container>
 </template>
@@ -13,8 +10,14 @@ import { DBEquipTable } from "~/src/interface";
 import { DBCharaTable } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
 import { DBArtifactTable } from "~/src/artifact";
-import { DBTeamTable, Team } from "~/src/team";
+import { DBTeamTable } from "~/src/team";
 import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
+
+type TabItem = {
+  key: number;
+  name: string;
+  text: (item: TabItem) => string;
+};
 
 @Component({
   name: "PageBonus",
@@ -29,30 +32,39 @@ export default class PageBonus extends Vue {
     DBWeaponTable &
     DBArtifactTable &
     DBBonusTable;
-  tab: number = -1;
-  teams: { key: string; data: BonusBase[] }[] = [];
+  teams: Array<BonusBase[]> = [];
+
+  get tab() {
+    return this.$store.getters.tab;
+  }
+  set tab(value: number) {
+    this.$store.commit("tab", value);
+  }
 
   get items() {
-    if (this.tab >= 0) {
-      return this.teams[this.tab].data;
-    }
-    return [];
+    return this.teams[this.tab] || [];
   }
 
   created() {
     this.db = this.$db;
     this.$store.commit("appendable", false);
+    this.$store.commit("tabs", {});
   }
 
   mounted() {
-    let builder = new BonusBuilder(this.$i18n, this.db.bonus);
+    const i18n = this.$i18n;
+    const text = (item: TabItem) =>
+      item.name || `${i18n.t("menu.team")}${item.key + 1}`;
+
+    let names: TabItem[] = [];
+    let builder = new BonusBuilder(i18n, this.db.bonus);
     this.db.team.forEach((t, i) => {
-      const key = new Team(t).getName(this.$i18n, i);
-      const data = builder.build(t, this.db);
-      this.teams.push({ key, data });
-      this.tab = 0;
+      this.teams.push(builder.build(t, this.db));
+      names.push({ key: i, name: t.name, text });
     });
     this.db.bonus = builder.output;
+
+    this.$store.commit("tabs", { tab: "bonus", items: names });
   }
 }
 </script>

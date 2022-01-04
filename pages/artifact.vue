@@ -1,9 +1,6 @@
 <template>
   <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
-    <v-tabs v-model="tab" centered center-active show-arrows>
-      <v-tab v-for="t of types" :key="t">{{ $t("tab." + t) }}</v-tab>
-    </v-tabs>
-    <v-tabs-items v-model="tab">
+    <v-tabs-items v-model="tab" :touchless="!$vuetify.breakpoint.xs">
       <v-tab-item v-for="t of types" :key="t">
         <artifact-data :type="t" />
       </v-tab-item>
@@ -26,10 +23,15 @@ import ArtifactData from "~/components/ArtifactData.vue";
   components: { ArtifactData },
 })
 export default class PageArtifact extends Vue {
-  tab = 0;
-
   readonly types = ArtifactTypes;
   readonly icons = { append: mdiPlaylistPlus };
+
+  get tab() {
+    return this.$store.getters.tab;
+  }
+  set tab(value: number) {
+    this.$store.commit("tab", value);
+  }
 
   get type() {
     return this.types[this.tab];
@@ -48,6 +50,13 @@ export default class PageArtifact extends Vue {
 
   created() {
     this.$store.commit("appendable", true);
+    this.$store.commit("tabs", {
+      tab: "artifact",
+      items: ArtifactTypes.map((item) => ({
+        key: item,
+        label: "tab." + item,
+      })),
+    });
   }
 
   onBeforeAppend() {

@@ -1,9 +1,6 @@
 <template>
-  <v-container class="container">
-    <v-tabs v-model="tab" centered center-active show-arrows>
-      <v-tab v-for="t of types" :key="t">{{ $t("tab." + t) }}</v-tab>
-    </v-tabs>
-    <v-tabs-items v-model="tab">
+  <v-container :fluid="$vuetify.breakpoint.md || $vuetify.breakpoint.sm">
+    <v-tabs-items v-model="tab" :touchless="!$vuetify.breakpoint.xs">
       <v-tab-item v-for="t of types" :key="t">
         <weapon-data :type="t" />
       </v-tab-item>
@@ -32,10 +29,15 @@ import WeaponData from "~/components/WeaponData.vue";
   components: { WeaponData },
 })
 export default class PageWeapon extends Vue {
-  tab = 0;
-
   readonly types = WeaponTypes;
   readonly icons = { append: mdiPlaylistPlus };
+
+  get tab() {
+    return this.$store.getters.tab;
+  }
+  set tab(value: number) {
+    this.$store.commit("tab", value);
+  }
 
   get type() {
     return this.types[this.tab];
@@ -54,6 +56,13 @@ export default class PageWeapon extends Vue {
 
   created() {
     this.$store.commit("appendable", true);
+    this.$store.commit("tabs", {
+      tab: "weapon",
+      items: WeaponTypes.map((item) => ({
+        key: item,
+        label: "tab." + item,
+      })),
+    });
   }
 
   onBeforeAppend() {

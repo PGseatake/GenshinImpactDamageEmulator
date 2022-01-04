@@ -13,10 +13,6 @@ export default ({ store, route }) => {
     ]
 
     const path = route.fullPath + "/";
-    for (const page of pages) {
-        if (path.includes(`/${page}/`)) {
-            store.commit("page", page);
-            break;
-        }
-    }
+    const page = pages.find((item) => path.includes(`/${item}/`))
+    store.commit("page", page || "");
 }

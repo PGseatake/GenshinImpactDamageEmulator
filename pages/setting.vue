@@ -180,6 +180,7 @@ export default class PageSetting extends Vue {
 
   created() {
     this.$store.commit("appendable", false);
+    this.$store.commit("tabs", {});
   }
 
   dialog(info?: IDialog) {

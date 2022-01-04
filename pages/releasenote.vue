@@ -26,6 +26,7 @@ import { LocaleMessages } from "vue-i18n/types";
 export default class PageReleaseNote extends Vue {
   created() {
     this.$store.commit("appendable", false);
+    this.$store.commit("tabs", {});
   }
 
   get items() {
