@@ -15,6 +15,8 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
+import VueI18n from "vue-i18n/types";
+import { Store } from "vuex/types";
 import { ElementType } from "~/src/const";
 import { DBTeamTable, Team } from "~/src/team";
 import { EnemyNames } from "~/src/enemy";
@@ -32,6 +34,38 @@ type DamageItem = {
   member: string;
 };
 
+class TabBuilder {
+  private i18n: VueI18n;
+  private store: Store<any>;
+  private items: IDamageData[];
+
+  constructor(app: Vue) {
+    this.i18n = app.$i18n;
+    this.store = app.$store;
+    this.items = app.$db.damage;
+  }
+
+  update() {
+    const i18n = this.i18n;
+    const text = (item: TabItem) =>
+      `${i18n.t("general.data")}${item.index + 1}`;
+
+    let items: TabItem[] = [];
+    this.items.forEach((item, index) =>
+      items.push({
+        key: item.id,
+        index,
+        text,
+        close: (item: TabItem) => {
+          this.items.splice(item.index, 1);
+          this.update();
+        },
+      })
+    );
+    this.store.commit("tabs", { tab: "damage", items });
+  }
+}
+
 @Component({
   name: "PageDamage",
   components: {
@@ -40,6 +74,7 @@ type DamageItem = {
 })
 export default class PageDamage extends Vue {
   db: DBTeamTable & DBDamageTable = this.$db;
+  tabs!: TabBuilder;
 
   readonly icons = {
     append: mdiPlaylistPlus,
@@ -98,7 +133,8 @@ export default class PageDamage extends Vue {
       }
     }
 
-    this.updateTabs();
+    this.tabs = new TabBuilder(this);
+    this.tabs.update();
   }
 
   private verify(data: DamageItem): DamageItem | undefined {
@@ -143,30 +179,8 @@ export default class PageDamage extends Vue {
         fixed: 0,
       };
       this.$appendData(this.db.damage, data);
-      this.updateTabs();
+      this.tabs.update();
     }
-  }
-
-  onRemove(item: TabItem) {
-    this.db.damage.splice(item.index, 1);
-    this.updateTabs();
-  }
-
-  private updateTabs() {
-    const i18n = this.$i18n;
-    const text = (item: TabItem) =>
-      `${i18n.t("general.data")}${item.index + 1}`;
-
-    let items: TabItem[] = [];
-    this.db.damage.forEach((item, index) =>
-      items.push({
-        key: item.id,
-        index,
-        text,
-        close: this.onRemove,
-      })
-    );
-    this.$store.commit("tabs", { tab: "damage", items });
   }
 }
 </script>
