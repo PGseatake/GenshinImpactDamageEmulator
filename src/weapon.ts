@@ -623,6 +623,7 @@ const PolearmNames = [
     "PrimordialSpear",
     "StaffHoma",
     "VortexVanquisher",
+    "CalamityQueller",
     "CrescentPike",
     "TheCatch",
     "PrototypeGrudge",
@@ -715,6 +716,34 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
             { items: konst.StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "攻撃が命中した時", stack: 5, times: 8 },
             // また、シールド状態の時、攻撃力アップの効果量は2倍になる。
             { items: konst.StatusBonusType.AtkBuf, value: [4, 5, 6, 7, 8], limit: "さらにシールド状態の時", stack: 5, times: 8 },
+        ]
+    },
+    CalamityQueller: {
+        star: 5,
+        atk: WeaponAtk5[49],
+        second: konst.StatusBonusType.AtkBuf,
+        secval: [3.6, 6.4, 7.8, 10.7, 12.2, 13.6, 15.1, 16.5],
+        passive: [
+            // 全元素ダメージ+12~24%。
+            { items: konst.AnyBonusType.Element, value: [12, 15, 18, 21, 24] },
+            // 元素スキルを発動すると、継続時間20秒の「円頓」を獲得し、1秒毎に攻撃力が3.2~6.4%アップする。この効果は最大6回まで重ね掛け可能。
+            {
+                items: konst.StatusBonusType.AtkBuf,
+                value: [3.2, 4.0, 4.8, 5.6, 6.4],
+                limit: "元素スキル発動後1秒毎",
+                stack: 6,
+                times: 20,
+                target: konst.BonusTarget.All,
+            },
+            // この武器を装備したキャラクターが待機中の場合、「円頓」による攻撃力アップ効果は2倍になる。
+            {
+                items: konst.StatusBonusType.AtkBuf,
+                value: [3.2, 4.0, 4.8, 5.6, 6.4],
+                limit: "さらに装備キャラが待機中の時、元素スキル発動後1秒毎",
+                stack: 6,
+                times: 20,
+                target: konst.BonusTarget.Other,
+            },
         ]
     },
     CrescentPike: {

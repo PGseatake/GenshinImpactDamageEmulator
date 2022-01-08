@@ -8,6 +8,7 @@ export type Phase = {
 
 export interface IEnemyInfo {
     readonly unique?: boolean;
+    readonly custom?: boolean;
     readonly resist: ReadonlyRecord<ElementType, number>;
     readonly element?: ReadonlyArray<ElementType>;
     readonly count?: number;
@@ -43,9 +44,10 @@ export const EnemyNames = [
     "Rifthound",
     "GeovishapHatchling",
     "Geovishap",
+    "BathysmalVishapHatchling",
     "AbyssMage",
-    "AbyssHeralds",
-    "AbyssLectors",
+    "AbyssHeralds", // TODO: s削除
+    "AbyssLectors", // TODO: s削除
     "EyeoftheStorm",
     "Cicin",
     "SnowboarKing",
@@ -53,6 +55,7 @@ export const EnemyNames = [
     "Oceanid",
     "Regisvine",
     "PrimoGeovishap",
+    "BathysmalVishap",
     "MaguuKenki",
     "PerpetualArray",
     "GoldenWolflord",
@@ -105,8 +108,11 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
             phys: 10,
         },
         element: [
+            ElementType.Pyro,
             ElementType.Hydro,
+            ElementType.Elect,
             ElementType.Anemo,
+            ElementType.Cryo,
             ElementType.Geo,
         ],
         value: Infinity,
@@ -467,6 +473,24 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
         ],
         value: 20,
     },
+    BathysmalVishapHatchling: {
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            dendro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 10,
+            phys: 30,
+        },
+        element: [
+            ElementType.Hydro,
+            ElementType.Elect,
+            ElementType.Cryo,
+        ],
+        value: 10,
+    },
     AbyssMage: {
         resist: {
             pyro: 10,
@@ -492,6 +516,7 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
         },
     },
     AbyssLectors: {
+        custom: true,
         resist: {
             pyro: 10,
             hydro: 10,
@@ -502,6 +527,10 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
             geo: 10,
             phys: 10,
         },
+        element: [
+            ElementType.Pyro,
+            ElementType.Elect,
+        ],
     },
     EyeoftheStorm: {
         resist: {
@@ -620,6 +649,25 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
             { label: "enemy.down", fixed: -50 },
             { label: "enemy.wakeup", fixed: 200 },
         ],
+    },
+    BathysmalVishap: {
+        custom: true,
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            dendro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 10,
+            phys: 30,
+        },
+        element: [
+            ElementType.Hydro,
+            ElementType.Elect,
+            ElementType.Cryo,
+        ],
+        value: 20,
     },
     MaguuKenki: {
         resist: {

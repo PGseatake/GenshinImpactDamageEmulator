@@ -228,6 +228,9 @@ export default class EnemyTable extends Vue {
       if (item.unique) {
         return this.$t(`${text}.${type}`);
       }
+      if (item.custom) {
+        return this.$t(text + ".format", [this.$t(`${text}.${type}`)]);
+      }
       return this.$t(text, [this.$t("element." + type)]);
     }
     return this.$t(text);

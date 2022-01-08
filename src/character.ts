@@ -37,6 +37,7 @@ export const CharaNames = [
     "Rosaria",
     "Sangonomiya", // Kokomi
     "Sayu",
+    "Shenhe",
     "Sucrose",
     "Tartaglia",
     "Thoma",
@@ -47,6 +48,7 @@ export const CharaNames = [
     "Xinyan",
     "Yanfei",
     "Yoimiya",
+    "YunJin",
     "Zhongli",
 ] as const;
 export type CharaName = typeof CharaNames[number];
@@ -3188,6 +3190,133 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // },
         },
     },
+    Shenhe: {
+        star: 5,
+        element: konst.ElementType.Cryo,
+        energy: 80,
+        weapon: konst.WeaponType.Polearm,
+        status: {
+            hp: [
+                1011, 2624,
+                3491, 5224,
+                5840, 6719,
+                7540, 8429,
+                9045, 9941,
+                10557, 11463,
+                12080, 12993,
+            ],
+            atk: [
+                24, 61,
+                82, 122,
+                137, 157,
+                176, 197,
+                211, 232,
+                247, 268,
+                282, 304,
+            ],
+            def: [
+                65, 168,
+                223, 334,
+                373, 429,
+                482, 538,
+                578, 635,
+                674, 732,
+                772, 830,
+            ],
+        },
+        special: konst.StatusBonusType.AtkBuf,
+        spvalue: [0.0, 0.0, 0.0, 7.2, 14.4, 14.4, 21.6, 28.8],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.3 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 40.2 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 53.3 },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [26.3, 26.3] },
+                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 65.6 },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 110.7 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 63.9 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 128 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
+            ],
+            skill: [
+                { name: "一回押しダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 139 },
+                { name: "長押しダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 188.8 },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 101 },
+                { name: "継続ダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 33.1 },
+            ],
+        },
+        passive: {
+            // 通常攻撃、重撃、落下攻撃、元素スキル、元素爆発が敵に氷元素ダメージを与える時、申鶴自身の攻撃力を基準にダメージがアップする。
+            // TODO: 氷元素ダメージに対して
+            // skill: {
+            //     extra: konst.ExtraBonusType.Flat,
+            //     dest: [konst.FlatBonusDest.Combat, konst.FlatBonusDest.Skill, konst.FlatBonusDest.Burst],
+            //     base: konst.FlatBonusBase.Atk,
+            //     value: 45.7,
+            //     scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Skill },
+            //     limit: "元素スキル継続中",
+            //     times: 10, // or 15
+            //     target: konst.BonusTarget.All,
+            // },
+            // 「籙霊」は領域を形成し、中にいるすべての敵の氷元素耐性と物理耐性をダウンさせ、継続的に氷元素ダメージを与える。
+            burst: {
+                extra: konst.ExtraBonusType.Reduct,
+                type: [konst.ElementType.Cryo, konst.ElementType.Phys],
+                value: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                limit: "元素爆発エリア内の敵",
+                times: 12,
+                target: konst.BonusTarget.All,
+            },
+            // 4. 神女遣霊真訣の領域にいるフィールドキャラクターの氷元素ダメージ+15%
+            asc1st: {
+                items: konst.ElementBonusType.Cryo,
+                value: 15,
+                limit: "元素爆発エリア内のキャラ",
+                times: 12,
+                target: konst.BonusTarget.All,
+            },
+            // 5. 申鶴が仰霊威召将役呪を発動すると、周囲チーム全員に下記効果を与える。
+            // ・一回押しの場合、元素スキルおよび元素爆発ダメージ+15%、持続時間10秒。
+            // ・長押しの場合、通常攻撃、重撃、落下攻撃ダメージ+15%、継続時間15秒。
+            asc4th: [
+                {
+                    items: [konst.CombatBonusType.Skill, konst.CombatBonusType.Burst],
+                    value: 15,
+                    limit: "一回押し元素スキル継続中",
+                    times: 10,
+                    target: konst.BonusTarget.All,
+                },
+                {
+                    items: konst.CombatBonusType.Combat,
+                    value: 15,
+                    limit: "長押し元素スキル継続中",
+                    times: 15,
+                    target: konst.BonusTarget.All,
+                },
+            ],
+        },
+        conste: {
+            // 1. 仰霊威召将役呪の使用回数+1
+            // 2. 神女遣霊真訣の継続時間+6秒。領域内フィールドキャラクターが与える氷元素ダメージの会心ダメージ+15%
+            // 3. 仰霊威召将役呪のスキルLv.+3
+            // 4. 申鶴自身によって「氷翎」効果を付与されたキャラクターが、「氷翎」のダメージアップ効果を発動すると、申鶴は「霜霄訣」を一層獲得する。
+            // 申鶴が仰霊威召将役呪を発動した時、「霜霄訣」をすべて消費する。
+            // 消費した層数1につき、その時発動した仰霊威召将役呪のダメージ+5%。この効果は最大50回まで重ね掛け可能、継続時間60秒。
+            lv4: {
+                extra: konst.ExtraBonusType.Flat,
+                dest: konst.FlatBonusDest.SkillDmg,
+                base: konst.FlatBonusBase.None,
+                value: 5.0,
+                limit: "元素スキル発動を発動して霜霄訣を消費した時",
+                stack: 50,
+                times: 60,
+            },
+            // 5. 神女遣霊真訣のスキルLv.+3
+            // 6. キャラクターが通常攻撃および重撃で「氷翎」効果を発動した時、「氷翎」の発動回数が消費されなくなる。
+        },
+    },
     Sucrose: {
         star: 4,
         element: konst.ElementType.Anemo,
@@ -4042,6 +4171,145 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 琉金の雲間のスキルLv.+3
             // 6. 焔硝の庭火舞いの継続時間中、宵宮自身の通常攻撃は50%の確率で熾焔の矢を1本追加で発射し、本来の60%分のダメージを与える。
             // このダメージは通常攻撃とみなされる。
+        },
+    },
+    YunJin: {
+        star: 4,
+        element: konst.ElementType.Cryo,
+        energy: 60,
+        weapon: konst.WeaponType.Polearm,
+        status: {
+            hp: [
+                894, 2296,
+                2963, 4438,
+                4913, 5651,
+                6283, 7021,
+                7495, 8233,
+                8707, 9445,
+                9919, 10657,
+            ],
+            atk: [
+                16, 41,
+                53, 80,
+                88, 101,
+                113, 126,
+                134, 148,
+                156, 169,
+                178, 191,
+            ],
+            def: [
+                62, 156,
+                204, 306,
+                339, 389,
+                433, 484,
+                517, 567,
+                600, 651,
+                684, 734,
+            ],
+        },
+        special: konst.StatusBonusType.EnRec,
+        spvalue: [0, 0, 0, 20 / 3, 20 / 3 * 2, 20 / 3 * 2, 20, 20 / 3 * 4],
+        talent: {
+            combat: [
+                { name: "1段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 40.5 },
+                { name: "2段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 40.2 },
+                { name: "3段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [23.0, 27.5] },
+                { name: "4段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: [24.0, 28.8] },
+                { name: "5段ダメージ", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 67.3 },
+                { name: "重撃ダメージ", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 121.7 },
+                { name: "落下期間のダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 63.9 },
+                { name: "低空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 128 },
+                { name: "高空落下攻撃ダメージ", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
+            ],
+            skill: [
+                { name: "一回押しダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 149.1, based: konst.DamageBased.Def },
+                { name: "1段チャージダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 261.0, based: konst.DamageBased.Def },
+                { name: "2段チャージダメージ", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 372.8, based: konst.DamageBased.Def },
+            ],
+            burst: [
+                { name: "スキルダメージ", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 244 },
+            ],
+        },
+        passive: {
+            // 敵に通常攻撃ダメージを与える時、雲菫自身の防御力を基準にダメージがアップする。
+            // 「飛雲旗陣」効果は継続時間の終了、または規定回数の発動後に消失する。
+            // 一回の通常攻撃が複数の敵に命中した場合は、その敵の数に応じて発動回数が消費される。「飛雲旗陣」の発動回数は、付与されたキャラクターごとに計算される。
+            burst: {
+                extra: konst.ExtraBonusType.Flat,
+                dest: konst.FlatBonusDest.Normal,
+                base: konst.FlatBonusBase.Def,
+                value: 32,
+                scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Burst },
+                limit: "元素爆発継続中30回分",
+                times: 12,
+                target: konst.BonusTarget.All,
+            },
+            // 4. 攻撃された瞬間に発動する旋雲開相は、長押しの2段チャージ状態になる。
+            // 5. チーム内キャラクターの元素タイプが1/2/3/4種類の時、「飛雲旗陣」による通常攻撃ダメージアップ効果は、
+            // さらに雲菫の防御力2.5%/5%/7.5%/11.5%分上乗せされる。 // TODO: 段階
+            asc4th: [
+                {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.Normal,
+                    base: konst.FlatBonusBase.Def,
+                    value: 2.5,
+                    scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Burst },
+                    limit: "チーム内キャラの元素タイプが1種類の時、元素爆発継続中30回分",
+                    times: 12,
+                    target: konst.BonusTarget.All,
+                },
+                {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.Normal,
+                    base: konst.FlatBonusBase.Def,
+                    value: 5,
+                    scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Burst },
+                    limit: "チーム内キャラの元素タイプが2種類の時、元素爆発継続中30回分",
+                    times: 12,
+                    target: konst.BonusTarget.All,
+                },
+                {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.Normal,
+                    base: konst.FlatBonusBase.Def,
+                    value: 7.5,
+                    scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Burst },
+                    limit: "チーム内キャラの元素タイプが3種類の時、元素爆発継続中30回分",
+                    times: 12,
+                    target: konst.BonusTarget.All,
+                },
+                {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.Normal,
+                    base: konst.FlatBonusBase.Def,
+                    value: 11.5,
+                    scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Burst },
+                    limit: "チーム内キャラの元素タイプが4種類の時、元素爆発継続中30回分",
+                    times: 12,
+                    target: konst.BonusTarget.All,
+                },
+            ],
+        },
+        conste: {
+            // 1. 旋雲開相のクールタイム-18%
+            // 2. 破嶂の旌儀発動後、周囲チーム全員の通常攻撃ダメージ+15%、継続時間12秒。
+            lv2: {
+                items: konst.CombatBonusType.Normal,
+                value: 15,
+                limit: "元素爆発継続中",
+                times: 12,
+                target: konst.BonusTarget.All,
+            },
+            // 3. 破嶂の旌儀のスキルLv.+3
+            // 4. 雲菫が結晶反応を起こすと防御力+20%、継続時間12秒。
+            lv4: {
+                items: konst.StatusBonusType.DefBuf,
+                value: 20,
+                limit: "結晶反応を起こした時",
+                times: 20,
+            },
+            // 5. 旋雲開相のスキルLv.+3
+            // 6. 「飛雲旗陣」状態のキャラクターの通常攻撃の攻撃速度+12%。
         },
     },
     Zhongli: {
