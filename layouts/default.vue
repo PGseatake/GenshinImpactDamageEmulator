@@ -45,7 +45,7 @@
       <v-app-bar
         app
         fixed
-        extension-height="36"
+        :elevation="tabable ? 0 : 4"
         :dense="mobile"
         :clipped-left="desktop"
         :clipped-right="desktop"
@@ -83,10 +83,6 @@
               </v-btn>
             </template>
           </span>
-        </template>
-
-        <template v-if="tabable" #extension>
-          <tab-category />
         </template>
       </v-app-bar>
 
@@ -140,6 +136,10 @@
       </v-navigation-drawer>
 
       <v-main>
+        <template v-if="tabable">
+          <tab-category height="36px" elevation="4" />
+          <div style="height: 36px" />
+        </template>
         <nuxt />
       </v-main>
 
