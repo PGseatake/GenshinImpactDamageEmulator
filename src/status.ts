@@ -79,6 +79,76 @@ export interface IStatus {
 };
 
 export class Status {
+    public static empty(): IStatus {
+        return {
+            talent: { combat: 0, skill: 0, burst: 0 },
+            base: { hp: 0, atk: 0, def: 0 },
+            param: {
+                hp: 0,
+                hp_buf: 0,
+                atk: 0,
+                atk_buf: 0,
+                def: 0,
+                def_buf: 0,
+                elem: 0,
+                en_rec: 0,
+                heal_buf: 0,
+                cri_dmg: 0,
+                cri_rate: 0,
+                any_dmg: 0,
+                normal_cri: 0,
+                heavy_cri: 0,
+                skill_cri: 0,
+                normal_dmg: 0,
+                heavy_dmg: 0,
+                plunge_dmg: 0,
+                combat_dmg: 0,
+                skill_dmg: 0,
+                burst_dmg: 0,
+                phys_dmg: 0,
+                pyro_dmg: 0,
+                hydro_dmg: 0,
+                dendro_dmg: 0,
+                elect_dmg: 0,
+                anemo_dmg: 0,
+                cryo_dmg: 0,
+                geo_dmg: 0,
+                elem_dmg: 0,
+                burning_dmg: 0,
+                vaporize_dmg: 0,
+                melt_dmg: 0,
+                swirl_dmg: 0,
+                echarge_dmg: 0,
+                shutter_dmg: 0,
+                conduct_dmg: 0,
+                overload_dmg: 0,
+            },
+            flat: {
+                normal: 0,
+                heavy: 0,
+                plunge: 0,
+                skill: 0,
+                burst: 0,
+            },
+            reduct: {
+                pyro: 0,
+                hydro: 0,
+                dendro: 0,
+                elect: 0,
+                anemo: 0,
+                cryo: 0,
+                geo: 0,
+                phys: 0,
+                defence: 0,
+            },
+            enchant: {
+                type: "",
+                dest: [],
+                self: false,
+            },
+        };
+    }
+
     public info: ICharaInfo | null;
     public chara: ICharaData | null;
     public talent: StatusTalent;

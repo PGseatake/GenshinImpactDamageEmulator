@@ -189,17 +189,6 @@ export class BonusBase {
         this.data.apply = value;
     }
 
-    public get effect() {
-        return "";
-    }
-
-    public get condition() {
-        if (this.limit) {
-            return `${this.i18n.t("limit." + this.limit)}に${this.effect}`;
-        }
-        return this.effect;
-    }
-
     public get stacks() {
         return this.data.stack;
     }
@@ -221,23 +210,37 @@ export class BonusBase {
         return String(this.i18n.t("bonus." + type)).replace("(%)", "");
     }
 
-    public isMine(chara: ICharaData) {
-        switch (this.target) {
-            case konst.BonusTarget.All:
-                return true;
-            case konst.BonusTarget.Self:
-                return this.name === chara.name;
-            case konst.BonusTarget.Next:
-            case konst.BonusTarget.Other:
-                return this.name !== chara.name;
-            case konst.BonusTarget.Melee:
-                switch (CharaList[chara.name].weapon) {
-                    case konst.WeaponType.Sword:
-                    case konst.WeaponType.Claymore:
-                    case konst.WeaponType.Polearm:
-                        return true;
-                }
-                break;
+    public effect(_: Status[]) {
+        return "";
+    }
+
+    public condition(src: Status[]) {
+        const effect = this.effect(src);
+        if (this.limit) {
+            return `${this.i18n.t("limit." + this.limit)}に${effect}`;
+        }
+        return effect;
+    }
+
+    public isMine(chara: ICharaData | null) {
+        if (chara) {
+            switch (this.target) {
+                case konst.BonusTarget.All:
+                    return true;
+                case konst.BonusTarget.Self:
+                    return this.name === chara.name;
+                case konst.BonusTarget.Next:
+                case konst.BonusTarget.Other:
+                    return this.name !== chara.name;
+                case konst.BonusTarget.Melee:
+                    switch (CharaList[chara.name].weapon) {
+                        case konst.WeaponType.Sword:
+                        case konst.WeaponType.Claymore:
+                        case konst.WeaponType.Polearm:
+                            return true;
+                    }
+                    break;
+            }
         }
         return false;
     }
@@ -264,7 +267,7 @@ export class BasicBonus extends BonusBase {
         this.value = Arrayable.clamp(data.value, talent);
     }
 
-    public get effect() {
+    public effect(_: Status[]) {
         const items = this.types;
         let str = this.types.map(type => this.getLabel(type)).join("/");
         if (RateBonus.check(items[0])) {
@@ -301,7 +304,7 @@ export class FlatBonus extends BonusBase {
     }
 
     // TODO: 多言語対応
-    public get effect() {
+    public effect(src: Status[]) {
         let dest: string[] = [];
         for (const val of this.dest) {
             switch (val) {
@@ -318,7 +321,7 @@ export class FlatBonus extends BonusBase {
             }
         }
         let str = dest.join("/");
-        const value = roundFloat(this.value);
+        const value = roundFloat(this.applyScale(this.value, src[this.index]));
         switch (this.base) {
             case konst.FlatBonusBase.None:
                 return `${str} +${value}%`;
@@ -474,7 +477,7 @@ export class ReductBonus extends BonusBase {
     }
 
     // TODO: 多言語対応
-    public get effect() {
+    public effect(_: Status[]) {
         const types = this.types.map(type => this.i18n.t("reduct." + type)).join("/");
         return `${types} -${roundRate(this.value)}`;
     }
@@ -513,7 +516,7 @@ export class EnchantBonus extends BonusBase {
         this.dest = data.dest;
     }
 
-    public get effect() {
+    public effect(_: Status[]) {
         const dest = this.dest.map(dest => this.i18n.t("combat." + dest)).join("/");
         return `${dest}に${this.i18n.t("element." + this.type)}元素付与`;
     }

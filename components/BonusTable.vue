@@ -47,6 +47,9 @@
       />
     </template>
     <template #[`item.source`]="{ item }">{{ $t(item.source) }}</template>
+    <template #[`item.condition`]="{ item }">{{
+      formatCondition(item)
+    }}</template>
     <template #[`item.stack`]="{ item }">
       <template v-if="item.stack">
         <select-range
@@ -96,6 +99,7 @@ import {
 } from "@mdi/js";
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { BonusBase } from "~/src/bonus";
+import { Status } from "~/src/status";
 
 @Component({
   name: "BonusTable",
@@ -106,6 +110,7 @@ import { BonusBase } from "~/src/bonus";
 })
 export default class BonusTable extends Vue {
   @Prop({ required: true }) items!: Array<BonusBase>;
+  @Prop({ required: true }) status!: Array<Status>;
 
   readonly icons = {
     on: mdiCheckboxMarked,
@@ -152,6 +157,10 @@ export default class BonusTable extends Vue {
   selectRange(item: BonusBase, value: number) {
     item.stacks = value;
     this.onChange();
+  }
+
+  formatCondition(item: BonusBase) {
+    return item.condition(this.status);
   }
 
   formatTimes(value: number) {
