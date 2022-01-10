@@ -211,8 +211,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         set4: [
             { items: [konst.ReactionBonusType.Overload, konst.ReactionBonusType.Burning], value: 40 },
             { items: [konst.ReactionBonusType.Vaporize, konst.ReactionBonusType.Melt], value: 15 },
-            { items: [konst.ReactionBonusType.Overload, konst.ReactionBonusType.Burning], value: 20, limit: "元素スキル発動時", stack: 3, times: 10 },
-            { items: [konst.ReactionBonusType.Vaporize, konst.ReactionBonusType.Melt], value: 7.5, limit: "元素スキル発動時", stack: 3, times: 10 },
+            { items: konst.ElementBonusType.Pyro, value: 7.5, limit: "元素スキル発動時", stack: 3, times: 10 },
         ],
     },
     Lavawalker: {

@@ -19,9 +19,26 @@
         </v-btn>
       </v-col>
     </v-row>
-    <!-- 使い方 -->
+    <!-- アップデート -->
     <v-card>
-      <v-card-title>{{ $t("menu.howto") }}</v-card-title>
+      <v-card-title class="pb-2">{{ $t("index.update") }}</v-card-title>
+      <v-card-text class="text--primary py-0">
+        <release-root :version="version" :root="root" :value="true" />
+      </v-card-text>
+      <v-card-actions>
+        <v-btn
+          small
+          depressed
+          to="/releasenote"
+          color="blue-grey"
+          class="ml-4"
+          >{{ $t("menu.releasenote") }}</v-btn
+        >
+      </v-card-actions>
+    </v-card>
+    <!-- 使い方 -->
+    <v-card class="mt-2">
+      <v-card-title class="pb-2">{{ $t("menu.howto") }}</v-card-title>
       <v-card-text class="text--primary">
         <ol>
           <li>
@@ -49,24 +66,9 @@
         }}</v-btn>
       </v-card-actions>
     </v-card>
+    <!-- 注意点  -->
     <v-card class="mt-2">
-      <v-card-title>{{ $t("index.update") }}</v-card-title>
-      <v-card-text class="text--primary py-0">
-        <release-root :version="version" :root="root" :value="true" />
-      </v-card-text>
-      <v-card-actions>
-        <v-btn
-          small
-          depressed
-          to="/releasenote"
-          color="blue-grey"
-          class="ml-4"
-          >{{ $t("menu.releasenote") }}</v-btn
-        >
-      </v-card-actions>
-    </v-card>
-    <v-card class="mt-2">
-      <v-card-title>{{ $t("index.caution") }}</v-card-title>
+      <v-card-title class="pb-2">{{ $t("index.caution") }}</v-card-title>
       <v-card-text class="text--primary">
         <ul>
           <li>{{ $t("index.C1") }}</li>
