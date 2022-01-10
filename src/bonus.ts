@@ -135,9 +135,18 @@ export const RateBonus = {
 // TODO: 多言語対応
 export const TeamBonus: Partial<ReadonlyRecord<konst.ElementType, IBasicBonus>> = {
     pyro: { items: konst.StatusBonusType.AtkBuf, value: 25 },
-    cryo: { items: konst.CriticalBonusType.Rate, value: 15, limit: "氷元素付着または凍結状態の敵" },
-    geo: { items: konst.AnyBonusType.Damage, value: 15, limit: "シールドが存在する時" },
+    cryo: { items: konst.CriticalBonusType.Rate, value: 15, limit: "elem.cryo" },
+    geo: { items: konst.AnyBonusType.Damage, value: 15, limit: "general.shield" },
 } as const;
+
+const ConductBonus: IReductBonus = {
+    extra: konst.ExtraBonusType.Reduct,
+    type: konst.ElementType.Phys,
+    value: 40,
+    limit: "elem.conduct",
+    times: 12,
+    target: konst.BonusTarget.All,
+};
 
 export class BonusBase {
     public readonly i18n: IVueI18n;
@@ -186,7 +195,7 @@ export class BonusBase {
 
     public get condition() {
         if (this.limit) {
-            return `${this.limit}に${this.effect}`;
+            return `${this.i18n.t("limit." + this.limit)}に${this.effect}`;
         }
         return this.effect;
     }
@@ -730,18 +739,8 @@ export class BonusBuilder {
         // 元素共鳴ボーナス追加
         data.push(...this.resonanceBonus(team.resonance));
         // 超電導を追加 key = 10100
-        // TODO: 多言語対応
-        {
-            const bonus = {
-                extra: konst.ExtraBonusType.Reduct,
-                type: konst.ElementType.Phys,
-                value: 40,
-                limit: "超電導が発生した時",
-                times: 12,
-                target: konst.BonusTarget.All,
-            };
-            data.push(...this.append(bonus, 100, "conduct", "reaction.conduct"));
-        }
+        data.push(...this.append(ConductBonus, 100, "conduct", "reaction.conduct"));
+
         for (const m of new Team(team).members(db)) {
             const member = this.member(m);
             // キャラボーナス追加

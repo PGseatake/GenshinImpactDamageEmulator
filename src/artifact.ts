@@ -120,13 +120,13 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         // 会心率+12%
         set2: { items: konst.CriticalBonusType.Rate, value: 12 },
         // HPが70%以下になると、会心率+24%
-        set4: { items: konst.CriticalBonusType.Rate, value: 24, limit: "HPが70%以下の時" },
+        set4: { items: konst.CriticalBonusType.Rate, value: 24, limit: "hp.le70" },
     },
     Instructor: {
         // 元素熟知+80
         set2: { items: konst.StatusBonusType.Elem, value: 80 },
         // 元素反応を引き起こした後、チーム全員の元素熟知+120、継続時間8秒
-        set4: { items: konst.StatusBonusType.Elem, value: 120, limit: "元素反応後", times: 8, target: konst.BonusTarget.All },
+        set4: { items: konst.StatusBonusType.Elem, value: 120, limit: "elem.react", times: 8, target: konst.BonusTarget.All },
     },
     TheExile: {
         // 元素チャージ効率+20%
@@ -142,13 +142,13 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         // 攻撃力+18%
         set2: { items: konst.StatusBonusType.AtkBuf, value: 18 },
         // HPが50%以上の敵に対するダメージ+30%
-        set4: { items: konst.AnyBonusType.Damage, value: 30, limit: "HPが50%以上の敵" },
+        set4: { items: konst.AnyBonusType.Damage, value: 30, limit: "hp.ge50_en" },
     },
     Artist: {
         // 通常攻撃と重撃のダメージ+15%
         set2: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 15 },
         // 元素スキル発動後、通常攻撃と重撃ダメージ+ 25 %、継続時間8秒
-        set4: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 25, limit: "元素スキル発動時", times: 8 },
+        set4: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 25, limit: "skill.use", times: 8 },
     },
     Gambler: {
         // 元素スキルのダメージ+20%
@@ -164,23 +164,29 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         // 攻撃力+18%
         set2: { items: konst.StatusBonusType.AtkBuf, value: 18 },
         // 該当聖遺物セットを装備したキャラが片手剣、両手剣、長柄武器キャラの場合、通常攻撃ダメージ+35%
-        set4: { items: konst.CombatBonusType.Normal, value: 35, limit: "片手剣、両手剣、長柄武器キャラの時" },
+        set4: {
+            items: konst.CombatBonusType.Normal,
+            value: 35,
+            limit: "artifact.melee",
+            target: konst.BonusTarget.Melee,
+        },
     },
     Troupe: {
         // 元素熟知+80
         set2: { items: konst.StatusBonusType.Elem, value: 80 },
         // 該当聖遺物セットを装備したキャラが法器、弓キャラの場合、キャラの重撃ダメージ+35%
-        set4: { items: konst.CombatBonusType.Heavy, value: 35, limit: "弓、法器キャラの時" },
+        set4: { items: konst.CombatBonusType.Heavy, value: 35, limit: "artifact.ranged" },
     },
     Thundersoother: {
         // 雷元素耐性+40%
         // 雷元素の影響を受けた敵に対するダメージ+35%
-        set4: { items: konst.AnyBonusType.Damage, value: 35, limit: "雷元素の影響を受けた敵" },
+        set4: { items: konst.AnyBonusType.Damage, value: 35, limit: "elem.elect" },
     },
     Fury: {
         // 雷元素ダメージ+15%
         set2: { items: konst.ElementBonusType.Elect, value: 15 },
-        // 過負荷、感電、超電導反応によるダメージ+40%。それらの元素反応を起こすと、元素スキルのクールタイム-1秒。0.8秒毎に最大1回のみ発動可能
+        // 過負荷、感電、超電導反応によるダメージ+40%。
+        // それらの元素反応を起こすと、元素スキルのクールタイム-1秒。0.8秒毎に最大1回のみ発動可能
         set4: { items: [konst.ReactionBonusType.Overload, konst.ReactionBonusType.Echarge, konst.ReactionBonusType.Conduct], value: 40 },
     },
     Maiden: {
@@ -198,7 +204,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
                 extra: konst.ExtraBonusType.Reduct,
                 type: konst.AnyReductType.Contact,
                 value: 40,
-                limit: "影響を受けた敵",
+                limit: "elem.swirl",
                 times: 10,
                 target: konst.BonusTarget.All,
             },
@@ -207,70 +213,71 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
     CrimsonWitch: {
         // 炎元素ダメージ+15%
         set2: { items: konst.ElementBonusType.Pyro, value: 15 },
-        // 過負荷、燃焼反応によるダメージ+40%。蒸発、溶解反応による加算効果+15%。元素スキルを発動した10秒間、2セットの効果+50%、最大3重まで
+        // 過負荷、燃焼反応によるダメージ+40%。蒸発、溶解反応による加算効果+15%。
+        // 元素スキルを発動した10秒間、2セットの効果+50%、最大3重まで
         set4: [
             { items: [konst.ReactionBonusType.Overload, konst.ReactionBonusType.Burning], value: 40 },
             { items: [konst.ReactionBonusType.Vaporize, konst.ReactionBonusType.Melt], value: 15 },
-            { items: konst.ElementBonusType.Pyro, value: 7.5, limit: "元素スキル発動時", stack: 3, times: 10 },
+            { items: konst.ElementBonusType.Pyro, value: 7.5, limit: "skill.use", stack: 3, times: 10 },
         ],
     },
     Lavawalker: {
         // 炎元素耐性+40%
         // 炎元素の影響を受けた敵に対するダメージ+35%
-        set4: { items: konst.AnyBonusType.Damage, value: 35, limit: "炎元素の影響を受けた敵" },
+        set4: { items: konst.AnyBonusType.Damage, value: 35, limit: "elem.pyro" },
     },
     Noblesse: {
         // 元素爆発のダメージ+20%
         set2: { items: konst.CombatBonusType.Burst, value: 20 },
         // 元素爆発を発動すると、チーム全員の攻撃力+20%、継続時間12秒、重ね掛け不可
-        set4: { items: konst.StatusBonusType.AtkBuf, value: 20, limit: "元素爆発時", times: 12, target: konst.BonusTarget.All },
+        set4: { items: konst.StatusBonusType.AtkBuf, value: 20, limit: "burst.use", times: 12, target: konst.BonusTarget.All },
     },
     Chivalry: {
         // 物理ダメージ+25%
         set2: { items: konst.ElementBonusType.Phys, value: 25 },
         // 敵を倒した10秒以内に重撃を発動するとスタミナの消耗はなく、与えるダメージ+50%
-        set4: { items: konst.CombatBonusType.Heavy, value: 50, limit: "敵を倒した後", times: 10 },
+        set4: { items: konst.CombatBonusType.Heavy, value: 50, limit: "general.defeat", times: 10 },
     },
     Petra: {
         // 岩ダメージ+15%
         set2: { items: konst.ElementBonusType.Geo, value: 15 },
         // 結晶反応で形成された欠片を獲得すると、チーム全員の該当元素ダメージ+35%、継続時間10秒。元素ダメージ上昇は同時に1種類のみ獲得可能。
-        set4: { items: konst.AnyBonusType.Element, value: 35, limit: "結晶反応した元素", times: 10, target: konst.BonusTarget.All },
+        set4: { items: konst.AnyBonusType.Element, value: 35, limit: "artifact.crystal", times: 10, target: konst.BonusTarget.All },
     },
     Bolide: {
         // シールド強化+35%
         // シールド状態の時、通常攻撃と重撃ダメージ+40%
-        set4: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 40, limit: "シールド状態の時" },
+        set4: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 40, limit: "general.shield" },
     },
     Icebreaker: {
         // 氷元素ダメージ+15%
         set2: { items: konst.ElementBonusType.Cryo, value: 15 },
         // 氷元素の影響を受けている敵を攻撃した場合、会心率+20%。敵が凍結状態の場合、会心率は更に+20%。
         set4: [
-            { items: konst.CriticalBonusType.Rate, value: 20, limit: "氷元素の影響を受けた敵" },
-            { items: konst.CriticalBonusType.Rate, value: 20, limit: "さらに凍結状態の敵" }
+            { items: konst.CriticalBonusType.Rate, value: 20, limit: "elem.cryo" },
+            { items: konst.CriticalBonusType.Rate, value: 20, limit: "artifact.more_frozen" }
         ],
     },
     OceanConqueror: {
         // 水元素ダメージ+15%
         set2: { items: konst.ElementBonusType.Hydro, value: 15 },
         // 元素スキルを発動した後の15秒間、通常攻撃と重撃のダメージ+30%
-        set4: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 30, limit: "元素スキル発動時", times: 15 }
+        set4: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 30, limit: "skill.use", times: 15 }
     },
     Millelith: {
         // HP+20%
         set2: { items: konst.StatusBonusType.HpBuf, value: 20 },
         // 元素スキルが敵に命中すると、周囲のチーム全員の攻撃力+20%、シールド強化+30%、持続時間3秒。この効果は0.5秒毎に1回のみ発動可能。
         // この聖遺物セットを装備したキャラクターが待機している場合にも効果を発動できる。
-        set4: { items: konst.StatusBonusType.AtkBuf, value: 20, limit: "元素スキルが敵に命中した時", times: 3, target: konst.BonusTarget.All }
+        set4: { items: konst.StatusBonusType.AtkBuf, value: 20, limit: "skill.hit", times: 3, target: konst.BonusTarget.All }
     },
     PaleFlame: {
         // 物理ダメージ+25%
         set2: { items: konst.ElementBonusType.Phys, value: 25 },
         // 元素スキルが敵に命中すると、攻撃力+9%。持続時間7秒、最大2重まで、0.3秒毎に1回のみ発動可能。2重まで重ねると、2セットの効果が2倍になる。
         set4: [
-            { items: konst.StatusBonusType.AtkBuf, value: 9, limit: "元素スキルが命中した時", stack: 2, times: 7 },
-            { items: konst.StatusBonusType.AtkBuf, value: 18, limit: "さらに効果を2重にした時", times: 7 },
+            { items: konst.StatusBonusType.AtkBuf, value: 9, limit: "skill.hit", stack: 2, times: 7 },
+            { items: konst.StatusBonusType.AtkBuf, value: 18, limit: "artifact.more_x2", times: 7 },
         ],
     },
     SeveredFate: {
@@ -289,7 +296,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         // 攻撃力+18%
         set2: { items: konst.StatusBonusType.AtkBuf, value: 18 },
         // 元素スキルを発動した時、キャラクターの元素エネルギーが15以上の場合、元素エネルギーを15消費し、次の10秒間通常攻撃、重撃、落下攻撃ダメージ+50%
-        set4: { items: konst.CombatBonusType.Combat, value: 50, limit: "元素スキルを発動してさらに元素エネルギーが15以上の時", times: 10 }
+        set4: { items: konst.CombatBonusType.Combat, value: 50, limit: "skill.use_en15", times: 10 }
     },
     OceanHuedClam: {
         // 与える治療効果+15%
@@ -304,7 +311,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         set4: {
             items: [konst.StatusBonusType.DefBuf, konst.ElementBonusType.Geo],
             value: 6,
-            limit: "岩元素攻撃が命中した時",
+            limit: "artifact.hit_geo",
             stack: 4,
             times: 6,
         }
