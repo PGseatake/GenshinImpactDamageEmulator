@@ -73,11 +73,11 @@ import { parseLevel } from "~/src/ascension";
 @Component({
   name: "DamageDetail",
   components: {
-    SelectMember: () => import("~/components/SelectMember.vue"),
-    EnemyTable: () => import("~/components/EnemyTable.vue"),
-    BonusTable: () => import("~/components/BonusTable.vue"),
-    StatusTable: () => import("~/components/StatusTable.vue"),
-    DamageTable: () => import("~/components/DamageTable.vue"),
+    EnemyTable: () => import("~/components/damage/EnemyTable.vue"),
+    BonusTable: () => import("~/components/damage/BonusTable.vue"),
+    StatusTable: () => import("~/components/damage/StatusTable.vue"),
+    DamageTable: () => import("~/components/damage/DamageTable.vue"),
+    SelectMember: () => import("~/components/damage/SelectMember.vue"),
   },
   inheritAttrs: false,
 })

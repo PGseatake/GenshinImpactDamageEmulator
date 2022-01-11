@@ -107,8 +107,12 @@ import {
   mdiTshirtCrew,
   mdiTwitter,
 } from "@mdi/js";
+import ReleaseRoot from "~/components/menu/ReleaseRoot.vue";
 
-@Component({ name: "PageIndex" })
+@Component({
+  name: "PageIndex",
+  components: { ReleaseRoot },
+})
 export default class PageIndex extends Vue {
   readonly icons = {
     chara: mdiAccount,

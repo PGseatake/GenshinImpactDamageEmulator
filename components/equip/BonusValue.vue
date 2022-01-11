@@ -105,6 +105,7 @@ const BonusIcons: Record<DisplayBonusType, string> = {
   components: {
     NumberField: () => import("~/components/NumberField.vue"),
   },
+  inheritAttrs: false,
 })
 export default class BonusValue extends Vue {
   @Prop({ required: true }) types!: ReadonlyArray<DisplayBonusType>;

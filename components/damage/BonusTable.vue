@@ -103,10 +103,10 @@ import { Status } from "~/src/status";
 
 @Component({
   name: "BonusTable",
-  inheritAttrs: false,
   components: {
     SelectRange: () => import("~/components/SelectRange.vue"),
   },
+  inheritAttrs: false,
 })
 export default class BonusTable extends Vue {
   @Prop({ required: true }) items!: Array<BonusBase>;

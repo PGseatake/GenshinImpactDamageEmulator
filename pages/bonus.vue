@@ -13,6 +13,7 @@ import { DBArtifactTable } from "~/src/artifact";
 import { DBTeamTable, Team } from "~/src/team";
 import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
 import { Status } from "~/src/status";
+import BonusTable from "~/components/damage/BonusTable.vue";
 
 type TabItem = {
   key: number;
@@ -22,9 +23,7 @@ type TabItem = {
 
 @Component({
   name: "PageBonus",
-  components: {
-    SelectRange: () => import("~/components/SelectRange.vue"),
-  },
+  components: { BonusTable },
 })
 export default class PageBonus extends Vue {
   db!: DBTeamTable &

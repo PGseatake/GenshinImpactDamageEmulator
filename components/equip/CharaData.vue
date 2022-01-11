@@ -187,10 +187,10 @@ import { ICharaData, CharaList, CharaNames, CharaName } from "~/src/character";
     NameComment: () => import("~/components/NameComment.vue"),
     NumberField: () => import("~/components/NumberField.vue"),
     SelectRange: () => import("~/components/SelectRange.vue"),
-    CharaSpecial: () => import("~/components/CharaSpecial.vue"),
     AscensionLevel: () => import("~/components/AscensionLevel.vue"),
-    DialogAppend: () => import("~/components/DialogAppend.vue"),
-    DialogRemove: () => import("~/components/DialogRemove.vue"),
+    CharaSpecial: () => import("~/components/equip/CharaSpecial.vue"),
+    DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
   },
   inheritAttrs: false,
 })

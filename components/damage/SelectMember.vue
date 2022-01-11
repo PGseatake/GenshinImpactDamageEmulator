@@ -76,8 +76,9 @@ import { ITeamData, IMember, Team } from "~/src/team";
   components: {
     NameComment: () => import("~/components/NameComment.vue"),
     AscensionLevel: () => import("~/components/AscensionLevel.vue"),
-    SelectElement: () => import("~/components/SelectElement.vue"),
+    SelectElement: () => import("~/components/damage/SelectElement.vue"),
   },
+  inheritAttrs: false,
 })
 export default class SelectMember extends Vue {
   @Prop({ required: true }) damage!: string;

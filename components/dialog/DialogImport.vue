@@ -22,11 +22,12 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "nuxt-property-decorator";
-import DialogFile from "~/components/DialogFile.vue";
+import DialogFile from "~/components/dialog/DialogFile.vue";
 
 @Component({
   name: "DialogImport",
   components: { DialogFile },
+  inheritAttrs: false,
 })
 export default class DialogImport extends Vue {
   @Prop({ required: true }) reflect!: (json: string | null) => void;

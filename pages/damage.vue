@@ -22,6 +22,7 @@ import { DBTeamTable, Team } from "~/src/team";
 import { EnemyNames } from "~/src/enemy";
 import { DBDamageTable, IDamageData } from "~/src/damage";
 import { mdiClose, mdiPlaylistPlus } from "@mdi/js";
+import DamageDetail from "~/components/damage/DamageDetail.vue";
 
 type TabItem = {
   key: string;
@@ -68,9 +69,7 @@ class TabBuilder {
 
 @Component({
   name: "PageDamage",
-  components: {
-    DamageDetail: () => import("~/components/DamageDetail.vue"),
-  },
+  components: { DamageDetail },
 })
 export default class PageDamage extends Vue {
   db: DBTeamTable & DBDamageTable = this.$db;

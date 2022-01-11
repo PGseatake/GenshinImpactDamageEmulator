@@ -11,7 +11,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiPlaylistPlus } from "@mdi/js";
-import CharaData from "~/components/CharaData.vue";
+import CharaData from "~/components/equip/CharaData.vue";
 
 @Component({
   name: "PageCharacter",

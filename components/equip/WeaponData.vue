@@ -140,10 +140,10 @@ import { IWeaponData, WeaponNames, WeaponList } from "~/src/weapon";
     NameComment: () => import("~/components/NameComment.vue"),
     NumberField: () => import("~/components/NumberField.vue"),
     SelectRange: () => import("~/components/SelectRange.vue"),
-    WeaponSecond: () => import("~/components/WeaponSecond.vue"),
     AscensionLevel: () => import("~/components/AscensionLevel.vue"),
-    DialogAppend: () => import("~/components/DialogAppend.vue"),
-    DialogRemove: () => import("~/components/DialogRemove.vue"),
+    WeaponSecond: () => import("~/components/equip/WeaponSecond.vue"),
+    DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
   },
   inheritAttrs: false,
 })

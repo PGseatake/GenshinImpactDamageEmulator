@@ -185,10 +185,10 @@ import { SelectItem } from "~/components/SelectName.vue";
   name: "PageTeam",
   components: {
     NameComment: () => import("~/components/NameComment.vue"),
-    Resonance: () => import("~/components/Resonance.vue"),
-    EquipDetail: () => import("~/components/EquipDetail.vue"),
-    DialogAppend: () => import("~/components/DialogAppend.vue"),
-    DialogRemove: () => import("~/components/DialogRemove.vue"),
+    Resonance: () => import("~/components/equip/Resonance.vue"),
+    EquipDetail: () => import("~/components/equip/EquipDetail.vue"),
+    DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
   },
 })
 export default class PageTeam extends Vue {

@@ -33,9 +33,11 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { NoneElementType } from "~/src/const";
+import ChipElement from "~/components/ChipElement.vue";
 
 @Component({
   name: "SelectElement",
+  components: { ChipElement },
   inheritAttrs: false,
 })
 export default class SelectElement extends Vue {

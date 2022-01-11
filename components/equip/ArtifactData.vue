@@ -226,11 +226,11 @@ function randomRange(max: number): number {
 @Component({
   name: "ArtifactData",
   components: {
-    BonusValue: () => import("~/components/BonusValue.vue"),
     NameComment: () => import("~/components/NameComment.vue"),
     SelectRange: () => import("~/components/SelectRange.vue"),
-    DialogAppend: () => import("~/components/DialogAppend.vue"),
-    DialogRemove: () => import("~/components/DialogRemove.vue"),
+    BonusValue: () => import("~/components/equip/BonusValue.vue"),
+    DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
   },
   inheritAttrs: false,
 })

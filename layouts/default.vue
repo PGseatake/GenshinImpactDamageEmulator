@@ -205,10 +205,11 @@ interface ITool {
 @Component({
   name: "default",
   components: {
-    PopupBar: () => import("~/components/PopupBar.vue"),
-    DialogImport: () => import("~/components/DialogImport.vue"),
-    DialogExport: () => import("~/components/DialogExport.vue"),
-    SelectLocale: () => import("~/components/SelectLocale.vue"),
+    DialogImport: () => import("~/components/dialog/DialogImport.vue"),
+    DialogExport: () => import("~/components/dialog/DialogExport.vue"),
+    SelectLocale: () => import("~/components/menu/SelectLocale.vue"),
+    TabCategory: () => import("~/components/menu/TabCategory.vue"),
+    PopupBar: () => import("~/components/menu/PopupBar.vue"),
   },
 })
 export default class Default extends Vue {

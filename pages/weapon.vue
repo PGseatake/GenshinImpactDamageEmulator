@@ -22,7 +22,7 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiPlaylistPlus } from "@mdi/js";
 import { WeaponTypes } from "~/src/const";
-import WeaponData from "~/components/WeaponData.vue";
+import WeaponData from "~/components/equip/WeaponData.vue";
 
 @Component({
   name: "PageWeapon",

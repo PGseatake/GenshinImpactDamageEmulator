@@ -66,8 +66,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiContentSave, mdiExport, mdiImport } from "@mdi/js";
-import SettingSelect, { ISelect } from "~/components/SettingSelect.vue";
-import SettingSwitch, { ISwitch } from "~/components/SettingSwitch.vue";
+import SettingSelect, { ISelect } from "~/components/menu/SettingSelect.vue";
+import SettingSwitch, { ISwitch } from "~/components/menu/SettingSwitch.vue";
 
 type IButton = {
   readonly text: string;

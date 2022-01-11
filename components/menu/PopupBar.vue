@@ -7,7 +7,10 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "nuxt-property-decorator";
 
-@Component({ name: "PopupBar" })
+@Component({
+  name: "PopupBar",
+  inheritAttrs: false,
+})
 export default class PopupBar extends Vue {
   show = false;
   text = "";

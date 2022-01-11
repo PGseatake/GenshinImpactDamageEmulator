@@ -208,11 +208,11 @@ import { Team } from "~/src/team";
   name: "PageEquipment",
   components: {
     NameComment: () => import("~/components/NameComment.vue"),
-    CharaDetail: () => import("~/components/CharaDetail.vue"),
-    WeaponDetail: () => import("~/components/WeaponDetail.vue"),
-    ArtifactDetail: () => import("~/components/ArtifactDetail.vue"),
-    DialogAppend: () => import("~/components/DialogAppend.vue"),
-    DialogRemove: () => import("~/components/DialogRemove.vue"),
+    CharaDetail: () => import("~/components/equip/CharaDetail.vue"),
+    WeaponDetail: () => import("~/components/equip/WeaponDetail.vue"),
+    ArtifactDetail: () => import("~/components/equip/ArtifactDetail.vue"),
+    DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
   },
 })
 export default class PageEquipment extends Vue {
