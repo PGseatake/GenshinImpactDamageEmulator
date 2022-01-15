@@ -1,11 +1,13 @@
 <template>
   <v-container class="d-flex justify-center">
     <v-list width="600">
-      <template v-for="(item, i) of items">
+      <template v-for="(item, i) of dialogItems">
         <!-- カテゴリヘッダ -->
         <template v-if="item.icon === 'header'">
           <v-divider v-if="i" :key="'d' + i" />
-          <v-subheader v-text="$t(item.text)" :key="'s' + i" />
+          <v-subheader :key="'s' + i">{{
+            $t("setting." + item.text)
+          }}</v-subheader>
         </template>
         <!-- カテゴリアイテム -->
         <v-list-item v-else :key="i">
@@ -15,7 +17,9 @@
           >
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
-          <v-list-item-content>{{ $t(item.text) }}</v-list-item-content>
+          <v-list-item-content>{{
+            $t("setting." + item.text)
+          }}</v-list-item-content>
           <!-- スイッチタイプ -->
           <v-list-item-action v-if="item.switch" :class="itemClass">
             <setting-switch v-bind="item.switch" />
@@ -26,34 +30,22 @@
           </v-list-item-action>
           <!-- ボタンタイプ -->
           <v-list-item-action v-if="item.button" :class="itemClass">
-            <v-btn :color="item.button.color" @click="item.button.on(item)">{{
-              $t(item.button.text)
-            }}</v-btn>
+            <v-btn
+              v-text="$t(item.button.text)"
+              :color="item.button.color"
+              @click="item.button.on(item)"
+            />
           </v-list-item-action>
         </v-list-item>
       </template>
     </v-list>
 
-    <v-dialog v-model="dialogShow" width="450px">
-      <v-card>
-        <v-card-title v-text="$t(dialogInfo.title)" />
-        <v-card-text v-html="$t(dialogInfo.text)" />
-        <v-card-text
-          v-if="dialogInfo.subtext"
-          v-html="$t(dialogInfo.subtext)"
-          class="text-caption"
-        />
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text color="secondary" @click="dialogShow = false">{{
-            $t("dialog.cancel")
-          }}</v-btn>
-          <v-btn text color="primary" @click="dialogInfo.on">{{
-            $t("dialog.ok")
-          }}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <dialog-setting
+      :show.sync="dialogShow"
+      :group="dialogGroup"
+      width="450px"
+      @accept="dialogAccept"
+    />
   </v-container>
 </template>
 
@@ -66,26 +58,24 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiContentSave, mdiExport, mdiImport } from "@mdi/js";
-import SettingSelect, { ISelect } from "~/components/menu/SettingSelect.vue";
 import SettingSwitch, { ISwitch } from "~/components/menu/SettingSwitch.vue";
+import SettingSelect, { ISelect } from "~/components/menu/SettingSelect.vue";
 
 type IButton = {
   readonly text: string;
   readonly color?: string;
-  readonly on: (item: IListItem) => void;
+  readonly on: (item: ListItem) => void;
 };
 type IDialog = {
-  readonly title: string;
-  readonly text: string;
-  readonly subtext?: string;
+  readonly group: string;
   readonly on: () => void;
 };
-type IListItem = {
+type ListItem = {
   readonly icon?: string;
   readonly text: string;
   readonly value?: any;
-  readonly select?: ISelect;
   readonly switch?: ISwitch;
+  readonly select?: ISelect;
   readonly button?: IButton;
   readonly dialog?: IDialog;
 };
@@ -95,70 +85,65 @@ type IListItem = {
   components: { SettingSwitch, SettingSelect },
 })
 export default class PageSetting extends Vue {
-  items: IListItem[] = [
-    { icon: "header", text: "setting.data" },
+  dialogShow = false;
+  dialogItems: ListItem[] = [
+    { icon: "header", text: "data" },
     {
-      text: "setting.autosave",
+      text: "autosave",
       switch: { prop: "autosave" },
     },
     {
       icon: mdiContentSave,
-      text: "setting.save",
+      text: "save",
       button: { text: "setting.exec", on: this.onClickSave },
     },
     {
       icon: mdiImport,
-      text: "setting.import",
+      text: "import",
       button: { text: "setting.exec", on: () => (this.importShow = true) },
     },
     {
       icon: mdiExport,
-      text: "setting.export",
+      text: "export",
       button: { text: "setting.exec", on: () => (this.exportShow = true) },
     },
     {
-      text: "setting.delete.detail",
+      text: "delete.detail",
       button: {
         text: "setting.exec",
         color: "error",
-        on: (item: IListItem) => this.dialog(item.dialog),
+        on: this.onClickDialog,
       },
       dialog: {
-        title: "setting.delete.title",
-        text: "setting.delete.text",
-        subtext: "setting.delete.subtext",
+        group: "delete",
         on: this.onClickDelete,
       },
     },
-    { icon: "header", text: "setting.disp" },
+    { icon: "header", text: "disp" },
     {
-      text: "setting.artifact.detail",
+      text: "artifact.detail",
       select: {
         prop: "artifact",
         items: [
-          { text: "setting.artifact.name", value: "" },
-          { text: "setting.artifact.set", value: "set" },
+          { text: "name", value: "" },
+          { text: "set", value: "set" },
         ],
       },
     },
     {
-      text: "setting.critical.detail",
+      text: "critical.detail",
       select: {
         prop: "critical",
         items: [
-          { text: "setting.critical.base", value: "" },
-          { text: "setting.critical.expc", value: "expc" },
-          { text: "setting.critical.both", value: "both" },
+          { text: "base", value: "" },
+          { text: "expc", value: "expc" },
+          { text: "both", value: "both" },
         ],
       },
     },
   ];
-  dialogInfo: IDialog = {
-    title: "",
-    text: "",
-    on: () => {},
-  };
-  dialogShow = false;
+  dialogGroup = "delete";
+  dialogAccept = () => {};
 
   get itemClass() {
     return this.$vuetify.breakpoint.xs ? "my-1 ml-4" : "my-1 ml-12";
@@ -183,15 +168,17 @@ export default class PageSetting extends Vue {
     this.$store.commit("tabs", {});
   }
 
-  dialog(info?: IDialog) {
-    if (info) {
-      this.dialogInfo = info;
-      this.dialogShow = true;
-    }
-  }
-
   popup(label: string) {
     this.$store.commit("popup", this.$t("popup." + label));
+  }
+
+  onClickDialog(item: ListItem) {
+    const dialog = item.dialog;
+    if (dialog) {
+      this.dialogAccept = dialog.on;
+      this.dialogGroup = dialog.group;
+      this.dialogShow = true;
+    }
   }
 
   onClickSave() {

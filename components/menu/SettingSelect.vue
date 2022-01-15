@@ -9,10 +9,10 @@
     @change="onChange"
   >
     <template #selection="{ item }">
-      {{ $t(item.text) }}
+      {{ $t(`setting.${prop}.${item.text}`) }}
     </template>
     <template #item="{ item }">
-      {{ $t(item.text) }}
+      {{ $t(`setting.${prop}.${item.text}`) }}
     </template>
   </v-select>
 </template>
