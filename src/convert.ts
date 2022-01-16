@@ -15,11 +15,31 @@ export type SettingString = {
     artifact: string;
     critical: string;
 };
+export type SettingInitial = {
+    initial: {
+        chara: {
+            conste: number;
+            level: string;
+            combat: number;
+            skill: number;
+            burst: number;
+        },
+        weapon: {
+            rank: number;
+            level: string;
+        };
+        artifact: {
+            star: number;
+            level: number;
+        },
+    };
+};
 export type DBSetting = {
-    setting: SettingBoolean & SettingString;
+    setting: SettingBoolean & SettingString & SettingInitial;
 };
 
-export type DBVersion = { version: "1.0"; };
+export const CurrentVersion = "1.1";
+export type DBVersion = { version: string; };
 
 export type Database = DBVersion &
     DBCharaTable & DBWeaponTable & DBArtifactTable & DBEquipTable &
@@ -222,23 +242,58 @@ function Ver002toVer100(before: DatabaseV002): Database {
     return after;
 }
 
+const ver100 = {
+    initial() {
+        return {
+            initial: {
+                chara: {
+                    conste: 0,
+                    level: "1",
+                    combat: 1,
+                    skill: 1,
+                    burst: 1,
+                },
+                weapon: {
+                    rank: 1,
+                    level: "1",
+                },
+                artifact: {
+                    star: 3,
+                    level: 0,
+                },
+            }
+        };
+    }
+};
+
 export default function convert(data?: DatabaseV002 | DatabaseV100): Database {
     if (data) {
         if (data.ver) {
             if (data.ver === "0.02") {
                 return Ver002toVer100(data);
             }
-        } else if (data.version) {
-            if (data.version === "1.0") {
-                return {
-                    ...convert(),
-                    ...data,
-                };
+        }
+        const version = data.version;
+        if (version) {
+            switch (version) {
+                case "1.0":
+                    data.setting = {
+                        ...data.setting,
+                        ...ver100.initial(),
+                    };
+                // fallthrough
+                case "1.1":
+                    return {
+                        ...convert(),
+                        ...data,
+                    };
             }
+            console.warn("Unkonwn version: " + version);
+            return data;
         }
     }
     return {
-        version: "1.0",
+        version: CurrentVersion,
         chara: [],
         sword: [],
         claymore: [],
@@ -258,6 +313,7 @@ export default function convert(data?: DatabaseV002 | DatabaseV100): Database {
             autosave: true,
             artifact: "",
             critical: "",
-        }
+            ...ver100.initial(),
+        },
     };
 }

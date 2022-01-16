@@ -4,6 +4,7 @@
     v-model="value"
     :input-value="value"
     dense
+    inset
     single-line
     hide-details
     @change="onChange"

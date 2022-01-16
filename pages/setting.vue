@@ -46,6 +46,13 @@
       width="450px"
       @accept="dialogAccept"
     />
+    <dialog-initial
+      :show.sync="initialShow"
+      :title="initialTitle"
+      :items="initialItems"
+      width="300px"
+      @accept="initialAccept"
+    />
   </v-container>
 </template>
 
@@ -60,6 +67,11 @@ import { Vue, Component } from "vue-property-decorator";
 import { mdiContentSave, mdiExport, mdiImport } from "@mdi/js";
 import SettingSwitch, { ISwitch } from "~/components/menu/SettingSwitch.vue";
 import SettingSelect, { ISelect } from "~/components/menu/SettingSelect.vue";
+import {
+  ILevel,
+  IRange,
+  ListItem as InitialItem,
+} from "~/components/dialog/DialogInitial.vue";
 
 type IButton = {
   readonly text: string;
@@ -119,6 +131,20 @@ export default class PageSetting extends Vue {
         on: this.onClickDelete,
       },
     },
+    {
+      text: "initial.chara.detail",
+      button: {
+        text: "setting.initial.button",
+        on: this.onClickInitChara,
+      },
+    },
+    {
+      text: "initial.equip.detail",
+      button: {
+        text: "setting.initial.button",
+        on: this.onClickInitEquip,
+      },
+    },
     { icon: "header", text: "disp" },
     {
       text: "artifact.detail",
@@ -144,6 +170,77 @@ export default class PageSetting extends Vue {
   ];
   dialogGroup = "delete";
   dialogAccept = () => {};
+  charaItems: InitialItem[] = [
+    { type: "header", text: "menu.character" },
+    {
+      type: "range",
+      text: "general.conste",
+      value: 0,
+      min: 0,
+      max: 6,
+    },
+    {
+      type: "level",
+      text: "general.level",
+      value: "1",
+    },
+    { type: "header", text: "general.talent" },
+    {
+      type: "range",
+      text: "general.combat",
+      value: 1,
+      min: 1,
+      max: 10,
+    },
+    {
+      type: "range",
+      text: "combat.skill",
+      value: 1,
+      min: 1,
+      max: 10,
+    },
+    {
+      type: "range",
+      text: "combat.burst",
+      value: 1,
+      min: 1,
+      max: 10,
+    },
+  ];
+  equipItems: InitialItem[] = [
+    { type: "header", text: "menu.weapon" },
+    {
+      type: "range",
+      text: "general.rank",
+      value: 1,
+      min: 1,
+      max: 5,
+    },
+    {
+      type: "level",
+      text: "general.level",
+      value: "1",
+    },
+    { type: "header", text: "menu.artifact" },
+    {
+      type: "range",
+      text: "general.star",
+      value: 3,
+      min: 3,
+      max: 5,
+    },
+    {
+      type: "range",
+      text: "general.level",
+      value: 0,
+      min: 0,
+      max: 20,
+    },
+  ];
+  initialShow = false;
+  initialTitle = "";
+  initialItems: InitialItem[] = [];
+  initialAccept = () => {};
 
   get itemClass() {
     return this.$vuetify.breakpoint.xs ? "my-1 ml-4" : "my-1 ml-12";
@@ -189,6 +286,62 @@ export default class PageSetting extends Vue {
   onClickDelete() {
     localStorage.removeItem("global_data");
     this.$store.commit("reload");
+  }
+
+  onClickInitChara() {
+    const { chara } = this.$db.setting.initial;
+    let items = this.charaItems;
+    items[1].value = chara.conste;
+    items[2].value = chara.level;
+    items[4].value = chara.combat;
+    items[5].value = chara.skill;
+    items[6].value = chara.burst;
+
+    this.initialItems.splice(0);
+    this.initialItems.push(...items);
+
+    this.initialAccept = this.onChangeInitChara;
+    this.initialTitle = "chara.title";
+    this.initialShow = true;
+  }
+
+  onChangeInitChara() {
+    let { chara } = this.$db.setting.initial;
+    const items = this.charaItems;
+    chara.conste = (items[1] as IRange).value;
+    chara.level = (items[2] as ILevel).value;
+    chara.combat = (items[4] as IRange).value;
+    chara.skill = (items[5] as IRange).value;
+    chara.burst = (items[6] as IRange).value;
+
+    this.onClickSave();
+  }
+
+  onClickInitEquip() {
+    const { weapon, artifact } = this.$db.setting.initial;
+    let items = this.equipItems;
+    items[1].value = weapon.rank;
+    items[2].value = weapon.level;
+    items[4].value = artifact.star;
+    items[5].value = artifact.level;
+
+    this.initialItems.splice(0);
+    this.initialItems.push(...items);
+
+    this.initialAccept = this.onChangeInitEquip;
+    this.initialTitle = "equip.title";
+    this.initialShow = true;
+  }
+
+  onChangeInitEquip() {
+    let { weapon, artifact } = this.$db.setting.initial;
+    const items = this.equipItems;
+    weapon.rank = (items[1] as IRange).value;
+    weapon.level = (items[2] as ILevel).value;
+    artifact.star = (items[4] as IRange).value;
+    artifact.level = (items[5] as IRange).value;
+
+    this.onClickSave();
   }
 }
 </script>

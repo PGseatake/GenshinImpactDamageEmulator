@@ -192,9 +192,10 @@ export default class WeaponData extends Vue {
   }
 
   onChangeName(item: IWeaponData) {
+    const init = this.$db.setting.initial.weapon;
     const weapon = WeaponList[this.type][item.name];
-    item.rank = 0;
-    item.level = "1";
+    item.rank = init.rank;
+    item.level = init.level;
     item.second = { type: weapon.second, value: 0 };
     this.onChangeLevel(item);
   }
@@ -208,19 +209,21 @@ export default class WeaponData extends Vue {
   onAppend() {
     const name = this.append;
     if (name) {
+      const init = this.$db.setting.initial.weapon;
       const item = WeaponList[this.type][name];
       const data: IWeaponData = {
         id: this.$makeUniqueId(),
         name: name,
         comment: "",
-        rank: 1,
-        level: "1",
+        rank: init.rank,
+        level: init.level,
         atk: item.atk[0],
         second: {
           type: item.second,
           value: item.secval[0],
         },
       };
+      this.onChangeLevel(data);
       this.$appendData(this.items, data);
       this.append = "";
     }

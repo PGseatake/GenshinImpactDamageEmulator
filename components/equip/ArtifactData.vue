@@ -326,12 +326,13 @@ export default class ArtifactData extends Vue {
   onAppend() {
     const name = this.append;
     if (name) {
+      const init = this.$db.setting.initial.artifact;
       const data: IArtifactData = {
         id: this.$makeUniqueId(),
         name: name,
         comment: "",
-        star: 3,
-        level: 0,
+        star: init.star,
+        level: init.level,
         main: {
           type: ArtifactMain[this.type][0],
           value: 0,
@@ -353,6 +354,7 @@ export default class ArtifactData extends Vue {
           value: 0,
         },
       };
+      this.updateMain(data);
       this.$appendData(this.items, data);
       this.append = "";
     }

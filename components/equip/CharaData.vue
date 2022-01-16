@@ -238,13 +238,14 @@ export default class CharaData extends Vue {
   }
 
   onChangeName(item: ICharaData) {
+    const init = this.$db.setting.initial.chara;
     const { special } = CharaList[item.name];
-    item.conste = 0;
-    item.level = "1";
+    item.conste = init.conste;
+    item.level = init.level;
     item.special = { type: special, value: 0 };
-    item.combat = 1;
-    item.skill = 1;
-    item.burst = 1;
+    item.combat = init.combat;
+    item.skill = init.skill;
+    item.burst = init.burst;
     this.onChangeLevel(item);
   }
 
@@ -260,13 +261,14 @@ export default class CharaData extends Vue {
   onAppend() {
     const name = this.append;
     if (name) {
+      const init = this.$db.setting.initial.chara;
       const item = CharaList[name];
       const data: ICharaData = {
         id: this.$makeUniqueId(),
         name: name,
         comment: "",
-        conste: 0,
-        level: "1",
+        conste: init.conste,
+        level: init.level,
         hp: item.status.hp[0],
         atk: item.status.atk[0],
         def: item.status.def[0],
@@ -274,10 +276,11 @@ export default class CharaData extends Vue {
           type: item.special,
           value: item.spvalue[0],
         },
-        combat: 1,
-        skill: 1,
-        burst: 1,
+        combat: init.combat,
+        skill: init.skill,
+        burst: init.burst,
       };
+      this.onChangeLevel(data);
       this.$appendData(this.items, data);
       this.append = "";
     }
