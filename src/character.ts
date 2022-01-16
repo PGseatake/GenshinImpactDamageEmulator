@@ -1,5 +1,7 @@
 import * as konst from "~/src/const";
 import { BonusValue, IIdentify, INameable, ICommentable, ICharaInfo } from "~/src/interface";
+import * as ascension from "~/src/ascension";
+import { SettingChara } from "~/src/setting";
 
 export const CharaNames = [
     "TravelAnemo",
@@ -4440,3 +4442,46 @@ export interface ICharaData extends IIdentify, INameable, ICommentable {
     burst: number;
 }
 export type DBCharaTable = { chara: ICharaData[]; };
+
+export const Builder = {
+    make(id: string, name: CharaName, init: SettingChara) {
+        const item = CharaList[name];
+        const data: ICharaData = {
+            id,
+            name,
+            comment: "",
+            conste: init.conste,
+            level: init.level,
+            hp: item.status.hp[0],
+            atk: item.status.atk[0],
+            def: item.status.def[0],
+            special: {
+                type: item.special,
+                value: item.spvalue[0],
+            },
+            combat: init.combat,
+            skill: init.skill,
+            burst: init.burst,
+        };
+        Builder.level(data);
+        return data;
+    },
+    name(data: ICharaData, init: SettingChara) {
+        const { special } = CharaList[data.name];
+        data.conste = init.conste;
+        data.level = init.level;
+        data.special = { type: special, value: 0 };
+        data.combat = init.combat;
+        data.skill = init.skill;
+        data.burst = init.burst;
+        Builder.level(data);
+    },
+    level(data: ICharaData) {
+        const { status, spvalue } = CharaList[data.name];
+        const level = data.level;
+        data.hp = ascension.calc14(level, status.hp);
+        data.atk = ascension.calc14(level, status.atk);
+        data.def = ascension.calc14(level, status.def);
+        data.special.value = ascension.step8(level, spvalue);
+    },
+} as const;

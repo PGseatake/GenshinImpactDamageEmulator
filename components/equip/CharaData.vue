@@ -178,8 +178,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
-import * as ascension from "~/src/ascension";
-import { ICharaData, CharaList, CharaNames, CharaName } from "~/src/character";
+import { ICharaData, CharaNames, CharaName, Builder } from "~/src/character";
 
 @Component({
   name: "CharaData",
@@ -238,49 +237,21 @@ export default class CharaData extends Vue {
   }
 
   onChangeName(item: ICharaData) {
-    const init = this.$db.setting.initial.chara;
-    const { special } = CharaList[item.name];
-    item.conste = init.conste;
-    item.level = init.level;
-    item.special = { type: special, value: 0 };
-    item.combat = init.combat;
-    item.skill = init.skill;
-    item.burst = init.burst;
-    this.onChangeLevel(item);
+    Builder.name(item, this.$db.setting.initial.chara);
   }
 
   onChangeLevel(item: ICharaData) {
-    const { status, spvalue } = CharaList[item.name];
-    const level = item.level;
-    item.hp = ascension.calc14(level, status.hp);
-    item.atk = ascension.calc14(level, status.atk);
-    item.def = ascension.calc14(level, status.def);
-    item.special.value = ascension.step8(level, spvalue);
+    Builder.level(item);
   }
 
   onAppend() {
     const name = this.append;
     if (name) {
-      const init = this.$db.setting.initial.chara;
-      const item = CharaList[name];
-      const data: ICharaData = {
-        id: this.$makeUniqueId(),
-        name: name,
-        comment: "",
-        conste: init.conste,
-        level: init.level,
-        hp: item.status.hp[0],
-        atk: item.status.atk[0],
-        def: item.status.def[0],
-        special: {
-          type: item.special,
-          value: item.spvalue[0],
-        },
-        combat: init.combat,
-        skill: init.skill,
-        burst: init.burst,
-      };
-      this.onChangeLevel(data);
+      const data = Builder.make(
+        this.$makeUniqueId(),
+        name,
+        this.$db.setting.initial.chara
+      );
       this.$appendData(this.items, data);
       this.append = "";
     }

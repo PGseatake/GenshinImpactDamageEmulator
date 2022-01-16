@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { SettingBoolean } from "~/src/convert";
+import { SettingBoolean } from "~/src/setting";
 
 export type ISwitch = {
   readonly prop: string;

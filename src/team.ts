@@ -86,3 +86,50 @@ export class Team {
         }
     }
 }
+
+export const Builder = {
+    equip(id: string, chara: string): IEquipData {
+        return {
+            id,
+            comment: "",
+            chara,
+            weapon: "",
+            flower: "",
+            feather: "",
+            sands: "",
+            goblet: "",
+            circlet: "",
+        };
+    },
+    team(id: string, member: string): ITeamData {
+        return {
+            id,
+            name: "",
+            member1: member,
+            member2: "",
+            member3: "",
+            member4: "",
+            resonance: [],
+        };
+    },
+    resonance(data: ITeamData, db: DBEquipTable & DBCharaTable) {
+        let elements: ElementType[] = [];
+        for (const { info } of new Team(data).members(db)) {
+            elements.push(info.element);
+        }
+        elements.sort();
+        data.resonance.splice(0);
+
+        const count = elements.length;
+        let first = 0;
+        while (first < count) {
+            let type = elements[first];
+            let last = elements.lastIndexOf(type) + 1;
+            // 元素共鳴追加
+            if (2 <= last - first) {
+                data.resonance.push(elements[first]);
+            }
+            first = last;
+        }
+    },
+} as const;

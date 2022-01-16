@@ -205,7 +205,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiDelete, mdiShuffleVariant } from "@mdi/js";
-import { AnyBonusType, ArtifactType, BonusType } from "~/src/const";
+import { ArtifactType, BonusType } from "~/src/const";
 import { BonusValue } from "~/src/interface";
 import {
   IArtifactData,
@@ -214,14 +214,9 @@ import {
   ArtifactMain,
   ArtifactSub,
   SubBonus,
-  calcMain,
   calcScore,
-  randomSubStep,
+  Builder,
 } from "~/src/artifact";
-
-function randomRange(max: number): number {
-  return Math.floor(Math.random() * max);
-}
 
 @Component({
   name: "ArtifactData",
@@ -283,18 +278,15 @@ export default class ArtifactData extends Vue {
   }
 
   onChangeStar(item: IArtifactData) {
-    if (item.star * 4 < item.level) {
-      item.level = item.star * 4;
-    }
-    this.updateMain(item);
+    Builder.star(item);
   }
 
   onChangeLevel(item: IArtifactData) {
-    this.updateMain(item);
+    Builder.main(item);
   }
 
   onChangeMain(item: IArtifactData) {
-    this.updateMain(item);
+    Builder.main(item);
   }
 
   getScore({ star, level }: IArtifactData, bonus: BonusValue) {
@@ -306,55 +298,18 @@ export default class ArtifactData extends Vue {
   }
 
   getTotal(item: IArtifactData) {
-    if (item.star < 4) return "";
-    let total = 0;
-    let limit = 10 + Math.floor(item.level / 4) * 10;
-    for (const sub of SubBonus) {
-      const score = calcScore(item[sub], item.star, item.level);
-      if (score !== undefined) {
-        total += score;
-      }
-    }
-    limit += item.star === 4 ? 20 : 30;
-    return `${total}/${limit}`;
-  }
-
-  updateMain(item: IArtifactData) {
-    item.main.value = calcMain(item.main.type, item.star, item.level);
+    return Builder.score(item);
   }
 
   onAppend() {
     const name = this.append;
     if (name) {
-      const init = this.$db.setting.initial.artifact;
-      const data: IArtifactData = {
-        id: this.$makeUniqueId(),
-        name: name,
-        comment: "",
-        star: init.star,
-        level: init.level,
-        main: {
-          type: ArtifactMain[this.type][0],
-          value: 0,
-        },
-        sub1: {
-          type: BonusType.None,
-          value: 0,
-        },
-        sub2: {
-          type: BonusType.None,
-          value: 0,
-        },
-        sub3: {
-          type: BonusType.None,
-          value: 0,
-        },
-        sub4: {
-          type: BonusType.None,
-          value: 0,
-        },
-      };
-      this.updateMain(data);
+      const data = Builder.make(
+        this.$makeUniqueId(),
+        this.type,
+        name,
+        this.$db.setting.initial.artifact
+      );
       this.$appendData(this.items, data);
       this.append = "";
     }
@@ -372,73 +327,20 @@ export default class ArtifactData extends Vue {
   }
 
   onRandom(item: IArtifactData, type?: boolean) {
-    switch (item.star) {
-      case 3:
-      case 4:
-      case 5:
-        if (type) {
-          // 効果の種類も入れ替える
-          this.shuffle(item, [
-            BonusType.None,
-            BonusType.None,
-            BonusType.None,
-            BonusType.None,
-          ]);
-        } else {
-          // 現在の効果に基づく
-          this.shuffle(
-            item,
-            SubBonus.map((val) => item[val].type)
-          );
-        }
-    }
-  }
-
-  shuffle(item: IArtifactData, types: AnyBonusType[]) {
-    const { star, level } = item;
-    const min = types.reduce(
-      (cnt, val) => (val === BonusType.None ? cnt : cnt + 1),
-      0
-    );
-    types.push(item.main.type); // メイン効果と同じものはでない
-    types.push(BonusType.None); // ArtifactSub[0]を除去する
-
-    // サブ効果の強化回数
-    var max = star - 1; // Lv.0の最大回数
-    max -= Math.round(Math.random()); // ランダムで1回少ない
-    max += Math.floor(level / 4);
-    max = Math.max(min, max);
-
-    const init = Math.min(max, 4);
-
-    // サブ効果のタイプを選択
-    const range = ArtifactSub.length;
-    for (var i = 0; i < init; ++i) {
-      while (types[i] === BonusType.None) {
-        const type = ArtifactSub[randomRange(range)];
-        if (!types.includes(type)) {
-          types[i] = type;
-        }
-      }
-    }
-
-    // 初期値設定
-    for (var i = 0; i < init; ++i) {
-      const type = types[i];
-      let bonus = item[SubBonus[i]];
-      bonus.type = type;
-      bonus.value = randomSubStep(type, star);
-    }
-    for (var i = init; i < 4; ++i) {
-      let bonus = item[SubBonus[i]];
-      bonus.type = BonusType.None;
-      bonus.value = 0;
-    }
-
-    // 強化値加算
-    for (var n = 4; n < max; ++n) {
-      const i = randomRange(4);
-      item[SubBonus[i]].value += randomSubStep(types[i], star);
+    if (type) {
+      // 効果の種類も入れ替える
+      Builder.shuffle(item, [
+        BonusType.None,
+        BonusType.None,
+        BonusType.None,
+        BonusType.None,
+      ]);
+    } else {
+      // 現在の効果に基づく
+      Builder.shuffle(
+        item,
+        SubBonus.map((val) => item[val].type)
+      );
     }
   }
 

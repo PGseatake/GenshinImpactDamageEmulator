@@ -7,36 +7,7 @@ import { WeaponList, DBWeaponTable } from "~/src/weapon";
 import { DBBonusTable } from "~/src/bonus";
 import { DBTeamTable } from "~/src/team";
 import { DBDamageTable } from "~/src/damage";
-
-export type SettingBoolean = {
-    autosave: boolean;
-};
-export type SettingString = {
-    artifact: string;
-    critical: string;
-};
-export type SettingInitial = {
-    initial: {
-        chara: {
-            conste: number;
-            level: string;
-            combat: number;
-            skill: number;
-            burst: number;
-        },
-        weapon: {
-            rank: number;
-            level: string;
-        };
-        artifact: {
-            star: number;
-            level: number;
-        },
-    };
-};
-export type DBSetting = {
-    setting: SettingBoolean & SettingString & SettingInitial;
-};
+import { DBSetting } from "~/src/setting";
 
 export const CurrentVersion = "1.1";
 export type DBVersion = { version: string; };

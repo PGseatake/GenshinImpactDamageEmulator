@@ -1,5 +1,6 @@
 import * as konst from "~/src/const";
 import { BonusValue, IIdentify, INameable, ICommentable, IArtifactInfo } from "~/src/interface";
+import { SettingArtifact } from "~/src/setting";
 
 export const ArtifactMain: Record<konst.ArtifactType, ReadonlyArray<konst.AnyBonusType>> = {
     "flower": [konst.StatusBonusType.Hp],
@@ -425,15 +426,6 @@ export function calcScore(bonus: BonusValue, star: number, level: number): numbe
     return undefined;
 }
 
-export function randomSubStep(type: konst.AnyBonusType, star: number): number {
-    const param = getArtifactParam(type, star, 0);
-    if (param) {
-        const rand = 7 + Math.floor(Math.random() * 4); // 7~10
-        return param.substep! * rand;
-    }
-    return 0;
-}
-
 export const SubBonus = ["sub1", "sub2", "sub3", "sub4"] as const;
 export type SubBonus = typeof SubBonus[number];
 
@@ -444,3 +436,126 @@ export interface IArtifactData extends IIdentify, INameable, ICommentable, Recor
     main: BonusValue;
 }
 export type DBArtifactTable = Record<konst.ArtifactType, IArtifactData[]>;
+
+function randomRange(max: number): number {
+    return Math.floor(Math.random() * max);
+}
+
+function randomSubStep(type: konst.AnyBonusType, star: number): number {
+    const param = getArtifactParam(type, star, 0);
+    if (param) {
+        const rand = 7 + Math.floor(Math.random() * 4); // 7~10
+        return param.substep! * rand;
+    }
+    return 0;
+}
+
+export const Builder = {
+    make(
+        id: string,
+        type: konst.ArtifactType,
+        name: ArtifactName,
+        init: SettingArtifact
+    ) {
+        const data: IArtifactData = {
+            id,
+            name,
+            comment: "",
+            star: init.star,
+            level: init.level,
+            main: {
+                type: ArtifactMain[type][0],
+                value: 0,
+            },
+            sub1: {
+                type: konst.BonusType.None,
+                value: 0,
+            },
+            sub2: {
+                type: konst.BonusType.None,
+                value: 0,
+            },
+            sub3: {
+                type: konst.BonusType.None,
+                value: 0,
+            },
+            sub4: {
+                type: konst.BonusType.None,
+                value: 0,
+            },
+        };
+        Builder.main(data);
+        return data;
+    },
+    star(data: IArtifactData) {
+        if (data.star * 4 < data.level) {
+            data.level = data.star * 4;
+        }
+        Builder.main(data);
+    },
+    main(data: IArtifactData) {
+        data.main.value = calcMain(data.main.type, data.star, data.level);
+    },
+    score(data: IArtifactData) {
+        if (data.star < 4) return "";
+        let total = 0;
+        let limit = 10 + Math.floor(data.level / 4) * 10;
+        for (const sub of SubBonus) {
+            const score = calcScore(data[sub], data.star, data.level);
+            if (score !== undefined) {
+                total += score;
+            }
+        }
+        limit += data.star === 4 ? 20 : 30;
+        return `${total}/${limit}`;
+    },
+    shuffle(data: IArtifactData, types: konst.AnyBonusType[]) {
+        const { star, level } = data;
+        if (star < 3 || 5 < star) return;
+
+        const min = types.reduce(
+            (cnt, val) => (val === konst.BonusType.None ? cnt : cnt + 1),
+            0
+        );
+        types.push(data.main.type); // メイン効果と同じものはでない
+        types.push(konst.BonusType.None); // ArtifactSub[0]を除去する
+
+        // サブ効果の強化回数
+        var max = star - 1; // Lv.0の最大回数
+        max -= Math.round(Math.random()); // ランダムで1回少ない
+        max += Math.floor(level / 4);
+        max = Math.max(min, max);
+
+        const init = Math.min(max, 4);
+
+        // サブ効果のタイプを選択
+        const range = ArtifactSub.length;
+        for (var i = 0; i < init; ++i) {
+            while (types[i] === konst.BonusType.None) {
+                const type = ArtifactSub[randomRange(range)];
+                if (!types.includes(type)) {
+                    types[i] = type;
+                }
+            }
+        }
+
+        // 初期値設定
+        for (var i = 0; i < init; ++i) {
+            const type = types[i];
+            let bonus = data[SubBonus[i]];
+            bonus.type = type;
+            bonus.value = randomSubStep(type, star);
+        }
+        for (var i = init; i < 4; ++i) {
+            let bonus = data[SubBonus[i]];
+            bonus.type = konst.BonusType.None;
+            bonus.value = 0;
+        }
+
+        // 強化値加算
+        for (var n = 4; n < max; ++n) {
+            const i = randomRange(4);
+            data[SubBonus[i]].value += randomSubStep(types[i], star);
+        }
+    },
+} as const;

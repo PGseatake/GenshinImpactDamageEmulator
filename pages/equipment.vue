@@ -202,7 +202,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { IEquipData } from "~/src/interface";
 import { ICharaData } from "~/src/character";
-import { Team } from "~/src/team";
+import { Builder, Team } from "~/src/team";
 
 @Component({
   name: "PageEquipment",
@@ -282,17 +282,7 @@ export default class PageEquipment extends Vue {
   }
 
   onAppend() {
-    const data: IEquipData = {
-      id: this.$makeUniqueId(),
-      comment: "",
-      chara: this.append,
-      weapon: "",
-      flower: "",
-      feather: "",
-      sands: "",
-      goblet: "",
-      circlet: "",
-    };
+    const data = Builder.equip(this.$makeUniqueId(), this.append);
     this.$appendData(this.items, data);
     this.append = "";
   }

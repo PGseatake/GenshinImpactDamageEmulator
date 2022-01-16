@@ -177,8 +177,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { ElementType } from "~/src/const";
-import { ITeamData, Team } from "~/src/team";
+import { Builder, ITeamData } from "~/src/team";
 import { SelectItem } from "~/components/SelectName.vue";
 
 @Component({
@@ -267,28 +266,7 @@ export default class PageTeam extends Vue {
   }
 
   onChangeItem(item: ITeamData) {
-    this.updateResonance(item);
-  }
-
-  updateResonance(item: ITeamData) {
-    let elements: ElementType[] = [];
-    for (const { info } of new Team(item).members(this.$db)) {
-      elements.push(info.element);
-    }
-    elements.sort();
-    item.resonance.splice(0);
-
-    const count = elements.length;
-    let first = 0;
-    while (first < count) {
-      let type = elements[first];
-      let last = elements.lastIndexOf(type) + 1;
-      // 元素共鳴追加
-      if (2 <= last - first) {
-        item.resonance.push(elements[first]);
-      }
-      first = last;
-    }
+    Builder.resonance(item, this.$db);
   }
 
   onBeforeAppend() {
@@ -296,15 +274,7 @@ export default class PageTeam extends Vue {
   }
 
   onAppend() {
-    const data: ITeamData = {
-      id: this.$makeUniqueId(),
-      name: "",
-      member1: this.append,
-      member2: "",
-      member3: "",
-      member4: "",
-      resonance: [],
-    };
+    const data = Builder.team(this.$makeUniqueId(), this.append);
     this.$appendData(this.items, data);
     this.append = "";
   }

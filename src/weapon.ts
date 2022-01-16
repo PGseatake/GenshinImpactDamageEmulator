@@ -1,5 +1,7 @@
 import * as konst from "~/src/const";
 import { BonusValue, IIdentify, INameable, ICommentable, IWeaponInfo } from "~/src/interface";
+import * as ascension from "~/src/ascension";
+import { SettingWeapon } from "~/src/setting";
 
 const WeaponAtk3: IReadonlyHash<ReadonlyArray<number>> = {
     //    1,  20, 20+,  40, 40+,  50, 50+,  60, 60+,  70, 70+,  80, 80+,  90
@@ -1473,3 +1475,35 @@ export interface IWeaponData extends IIdentify, INameable, ICommentable {
     second: BonusValue;
 }
 export type DBWeaponTable = Record<konst.WeaponType, IWeaponData[]>;
+
+export const Builder = {
+    make(id: string, type: konst.WeaponType, name: string, init: SettingWeapon) {
+        const item = WeaponList[type][name];
+        const data: IWeaponData = {
+            id,
+            name,
+            comment: "",
+            rank: init.rank,
+            level: init.level,
+            atk: item.atk[0],
+            second: {
+                type: item.second,
+                value: item.secval[0],
+            },
+        };
+        Builder.level(data, type);
+        return data;
+    },
+    name(data: IWeaponData, type: konst.WeaponType, init: SettingWeapon) {
+        const { second } = WeaponList[type][data.name];
+        data.rank = init.rank;
+        data.level = init.level;
+        data.second = { type: second, value: 0 };
+        Builder.level(data, type);
+    },
+    level(data: IWeaponData, type: konst.WeaponType) {
+        const { atk, secval } = WeaponList[type][data.name];
+        data.atk = ascension.calc14(data.level, atk);
+        data.second.value = ascension.calc8(data.level, secval);
+    },
+} as const;
