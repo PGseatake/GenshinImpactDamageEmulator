@@ -53,6 +53,11 @@
       width="300px"
       @accept="initialAccept"
     />
+    <dialog-supply
+      :show.sync="supplyShow"
+      width="400px"
+      @accept="onChangeSupply"
+    />
   </v-container>
 </template>
 
@@ -95,7 +100,13 @@ type ListItem = {
 
 @Component({
   name: "PageSetting",
-  components: { SettingSwitch, SettingSelect },
+  components: {
+    SettingSwitch,
+    SettingSelect,
+    DialogSetting: () => import("~/components/dialog/DialogSetting.vue"),
+    DialogInitial: () => import("~/components/dialog/DialogInitial.vue"),
+    DialogSupply: () => import("~/components/dialog/DialogSupply.vue"),
+  },
 })
 export default class PageSetting extends Vue {
   dialogShow = false;
@@ -145,6 +156,10 @@ export default class PageSetting extends Vue {
         text: "setting.initial.button",
         on: this.onClickInitEquip,
       },
+    },
+    {
+      text: "supply.detail",
+      button: { text: "dialog.append", on: this.onClickSupply },
     },
     { icon: "header", text: "disp" },
     {
@@ -242,6 +257,7 @@ export default class PageSetting extends Vue {
   initialTitle = "";
   initialItems: InitialItem[] = [];
   initialAccept = () => {};
+  supplyShow = false;
 
   get itemClass() {
     return this.$vuetify.breakpoint.xs ? "my-1 ml-4" : "my-1 ml-12";
@@ -288,7 +304,6 @@ export default class PageSetting extends Vue {
     Database.reset(this.$db);
     Database.save(this.$db);
     this.popup("delete");
-    this.$store.commit("reload");
   }
 
   onClickInitChara() {
@@ -345,6 +360,16 @@ export default class PageSetting extends Vue {
     artifact.level = (items[5] as IRange).value;
 
     this.onClickSave();
+  }
+
+  onClickSupply() {
+    this.supplyShow = true;
+  }
+
+  onChangeSupply() {
+    console.log(this.$db);
+    Database.save(this.$db);
+    this.popup("append");
   }
 }
 </script>

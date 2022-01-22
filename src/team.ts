@@ -5,7 +5,7 @@ import { CharaList, ICharaData, DBCharaTable } from "~/src/character";
 import { IArtifactData, DBArtifactTable } from "~/src/artifact";
 import { IWeaponData, DBWeaponTable } from "~/src/weapon";
 
-const Members = ["member1", "member2", "member3", "member4"] as const;
+export const Members = ["member1", "member2", "member3", "member4"] as const;
 
 export interface ITeamData extends IIdentify, INameable, Record<typeof Members[number], string> {
     resonance: ElementType[];

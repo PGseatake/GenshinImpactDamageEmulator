@@ -33,6 +33,7 @@ export default {
   ],
 
   publicRuntimeConfig: {
+    DEBUG: process.env.DEBUG || false,
     HOSTNAME: process.env.HOSTNAME || 'http://localhost:3000',
   },
 

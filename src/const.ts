@@ -50,6 +50,10 @@ export const WeaponType = {
 } as const;
 export type WeaponType = typeof WeaponType[keyof typeof WeaponType];
 
+export function isWeaponType(type: string): type is WeaponType {
+    return WeaponTypes.includes(type as WeaponType);
+}
+
 export const ArtifactTypes = [
     "flower",
     "feather",
@@ -65,6 +69,10 @@ export const ArtifactType = {
     Circlet: "circlet"
 } as const;
 export type ArtifactType = typeof ArtifactType[keyof typeof ArtifactType];
+
+export function isArtifactType(type: string): type is ArtifactType {
+    return ArtifactTypes.includes(type as ArtifactType);
+}
 
 export const TalentType = {
     Combat: "combat",
