@@ -194,7 +194,7 @@ import {
   mdiTranslate,
   mdiTshirtCrew,
 } from "@mdi/js";
-import convert, { DBTableTypes } from "~/src/convert";
+import convert, { Database, DBTableTypes } from "~/src/convert";
 
 interface ITool {
   icon: string;
@@ -347,7 +347,7 @@ export default class Default extends Vue {
 
   beforeMount() {
     window.addEventListener("beforeunload", this.onBeforeUnload);
-    this.reflect(localStorage.getItem("global_data"));
+    this.reflect(localStorage.getItem(Database.name));
   }
 
   reflect(json: string | null) {
@@ -361,20 +361,16 @@ export default class Default extends Vue {
     }
   }
 
-  save() {
-    localStorage.setItem("global_data", JSON.stringify(this.$db));
-  }
-
   autosave() {
     if (this.$db.setting.autosave) {
-      this.save();
+      Database.save(this.$db);
       return true;
     }
     return false;
   }
 
   onSave() {
-    this.save();
+    Database.save(this.$db);
     this.$store.commit("popup", this.$t("popup.save"));
     this.toolOpened = false;
   }

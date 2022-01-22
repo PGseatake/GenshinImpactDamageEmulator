@@ -65,6 +65,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiContentSave, mdiExport, mdiImport } from "@mdi/js";
+import { Database } from "~/src/convert";
 import SettingSwitch, { ISwitch } from "~/components/menu/SettingSwitch.vue";
 import SettingSelect, { ISelect } from "~/components/menu/SettingSelect.vue";
 import {
@@ -279,12 +280,14 @@ export default class PageSetting extends Vue {
   }
 
   onClickSave() {
-    localStorage.setItem("global_data", JSON.stringify(this.$db));
+    Database.save(this.$db);
     this.popup("save");
   }
 
   onClickDelete() {
-    localStorage.removeItem("global_data");
+    Database.reset(this.$db);
+    Database.save(this.$db);
+    this.popup("delete");
     this.$store.commit("reload");
   }
 
