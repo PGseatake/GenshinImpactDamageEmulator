@@ -246,16 +246,18 @@ export default function convert(data?: DatabaseV002 | DatabaseV100): Database {
         }
         const version = data.version;
         if (version) {
+            let def = convert();
             switch (version) {
                 case "1.0":
                     data.setting = {
+                        ...def.setting,
                         ...data.setting,
                         ...ver100.initial(),
                     };
                 // fallthrough
                 case "1.1":
                     return {
-                        ...convert(),
+                        ...def,
                         ...data,
                     };
             }
