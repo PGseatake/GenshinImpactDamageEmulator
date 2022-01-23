@@ -2,27 +2,28 @@
   <bonus-value
     v-bind="$attrs"
     v-on="$listeners"
-    :types="[second]"
+    :types="[special]"
     :value.sync="refValue"
   />
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { WeaponList } from "~/src/weapon";
+import { CharaName, CharaList } from "~/src/character";
+import BonusValue from "~/components/equip/BonusValue.vue";
 
 @Component({
-  name: "WeaponSecond",
+  name: "CharaSpecial",
+  components: { BonusValue },
   inheritAttrs: false,
 })
-export default class WeaponSecond extends Vue {
-  @Prop({ required: true }) list!: WeaponList;
-  @Prop({ required: true }) name!: string;
+export default class CharaSpecial extends Vue {
+  @Prop({ required: true }) name!: CharaName;
   @Prop({ required: true }) value!: number;
 
   @Watch("name")
   onChangeName() {
-    this.$emit("update:type", this.second);
+    this.$emit("update:type", this.special);
   }
 
   get refValue() {
@@ -32,8 +33,8 @@ export default class WeaponSecond extends Vue {
     this.$emit("update:value", value);
   }
 
-  get second() {
-    return this.list[this.name].second;
+  get special() {
+    return CharaList[this.name].special;
   }
 }
 </script>

@@ -35,7 +35,7 @@ import * as Ascension from "~/src/ascension";
 
 type LevelText = { readonly value: string };
 
-const levelTexts = (() => {
+const LevelTexts = (() => {
   const make = (min: number, max: number) => {
     return Array.from({ length: max - min }, (_, i): LevelText => {
       return { value: `${min + i + 1}` };
@@ -59,7 +59,7 @@ const levelTexts = (() => {
 export default class AscensionLevel extends Vue {
   @Prop({ default: "" }) label!: string;
 
-  readonly items = levelTexts;
+  readonly items = LevelTexts;
   readonly icon = mdiMenuDown;
 }
 </script>

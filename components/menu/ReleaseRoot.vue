@@ -17,15 +17,16 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from "vue-property-decorator";
-import { ReleaseNode } from "~/components/ReleaseNode.vue";
+import ReleaseNode, { IReleaseNode } from "~/components/menu/ReleaseNode.vue";
 
 @Component({
   name: "ReleaseRoot",
+  components: { ReleaseNode },
   inheritAttrs: false,
 })
 export default class ReleaseRoot extends Vue {
   @Prop({ required: true }) version!: string;
-  @Prop({ required: true }) root!: ReleaseNode;
+  @Prop({ required: true }) root!: IReleaseNode;
 
   get title() {
     return `${this.version.split("_").join(".")} (${this.root.date})`;

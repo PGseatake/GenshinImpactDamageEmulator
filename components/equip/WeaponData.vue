@@ -131,8 +131,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
 import { WeaponType } from "~/src/const";
-import * as ascension from "~/src/ascension";
-import { IWeaponData, WeaponNames, WeaponList } from "~/src/weapon";
+import { IWeaponData, WeaponNames, WeaponList, Builder } from "~/src/weapon";
 
 @Component({
   name: "WeaponData",
@@ -140,10 +139,10 @@ import { IWeaponData, WeaponNames, WeaponList } from "~/src/weapon";
     NameComment: () => import("~/components/NameComment.vue"),
     NumberField: () => import("~/components/NumberField.vue"),
     SelectRange: () => import("~/components/SelectRange.vue"),
-    WeaponSecond: () => import("~/components/WeaponSecond.vue"),
     AscensionLevel: () => import("~/components/AscensionLevel.vue"),
-    DialogAppend: () => import("~/components/DialogAppend.vue"),
-    DialogRemove: () => import("~/components/DialogRemove.vue"),
+    WeaponSecond: () => import("~/components/equip/WeaponSecond.vue"),
+    DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
   },
   inheritAttrs: false,
 })
@@ -192,35 +191,22 @@ export default class WeaponData extends Vue {
   }
 
   onChangeName(item: IWeaponData) {
-    const weapon = WeaponList[this.type][item.name];
-    item.rank = 0;
-    item.level = "1";
-    item.second = { type: weapon.second, value: 0 };
-    this.onChangeLevel(item);
+    Builder.name(item, this.type, this.$db.setting.initial.weapon);
   }
 
   onChangeLevel(item: IWeaponData) {
-    const weapon = WeaponList[this.type][item.name];
-    item.atk = ascension.calc14(item.level, weapon.atk);
-    item.second.value = ascension.calc8(item.level, weapon.secval);
+    Builder.level(item, this.type);
   }
 
   onAppend() {
     const name = this.append;
     if (name) {
-      const item = WeaponList[this.type][name];
-      const data: IWeaponData = {
-        id: this.$makeUniqueId(),
-        name: name,
-        comment: "",
-        rank: 1,
-        level: "1",
-        atk: item.atk[0],
-        second: {
-          type: item.second,
-          value: item.secval[0],
-        },
-      };
+      const data = Builder.make(
+        this.$makeUniqueId(),
+        this.type,
+        name,
+        this.$db.setting.initial.weapon
+      );
       this.$appendData(this.items, data);
       this.append = "";
     }

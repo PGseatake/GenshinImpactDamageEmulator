@@ -45,7 +45,7 @@
       <v-app-bar
         app
         fixed
-        extension-height="36"
+        :elevation="tabable ? 0 : 4"
         :dense="mobile"
         :clipped-left="desktop"
         :clipped-right="desktop"
@@ -83,10 +83,6 @@
               </v-btn>
             </template>
           </span>
-        </template>
-
-        <template v-if="tabable" #extension>
-          <tab-category />
         </template>
       </v-app-bar>
 
@@ -140,10 +136,16 @@
       </v-navigation-drawer>
 
       <v-main>
+        <template v-if="tabable">
+          <tab-category height="36px" elevation="4" />
+          <div style="height: 36px" />
+        </template>
         <nuxt />
       </v-main>
 
-      <v-footer class="justify-end">
+      <v-footer class="justify-space-between">
+        <span />
+        <span>{{ $t("copyright") }}</span>
         <span>{{ $t("footer") }}</span>
       </v-footer>
       <popup-bar />
@@ -194,7 +196,7 @@ import {
   mdiTranslate,
   mdiTshirtCrew,
 } from "@mdi/js";
-import convert, { DBTableTypes } from "~/src/convert";
+import convert, { Database, DBTableTypes } from "~/src/convert";
 
 interface ITool {
   icon: string;
@@ -205,10 +207,11 @@ interface ITool {
 @Component({
   name: "default",
   components: {
-    PopupBar: () => import("~/components/PopupBar.vue"),
-    DialogImport: () => import("~/components/DialogImport.vue"),
-    DialogExport: () => import("~/components/DialogExport.vue"),
-    SelectLocale: () => import("~/components/SelectLocale.vue"),
+    DialogImport: () => import("~/components/dialog/DialogImport.vue"),
+    DialogExport: () => import("~/components/dialog/DialogExport.vue"),
+    SelectLocale: () => import("~/components/menu/SelectLocale.vue"),
+    TabCategory: () => import("~/components/menu/TabCategory.vue"),
+    PopupBar: () => import("~/components/menu/PopupBar.vue"),
   },
 })
 export default class Default extends Vue {
@@ -346,7 +349,7 @@ export default class Default extends Vue {
 
   beforeMount() {
     window.addEventListener("beforeunload", this.onBeforeUnload);
-    this.reflect(localStorage.getItem("global_data"));
+    this.reflect(localStorage.getItem(Database.name));
   }
 
   reflect(json: string | null) {
@@ -360,20 +363,16 @@ export default class Default extends Vue {
     }
   }
 
-  save() {
-    localStorage.setItem("global_data", JSON.stringify(this.$db));
-  }
-
   autosave() {
     if (this.$db.setting.autosave) {
-      this.save();
+      Database.save(this.$db);
       return true;
     }
     return false;
   }
 
   onSave() {
-    this.save();
+    Database.save(this.$db);
     this.$store.commit("popup", this.$t("popup.save"));
     this.toolOpened = false;
   }

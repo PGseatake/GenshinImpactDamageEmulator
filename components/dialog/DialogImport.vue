@@ -22,11 +22,13 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "nuxt-property-decorator";
-import DialogFile from "~/components/DialogFile.vue";
+import DialogFile from "~/components/dialog/DialogFile.vue";
+import { Database } from "~/src/convert";
 
 @Component({
   name: "DialogImport",
   components: { DialogFile },
+  inheritAttrs: false,
 })
 export default class DialogImport extends Vue {
   @Prop({ required: true }) reflect!: (json: string | null) => void;
@@ -54,7 +56,7 @@ export default class DialogImport extends Vue {
       reader.readAsText(file);
       reader.onload = () => {
         this.reflect(reader.result as string);
-        localStorage.setItem("global_data", JSON.stringify(this.$db));
+        Database.save(this.$db);
         this.$store.commit("popup", this.$t("popup.import"));
         this.$store.commit("reload");
       };

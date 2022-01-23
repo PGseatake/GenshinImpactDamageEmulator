@@ -73,6 +73,7 @@
         <ul>
           <li>{{ $t("index.C1") }}</li>
           <li>{{ $t("index.C2") }}</li>
+          <li>{{ $t("index.C3") }}</li>
         </ul>
       </v-card-text>
     </v-card>
@@ -107,8 +108,12 @@ import {
   mdiTshirtCrew,
   mdiTwitter,
 } from "@mdi/js";
+import ReleaseRoot from "~/components/menu/ReleaseRoot.vue";
 
-@Component({ name: "PageIndex" })
+@Component({
+  name: "PageIndex",
+  components: { ReleaseRoot },
+})
 export default class PageIndex extends Vue {
   readonly icons = {
     chara: mdiAccount,

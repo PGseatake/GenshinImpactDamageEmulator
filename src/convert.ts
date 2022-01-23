@@ -7,19 +7,10 @@ import { WeaponList, DBWeaponTable } from "~/src/weapon";
 import { DBBonusTable } from "~/src/bonus";
 import { DBTeamTable } from "~/src/team";
 import { DBDamageTable } from "~/src/damage";
+import { DBSetting } from "~/src/setting";
 
-export type SettingBoolean = {
-    autosave: boolean;
-};
-export type SettingString = {
-    artifact: string;
-    critical: string;
-};
-export type DBSetting = {
-    setting: SettingBoolean & SettingString;
-};
-
-export type DBVersion = { version: "1.0"; };
+export const CurrentVersion = "1.1";
+export type DBVersion = { version: string; };
 
 export type Database = DBVersion &
     DBCharaTable & DBWeaponTable & DBArtifactTable & DBEquipTable &
@@ -122,123 +113,160 @@ const ver002 = {
             return { type: type, value: tryParseFloat(value) };
         }
         return { type: ArtifactSub[0], value: 0 };
-    }
-};
-function Ver002toVer100(before: DatabaseV002): Database {
-    let after = convert();
-    before.chara.forEach((chara, index) => {
-        if (chara.name in CharaList) {
-            const info = CharaList[chara.name];
-            after.chara.push({
-                id: `chara002_${index}`,
-                name: chara.name,
-                comment: "",
-                conste: tryParseFloat(chara.conste),
-                level: chara.level,
-                hp: tryParseFloat(chara.hp),
-                atk: tryParseFloat(chara.atk),
-                def: tryParseFloat(chara.def),
-                special: {
-                    type: info.special,
-                    value: ascension.calc8(chara.level, info.spvalue)
-                },
-                combat: tryParseFloat(chara.combat),
-                skill: tryParseFloat(chara.skill),
-                burst: tryParseFloat(chara.burst),
+    },
+    toVer100(before: DatabaseV002): Database {
+        let after = convert();
+        before.chara.forEach((chara, index) => {
+            if (chara.name in CharaList) {
+                const info = CharaList[chara.name];
+                after.chara.push({
+                    id: `chara002_${index}`,
+                    name: chara.name,
+                    comment: "",
+                    conste: tryParseFloat(chara.conste),
+                    level: chara.level,
+                    hp: tryParseFloat(chara.hp),
+                    atk: tryParseFloat(chara.atk),
+                    def: tryParseFloat(chara.def),
+                    special: {
+                        type: info.special,
+                        value: ascension.calc8(chara.level, info.spvalue)
+                    },
+                    combat: tryParseFloat(chara.combat),
+                    skill: tryParseFloat(chara.skill),
+                    burst: tryParseFloat(chara.burst),
+                });
+            }
+        });
+        for (const type of WeaponTypes) {
+            const weapons = WeaponList[type];
+            before[type].forEach((weapon, index) => {
+                if (weapon.name in weapons) {
+                    const info = weapons[weapon.name];
+                    after[type].push({
+                        id: `${type}002_${index}`,
+                        name: weapon.name,
+                        comment: "",
+                        rank: tryParseFloat(weapon.rank),
+                        level: weapon.level,
+                        atk: tryParseFloat(weapon.atk),
+                        second: {
+                            type: info.second,
+                            value: ascension.calc8(weapon.level, info.secval)
+                        },
+                    });
+                }
             });
         }
-    });
-    for (const type of WeaponTypes) {
-        const weapons = WeaponList[type];
-        before[type].forEach((weapon, index) => {
-            if (weapon.name in weapons) {
-                const info = weapons[weapon.name];
-                after[type].push({
-                    id: `${type}002_${index}`,
-                    name: weapon.name,
-                    comment: "",
-                    rank: tryParseFloat(weapon.rank),
-                    level: weapon.level,
-                    atk: tryParseFloat(weapon.atk),
-                    second: {
-                        type: info.second,
-                        value: ascension.calc8(weapon.level, info.secval)
-                    },
-                });
-            }
-        });
-    }
-    for (const type of ArtifactTypes) {
-        before[type].forEach((artifact, index) => {
-            if (ArtifactNames.includes(artifact.name)) {
-                after[type].push({
-                    id: `${type}002_${index}`,
-                    name: artifact.name,
-                    comment: "",
-                    star: tryParseFloat(artifact.star),
-                    level: tryParseFloat(artifact.level),
-                    main: ver002.main(type, artifact),
-                    sub1: ver002.sub(artifact.sub1),
-                    sub2: ver002.sub(artifact.sub2),
-                    sub3: ver002.sub(artifact.sub3),
-                    sub4: ver002.sub(artifact.sub4),
-                });
-            }
-        });
-    }
-    before.equip.forEach((equip, index) => {
-        let data: IEquipData = {
-            id: `equip002_${index}`,
-            comment: "",
-            chara: "",
-            weapon: "",
-            flower: "",
-            feather: "",
-            sands: "",
-            goblet: "",
-            circlet: ""
-        };
-        // キャラの検索
-        let id = "chara002_" + equip.chara;
-        const chara = after.chara.find(item => item.id === id);
-        if (chara) {
-            data.chara = id;
-            // 武器の検索
-            const weapon = CharaList[chara.name].weapon;
-            id = weapon + "002_" + equip.weapon;
-            if (after[weapon].find(item => item.id === id)) {
-                data.weapon = id;
-            }
-            // 聖遺物の検索
-            for (const artifact of ArtifactTypes) {
-                id = artifact + "002_" + equip[artifact];
-                if (after[artifact].find(item => item.id === id)) {
-                    data[artifact] = id;
+        for (const type of ArtifactTypes) {
+            before[type].forEach((artifact, index) => {
+                if (ArtifactNames.includes(artifact.name)) {
+                    after[type].push({
+                        id: `${type}002_${index}`,
+                        name: artifact.name,
+                        comment: "",
+                        star: tryParseFloat(artifact.star),
+                        level: tryParseFloat(artifact.level),
+                        main: ver002.main(type, artifact),
+                        sub1: ver002.sub(artifact.sub1),
+                        sub2: ver002.sub(artifact.sub2),
+                        sub3: ver002.sub(artifact.sub3),
+                        sub4: ver002.sub(artifact.sub4),
+                    });
                 }
-            }
-            after.equip.push(data);
+            });
         }
-    });
-    return after;
-}
+        before.equip.forEach((equip, index) => {
+            let data: IEquipData = {
+                id: `equip002_${index}`,
+                comment: "",
+                chara: "",
+                weapon: "",
+                flower: "",
+                feather: "",
+                sands: "",
+                goblet: "",
+                circlet: ""
+            };
+            // キャラの検索
+            let id = "chara002_" + equip.chara;
+            const chara = after.chara.find(item => item.id === id);
+            if (chara) {
+                data.chara = id;
+                // 武器の検索
+                const weapon = CharaList[chara.name].weapon;
+                id = weapon + "002_" + equip.weapon;
+                if (after[weapon].find(item => item.id === id)) {
+                    data.weapon = id;
+                }
+                // 聖遺物の検索
+                for (const artifact of ArtifactTypes) {
+                    id = artifact + "002_" + equip[artifact];
+                    if (after[artifact].find(item => item.id === id)) {
+                        data[artifact] = id;
+                    }
+                }
+                after.equip.push(data);
+            }
+        });
+        return after;
+    },
+} as const;
+
+const ver100 = {
+    initial() {
+        return {
+            initial: {
+                chara: {
+                    conste: 0,
+                    level: "1",
+                    combat: 1,
+                    skill: 1,
+                    burst: 1,
+                },
+                weapon: {
+                    rank: 1,
+                    level: "1",
+                },
+                artifact: {
+                    star: 3,
+                    level: 0,
+                },
+            }
+        };
+    }
+} as const;
 
 export default function convert(data?: DatabaseV002 | DatabaseV100): Database {
     if (data) {
         if (data.ver) {
             if (data.ver === "0.02") {
-                return Ver002toVer100(data);
+                return ver002.toVer100(data);
             }
-        } else if (data.version) {
-            if (data.version === "1.0") {
-                return {
-                    ...convert(),
-                    ...data,
-                };
+        }
+        const version = data.version;
+        if (version) {
+            let def = convert();
+            switch (version) {
+                case "1.0":
+                    data.setting = {
+                        ...def.setting,
+                        ...data.setting,
+                        ...ver100.initial(),
+                    };
+                // fallthrough
+                case "1.1":
+                    return {
+                        ...def,
+                        ...data,
+                    };
             }
+            console.warn("Unkonwn version: " + version);
+            return data;
         }
     }
     return {
-        version: "1.0",
+        version: CurrentVersion,
         chara: [],
         sword: [],
         claymore: [],
@@ -258,6 +286,25 @@ export default function convert(data?: DatabaseV002 | DatabaseV100): Database {
             autosave: true,
             artifact: "",
             critical: "",
-        }
+            ...ver100.initial(),
+        },
     };
 }
+
+export const Database = {
+    name: "global_data",
+    save(data: Database) {
+        localStorage.setItem(Database.name, JSON.stringify(data));
+    },
+    reset(data: Database) {
+        for (const type of DBTableTypes) {
+            if (type !== "setting") {
+                let items = data[type];
+                if (Array.isArray(items)) {
+                    items.splice(0);
+                }
+            }
+        }
+        localStorage.clear(); // ストレージ全削除する
+    },
+} as const;

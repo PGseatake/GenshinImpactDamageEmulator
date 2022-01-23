@@ -16,7 +16,7 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiPlaylistPlus } from "@mdi/js";
 import { ArtifactTypes } from "~/src/const";
-import ArtifactData from "~/components/ArtifactData.vue";
+import ArtifactData from "~/components/equip/ArtifactData.vue";
 
 @Component({
   name: "PageArtifact",

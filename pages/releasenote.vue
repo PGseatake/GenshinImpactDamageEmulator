@@ -16,12 +16,11 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { LocaleMessages } from "vue-i18n/types";
+import ReleaseRoot from "~/components/menu/ReleaseRoot.vue";
 
 @Component({
   name: "PageReleaseNote",
-  components: {
-    ReleaseRoot: () => import("~/components/ReleaseRoot.vue"),
-  },
+  components: { ReleaseRoot },
 })
 export default class PageReleaseNote extends Vue {
   created() {

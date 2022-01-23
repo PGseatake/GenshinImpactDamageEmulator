@@ -1,11 +1,13 @@
 <template>
   <v-container class="d-flex justify-center">
     <v-list width="600">
-      <template v-for="(item, i) of items">
+      <template v-for="(item, i) of dialogItems">
         <!-- カテゴリヘッダ -->
         <template v-if="item.icon === 'header'">
           <v-divider v-if="i" :key="'d' + i" />
-          <v-subheader v-text="$t(item.text)" :key="'s' + i" />
+          <v-subheader :key="'s' + i">{{
+            $t("setting." + item.text)
+          }}</v-subheader>
         </template>
         <!-- カテゴリアイテム -->
         <v-list-item v-else :key="i">
@@ -15,7 +17,9 @@
           >
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
-          <v-list-item-content>{{ $t(item.text) }}</v-list-item-content>
+          <v-list-item-content>{{
+            $t("setting." + item.text)
+          }}</v-list-item-content>
           <!-- スイッチタイプ -->
           <v-list-item-action v-if="item.switch" :class="itemClass">
             <setting-switch v-bind="item.switch" />
@@ -26,34 +30,34 @@
           </v-list-item-action>
           <!-- ボタンタイプ -->
           <v-list-item-action v-if="item.button" :class="itemClass">
-            <v-btn :color="item.button.color" @click="item.button.on(item)">{{
-              $t(item.button.text)
-            }}</v-btn>
+            <v-btn
+              v-text="$t(item.button.text)"
+              :color="item.button.color"
+              @click="item.button.on(item)"
+            />
           </v-list-item-action>
         </v-list-item>
       </template>
     </v-list>
 
-    <v-dialog v-model="dialogShow" width="450px">
-      <v-card>
-        <v-card-title v-text="$t(dialogInfo.title)" />
-        <v-card-text v-html="$t(dialogInfo.text)" />
-        <v-card-text
-          v-if="dialogInfo.subtext"
-          v-html="$t(dialogInfo.subtext)"
-          class="text-caption"
-        />
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text color="secondary" @click="dialogShow = false">{{
-            $t("dialog.cancel")
-          }}</v-btn>
-          <v-btn text color="primary" @click="dialogInfo.on">{{
-            $t("dialog.ok")
-          }}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <dialog-setting
+      :show.sync="dialogShow"
+      :group="dialogGroup"
+      width="450px"
+      @accept="dialogAccept"
+    />
+    <dialog-initial
+      :show.sync="initialShow"
+      :title="initialTitle"
+      :items="initialItems"
+      width="300px"
+      @accept="initialAccept"
+    />
+    <dialog-supply
+      :show.sync="supplyShow"
+      width="400px"
+      @accept="onChangeSupply"
+    />
   </v-container>
 </template>
 
@@ -66,99 +70,194 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiContentSave, mdiExport, mdiImport } from "@mdi/js";
-import SettingSelect, { ISelect } from "~/components/SettingSelect.vue";
-import SettingSwitch, { ISwitch } from "~/components/SettingSwitch.vue";
+import { Database } from "~/src/convert";
+import SettingSwitch, { ISwitch } from "~/components/menu/SettingSwitch.vue";
+import SettingSelect, { ISelect } from "~/components/menu/SettingSelect.vue";
+import {
+  ILevel,
+  IRange,
+  ListItem as InitialItem,
+} from "~/components/dialog/DialogInitial.vue";
 
 type IButton = {
   readonly text: string;
   readonly color?: string;
-  readonly on: (item: IListItem) => void;
+  readonly on: (item: ListItem) => void;
 };
 type IDialog = {
-  readonly title: string;
-  readonly text: string;
-  readonly subtext?: string;
+  readonly group: string;
   readonly on: () => void;
 };
-type IListItem = {
+type ListItem = {
   readonly icon?: string;
   readonly text: string;
   readonly value?: any;
-  readonly select?: ISelect;
   readonly switch?: ISwitch;
+  readonly select?: ISelect;
   readonly button?: IButton;
   readonly dialog?: IDialog;
 };
 
 @Component({
   name: "PageSetting",
-  components: { SettingSwitch, SettingSelect },
+  components: {
+    SettingSwitch,
+    SettingSelect,
+    DialogSetting: () => import("~/components/dialog/DialogSetting.vue"),
+    DialogInitial: () => import("~/components/dialog/DialogInitial.vue"),
+    DialogSupply: () => import("~/components/dialog/DialogSupply.vue"),
+  },
 })
 export default class PageSetting extends Vue {
-  items: IListItem[] = [
-    { icon: "header", text: "setting.data" },
+  dialogShow = false;
+  dialogItems: ListItem[] = [
+    { icon: "header", text: "data" },
     {
-      text: "setting.autosave",
+      text: "autosave",
       switch: { prop: "autosave" },
     },
     {
       icon: mdiContentSave,
-      text: "setting.save",
+      text: "save",
       button: { text: "setting.exec", on: this.onClickSave },
     },
     {
       icon: mdiImport,
-      text: "setting.import",
+      text: "import",
       button: { text: "setting.exec", on: () => (this.importShow = true) },
     },
     {
       icon: mdiExport,
-      text: "setting.export",
+      text: "export",
       button: { text: "setting.exec", on: () => (this.exportShow = true) },
     },
     {
-      text: "setting.delete.detail",
+      text: "delete.detail",
       button: {
         text: "setting.exec",
         color: "error",
-        on: (item: IListItem) => this.dialog(item.dialog),
+        on: this.onClickDialog,
       },
       dialog: {
-        title: "setting.delete.title",
-        text: "setting.delete.text",
-        subtext: "setting.delete.subtext",
+        group: "delete",
         on: this.onClickDelete,
       },
     },
-    { icon: "header", text: "setting.disp" },
     {
-      text: "setting.artifact.detail",
+      text: "initial.chara.detail",
+      button: {
+        text: "setting.initial.button",
+        on: this.onClickInitChara,
+      },
+    },
+    {
+      text: "initial.equip.detail",
+      button: {
+        text: "setting.initial.button",
+        on: this.onClickInitEquip,
+      },
+    },
+    {
+      text: "supply.detail",
+      button: { text: "dialog.append", on: this.onClickSupply },
+    },
+    { icon: "header", text: "disp" },
+    {
+      text: "artifact.detail",
       select: {
         prop: "artifact",
         items: [
-          { text: "setting.artifact.name", value: "" },
-          { text: "setting.artifact.set", value: "set" },
+          { text: "name", value: "" },
+          { text: "set", value: "set" },
         ],
       },
     },
     {
-      text: "setting.critical.detail",
+      text: "critical.detail",
       select: {
         prop: "critical",
         items: [
-          { text: "setting.critical.base", value: "" },
-          { text: "setting.critical.expc", value: "expc" },
-          { text: "setting.critical.both", value: "both" },
+          { text: "base", value: "" },
+          { text: "expc", value: "expc" },
+          { text: "both", value: "both" },
         ],
       },
     },
   ];
-  dialogInfo: IDialog = {
-    title: "",
-    text: "",
-    on: () => {},
-  };
-  dialogShow = false;
+  dialogGroup = "delete";
+  dialogAccept = () => {};
+  charaItems: InitialItem[] = [
+    { type: "header", text: "menu.character" },
+    {
+      type: "range",
+      text: "general.conste",
+      value: 0,
+      min: 0,
+      max: 6,
+    },
+    {
+      type: "level",
+      text: "general.level",
+      value: "1",
+    },
+    { type: "header", text: "general.talent" },
+    {
+      type: "range",
+      text: "general.combat",
+      value: 1,
+      min: 1,
+      max: 10,
+    },
+    {
+      type: "range",
+      text: "combat.skill",
+      value: 1,
+      min: 1,
+      max: 10,
+    },
+    {
+      type: "range",
+      text: "combat.burst",
+      value: 1,
+      min: 1,
+      max: 10,
+    },
+  ];
+  equipItems: InitialItem[] = [
+    { type: "header", text: "menu.weapon" },
+    {
+      type: "range",
+      text: "general.rank",
+      value: 1,
+      min: 1,
+      max: 5,
+    },
+    {
+      type: "level",
+      text: "general.level",
+      value: "1",
+    },
+    { type: "header", text: "menu.artifact" },
+    {
+      type: "range",
+      text: "general.star",
+      value: 3,
+      min: 3,
+      max: 5,
+    },
+    {
+      type: "range",
+      text: "general.level",
+      value: 0,
+      min: 0,
+      max: 20,
+    },
+  ];
+  initialShow = false;
+  initialTitle = "";
+  initialItems: InitialItem[] = [];
+  initialAccept = () => {};
+  supplyShow = false;
 
   get itemClass() {
     return this.$vuetify.breakpoint.xs ? "my-1 ml-4" : "my-1 ml-12";
@@ -183,25 +282,94 @@ export default class PageSetting extends Vue {
     this.$store.commit("tabs", {});
   }
 
-  dialog(info?: IDialog) {
-    if (info) {
-      this.dialogInfo = info;
-      this.dialogShow = true;
-    }
-  }
-
   popup(label: string) {
     this.$store.commit("popup", this.$t("popup." + label));
   }
 
+  onClickDialog(item: ListItem) {
+    const dialog = item.dialog;
+    if (dialog) {
+      this.dialogAccept = dialog.on;
+      this.dialogGroup = dialog.group;
+      this.dialogShow = true;
+    }
+  }
+
   onClickSave() {
-    localStorage.setItem("global_data", JSON.stringify(this.$db));
+    Database.save(this.$db);
     this.popup("save");
   }
 
   onClickDelete() {
-    localStorage.removeItem("global_data");
-    this.$store.commit("reload");
+    Database.reset(this.$db);
+    Database.save(this.$db);
+    this.popup("delete");
+  }
+
+  onClickInitChara() {
+    const { chara } = this.$db.setting.initial;
+    let items = this.charaItems;
+    items[1].value = chara.conste;
+    items[2].value = chara.level;
+    items[4].value = chara.combat;
+    items[5].value = chara.skill;
+    items[6].value = chara.burst;
+
+    this.initialItems.splice(0);
+    this.initialItems.push(...items);
+
+    this.initialAccept = this.onChangeInitChara;
+    this.initialTitle = "chara.title";
+    this.initialShow = true;
+  }
+
+  onChangeInitChara() {
+    let { chara } = this.$db.setting.initial;
+    const items = this.charaItems;
+    chara.conste = (items[1] as IRange).value;
+    chara.level = (items[2] as ILevel).value;
+    chara.combat = (items[4] as IRange).value;
+    chara.skill = (items[5] as IRange).value;
+    chara.burst = (items[6] as IRange).value;
+
+    this.onClickSave();
+  }
+
+  onClickInitEquip() {
+    const { weapon, artifact } = this.$db.setting.initial;
+    let items = this.equipItems;
+    items[1].value = weapon.rank;
+    items[2].value = weapon.level;
+    items[4].value = artifact.star;
+    items[5].value = artifact.level;
+
+    this.initialItems.splice(0);
+    this.initialItems.push(...items);
+
+    this.initialAccept = this.onChangeInitEquip;
+    this.initialTitle = "equip.title";
+    this.initialShow = true;
+  }
+
+  onChangeInitEquip() {
+    let { weapon, artifact } = this.$db.setting.initial;
+    const items = this.equipItems;
+    weapon.rank = (items[1] as IRange).value;
+    weapon.level = (items[2] as ILevel).value;
+    artifact.star = (items[4] as IRange).value;
+    artifact.level = (items[5] as IRange).value;
+
+    this.onClickSave();
+  }
+
+  onClickSupply() {
+    this.supplyShow = true;
+  }
+
+  onChangeSupply() {
+    console.log(this.$db);
+    Database.save(this.$db);
+    this.popup("append");
   }
 }
 </script>

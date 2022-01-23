@@ -63,16 +63,16 @@
 import { Vue, Prop, Component } from "vue-property-decorator";
 import { mdiChevronDown, mdiMenuDown } from "@mdi/js";
 
-export type ReleaseLeaf = string | ReadonlyArray<string | ReleaseNode>;
-export type ReleaseNode = { readonly [key in string]: ReleaseLeaf };
+export type IReleaseLeaf = string | ReadonlyArray<string | IReleaseNode>;
+export type IReleaseNode = { readonly [key in string]: IReleaseLeaf };
 
 @Component({
   name: "ReleaseNode",
   inheritAttrs: false,
 })
-export default class CReleaseNode extends Vue {
+export default class ReleaseNode extends Vue {
   @Prop({ required: true }) title!: string;
-  @Prop({ required: true }) items!: ReleaseLeaf;
+  @Prop({ required: true }) items!: IReleaseLeaf;
   @Prop({ default: false }) group!: boolean;
 
   get appendIcon() {

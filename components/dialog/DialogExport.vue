@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "nuxt-property-decorator";
-import DialogFile from "~/components/DialogFile.vue";
+import DialogFile from "~/components/dialog/DialogFile.vue";
 
 declare global {
   interface Navigator {
@@ -31,6 +31,7 @@ declare global {
 @Component({
   name: "DialogExport",
   components: { DialogFile },
+  inheritAttrs: false,
 })
 export default class DialogExport extends Vue {
   @Prop({ required: true }) icons!: IDict<string>;

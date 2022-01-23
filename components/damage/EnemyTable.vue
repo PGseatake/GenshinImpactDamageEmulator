@@ -135,6 +135,7 @@ import {
   IEnemyData,
 } from "~/src/enemy";
 import { Enemy } from "~/src/damage";
+import ChipElement from "~/components/ChipElement.vue";
 
 type TextValue = {
   name: EnemyName;
@@ -143,11 +144,12 @@ type TextValue = {
 
 @Component({
   name: "EnemyTable",
-  inheritAttrs: false,
   components: {
+    ChipElement,
     SelectRange: () => import("~/components/SelectRange.vue"),
-    SelectElement: () => import("~/components/SelectElement.vue"),
+    SelectElement: () => import("~/components/damage/SelectElement.vue"),
   },
+  inheritAttrs: false,
 })
 export default class EnemyTable extends Vue {
   @Prop({ required: true }) damage!: string;

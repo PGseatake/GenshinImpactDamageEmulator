@@ -202,17 +202,17 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { IEquipData } from "~/src/interface";
 import { ICharaData } from "~/src/character";
-import { Team } from "~/src/team";
+import { Builder, Team } from "~/src/team";
 
 @Component({
   name: "PageEquipment",
   components: {
     NameComment: () => import("~/components/NameComment.vue"),
-    CharaDetail: () => import("~/components/CharaDetail.vue"),
-    WeaponDetail: () => import("~/components/WeaponDetail.vue"),
-    ArtifactDetail: () => import("~/components/ArtifactDetail.vue"),
-    DialogAppend: () => import("~/components/DialogAppend.vue"),
-    DialogRemove: () => import("~/components/DialogRemove.vue"),
+    CharaDetail: () => import("~/components/equip/CharaDetail.vue"),
+    WeaponDetail: () => import("~/components/equip/WeaponDetail.vue"),
+    ArtifactDetail: () => import("~/components/equip/ArtifactDetail.vue"),
+    DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
   },
 })
 export default class PageEquipment extends Vue {
@@ -282,17 +282,7 @@ export default class PageEquipment extends Vue {
   }
 
   onAppend() {
-    const data: IEquipData = {
-      id: this.$makeUniqueId(),
-      comment: "",
-      chara: this.append,
-      weapon: "",
-      flower: "",
-      feather: "",
-      sands: "",
-      goblet: "",
-      circlet: "",
-    };
+    const data = Builder.equip(this.$makeUniqueId(), this.append);
     this.$appendData(this.items, data);
     this.append = "";
   }

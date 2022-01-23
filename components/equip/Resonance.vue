@@ -12,7 +12,10 @@
 import { Vue, Prop, Component } from "vue-property-decorator";
 import { ElementType, ElementTypes } from "~/src/const";
 
-@Component({ name: "Resonance" })
+@Component({
+  name: "Resonance",
+  inheritAttrs: false,
+})
 export default class Resonance extends Vue {
   @Prop({ required: true }) items!: ElementType[];
 

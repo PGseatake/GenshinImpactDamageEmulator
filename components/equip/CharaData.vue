@@ -178,8 +178,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
-import * as ascension from "~/src/ascension";
-import { ICharaData, CharaList, CharaNames, CharaName } from "~/src/character";
+import { ICharaData, CharaNames, CharaName, Builder } from "~/src/character";
 
 @Component({
   name: "CharaData",
@@ -187,10 +186,10 @@ import { ICharaData, CharaList, CharaNames, CharaName } from "~/src/character";
     NameComment: () => import("~/components/NameComment.vue"),
     NumberField: () => import("~/components/NumberField.vue"),
     SelectRange: () => import("~/components/SelectRange.vue"),
-    CharaSpecial: () => import("~/components/CharaSpecial.vue"),
     AscensionLevel: () => import("~/components/AscensionLevel.vue"),
-    DialogAppend: () => import("~/components/DialogAppend.vue"),
-    DialogRemove: () => import("~/components/DialogRemove.vue"),
+    CharaSpecial: () => import("~/components/equip/CharaSpecial.vue"),
+    DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
+    DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
   },
   inheritAttrs: false,
 })
@@ -238,46 +237,21 @@ export default class CharaData extends Vue {
   }
 
   onChangeName(item: ICharaData) {
-    const { special } = CharaList[item.name];
-    item.conste = 0;
-    item.level = "1";
-    item.special = { type: special, value: 0 };
-    item.combat = 1;
-    item.skill = 1;
-    item.burst = 1;
-    this.onChangeLevel(item);
+    Builder.name(item, this.$db.setting.initial.chara);
   }
 
   onChangeLevel(item: ICharaData) {
-    const { status, spvalue } = CharaList[item.name];
-    const level = item.level;
-    item.hp = ascension.calc14(level, status.hp);
-    item.atk = ascension.calc14(level, status.atk);
-    item.def = ascension.calc14(level, status.def);
-    item.special.value = ascension.step8(level, spvalue);
+    Builder.level(item);
   }
 
   onAppend() {
     const name = this.append;
     if (name) {
-      const item = CharaList[name];
-      const data: ICharaData = {
-        id: this.$makeUniqueId(),
-        name: name,
-        comment: "",
-        conste: 0,
-        level: "1",
-        hp: item.status.hp[0],
-        atk: item.status.atk[0],
-        def: item.status.def[0],
-        special: {
-          type: item.special,
-          value: item.spvalue[0],
-        },
-        combat: 1,
-        skill: 1,
-        burst: 1,
-      };
+      const data = Builder.make(
+        this.$makeUniqueId(),
+        name,
+        this.$db.setting.initial.chara
+      );
       this.$appendData(this.items, data);
       this.append = "";
     }

@@ -9,10 +9,10 @@
     @change="onChange"
   >
     <template #selection="{ item }">
-      {{ $t(item.text) }}
+      {{ $t(`setting.${prop}.${item.text}`) }}
     </template>
     <template #item="{ item }">
-      {{ $t(item.text) }}
+      {{ $t(`setting.${prop}.${item.text}`) }}
     </template>
   </v-select>
 </template>
@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { SettingString } from "~/src/convert";
+import { SettingString } from "~/src/setting";
 
 export type ISelectItem = { readonly text: string; readonly value: string };
 export type ISelect = {
