@@ -73,6 +73,7 @@
         <ul>
           <li>{{ $t("index.C1") }}</li>
           <li>{{ $t("index.C2") }}</li>
+          <li>{{ $t("index.C3") }}</li>
         </ul>
       </v-card-text>
     </v-card>

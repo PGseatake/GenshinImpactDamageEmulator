@@ -143,7 +143,9 @@
         <nuxt />
       </v-main>
 
-      <v-footer class="justify-end">
+      <v-footer class="justify-space-between">
+        <span />
+        <span>{{ $t("copyright") }}</span>
         <span>{{ $t("footer") }}</span>
       </v-footer>
       <popup-bar />
