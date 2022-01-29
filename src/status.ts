@@ -78,6 +78,11 @@ export interface IStatus {
     enchant: StatusEnchant;
 };
 
+export type Critical = {
+    rate: number;
+    damage: number;
+};
+
 export class Status {
     public static empty(): IStatus {
         return {
@@ -334,10 +339,7 @@ export class Status {
     }
 
     // 会心値（％）
-    critical(type: konst.CombatType = konst.CombatType.Normal): {
-        rate: number;
-        damage: number;
-    } {
+    critical(type: konst.CombatType = konst.CombatType.Normal): Critical {
         let rate = this.param.cri_rate;
         switch (type) {
             case konst.CombatType.Normal:

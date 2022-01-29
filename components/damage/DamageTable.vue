@@ -11,6 +11,7 @@
     disable-sort
     fixed-header
     hide-default-footer
+    class="text-right"
   >
     <template #[`group.header`]="{ group, headers, isOpen, toggle }">
       <td
@@ -38,9 +39,11 @@
   tr:hover {
     background: inherit !important;
   }
-  td.text-start {
-    align-self: center;
-    vertical-align: middle;
+  th {
+    padding: 0 8px !important;
+  }
+  td {
+    padding: 0 8px !important;
   }
 }
 
@@ -59,6 +62,7 @@ import { IMember } from "~/src/team";
 import { IStatus, Status } from "~/src/status";
 import { IDamageData, CombatAttribute, Enemy } from "~/src/damage";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
+import { SettingCritical } from "~/src/setting";
 
 interface IAttribute extends ICombat {
   talent: TalentType;
@@ -83,14 +87,43 @@ export default class DamageTable extends Vue {
   }
 
   get headers() {
-    return [
-      { text: "", value: "name" },
-      { text: this.$t("general.rate"), value: "rate", align: "right" },
-      { text: this.$t("general.damage"), value: "damage", align: "right" },
-      { text: this.$t("damage.critical"), value: "critical", align: "right" },
-      { text: this.$t("damage.reaction"), value: "element", align: "right" },
-      { text: this.$t("damage.critical"), value: "elem_cri", align: "right" },
+    let headers = [
+      { text: "", value: "", align: "right" },
+      { text: this.$t("general.rate"), value: "", align: "right" },
+      { text: this.$t("general.damage"), value: "", align: "right" },
     ];
+    const i18n = this.$i18n;
+    const crit = this.critical;
+    const append = () => {
+      if (crit !== SettingCritical.Expc) {
+        headers.push({
+          text: i18n.t("damage.critical"),
+          value: "",
+          align: "right",
+        });
+      } else {
+        headers.push({
+          text: i18n.t("damage.crit_expc"),
+          value: "",
+          align: "right",
+        });
+      }
+      if (crit === SettingCritical.Both) {
+        headers.push({
+          text: i18n.t("damage.crit_both"),
+          value: "",
+          align: "right",
+        });
+      }
+    };
+    append();
+    headers.push({
+      text: this.$t("damage.reaction"),
+      value: "",
+      align: "right",
+    });
+    append();
+    return headers;
   }
 
   get items() {
@@ -117,8 +150,16 @@ export default class DamageTable extends Vue {
     return items;
   }
 
+  get critical() {
+    return this.$db.setting.critical;
+  }
+
   makeHtml(item: IAttribute) {
-    let attr = new CombatAttribute(item, item.status.talent[item.talent]);
+    let attr = new CombatAttribute(
+      item,
+      item.status.talent[item.talent],
+      this.$db.setting.critical as SettingCritical
+    );
     let html = `<td>${item.name}</td>` + attr.toHtml();
     const damage = attr.damage(
       item.status,
@@ -126,7 +167,8 @@ export default class DamageTable extends Vue {
       this.data.reaction || undefined,
       this.data.contact || undefined
     );
-    for (let i = 0; i < 4; ++i) {
+    const len = this.critical === SettingCritical.Both ? 6 : 4;
+    for (let i = 0; i < len; ++i) {
       if (i < damage.length) {
         html += damage[i];
       } else {

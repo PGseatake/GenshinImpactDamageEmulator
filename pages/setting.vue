@@ -78,6 +78,7 @@ import {
   IRange,
   ListItem as InitialItem,
 } from "~/components/dialog/DialogInitial.vue";
+import { SettingCritical } from "~/src/setting";
 
 type IButton = {
   readonly text: string;
@@ -177,9 +178,9 @@ export default class PageSetting extends Vue {
       select: {
         prop: "critical",
         items: [
-          { text: "base", value: "" },
-          { text: "expc", value: "expc" },
-          { text: "both", value: "both" },
+          { text: "base", value: SettingCritical.Base },
+          { text: "expc", value: SettingCritical.Expc },
+          { text: "both", value: SettingCritical.Both },
         ],
       },
     },
@@ -367,7 +368,6 @@ export default class PageSetting extends Vue {
   }
 
   onChangeSupply() {
-    console.log(this.$db);
     Database.save(this.$db);
     this.popup("append");
   }

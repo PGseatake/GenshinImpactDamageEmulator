@@ -9,10 +9,11 @@ import {
     NoneContactType,
 } from "~/src/const";
 import { ICombat, IIdentify } from "~/src/interface";
-import { Status, StatusReduct } from "~/src/status";
+import { Critical, Status, StatusReduct } from "~/src/status";
 import { DamageScaleTable, ReactionFactorTable } from "~/src/bonus";
 import { EnemyList, IEnemyInfo, IEnemyData } from "~/src/enemy";
 import { roundRate } from "~/plugins/utils";
+import { SettingCritical } from "./setting";
 
 export interface IDamageData extends IIdentify, IEnemyData {
     team: string;
@@ -61,18 +62,34 @@ export class Enemy {
     }
 }
 
+function clamp(val: number, min: number, max: number) {
+    if (val < min) return min;
+    if (val > max) return max;
+    return val;
+}
+
+function lerp(x0: number, x1: number, ratio: number) {
+    return x0 * (1 - ratio) + x1 * ratio;
+}
+
+function toScale(rate: number) {
+    return 1.0 + rate / 100.0;
+}
+
 class Damage {
     public readonly atk: number;
     public readonly def: number;
     public readonly flat: number;
+    public readonly crit: Critical;
     public readonly value: ReadonlyArray<number>;
     public readonly multi: number;
     public strike: boolean;
 
-    constructor(atk: number, def: number, flat: number, value: ReadonlyArray<number>, multi: number) {
+    constructor(atk: number, def: number, flat: number, value: ReadonlyArray<number>, multi: number, crit?: Critical) {
         this.atk = atk;
         this.def = def;
         this.flat = flat;
+        this.crit = crit ? { rate: clamp(crit.rate / 100, 0, 1), damage: toScale(crit.damage) } : { rate: 0, damage: 1 };
         this.value = value;
         this.multi = multi;
         this.strike = false;
@@ -94,16 +111,14 @@ class Damage {
     }
 
     private calc(val: number) {
-        return (((val * this.atk * this.def) / 100) + this.flat).toFixed();
+        const crit = lerp(1, this.crit.damage, this.crit.rate);
+        return (((val * this.atk * this.def * crit) / 100) + this.flat).toFixed();
     }
-}
-
-function toScale(rate: number) {
-    return 1.0 + rate / 100.0;
 }
 
 // 天賦の各種倍率
 export class CombatAttribute {
+    public readonly crit: SettingCritical;
     public readonly name: string;
     public readonly type: CombatType;
     public readonly elem: CombatElementType;
@@ -111,9 +126,10 @@ export class CombatAttribute {
     public readonly multi: number;
     public readonly based: DamageBased;
 
-    constructor(info: ICombat, level: number) {
+    constructor(info: ICombat, level: number, crit: SettingCritical) {
+        this.crit = crit;
         const scale = DamageScaleTable[info.scale];
-        const index = Math.min(Math.max(1, level), scale.length) - 1; // Math.clamp(level, 1, length) - 1
+        const index = clamp(level, 1, scale.length) - 1;
         this.name = info.name;
         this.type = info.type;
         this.elem = info.elem;
@@ -180,32 +196,19 @@ export class CombatAttribute {
         const damageBonus = status.param.any_dmg;
         const combatScale = toScale(combatBonus + elementBonus + damageBonus);
         const critical = status.critical(this.type);
-        const criticalScale = toScale(critical.damage);
-
-        // let debug = {
-        //     name: this.name,
-        //     type: this.type,
-        //     elem: this.elem,
-        //     value: this.value,
-        //     attackPower,
-        //     enemyDefence,
-        //     enemyResist,
-        //     combatBonus,
-        //     elementBonus,
-        //     damageBonus,
-        //     combatScale,
-        //     critical,
-        // };
-        // console.log(debug);
 
         const atk = attackPower * combatScale;
         const def = enemyDefence * enemyResist;
         const flat = status.flat[this.type];
         const pair = (rate: number) => {
-            return [
-                this.toDamage(rate, def, flat), // 通常ダメージ
-                this.toDamage(rate * criticalScale, def, flat), // 会心ダメージ
-            ];
+            let items = [this.toDamage(rate, def, flat)]; // 通常ダメージ
+            if (this.crit !== SettingCritical.Expc) { // 会心ダメージ（直値）
+                items.push(this.toDamage(rate, def, flat, { rate: 100, damage: critical.damage }));
+            }
+            if (this.crit !== SettingCritical.Base) { // 会心ダメージ（期待値）
+                items.push(this.toDamage(rate, def, flat, critical));
+            }
+            return items;
         };
         let damages = pair(atk);
 
@@ -241,8 +244,8 @@ export class CombatAttribute {
         return damages.map((val) => val.toHtml());
     }
 
-    private toDamage(atk: number, def: number, flat: number) {
-        return new Damage(atk, def, flat, this.value, this.multi);
+    private toDamage(atk: number, def: number, flat: number, crit?: Critical) {
+        return new Damage(atk, def, flat, this.value, this.multi, crit);
     }
 
     private reaction(elem: ElementType, reaction?: ReactionType) {

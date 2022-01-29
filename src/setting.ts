@@ -2,9 +2,16 @@ export type SettingBoolean = {
     autosave: boolean;
 };
 
+export const SettingCritical = {
+    Base: "", // 直値
+    Expc: "expc", // 期待値
+    Both: "both", // 両方
+} as const;
+export type SettingCritical = typeof SettingCritical[keyof typeof SettingCritical];
+
 export type SettingString = {
     artifact: string;
-    critical: string;
+    critical: string; // SettingCritical
 };
 
 export type SettingChara = {
