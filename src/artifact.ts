@@ -91,7 +91,6 @@ export const ArtifactNames = [
 ] as const;
 export type ArtifactName = typeof ArtifactNames[number];
 
-// TODO: limitを多言語対応
 export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> = {
     Adventurer: {
         // HP上限+1000
@@ -148,7 +147,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
     Artist: {
         // 通常攻撃と重撃のダメージ+15%
         set2: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 15 },
-        // 元素スキル発動後、通常攻撃と重撃ダメージ+ 25 %、継続時間8秒
+        // 元素スキル発動後、通常攻撃と重撃ダメージ+25%、継続時間8秒
         set4: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 25, limit: "skill.use", times: 8 },
     },
     Gambler: {

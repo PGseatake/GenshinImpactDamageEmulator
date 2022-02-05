@@ -4,18 +4,11 @@ import { BonusType, ElementType } from '~/src/const';
 import { DirectBonus } from '~/src/bonus';
 import convert from '~/src/convert';
 
-export function roundFloat(value) {
-    if (value < 100) {
-        if (value < 1) {
-            return (Math.round(value * 100) / 100).toFixed(2);
-        }
-        return (Math.round(value * 10) / 10).toFixed(1);
-    }
-    return Math.round(value).toFixed();
-}
-
 export function roundRate(value) {
-    return roundFloat(value) + "%";
+    // 小数点以下 = value < 1.0: 2桁 / value < 100: 1桁 / 他: 0桁
+    const frac = Math.max(0, value < 100 ? (value < 1 ? 2 : 1) : 0);
+    const scale = Math.pow(10, frac);
+    return (Math.round(value * scale) / scale).toFixed(frac) + "%";
 }
 
 const utils = {
@@ -84,7 +77,6 @@ const utils = {
             return "indigo darken-4";
         }
 
-        Vue.prototype.$roundFloat = roundFloat;
         Vue.prototype.$roundRate = roundRate;
     }
 }

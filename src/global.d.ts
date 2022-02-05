@@ -47,7 +47,6 @@ declare module "vue/types/vue" {
         $starColor: (star: number) => string;
         $elementBGColor: (elem: ElementType) => string;
         $roundRate: (value: number) => string;
-        $roundFloat: (value: number) => string;
     }
 }
 
