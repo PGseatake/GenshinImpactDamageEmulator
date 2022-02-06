@@ -345,11 +345,6 @@ export class FlatBonus extends BonusBase {
                     "format.basic",
                     { type, value: RateBonus.xround(value, konst.BonusType.None) }
                 );
-            case konst.FlatBonusBase.Atk:
-                return this.i18n.t(
-                    "format.flat",
-                    { type, base: this.i18n.t("bonus.atk_base"), value: RateBonus.round(value) }
-                );
             default:
                 return this.i18n.t(
                     "format.flat",
@@ -384,7 +379,7 @@ export class FlatBonus extends BonusBase {
             case konst.FlatBonusBase.Hp:
                 value = src.hp * value / 100;
                 break;
-            case konst.FlatBonusBase.Atk:
+            case konst.FlatBonusBase.AtkBase:
                 value = src.base.atk * value / 100;
                 break;
             case konst.FlatBonusBase.Def:
@@ -421,7 +416,7 @@ export class FlatBonus extends BonusBase {
                     }
                     break;
                 // 基礎攻撃力の倍率
-                case konst.FlatBonusBase.Atk:
+                case konst.FlatBonusBase.AtkBase:
                     const atk = src.base.atk * bound.value / 100;
                     if (atk < value) {
                         value = atk;

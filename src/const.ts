@@ -345,7 +345,7 @@ export const FlatBonusBase = {
     Direct: "direct",
     Energy: "energy",
     Hp: "hp", // 最終値
-    Atk: "atk", // 基礎値
+    AtkBase: "atk_base", // 基礎値
     Def: "def", // 最終値
     Elem: "elem",
     EnRec: "en_rec",

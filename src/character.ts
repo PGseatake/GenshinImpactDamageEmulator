@@ -930,7 +930,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.Atk,
-                base: konst.FlatBonusBase.Atk,
+                base: konst.FlatBonusBase.AtkBase,
                 value: 56.0,
                 scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Burst },
                 limit: "burst.area",
@@ -1646,7 +1646,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                     extra: konst.ExtraBonusType.Flat,
                     dest: konst.FlatBonusDest.Atk,
                     base: konst.FlatBonusBase.Hp,
-                    bound: { base: konst.FlatBonusBase.Atk, value: 400 },
+                    bound: { base: konst.FlatBonusBase.AtkBase, value: 400 },
                     scale: { type: konst.DamageScale.Xiao, talent: konst.TalentType.Skill },
                     value: 3.84,
                     limit: "skill.using",
@@ -2289,7 +2289,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             skill: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.Atk,
-                base: konst.FlatBonusBase.Atk,
+                base: konst.FlatBonusBase.AtkBase,
                 value: 43.0,
                 scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Skill },
                 limit: "skill.area",
