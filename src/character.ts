@@ -444,7 +444,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.three", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 52.8 },
                 { name: "general.four", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 65.6 },
                 { name: "general.aim", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
-                { name: "general.full", type: konst.CombatType.Heavy, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "general.fully", type: konst.CombatType.Heavy, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 124 },
                 { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
                 { name: "general.low", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
@@ -667,7 +667,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.four", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 47.3 },
                 { name: "general.five", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 59.3 },
                 { name: "general.aim", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
-                { name: "general.full", type: konst.CombatType.Heavy, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "general.fully", type: konst.CombatType.Heavy, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 124 },
                 { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
                 { name: "general.low", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
@@ -914,9 +914,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
             ],
             skill: [
-                { name: "general.push", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 138 },
-                { name: "general.charge", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: [84.0, 92.0] },
-                { name: "general.amass", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: [88.0, 96.0] },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 138 },
+                { name: "general.charge1", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: [84.0, 92.0] },
+                { name: "general.charge2", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: [88.0, 96.0] },
                 { name: "general.burst", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 132 },
             ],
             burst: [
@@ -1108,7 +1108,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "general.slash", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 204 },
-                { name: "general.continu", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 60.0 },
+                { name: "general.dot", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 60.0 },
                 { name: "general.burst", type: konst.CombatType.Burst, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 204 }
             ],
         },
@@ -1182,7 +1182,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.four", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.0 },
                 { name: "general.five", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 53.8 },
                 { name: "general.aim", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
-                { name: "general.full", type: konst.CombatType.Heavy, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "general.fully", type: konst.CombatType.Heavy, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 124 },
                 { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
                 { name: "general.low", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
@@ -1269,8 +1269,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 186 },
             ],
             skill: [
-                { name: "general.push", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 146 },
-                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 246 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 146 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 246 },
                 { name: "eula.skill", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 96, multi: 2 },
             ],
             burst: [
@@ -1359,7 +1359,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.four", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 57.7 },
                 { name: "general.five", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 72.1 },
                 { name: "general.aim", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
-                { name: "general.full", type: konst.CombatType.Heavy, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "general.fully", type: konst.CombatType.Heavy, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 124 },
                 { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
                 { name: "general.low", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
@@ -1517,7 +1517,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.three", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 49.5 },
                 { name: "general.four", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 59.0 },
                 { name: "general.aim", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
-                { name: "general.full", type: konst.CombatType.Heavy, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "general.fully", type: konst.CombatType.Heavy, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 124 },
                 { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
                 { name: "general.low", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
@@ -1814,12 +1814,12 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 204 },
             ],
             skill: [
-                { name: "general.push", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 192 },
-                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 261 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 192 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 261 },
             ],
             burst: [
                 { name: "general.slash", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 262 },
-                { name: "general.continu", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 120 },
+                { name: "general.dot", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 120 },
                 { name: "general.contact", type: konst.CombatType.Burst, elem: konst.CombatElementType.Contact, scale: konst.DamageScale.Elem, value: 36 },
             ],
         },
@@ -2270,7 +2270,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.four", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 50.4 },
                 { name: "general.five", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 58.1 },
                 { name: "general.aim", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
-                { name: "general.full", type: konst.CombatType.Heavy, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "general.fully", type: konst.CombatType.Heavy, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 124 },
                 { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
                 { name: "general.low", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
@@ -2356,7 +2356,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Elect, scale: konst.DamageScale.Phys, value: 142 },
             ],
             skill: [
-                { name: "general.push", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 80.0 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 80.0 },
                 { name: "lisa.zero", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 320 },
                 { name: "lisa.one", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 368 },
                 { name: "lisa.two", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 424 },
@@ -2438,7 +2438,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 142 },
             ],
             skill: [
-                { name: "general.continu", type: konst.CombatType.Skill, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 32.0 },
+                { name: "general.dot", type: konst.CombatType.Skill, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 32.0 },
                 { name: "mona.skill", type: konst.CombatType.Skill, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 133 },
             ],
             burst: [
@@ -2884,8 +2884,8 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 205 },
             ],
             skill: [
-                { name: "general.push", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 199 },
-                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 295 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 199 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 295 },
             ],
             burst: [
                 { name: "general.burst", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 160 },
@@ -2969,7 +2969,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             burst: [
                 { name: "general.skill", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: [104, 152] },
-                { name: "general.continu", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 132 },
+                { name: "general.dot", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 132 },
             ],
         },
         passive: {
@@ -3256,12 +3256,12 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
             ],
             skill: [
-                { name: "general.push", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 139 },
-                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 188.8 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 139 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 188.8 },
             ],
             burst: [
                 { name: "general.skill", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 101 },
-                { name: "general.continu", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 33.1 },
+                { name: "general.dot", type: konst.CombatType.Burst, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 33.1 },
             ],
         },
         passive: {
@@ -3385,7 +3385,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.skill", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 211 },
             ],
             burst: [
-                { name: "general.continu", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 148 },
+                { name: "general.dot", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 148 },
                 { name: "general.contact", type: konst.CombatType.Burst, elem: konst.CombatElementType.Contact, scale: konst.DamageScale.Elem, value: 44 },
             ],
         },
@@ -3471,7 +3471,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.five", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 60.9 },
                 { name: "general.six", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 72.8 },
                 { name: "general.aim", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
-                { name: "general.full", type: konst.CombatType.Heavy, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "general.fully", type: konst.CombatType.Heavy, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 124 },
                 { name: "tartaglia.flash", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 12.4, multi: 3 },
                 { name: "tartaglia.break", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 62.0 },
                 { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 63.9 },
@@ -3642,17 +3642,17 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.five", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 50.7 },
                 { name: "general.six", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 71.0 },
                 { name: "general.aim", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
-                { name: "general.full", type: konst.CombatType.Heavy, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "general.fully", type: konst.CombatType.Heavy, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 124 },
                 { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
                 { name: "general.low", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
             ],
             skill: [
-                { name: "general.push", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 276 },
-                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 380 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 276 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 380 },
             ],
             burst: [
-                { name: "general.continu", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 37.6 },
+                { name: "general.dot", type: konst.CombatType.Burst, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 37.6 },
                 { name: "general.contact", type: konst.CombatType.Burst, elem: konst.CombatElementType.Contact, scale: konst.DamageScale.Elem, value: 18.8 },
             ],
         },
@@ -3989,7 +3989,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             ],
             skill: [
                 { name: "xinyan.swing", type: konst.CombatType.Skill, elem: konst.ElementType.Phys, scale: konst.DamageScale.Elem, value: 170 },
-                { name: "general.continu", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 33.6 }
+                { name: "general.dot", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 33.6 }
             ],
             burst: [
                 { name: "general.skill", type: konst.CombatType.Burst, elem: konst.ElementType.Phys, scale: konst.DamageScale.Elem, value: 341 },
@@ -4148,7 +4148,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.four", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 46.4, multi: 2 },
                 { name: "general.five", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 105.9 },
                 { name: "general.aim", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 43.9 },
-                { name: "general.full", type: konst.CombatType.Heavy, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 124 },
+                { name: "general.fully", type: konst.CombatType.Heavy, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 124 },
                 { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 56.8 },
                 { name: "general.low", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 114 },
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
@@ -4251,9 +4251,9 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
             ],
             skill: [
-                { name: "general.push", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 149.1, based: konst.DamageBased.Def },
-                { name: "general.charge", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 261.0, based: konst.DamageBased.Def },
-                { name: "general.amass", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 372.8, based: konst.DamageBased.Def },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 149.1, based: konst.DamageBased.Def },
+                { name: "general.charge1", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 261.0, based: konst.DamageBased.Def },
+                { name: "general.charge2", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 372.8, based: konst.DamageBased.Def },
             ],
             burst: [
                 { name: "general.skill", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 244 },
@@ -4393,7 +4393,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             skill: [
                 { name: "zhongli.pillar", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 16.0 },
                 { name: "zhongli.resonance", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Phys, value: 32.0 },
-                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 80.0 },
+                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 80.0 },
             ],
             burst: [
                 { name: "general.skill", type: konst.CombatType.Burst, elem: konst.ElementType.Geo, scale: konst.DamageScale.Zhongli, value: 401.4 },

@@ -93,10 +93,10 @@
         "phys": "物理"
     },
     "combat": {
+        "combat": "通常攻撃",
         "normal": "通常攻撃",
         "heavy": "重撃",
         "plunge": "落下攻撃",
-        "combat": "通常攻撃/重撃",
         "skill": "元素スキル",
         "burst": "元素爆発",
         "general": {
@@ -110,18 +110,18 @@
             "keep": "連続重撃ダメージ",
             "last": "重撃終了ダメージ",
             "aim": "狙い撃ち",
-            "full": "フルチャージ狙い撃ち",
+            "fully": "フルチャージ狙い撃ち",
             "fall": "落下期間のダメージ",
             "low": "低空落下ダメージ",
             "high": "高空落下ダメージ",
             "skill": "スキルダメージ",
-            "push": "一回押しダメージ",
-            "press": "長押しダメージ",
-            "charge": "1段チャージダメージ",
-            "amass": "2段チャージダメージ",
+            "press": "一回押しダメージ",
+            "hold": "長押しダメージ",
+            "charge1": "1段チャージダメージ",
+            "charge2": "2段チャージダメージ",
             "burst": "爆発ダメージ",
             "slash": "斬撃ダメージ",
-            "continu": "継続ダメージ",
+            "dot": "継続ダメージ",
             "contact": "付加元素ダメージ"
         },
         "traveler": {
@@ -287,7 +287,8 @@
         "echarge": "感電",
         "shutter": "氷砕き",
         "conduct": "超電導",
-        "overload": "過負荷"
+        "overload": "過負荷",
+        "crystal": "結晶反応"
     },
     "bonus": {
         "none": "なし",
@@ -594,10 +595,10 @@
             "OceanConqueror": "沈淪の心",
             "Millelith": "千岩牢固",
             "PaleFlame": "蒼白の炎",
-            "SeveredFate": "絶縁の旗印",
             "Shimenawa": "追憶のしめ縄",
-            "OceanHuedClam": "海染陣磲",
-            "HuskOpulentDreams": "華館夢醒形骸記"
+            "SeveredFate": "絶縁の旗印",
+            "HuskOpulentDreams": "華館夢醒形骸記",
+            "OceanHuedClam": "海染陣磲"
         },
         "flower": {
             "Adventurer": "冒険者の花",
@@ -629,10 +630,10 @@
             "OceanConqueror": "金メッキのコサージュ",
             "Millelith": "偉勲の花",
             "PaleFlame": "無垢の花",
-            "SeveredFate": "威厳の鍔",
             "Shimenawa": "覊絆の花",
-            "OceanHuedClam": "海染の花",
-            "HuskOpulentDreams": "栄花の期"
+            "SeveredFate": "威厳の鍔",
+            "HuskOpulentDreams": "栄花の期",
+            "OceanHuedClam": "海染の花"
         },
         "feather": {
             "Adventurer": "冒険者の羽根",
@@ -664,10 +665,10 @@
             "OceanConqueror": "追憶の風",
             "Millelith": "昭武の羽根",
             "PaleFlame": "良医の羽",
-            "SeveredFate": "切落の羽",
             "Shimenawa": "憶念の矢",
-            "OceanHuedClam": "淵宮の羽",
-            "HuskOpulentDreams": "華館の羽"
+            "SeveredFate": "切落の羽",
+            "HuskOpulentDreams": "華館の羽",
+            "OceanHuedClam": "淵宮の羽"
         },
         "sands": {
             "Adventurer": "冒険者の懐中時計",
@@ -699,10 +700,10 @@
             "OceanConqueror": "堅い銅のコンパス",
             "Millelith": "金銅の日時計",
             "PaleFlame": "停頓の時",
-            "SeveredFate": "雷雲の印籠",
             "Shimenawa": "朝露の時",
-            "OceanHuedClam": "別れの貝",
-            "HuskOpulentDreams": "衆生の歌"
+            "SeveredFate": "雷雲の印籠",
+            "HuskOpulentDreams": "衆生の歌",
+            "OceanHuedClam": "別れの貝"
         },
         "goblet": {
             "Adventurer": "冒険者の金杯",
@@ -734,10 +735,10 @@
             "OceanConqueror": "浮沈の杯",
             "Millelith": "誓いの金杯",
             "PaleFlame": "超越の杯",
-            "SeveredFate": "緋花の壺",
             "Shimenawa": "祈望の心",
-            "OceanHuedClam": "真珠の籠",
-            "HuskOpulentDreams": "夢醒の瓢箪"
+            "SeveredFate": "緋花の壺",
+            "HuskOpulentDreams": "夢醒の瓢箪",
+            "OceanHuedClam": "真珠の籠"
         },
         "circlet": {
             "Adventurer": "冒険者のバンダナ",
@@ -769,10 +770,10 @@
             "OceanConqueror": "酒に漬けた帽子",
             "Millelith": "将師の兜",
             "PaleFlame": "嗤笑の面",
-            "SeveredFate": "華飾の兜",
             "Shimenawa": "無常の面",
-            "OceanHuedClam": "海祗の冠",
-            "HuskOpulentDreams": "形骸の笠"
+            "SeveredFate": "華飾の兜",
+            "HuskOpulentDreams": "形骸の笠",
+            "OceanHuedClam": "海祗の冠"
         }
     },
     "enemy": {
@@ -793,8 +794,8 @@
             "elect": "ヒルチャール・雷兜の王"
         },
         "RuinGuard": "遺跡守衛",
-        "RuinGrader": "遺跡重機",
         "RuinHunter": "遺跡狩人",
+        "RuinGrader": "遺跡重機",
         "RuinCruiser": "遺跡巡視者",
         "RuinDestroyer": "遺跡殲滅者",
         "RuinDefender": "遺跡防衛者",
@@ -808,9 +809,17 @@
         "Nobushi": "野伏",
         "Kairagi": "海乱鬼",
         "RifthoundWhelpBefore": "獣域ウェルプ（喰魔前）",
-        "RifthoundWhelp": "獣域ウェルプ・{0}",
+        "RifthoundWhelp": {
+            "format": "獣域ウェルプ・{0}",
+            "elect": "雷",
+            "geo": "岩"
+        },
         "RifthoundBefore": "獣域ハウンド（喰魔前）",
-        "Rifthound": "獣域ハウンド・{0}",
+        "Rifthound": {
+            "format": "獣域ハウンド・{0}",
+            "elect": "雷",
+            "geo": "岩"
+        },
         "GeovishapHatchling": "ベビーヴィシャップ・岩",
         "Geovishap": "ヴィシャップ・岩",
         "BathysmalVishapHatchling": "アビサルヴィシャップ(小)・{0}",
@@ -840,7 +849,7 @@
         "MaguuKenki": "魔偶剣鬼",
         "PerpetualArray": "恒常からくり陣形",
         "GoldenWolflord": "黄金王獣",
-        "GoldenWolflordLow": "黄金王獣（シールド）",
+        "GoldenWolflordLow": "黄金王獣（低HP）",
         "Dvalin": "トワリン",
         "Andrius": "アンドリアス",
         "Tartaglia1": "タルタリヤ・第1段階",
