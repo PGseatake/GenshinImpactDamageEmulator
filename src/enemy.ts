@@ -392,6 +392,7 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
         },
     },
     RifthoundWhelp: {
+        custom: true,
         resist: {
             pyro: 20,
             hydro: 20,
@@ -426,6 +427,7 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
         value: -65,
     },
     Rifthound: {
+        custom: true,
         resist: {
             pyro: 25,
             hydro: 25,

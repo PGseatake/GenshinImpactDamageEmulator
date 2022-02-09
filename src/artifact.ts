@@ -84,14 +84,13 @@ export const ArtifactNames = [
     "OceanConqueror", // HeartDepth
     "Millelith",
     "PaleFlame",
-    "SeveredFate",
     "Shimenawa",
-    "OceanHuedClam",
+    "SeveredFate",
     "HuskOpulentDreams",
+    "OceanHuedClam",
 ] as const;
 export type ArtifactName = typeof ArtifactNames[number];
 
-// TODO: limitを多言語対応
 export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> = {
     Adventurer: {
         // HP上限+1000
@@ -148,7 +147,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
     Artist: {
         // 通常攻撃と重撃のダメージ+15%
         set2: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 15 },
-        // 元素スキル発動後、通常攻撃と重撃ダメージ+ 25 %、継続時間8秒
+        // 元素スキル発動後、通常攻撃と重撃ダメージ+25%、継続時間8秒
         set4: { items: [konst.CombatBonusType.Normal, konst.CombatBonusType.Heavy], value: 25, limit: "skill.use", times: 8 },
     },
     Gambler: {
@@ -281,6 +280,12 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
             { items: konst.StatusBonusType.AtkBuf, value: 18, limit: "artifact.more_x2", times: 7 },
         ],
     },
+    Shimenawa: {
+        // 攻撃力+18%
+        set2: { items: konst.StatusBonusType.AtkBuf, value: 18 },
+        // 元素スキルを発動した時、キャラクターの元素エネルギーが15以上の場合、元素エネルギーを15消費し、次の10秒間通常攻撃、重撃、落下攻撃ダメージ+50%
+        set4: { items: konst.CombatBonusType.Combat, value: 50, limit: "skill.use_en15", times: 10 }
+    },
     SeveredFate: {
         // 元素チャージ効率+20%
         set2: { items: konst.StatusBonusType.EnRec, value: 20 },
@@ -293,18 +298,6 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
             bound: { base: konst.FlatBonusBase.None, value: 75 },
         },
     },
-    Shimenawa: {
-        // 攻撃力+18%
-        set2: { items: konst.StatusBonusType.AtkBuf, value: 18 },
-        // 元素スキルを発動した時、キャラクターの元素エネルギーが15以上の場合、元素エネルギーを15消費し、次の10秒間通常攻撃、重撃、落下攻撃ダメージ+50%
-        set4: { items: konst.CombatBonusType.Combat, value: 50, limit: "skill.use_en15", times: 10 }
-    },
-    OceanHuedClam: {
-        // 与える治療効果+15%
-        set2: { items: konst.StatusBonusType.HealBuf, value: 15 },
-        //
-        // set4: {},
-    },
     HuskOpulentDreams: {
         // 防御力+30%
         set2: { items: konst.StatusBonusType.DefBuf, value: 30 },
@@ -316,6 +309,12 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
             stack: 4,
             times: 6,
         }
+    },
+    OceanHuedClam: {
+        // 与える治療効果+15%
+        set2: { items: konst.StatusBonusType.HealBuf, value: 15 },
+        //
+        // set4: {},
     },
 } as const;
 

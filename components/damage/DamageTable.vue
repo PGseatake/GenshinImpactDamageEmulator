@@ -160,7 +160,7 @@ export default class DamageTable extends Vue {
       item.status.talent[item.talent],
       this.$db.setting.critical as SettingCritical
     );
-    let html = `<td>${item.name}</td>` + attr.toHtml();
+    let html = `<td>${this.$t("combat." + item.name)}</td>` + attr.toHtml();
     const damage = attr.damage(
       item.status,
       item.enemy,

@@ -1,4 +1,4 @@
-import { IVueI18n } from "vue-i18n/types";
+import VueI18n, { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
 import {
     IBonusOption, IBasicBonus, IFlatBonus, IFlatBonusScale, IFlatBonusBound,
@@ -10,7 +10,7 @@ import { WeaponList, IWeaponData, DBWeaponTable } from "~/src/weapon";
 import { ArtifactName, ArtifactList, DBArtifactTable } from "~/src/artifact";
 import { ITeamData, Team, Member, IRequiredMember } from "~/src/team";
 import { Status } from "~/src/status";
-import { roundFloat, roundRate } from "~/plugins/utils";
+import { roundRate } from "~/plugins/utils";
 import { Arrayable } from "~/src/utility";
 
 export const DamageScaleTable: ReadonlyRecord<konst.DamageScale, ReadonlyArray<number>> = {
@@ -129,10 +129,18 @@ export const RateBonus = {
     },
     suffix(type: konst.AnyBonusType) {
         return DirectBonus.includes(type) ? "" : "%";
-    }
+    },
+    round(value: number, type?: konst.AnyBonusType) {
+        if (!DirectBonus.includes(type!)) {
+            return roundRate(value);
+        }
+        return Math.round(value).toFixed();
+    },
+    xround(value: number, type?: konst.AnyBonusType) {
+        return value < 0 ? "-" : "+" + RateBonus.round(value, type);
+    },
 } as const;
 
-// TODO: 多言語対応
 export const TeamBonus: Partial<ReadonlyRecord<konst.ElementType, IBasicBonus>> = {
     pyro: { items: konst.StatusBonusType.AtkBuf, value: 25 },
     cryo: { items: konst.CriticalBonusType.Rate, value: 15, limit: "elem.cryo" },
@@ -147,6 +155,10 @@ const ConductBonus: IReductBonus = {
     times: 12,
     target: konst.BonusTarget.All,
 };
+
+function join<T>(items: readonly T[], pred: (item: T) => VueI18n.TranslateResult) {
+    return items.map(item => pred(item)).join("/");
+}
 
 export class BonusBase {
     public readonly i18n: IVueI18n;
@@ -206,18 +218,14 @@ export class BonusBase {
         this.data.stack = data.stack || 1;
     }
 
-    public getLabel(type: konst.AnyBonusType | "energy" | "swirl" | "contact") {
-        return String(this.i18n.t("bonus." + type)).replace("(%)", "");
-    }
-
-    public effect(_: Status[]) {
+    public effect(_: Status[]): VueI18n.TranslateResult {
         return "";
     }
 
     public condition(src: Status[]) {
         const effect = this.effect(src);
         if (this.limit) {
-            return `${this.i18n.t("limit." + this.limit)}に${effect}`;
+            return this.i18n.t("limit." + this.limit, [effect]);
         }
         return effect;
     }
@@ -254,6 +262,10 @@ export class BonusBase {
     }
 
     public apply(dst: Status, src: Status[], step: number) { }
+
+    protected label(type: konst.AnyBonusType | "energy" | "swirl" | "contact") {
+        return (this.i18n.t("bonus." + type) as string).replace("(%)", "");
+    }
 }
 
 // 通常ボーナス
@@ -268,12 +280,11 @@ export class BasicBonus extends BonusBase {
     }
 
     public effect(_: Status[]) {
-        const items = this.types;
-        let str = this.types.map(type => this.getLabel(type)).join("/");
-        if (RateBonus.check(items[0])) {
-            return `${str} +${roundFloat(this.value)}%`;
-        }
-        return `${str} +${this.value}`;
+        const type = join(this.types, item => this.label(item));
+        return this.i18n.t(
+            "format.basic",
+            { type, value: RateBonus.xround(this.value, this.types[0]) }
+        );
     }
 
     public apply(dst: Status, _: Status[], step: number) {
@@ -303,34 +314,42 @@ export class FlatBonus extends BonusBase {
         this.bound = data.bound ?? null;
     }
 
-    // TODO: 多言語対応
-    public effect(src: Status[]) {
-        let dest: string[] = [];
-        for (const val of this.dest) {
-            switch (val) {
-                case konst.FlatBonusDest.Combat:
-                case konst.FlatBonusDest.Normal:
-                case konst.FlatBonusDest.Heavy:
-                case konst.FlatBonusDest.Skill:
-                case konst.FlatBonusDest.Burst:
-                    dest.push(this.getLabel(konst.TypeToBonus.combat(val)));
-                    break;
-                default:
-                    dest.push(this.getLabel(val));
-                    break;
-            }
+    private get baseLabel() {
+        return this.i18n.t("bonus." + this.base);
+    }
+
+    private destLabel(type: konst.FlatBonusDest) {
+        switch (type) {
+            case konst.FlatBonusDest.Combat:
+            case konst.FlatBonusDest.Normal:
+            case konst.FlatBonusDest.Heavy:
+            case konst.FlatBonusDest.Skill:
+            case konst.FlatBonusDest.Burst:
+                return this.label(konst.TypeToBonus.combat(type));
+            default:
+                return this.label(type);
         }
-        let str = dest.join("/");
-        const value = roundFloat(this.applyScale(this.value, src[this.index]));
+    }
+
+    public effect(src: Status[]) {
+        let type = join(this.dest, (item) => this.destLabel(item));
+        const value = this.applyScale(this.value, src[this.index]);
         switch (this.base) {
             case konst.FlatBonusBase.None:
-                return `${str} +${value}%`;
+                return this.i18n.t(
+                    "format.basic",
+                    { type, value: RateBonus.xround(value) }
+                );
             case konst.FlatBonusBase.Direct:
-                return `${str} +${value}`;
-            case konst.FlatBonusBase.Atk:
-                return `${str} +${this.i18n.t("bonus.atk_base")}の${value}%分`;
+                return this.i18n.t(
+                    "format.basic",
+                    { type, value: RateBonus.xround(value, konst.BonusType.None) }
+                );
             default:
-                return `${str} +${this.getLabel(this.base)}の${value}%分`;
+                return this.i18n.t(
+                    "format.flat",
+                    { type, base: this.baseLabel, value: RateBonus.round(value) }
+                );
         }
     }
 
@@ -360,7 +379,7 @@ export class FlatBonus extends BonusBase {
             case konst.FlatBonusBase.Hp:
                 value = src.hp * value / 100;
                 break;
-            case konst.FlatBonusBase.Atk:
+            case konst.FlatBonusBase.AtkBase:
                 value = src.base.atk * value / 100;
                 break;
             case konst.FlatBonusBase.Def:
@@ -397,7 +416,7 @@ export class FlatBonus extends BonusBase {
                     }
                     break;
                 // 基礎攻撃力の倍率
-                case konst.FlatBonusBase.Atk:
+                case konst.FlatBonusBase.AtkBase:
                     const atk = src.base.atk * bound.value / 100;
                     if (atk < value) {
                         value = atk;
@@ -476,10 +495,12 @@ export class ReductBonus extends BonusBase {
         this.value = Arrayable.clamp(data.value, talent);
     }
 
-    // TODO: 多言語対応
     public effect(_: Status[]) {
-        const types = this.types.map(type => this.i18n.t("reduct." + type)).join("/");
-        return `${types} -${roundRate(this.value)}`;
+        const type = join(this.types, type => this.i18n.t("reduct." + type));
+        return this.i18n.t(
+            "format.reduct",
+            { type, value: RateBonus.round(this.value) }
+        );
     }
 
     public apply(dst: Status, _: Status[], step: number) {
@@ -517,8 +538,11 @@ export class EnchantBonus extends BonusBase {
     }
 
     public effect(_: Status[]) {
-        const dest = this.dest.map(dest => this.i18n.t("combat." + dest)).join("/");
-        return `${dest}に${this.i18n.t("element." + this.type)}元素付与`;
+        const dest = join(this.dest, (item) => this.i18n.t("combat." + item));
+        return this.i18n.t(
+            "format.enchant",
+            { dest, type: this.i18n.t("element." + this.type) }
+        );
     }
 
     public apply(dst: Status, _: Status[], step: number) {

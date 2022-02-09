@@ -121,11 +121,7 @@ export default class StatusTable extends Vue {
   }
 
   formatBonus(type: BonusType, value: number) {
-    if (RateBonus.check(type)) {
-      return this.$roundRate(value);
-    } else {
-      return this.$roundFloat(value);
-    }
+    return RateBonus.round(value, type);
   }
 }
 </script>

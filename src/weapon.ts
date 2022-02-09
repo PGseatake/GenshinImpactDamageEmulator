@@ -58,7 +58,6 @@ const SwordNames = [
     "SkyriderSword"
 ] as const;
 
-// TODO: limitを多言語対応
 const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
     Mistsplitter: {
         star: 5,
@@ -522,8 +521,7 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         secval: [11.3, 19.9, 29.0, 33.5, 38.1, 42.6, 47.2, 51.7],
         // 通常攻撃か重撃が命中すると、攻撃力と防御力+6~12%。継続時間6秒、最大4重まで。0.5秒毎に1回のみ発動可能。
         passive: {
-            items: [konst.StatusBonusType.AtkBuf,
-            konst.StatusBonusType.DefBuf],
+            items: [konst.StatusBonusType.AtkBuf, konst.StatusBonusType.DefBuf],
             value: [6, 7.5, 9, 10.5, 12],
             limit: "general.normal_heavy",
             stack: 4,
