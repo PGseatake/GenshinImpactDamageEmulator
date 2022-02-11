@@ -305,6 +305,6 @@ export const Database = {
                 }
             }
         }
-        localStorage.clear(); // ストレージ全削除する
+        localStorage.removeItem(Database.name);
     },
 } as const;

@@ -4,10 +4,13 @@
       :headers="headers"
       :items="items"
       :class="tableClass"
-      :items-per-page="-1"
-      disable-sort
+      :page.sync="page.row"
+      :items-per-page.sync="page.rows"
+      :sort-by.sync="page.sortBy"
+      :sort-desc.sync="page.sortDesc"
+      :footer-props="footer"
       fixed-header
-      hide-default-footer
+      disable-sort
     >
       <template #[`item.name`]="{ item }">
         <v-text-field
@@ -179,6 +182,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { Builder, ITeamData } from "~/src/team";
 import { SelectItem } from "~/components/SelectName.vue";
+import Pagination from "~/src/pagination";
 
 @Component({
   name: "PageTeam",
@@ -191,6 +195,7 @@ import { SelectItem } from "~/components/SelectName.vue";
   },
 })
 export default class PageTeam extends Vue {
+  page = new Pagination();
   items: ITeamData[] = [];
   append = "";
   remove: ITeamData | null = null;
@@ -202,6 +207,10 @@ export default class PageTeam extends Vue {
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get footer() {
+    return this.page.footer(this.$i18n);
   }
 
   get headers() {
@@ -263,6 +272,11 @@ export default class PageTeam extends Vue {
     this.items = this.$db.team;
     this.$store.commit("appendable", true);
     this.$store.commit("tabs", {});
+    this.page.load("team");
+  }
+
+  beforeDestroy() {
+    this.page.save();
   }
 
   onChangeItem(item: ITeamData) {
@@ -277,6 +291,8 @@ export default class PageTeam extends Vue {
     const data = Builder.team(this.$makeUniqueId(), this.append);
     this.$appendData(this.items, data);
     this.append = "";
+
+    this.page.row = this.page.max(this.items.length);
   }
 
   onBeforeRemove(data: ITeamData) {

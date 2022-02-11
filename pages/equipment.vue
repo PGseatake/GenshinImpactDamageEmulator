@@ -4,10 +4,13 @@
       :headers="headers"
       :items="items"
       :class="tableClass"
-      :items-per-page="-1"
+      :page.sync="page.row"
+      :items-per-page.sync="page.rows"
+      :sort-by.sync="page.sortBy"
+      :sort-desc.sync="page.sortDesc"
+      :footer-props="footer"
       fixed-header
       disable-sort
-      hide-default-footer
     >
       <template #[`item.comment`]="{ item }">
         <v-text-field
@@ -203,6 +206,7 @@ import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { IEquipData } from "~/src/interface";
 import { ICharaData } from "~/src/character";
 import { Builder, Team } from "~/src/team";
+import Pagination from "~/src/pagination";
 
 @Component({
   name: "PageEquipment",
@@ -216,6 +220,7 @@ import { Builder, Team } from "~/src/team";
   },
 })
 export default class PageEquipment extends Vue {
+  page = new Pagination();
   items: IEquipData[] = [];
   append = "";
   remove: IEquipData | null = null;
@@ -227,6 +232,10 @@ export default class PageEquipment extends Vue {
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get footer() {
+    return this.page.footer(this.$i18n);
   }
 
   get headers() {
@@ -275,6 +284,11 @@ export default class PageEquipment extends Vue {
     this.items = this.$db.equip;
     this.$store.commit("appendable", true);
     this.$store.commit("tabs", {});
+    this.page.load("equip");
+  }
+
+  beforeDestroy() {
+    this.page.save();
   }
 
   onBeforeAppend() {
@@ -285,6 +299,8 @@ export default class PageEquipment extends Vue {
     const data = Builder.equip(this.$makeUniqueId(), this.append);
     this.$appendData(this.items, data);
     this.append = "";
+
+    this.page.row = this.page.max(this.items.length);
   }
 
   onBeforeRemove(data: IEquipData) {

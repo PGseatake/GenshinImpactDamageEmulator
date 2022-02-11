@@ -706,5 +706,9 @@
         "Azhdaha3": "Azhdaha - Phase 3",
         "Signora1": "La Signora - Phase 1",
         "Signora2": "La Signora - Phase 2"
+    },
+    "parts": {
+        "page_all": "All",
+        "page_row": "Rows per page :"
     }
 }
