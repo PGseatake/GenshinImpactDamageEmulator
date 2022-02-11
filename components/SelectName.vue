@@ -6,7 +6,7 @@
         v-on="on"
         small
         outlined
-        class="px-1"
+        class="px-1 name_button"
         v-text="name"
       />
     </template>
@@ -28,6 +28,11 @@
 </template>
 
 <style lang="scss" scoped>
+.name_button {
+  white-space: normal;
+  font-kerning: normal;
+  letter-spacing: 0;
+}
 </style>
 
 <script lang="ts">
