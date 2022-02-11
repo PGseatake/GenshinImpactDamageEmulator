@@ -6,7 +6,7 @@
     :items="items"
     :class="tableClass"
     :items-per-page="-1"
-    group-by="talent"
+    group-by="group"
     dense
     disable-sort
     fixed-header
@@ -18,14 +18,10 @@
         :colspan="headers.length"
         class="v-row-group__header text-subtitle-2 text-center"
       >
-        <v-icon size="20" @click="toggle"
-          >{{ isOpen ? icons.close : icons.open }}
+        <v-icon size="20" @click="toggle">
+          {{ isOpen ? icons.close : icons.open }}
         </v-icon>
-        {{
-          `${$t("combat." + group)} : ${$t("general.level")}${
-            status.talent[group]
-          }`
-        }}
+        {{ formatGroup(group) }}
       </td>
     </template>
     <template #item="{ item }">
@@ -56,7 +52,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { TalentType } from "~/src/const";
+import { TalentType, TalentTypes } from "~/src/const";
 import { ICombat } from "~/src/interface";
 import { IMember } from "~/src/team";
 import { IStatus, Status } from "~/src/status";
@@ -69,6 +65,7 @@ interface IAttribute extends ICombat {
   status: Status;
   enemy: Enemy;
   key: number;
+  group: string;
 }
 
 @Component({
@@ -134,24 +131,35 @@ export default class DamageTable extends Vue {
     const info = this.member.info;
     if (info) {
       let key = 1;
+      let talent: TalentType = TalentType.Combat;
       for (const data of info.talent.combat) {
-        items.push({ ...data, talent: TalentType.Combat, status, enemy, key });
+        items.push({ ...data, talent, status, enemy, key, group: "0" });
         key++;
       }
+      talent = TalentType.Skill;
       for (const data of info.talent.skill) {
-        items.push({ ...data, talent: TalentType.Skill, status, enemy, key });
+        items.push({ ...data, talent, status, enemy, key, group: "1" });
         key++;
       }
+      talent = TalentType.Burst;
       for (const data of info.talent.burst) {
-        items.push({ ...data, talent: TalentType.Burst, status, enemy, key });
+        items.push({ ...data, talent, status, enemy, key, group: "2" });
         key++;
       }
     }
+    console.log(items);
     return items;
   }
 
   get critical() {
     return this.$db.setting.critical;
+  }
+
+  formatGroup(index: string) {
+    const group = TalentTypes[Number(index)];
+    return `${this.$t("combat." + group)} : ${this.$t("general.level")}${
+      this.status.talent[group]
+    }`;
   }
 
   makeHtml(item: IAttribute) {

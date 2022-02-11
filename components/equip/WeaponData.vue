@@ -6,9 +6,13 @@
       :headers="headers"
       :items="items"
       :class="tableClass"
-      :items-per-page="-1"
+      :page.sync="page.row"
+      :items-per-page.sync="page.rows"
+      :sort-by.sync="page.sortBy"
+      :sort-desc.sync="page.sortDesc"
+      :footer-props="footer"
       fixed-header
-      hide-default-footer
+      multi-sort
     >
       <template #[`item.name`]="{ item }">
         <name-comment
@@ -132,6 +136,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
 import { WeaponType } from "~/src/const";
 import { IWeaponData, WeaponNames, WeaponList, Builder } from "~/src/weapon";
+import Pagination from "~/src/pagination";
 
 @Component({
   name: "WeaponData",
@@ -151,12 +156,17 @@ export default class WeaponData extends Vue {
 
   readonly icons = { remove: mdiDelete };
 
+  page = new Pagination();
   items: IWeaponData[] = [];
   append = "";
   remove: IWeaponData | null = null;
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get footer() {
+    return this.page.footer(this.$i18n);
   }
 
   get headers() {
@@ -188,6 +198,11 @@ export default class WeaponData extends Vue {
 
   created() {
     this.items = this.$db[this.type];
+    this.page.load(this.type);
+  }
+
+  beforeDestroy() {
+    this.page.save();
   }
 
   onChangeName(item: IWeaponData) {
@@ -209,6 +224,8 @@ export default class WeaponData extends Vue {
       );
       this.$appendData(this.items, data);
       this.append = "";
+
+      this.page.row = this.page.max(this.items.length);
     }
   }
 

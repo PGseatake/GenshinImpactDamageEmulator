@@ -6,9 +6,13 @@
       :headers="headers"
       :items="items"
       :class="tableClass"
-      :items-per-page="-1"
+      :page.sync="page.row"
+      :items-per-page.sync="page.rows"
+      :sort-by.sync="page.sortBy"
+      :sort-desc.sync="page.sortDesc"
+      :footer-props="footer"
       fixed-header
-      hide-default-footer
+      multi-sort
     >
       <template #[`item.name`]="{ item }">
         <name-comment
@@ -179,6 +183,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
 import { ICharaData, CharaNames, CharaName, Builder } from "~/src/character";
+import Pagination from "~/src/pagination";
 
 @Component({
   name: "CharaData",
@@ -194,6 +199,7 @@ import { ICharaData, CharaNames, CharaName, Builder } from "~/src/character";
   inheritAttrs: false,
 })
 export default class CharaData extends Vue {
+  page = new Pagination();
   items: ICharaData[] = [];
   append: CharaName | "" = "";
   remove: ICharaData | null = null;
@@ -202,6 +208,10 @@ export default class CharaData extends Vue {
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get footer() {
+    return this.page.footer(this.$i18n);
   }
 
   get headers() {
@@ -234,6 +244,11 @@ export default class CharaData extends Vue {
 
   created() {
     this.items = this.$db.chara;
+    this.page.load("chara");
+  }
+
+  beforeDestroy() {
+    this.page.save();
   }
 
   onChangeName(item: ICharaData) {
@@ -254,6 +269,8 @@ export default class CharaData extends Vue {
       );
       this.$appendData(this.items, data);
       this.append = "";
+
+      this.page.row = this.page.max(this.items.length);
     }
   }
 

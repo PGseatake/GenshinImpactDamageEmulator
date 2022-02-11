@@ -32,6 +32,7 @@
           to="/releasenote"
           color="blue-grey"
           class="ml-4"
+          style="text-transform: uppercase"
           >{{ $t("menu.releasenote") }}</v-btn
         >
       </v-card-actions>

@@ -6,9 +6,13 @@
       :headers="headers"
       :items="items"
       :class="tableClass"
-      :items-per-page="-1"
+      :page.sync="page.row"
+      :items-per-page.sync="page.rows"
+      :sort-by.sync="page.sortBy"
+      :sort-desc.sync="page.sortDesc"
+      :footer-props="footer"
       fixed-header
-      hide-default-footer
+      multi-sort
     >
       <template #[`item.name`]="{ item }">
         <name-comment
@@ -217,6 +221,7 @@ import {
   calcScore,
   Builder,
 } from "~/src/artifact";
+import Pagination from "~/src/pagination";
 
 @Component({
   name: "ArtifactData",
@@ -235,12 +240,17 @@ export default class ArtifactData extends Vue {
   readonly icons = { remove: mdiDelete, random: mdiShuffleVariant };
   readonly subs = ArtifactSub;
 
+  page = new Pagination();
   items: IArtifactData[] = [];
   append: ArtifactName | "" = "";
   remove: IArtifactData | null = null;
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get footer() {
+    return this.page.footer(this.$i18n);
   }
 
   get headers() {
@@ -275,6 +285,11 @@ export default class ArtifactData extends Vue {
 
   created() {
     this.items = this.$db[this.type];
+    this.page.load(this.type);
+  }
+
+  beforeDestroy() {
+    this.page.save();
   }
 
   onChangeStar(item: IArtifactData) {
@@ -312,6 +327,8 @@ export default class ArtifactData extends Vue {
       );
       this.$appendData(this.items, data);
       this.append = "";
+
+      this.page.row = this.page.max(this.items.length);
     }
   }
 

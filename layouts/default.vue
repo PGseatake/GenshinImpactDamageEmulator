@@ -157,7 +157,7 @@
 
 <style>
 html {
-  overflow-y: auto !important;
+  background-color: black;
 }
 </style>
 
@@ -168,6 +168,10 @@ html {
       padding: 0;
     }
   }
+}
+
+::v-deep .v-data-footer__select .v-select {
+  margin: 10px 0 10px 10px;
 }
 </style>
 
