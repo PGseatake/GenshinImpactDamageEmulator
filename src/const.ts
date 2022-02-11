@@ -74,6 +74,11 @@ export function isArtifactType(type: string): type is ArtifactType {
     return ArtifactTypes.includes(type as ArtifactType);
 }
 
+export const TalentTypes = [
+    "combat",
+    "skill",
+    "burst",
+] as const;
 export const TalentType = {
     Combat: "combat",
     Skill: "skill",
