@@ -70,6 +70,7 @@
 import { Vue, Component, Emit, Prop } from "vue-property-decorator";
 import { ContactTypes, NoneElementType, NoneReactionType } from "~/src/const";
 import { ITeamData, IMember, Team } from "~/src/team";
+import { Builder as CharaBuilder } from "~/src/character";
 
 @Component({
   name: "SelectMember",
@@ -115,6 +116,7 @@ export default class SelectMember extends Vue {
   set refLevel(value: string | null) {
     if (this.member?.chara && value) {
       this.member.chara.level = value;
+      CharaBuilder.level(this.member.chara);
       this.onChangeMember();
     }
   }

@@ -147,7 +147,6 @@ export default class DamageTable extends Vue {
         key++;
       }
     }
-    console.log(items);
     return items;
   }
 
