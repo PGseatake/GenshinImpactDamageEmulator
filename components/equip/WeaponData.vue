@@ -135,7 +135,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
 import { WeaponType } from "~/src/const";
-import { IWeaponData, WeaponNames, WeaponList, Builder } from "~/src/weapon";
+import Weapon, { IWeaponData, WeaponNames, WeaponList } from "~/src/weapon";
 import Pagination from "~/src/pagination";
 
 @Component({
@@ -206,17 +206,17 @@ export default class WeaponData extends Vue {
   }
 
   onChangeName(item: IWeaponData) {
-    Builder.name(item, this.type, this.$db.setting.initial.weapon);
+    Weapon.reset(item, this.type, this.$db.setting.initial.weapon);
   }
 
   onChangeLevel(item: IWeaponData) {
-    Builder.level(item, this.type);
+    Weapon.level(item, this.type);
   }
 
   onAppend() {
     const name = this.append;
     if (name) {
-      const data = Builder.make(
+      const data = Weapon.create(
         this.$makeUniqueId(),
         this.type,
         name,

@@ -4522,8 +4522,8 @@ export interface ICharaData extends IIdentify, INameable, ICommentable {
 }
 export type DBCharaTable = { chara: ICharaData[]; };
 
-export const Builder = {
-    make(id: string, name: CharaName, init: SettingChara) {
+export default class Chara {
+    public static create(id: string, name: CharaName, init: SettingChara) {
         const item = CharaList[name];
         const data: ICharaData = {
             id,
@@ -4542,10 +4542,11 @@ export const Builder = {
             skill: init.skill,
             burst: init.burst,
         };
-        Builder.level(data);
+        Chara.level(data);
         return data;
-    },
-    name(data: ICharaData, init: SettingChara) {
+    }
+
+    public static reset(data: ICharaData, init: SettingChara) {
         const { special } = CharaList[data.name];
         data.conste = init.conste;
         data.level = init.level;
@@ -4553,14 +4554,15 @@ export const Builder = {
         data.combat = init.combat;
         data.skill = init.skill;
         data.burst = init.burst;
-        Builder.level(data);
-    },
-    level(data: ICharaData) {
+        Chara.level(data);
+    }
+
+    public static level(data: ICharaData) {
         const { status, spvalue } = CharaList[data.name];
         const level = data.level;
         data.hp = ascension.calc14(level, status.hp);
         data.atk = ascension.calc14(level, status.atk);
         data.def = ascension.calc14(level, status.def);
         data.special.value = ascension.step8(level, spvalue);
-    },
-} as const;
+    }
+}

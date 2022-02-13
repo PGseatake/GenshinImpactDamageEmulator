@@ -1,9 +1,10 @@
 import { IVueI18n } from "vue-i18n/types";
 import { ElementType, WeaponType, ArtifactTypes } from "~/src/const";
-import { ICharaInfo, IIdentify, INameable, IEquipData, DBEquipTable } from "~/src/interface";
-import { CharaList, ICharaData, DBCharaTable } from "~/src/character";
-import { IArtifactData, DBArtifactTable } from "~/src/artifact";
-import { IWeaponData, DBWeaponTable } from "~/src/weapon";
+import { ICharaInfo, IIdentify, INameable } from "~/src/interface";
+import { DBCharaTable, ICharaData, CharaList } from "~/src/character";
+import { DBArtifactTable, IArtifactData } from "~/src/artifact";
+import { DBWeaponTable, IWeaponData } from "~/src/weapon";
+import { DBEquipTable, IEquipData } from "./equipment";
 
 export const Members = ["member1", "member2", "member3", "member4"] as const;
 
@@ -55,6 +56,11 @@ export class Member {
     }
 }
 
+export type TeamMember = {
+    team: string;
+    member: string;
+};
+
 // ITeamDataのユーティリティクラス
 export class Team {
     public data: ITeamData;
@@ -70,10 +76,6 @@ export class Team {
         }
     }
 
-    public getName(i18n: IVueI18n, idx: number) {
-        return this.data.name || `${i18n.t("menu.team")}${idx + 1}`;
-    }
-
     public * members({ equip, chara }: DBEquipTable & DBCharaTable) {
         for (const id of this.member) {
             const e = equip.find((val) => val.id === id);
@@ -85,23 +87,8 @@ export class Team {
             }
         }
     }
-}
 
-export const Builder = {
-    equip(id: string, chara: string): IEquipData {
-        return {
-            id,
-            comment: "",
-            chara,
-            weapon: "",
-            flower: "",
-            feather: "",
-            sands: "",
-            goblet: "",
-            circlet: "",
-        };
-    },
-    team(id: string, member: string): ITeamData {
+    public static create(id: string, member: string): ITeamData {
         return {
             id,
             name: "",
@@ -111,8 +98,13 @@ export const Builder = {
             member4: "",
             resonance: [],
         };
-    },
-    resonance(data: ITeamData, db: DBEquipTable & DBCharaTable) {
+    }
+
+    public static format(data: Readonly<ITeamData>, index: number, i18n: IVueI18n) {
+        return data.name || `${i18n.t("menu.team")}${index + 1}`;
+    }
+
+    public static resonance(data: ITeamData, db: DBEquipTable & DBCharaTable) {
         let elements: ElementType[] = [];
         for (const { info } of new Team(data).members(db)) {
             elements.push(info.element);
@@ -131,5 +123,34 @@ export const Builder = {
             }
             first = last;
         }
-    },
-} as const;
+    }
+
+    public static delegate(teams: ReadonlyArray<ITeamData>, data?: TeamMember): TeamMember | undefined {
+        if (data) {
+            const team = data.team;
+            const t = teams.find((val) => val.id === team);
+            if (t) {
+                const select = data.member;
+                let member = "";
+                for (const m of new Team(t).member) {
+                    if (m === select) {
+                        // 変更なし
+                        return undefined;
+                    }
+                    member = member || m;
+                }
+                // メンバー交代
+                return { team, member };
+            }
+        }
+
+        for (const t of teams) {
+            for (const member of new Team(t).member) {
+                // チーム交代
+                return { team: t.id, member };
+            }
+        }
+        // チームなし
+        return { team: "", member: "" };
+    }
+}

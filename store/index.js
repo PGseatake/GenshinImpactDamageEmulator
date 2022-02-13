@@ -6,7 +6,7 @@ export const state = () => ({
         bonus: -1,
         weapon: 0,
         artifact: 0,
-        damage: 0,
+        damage: -1,
         howto: 0,
     },
     append: false,

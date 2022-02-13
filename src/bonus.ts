@@ -2,14 +2,15 @@ import VueI18n, { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
 import {
     IBonusOption, IBasicBonus, IFlatBonus, IFlatBonusScale, IFlatBonusBound,
-    IEnchantBonus, IReductBonus, AnyBonus, Constes, Passives, DBEquipTable, Passive
+    IEnchantBonus, IReductBonus, AnyBonus, Constes, Passives, Passive
 } from "~/src/interface";
 import { parseLevel } from "~/src/ascension";
-import { CharaName, CharaList, ICharaData, DBCharaTable } from "~/src/character";
-import { WeaponList, IWeaponData, DBWeaponTable } from "~/src/weapon";
-import { ArtifactName, ArtifactList, DBArtifactTable } from "~/src/artifact";
-import { ITeamData, Team, Member, IRequiredMember } from "~/src/team";
-import { Status } from "~/src/status";
+import { DBEquipTable } from "~/src/equipment";
+import { DBCharaTable, ICharaData, CharaName, CharaList } from "~/src/character";
+import { DBWeaponTable, IWeaponData, WeaponList } from "~/src/weapon";
+import { DBArtifactTable, ArtifactName, ArtifactList } from "~/src/artifact";
+import { Team, ITeamData, Member, IRequiredMember } from "~/src/team";
+import Status from "~/src/status";
 import { roundRate } from "~/plugins/utils";
 import { Arrayable } from "~/src/utility";
 
@@ -22,97 +23,6 @@ export const DamageScaleTable: ReadonlyRecord<konst.DamageScale, ReadonlyArray<n
     hutao: [100.0, 106.75, 113.5, 122.75, 129.5, 137.5, 147.75, 158.0, 168.25, 178.5, 188.75, 199.0, 209.25, 219.5, 229.75],
     //       [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
     zhongli: [100.0, 110.5, 121.5, 135.0, 147.0, 159.5, 175.5, 192.0, 208.0, 224.0, 240.5, 256.5, 270.0, 283.5, 297.0],
-} as const;
-
-export type ReactionFactor = {
-    readonly resist: konst.ElementType;
-    readonly values: ReadonlyArray<number>;
-};
-export const ReactionFactorTable: ReadonlyRecord<konst.TransformReactionType, ReactionFactor> = {
-    "burning": {
-        resist: konst.ElementType.Pyro,
-        values: [
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        ]
-    },
-    "conduct": {
-        resist: konst.ElementType.Cryo,
-        values: [
-            8, 9, 9, 10, 11, 12, 12, 13, 16, 17,
-            18, 20, 22, 23, 27, 29, 31, 34, 37, 40,
-            42, 46, 48, 51, 53, 56, 59, 61, 64, 68,
-            71, 74, 77, 80, 84, 88, 91, 96, 99, 103,
-            107, 111, 117, 121, 128, 133, 140, 147, 154, 161,
-            168, 174, 182, 189, 199, 208, 217, 226, 236, 246,
-            257, 269, 282, 296, 311, 326, 339, 353, 368, 382,
-            397, 412, 426, 438, 457, 473, 489, 506, 522, 538,
-            554, 571, 588, 604, 627, 644, 662, 681, 702, 723,
-        ]
-    },
-    "swirl": {
-        resist: konst.ElementType.Anemo,
-        values: [
-            10, 11, 11, 12, 13, 14, 16, 17, 18, 20,
-            22, 23, 27, 29, 32, 34, 38, 41, 44, 48,
-            51, 54, 58, 61, 64, 68, 70, 73, 78, 81,
-            86, 89, 92, 97, 101, 106, 110, 114, 119, 123,
-            129, 134, 140, 146, 153, 161, 169, 177, 184, 193,
-            201, 210, 218, 227, 239, 249, 260, 271, 283, 296,
-            308, 323, 339, 354, 374, 390, 407, 424, 441, 459,
-            477, 494, 510, 526, 548, 568, 587, 607, 627, 646,
-            666, 686, 706, 726, 752, 773, 794, 818, 842, 868,
-        ]
-    },
-    "echarge": {
-        resist: konst.ElementType.Elect,
-        values: [
-            20, 22, 23, 24, 27, 29, 31, 34, 37, 40,
-            44, 48, 53, 58, 64, 70, 77, 83, 90, 97,
-            103, 110, 117, 123, 130, 136, 141, 147, 156, 163,
-            171, 178, 186, 193, 202, 211, 220, 230, 239, 248,
-            258, 269, 280, 291, 307, 322, 338, 353, 370, 388,
-            403, 420, 437, 453, 478, 499, 521, 543, 567, 591,
-            616, 647, 678, 710, 749, 781, 814, 849, 883, 918,
-            953, 989, 1021, 1052, 1097, 1136, 1174, 1213, 1253, 1292,
-            1331, 1371, 1411, 1451, 1504, 1547, 1590, 1636, 1686, 1736,
-        ]
-    },
-    "shutter": {
-        resist: konst.ElementType.Phys,
-        values: [
-            26, 28, 29, 31, 33, 37, 39, 42, 47, 51,
-            56, 60, 67, 72, 80, 88, 96, 104, 112, 120,
-            129, 137, 146, 153, 162, 169, 177, 184, 194, 203,
-            213, 223, 232, 242, 253, 264, 276, 287, 299, 310,
-            322, 336, 350, 364, 383, 402, 422, 442, 463, 484,
-            504, 526, 547, 568, 598, 624, 651, 679, 709, 739,
-            770, 808, 848, 888, 936, 977, 1019, 1061, 1104, 1148,
-            1191, 1237, 1277, 1316, 1371, 1420, 1469, 1517, 1567, 1616,
-            1664, 1714, 1764, 1814, 1880, 1933, 1988, 2044, 2107, 2170,
-        ]
-    },
-    "overload": {
-        resist: konst.ElementType.Pyro,
-        values: [
-            33, 37, 39, 42, 44, 49, 52, 57, 62, 68,
-            73, 81, 89, 97, 107, 118, 128, 139, 150, 161,
-            172, 183, 194, 206, 217, 226, 236, 246, 259, 272,
-            284, 298, 310, 323, 338, 352, 368, 383, 399, 414,
-            430, 448, 467, 487, 511, 537, 562, 590, 618, 647,
-            673, 700, 729, 757, 797, 832, 868, 906, 944, 986,
-            1027, 1078, 1130, 1184, 1248, 1302, 1359, 1416, 1472, 1531,
-            1589, 1649, 1702, 1754, 1828, 1893, 1958, 2022, 2089, 2154,
-            2219, 2286, 2352, 2420, 2507, 2578, 2650, 2727, 2810, 2893,
-        ]
-    },
 } as const;
 
 export const DirectBonus: ReadonlyArray<string> = [
@@ -141,7 +51,7 @@ export const RateBonus = {
     },
 } as const;
 
-export const TeamBonus: Partial<ReadonlyRecord<konst.ElementType, IBasicBonus>> = {
+const TeamBonus: Partial<ReadonlyRecord<konst.ElementType, IBasicBonus>> = {
     pyro: { items: konst.StatusBonusType.AtkBuf, value: 25 },
     cryo: { items: konst.CriticalBonusType.Rate, value: 15, limit: "elem.cryo" },
     geo: { items: konst.AnyBonusType.Damage, value: 15, limit: "general.shield" },
@@ -160,6 +70,7 @@ function join<T>(items: readonly T[], pred: (item: T) => VueI18n.TranslateResult
     return items.map(item => pred(item)).join("/");
 }
 
+// ボーナス基底
 export class BonusBase {
     public readonly i18n: IVueI18n;
     public readonly key: number;
@@ -263,8 +174,8 @@ export class BonusBase {
 
     public apply(dst: Status, src: Status[], step: number) { }
 
-    protected label(type: konst.AnyBonusType | "energy" | "swirl" | "contact") {
-        return (this.i18n.t("bonus." + type) as string).replace("(%)", "");
+    protected text(type: konst.AnyBonusType | "energy" | "contact") {
+        return String(this.i18n.t("bonus." + type)).replace("(%)", "");
     }
 }
 
@@ -280,7 +191,7 @@ export class BasicBonus extends BonusBase {
     }
 
     public effect(_: Status[]) {
-        const type = join(this.types, item => this.label(item));
+        const type = join(this.types, item => this.text(item));
         return this.i18n.t(
             "format.basic",
             { type, value: RateBonus.xround(this.value, this.types[0]) }
@@ -314,25 +225,22 @@ export class FlatBonus extends BonusBase {
         this.bound = data.bound ?? null;
     }
 
-    private get baseLabel() {
-        return this.i18n.t("bonus." + this.base);
-    }
-
-    private destLabel(type: konst.FlatBonusDest) {
+    private formatText(type: konst.FlatBonusDest) {
         switch (type) {
             case konst.FlatBonusDest.Combat:
             case konst.FlatBonusDest.Normal:
             case konst.FlatBonusDest.Heavy:
             case konst.FlatBonusDest.Skill:
             case konst.FlatBonusDest.Burst:
-                return this.label(konst.TypeToBonus.combat(type));
+                return this.text(konst.TypeToBonus.combat(type));
             default:
-                return this.label(type);
+                return this.text(type);
         }
     }
 
     public effect(src: Status[]) {
-        let type = join(this.dest, (item) => this.destLabel(item));
+        let type = join(this.dest, (item) => this.formatText(item));
+        const base = this.i18n.t("bonus." + this.base);
         const value = this.applyScale(this.value, src[this.index]);
         switch (this.base) {
             case konst.FlatBonusBase.None:
@@ -345,12 +253,11 @@ export class FlatBonus extends BonusBase {
                     "format.basic",
                     { type, value: RateBonus.xround(value, konst.BonusType.None) }
                 );
-            default:
-                return this.i18n.t(
-                    "format.flat",
-                    { type, base: this.baseLabel, value: RateBonus.round(value) }
-                );
         }
+        return this.i18n.t(
+            "format.flat",
+            { type, base, value: RateBonus.round(value) }
+        );
     }
 
     public get applyStep() {
@@ -376,14 +283,12 @@ export class FlatBonus extends BonusBase {
             case konst.FlatBonusBase.Energy:
                 value = (dst.info?.energy || 0) * value; // 適用者の値を参照
                 break;
-            case konst.FlatBonusBase.Hp:
-                value = src.hp * value / 100;
-                break;
             case konst.FlatBonusBase.AtkBase:
                 value = src.base.atk * value / 100;
                 break;
+            case konst.FlatBonusBase.Hp:
             case konst.FlatBonusBase.Def:
-                value = src.def * value / 100;
+                value = src.total(this.base) * value / 100;
                 break;
             case konst.FlatBonusBase.Elem:
                 switch (this.dest[0]) {

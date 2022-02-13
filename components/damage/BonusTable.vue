@@ -99,7 +99,7 @@ import {
 } from "@mdi/js";
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { BonusBase } from "~/src/bonus";
-import { Status } from "~/src/status";
+import Status from "~/src/status";
 
 @Component({
   name: "BonusTable",

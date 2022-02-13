@@ -182,7 +182,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
-import { ICharaData, CharaNames, CharaName, Builder } from "~/src/character";
+import Chara, { ICharaData, CharaNames, CharaName } from "~/src/character";
 import Pagination from "~/src/pagination";
 
 @Component({
@@ -252,17 +252,17 @@ export default class CharaData extends Vue {
   }
 
   onChangeName(item: ICharaData) {
-    Builder.name(item, this.$db.setting.initial.chara);
+    Chara.reset(item, this.$db.setting.initial.chara);
   }
 
   onChangeLevel(item: ICharaData) {
-    Builder.level(item);
+    Chara.level(item);
   }
 
   onAppend() {
     const name = this.append;
     if (name) {
-      const data = Builder.make(
+      const data = Chara.create(
         this.$makeUniqueId(),
         name,
         this.$db.setting.initial.chara

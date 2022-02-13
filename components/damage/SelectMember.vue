@@ -70,7 +70,7 @@
 import { Vue, Component, Emit, Prop } from "vue-property-decorator";
 import { ContactTypes, NoneElementType, NoneReactionType } from "~/src/const";
 import { ITeamData, IMember, Team } from "~/src/team";
-import { Builder as CharaBuilder } from "~/src/character";
+import Chara from "~/src/character";
 
 @Component({
   name: "SelectMember",
@@ -116,7 +116,7 @@ export default class SelectMember extends Vue {
   set refLevel(value: string | null) {
     if (this.member?.chara && value) {
       this.member.chara.level = value;
-      CharaBuilder.level(this.member.chara);
+      Chara.level(this.member.chara);
       this.onChangeMember();
     }
   }
@@ -143,11 +143,11 @@ export default class SelectMember extends Vue {
   }
 
   get teams() {
-    let items: { text: string; value: ITeamData }[] = [];
-    this.$db.team.forEach((t, i) => {
-      items.push({ text: new Team(t).getName(this.$i18n, i), value: t });
-    });
-    return items;
+    const i18n = this.$i18n;
+    return this.$db.team.map((t, i) => ({
+      text: Team.format(t, i, i18n),
+      value: t,
+    }));
   }
 
   get members() {
@@ -156,7 +156,7 @@ export default class SelectMember extends Vue {
     if (team) {
       for (const member of new Team(team).members(this.$db)) {
         items.push({
-          text: this.$t("chara." + member.chara.name) as string,
+          text: String(this.$t("chara." + member.chara.name)),
           value: member,
         });
       }

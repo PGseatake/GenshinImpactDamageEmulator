@@ -4,16 +4,16 @@ import {
     CombatType,
     CombatElementType,
     DamageBased,
-    isAmplifyReaction,
     NoneReactionType,
     NoneContactType,
 } from "~/src/const";
 import { ICombat, IIdentify } from "~/src/interface";
-import { Critical, Status, StatusReduct } from "~/src/status";
-import { DamageScaleTable, ReactionFactorTable } from "~/src/bonus";
-import { EnemyList, IEnemyInfo, IEnemyData } from "~/src/enemy";
+import { DamageScaleTable } from "~/src/bonus";
+import Reaction from "~/src/reaction";
+import Enemy, { IEnemyData } from "~/src/enemy";
+import Status, { Critical } from "~/src/status";
 import { roundRate } from "~/plugins/utils";
-import { SettingCritical } from "./setting";
+import { SettingCritical } from "~/src/setting";
 
 export interface IDamageData extends IIdentify, IEnemyData {
     team: string;
@@ -22,45 +22,6 @@ export interface IDamageData extends IIdentify, IEnemyData {
     reaction: NoneReactionType;
 }
 export type DBDamageTable = { damage: IDamageData[]; };
-
-export class Enemy {
-    public readonly info: Readonly<IEnemyInfo>;
-    public readonly data: Readonly<IEnemyData>;
-    public readonly reduct: StatusReduct;
-
-    constructor(data: Readonly<IEnemyData>, reduct: StatusReduct) {
-        this.data = data;
-        this.info = EnemyList[data.name];
-        this.reduct = reduct;
-    }
-
-    value(type: ElementType) {
-        return (
-            this.info.resist[type] -
-            this.reduct[type] +
-            this.data.fixed +
-            ((type === this.data.elem && this.info.value) || 0)
-        );
-    }
-
-    resist(type: ElementType) {
-        let rate = this.value(type);
-        if (rate < 0) {
-            return (100 - rate / 2) / 100;
-        } else if (75 <= rate) {
-            return 100 / (rate * 4 + 100);
-        } else {
-            return (100 - rate) / 100;
-        }
-    }
-
-    defence(charaLevel: number) {
-        const enemy = this.data.level + 100;
-        const chara = charaLevel + 100;
-        let def = (chara / (enemy + chara)) * 100 + this.reduct.defence;
-        return def < 100 ? def : 100;
-    }
-}
 
 function clamp(val: number, min: number, max: number) {
     if (val < min) return min;
@@ -76,7 +37,7 @@ function toScale(rate: number) {
     return 1.0 + rate / 100.0;
 }
 
-class Damage {
+class Attribute {
     public readonly atk: number;
     public readonly def: number;
     public readonly flat: number;
@@ -111,7 +72,7 @@ class Damage {
     }
 
     private calc(val: number) {
-        const crit = lerp(1, this.crit.damage, this.crit.rate);
+        const crit = lerp(1.0, this.crit.damage, this.crit.rate);
         return (((val * this.atk * this.def * crit) / 100) + this.flat).toFixed();
     }
 }
@@ -154,38 +115,25 @@ export class CombatAttribute {
         );
     }
 
-    damage(status: Status, enemy: Enemy, reaction?: ReactionType, contact?: ElementType): string[] {
+    damage(data: IDamageData, status: Status, enemy: Enemy): string[] {
         let elem = this.elem;
+        let reaction = data.reaction;
         // 元素変化
         if (elem === CombatElementType.Contact) {
+            let contact = data.contact;
             if (!contact) return [];
             elem = contact;
-            reaction = undefined;
+            reaction = "";
         }
         // 元素付与
-        if (elem === ElementType.Phys &&
-            status.enchant.type &&
-            status.enchant.dest.includes(this.type)) {
-            elem = status.enchant.type;
+        if (elem === ElementType.Phys) {
+            elem = status.elchant(this.type);
         }
-
         // 元素反応の正規化
-        reaction = this.reaction(elem, reaction);
+        reaction = Reaction.normalize(reaction, elem);
 
         // 攻撃力
-        let attackPower: number;
-        switch (this.based) {
-            case DamageBased.Hp:
-                attackPower = status.hp;
-                break;
-            case DamageBased.Def:
-                attackPower = status.def;
-                break;
-            default:
-                attackPower = status.atk;
-                break;
-        }
-
+        let attackPower = status.total(this.based);
         // 防御力
         const enemyDefence = enemy.defence(status.level) / 100;
         const enemyResist = enemy.resist(elem);
@@ -200,64 +148,51 @@ export class CombatAttribute {
         const atk = attackPower * combatScale;
         const def = enemyDefence * enemyResist;
         const flat = status.flat[this.type];
-        const pair = (rate: number) => {
-            let items = [this.toDamage(rate, def, flat)]; // 通常ダメージ
+        const make = (rate: number) => {
+            let items = [this.attribute(rate, def, flat)]; // 通常ダメージ
             if (this.crit !== SettingCritical.Expc) { // 会心ダメージ（直値）
-                items.push(this.toDamage(rate, def, flat, { rate: 100, damage: critical.damage }));
+                items.push(this.attribute(rate, def, flat, { rate: 100, damage: critical.damage }));
             }
             if (this.crit !== SettingCritical.Base) { // 会心ダメージ（期待値）
-                items.push(this.toDamage(rate, def, flat, critical));
+                items.push(this.attribute(rate, def, flat, critical));
             }
             return items;
         };
-        let damages = pair(atk);
+        let attrs = make(atk);
 
         if (reaction) {
             const elementMaster = status.elementMaster(reaction);
             const reactionBonus = status.reactionBonus(reaction);
 
-            if (isAmplifyReaction(reaction)) {
+            if (Reaction.isAmplify(reaction)) {
                 // 蒸発と溶解は取り消し線で表示
-                damages.forEach((d) => (d.strike = true));
+                attrs.forEach((val) => (val.strike = true));
 
                 const reactionScale =
                     toScale(elementMaster + reactionBonus) *
                     status.reactionScale(reaction, elem);
 
                 // 元素反応ダメージ
-                damages.push(...pair(atk * reactionScale));
+                attrs.push(...make(atk * reactionScale));
             } else {
                 const reactionScale = toScale(elementMaster + reactionBonus);
-                const reactionFactor = ReactionFactorTable[reaction];
+                const reactionFactor = Reaction.Factor[reaction];
                 const reactionResist = enemy.resist(reactionFactor.resist);
                 const reactionDamage =
-                    (reactionFactor.values[status.level - 1] ?? 0) *
+                    (reactionFactor.values[status.level - 1] || 0) *
                     reactionScale *
                     reactionResist;
 
                 return [
-                    ...damages.map((val) => val.toHtml()),
+                    ...attrs.map((val) => val.toHtml()),
                     `<td class="text-right">${reactionDamage.toFixed()}</td>`, // 元素反応ダメージ
                 ];
             }
         }
-        return damages.map((val) => val.toHtml());
+        return attrs.map((val) => val.toHtml());
     }
 
-    private toDamage(atk: number, def: number, flat: number, crit?: Critical) {
-        return new Damage(atk, def, flat, this.value, this.multi, crit);
-    }
-
-    private reaction(elem: ElementType, reaction?: ReactionType) {
-        if (reaction === ReactionType.Shutter) {
-            switch (elem) {
-                case ElementType.Phys:
-                case ElementType.Geo:
-                    return reaction;
-            }
-        } else if (elem !== ElementType.Phys) {
-            return reaction;
-        }
-        return undefined;
+    private attribute(atk: number, def: number, flat: number, crit?: Critical) {
+        return new Attribute(atk, def, flat, this.value, this.multi, crit);
     }
 }

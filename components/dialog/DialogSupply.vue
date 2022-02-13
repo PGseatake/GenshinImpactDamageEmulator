@@ -36,21 +36,15 @@ import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import {
   ArtifactType,
   ArtifactTypes,
-  isArtifactType,
-  isWeaponType,
   WeaponType,
   WeaponTypes,
 } from "~/src/const";
-import { Builder as WeaponBuilder, WeaponNames } from "~/src/weapon";
-import { Builder as ArtifactBuilder, ArtifactNames } from "~/src/artifact";
-import {
-  Builder as CharaBuilder,
-  CharaList,
-  CharaNames,
-  ICharaData,
-} from "~/src/character";
+import Weapon, { WeaponNames } from "~/src/weapon";
+import Artifact, { ArtifactNames } from "~/src/artifact";
+import Chara, { CharaList, CharaNames, ICharaData } from "~/src/character";
+import Equip from "~/src/equipment";
+import { ITeamData, Members, Team } from "~/src/team";
 import { Database } from "~/src/convert";
-import { Builder, ITeamData, Members } from "~/src/team";
 
 @Component({
   name: "DialogSupply",
@@ -97,9 +91,9 @@ export default class DialogSupply extends Vue {
     }
     for (const { type, check } of this.items) {
       if (check) {
-        if (isWeaponType(type)) {
+        if (Weapon.check(type)) {
           this.supplyWeapon(type);
-        } else if (isArtifactType(type)) {
+        } else if (Artifact.check(type)) {
           this.supplyArtifact(type);
         } else {
           if (type === "chara") {
@@ -133,7 +127,7 @@ export default class DialogSupply extends Vue {
     const exists = new Set(list.map((item) => item.name));
     for (const name of WeaponNames[type]) {
       if (!exists.has(name)) {
-        list.push(WeaponBuilder.make(this.$makeUniqueId(), type, name, init));
+        list.push(Weapon.create(this.$makeUniqueId(), type, name, init));
       }
     }
   }
@@ -144,7 +138,7 @@ export default class DialogSupply extends Vue {
     const exists = new Set(list.map((item) => item.name));
     for (const name of ArtifactNames) {
       if (!exists.has(name)) {
-        list.push(ArtifactBuilder.make(this.$makeUniqueId(), type, name, init));
+        list.push(Artifact.create(this.$makeUniqueId(), type, name, init));
       }
     }
   }
@@ -155,7 +149,7 @@ export default class DialogSupply extends Vue {
     const exists = new Set(list.map((item) => item.name));
     for (const name of CharaNames) {
       if (!exists.has(name)) {
-        list.push(CharaBuilder.make(this.$makeUniqueId(), name, init));
+        list.push(Chara.create(this.$makeUniqueId(), name, init));
       }
     }
   }
@@ -194,7 +188,7 @@ export default class DialogSupply extends Vue {
           if (chara.length === widx) {
             widx = 0;
           }
-          let data = Builder.equip(this.$makeUniqueId(), chara[widx].id);
+          let data = Equip.create(this.$makeUniqueId(), chara[widx].id);
           data.weapon = weapon.id;
           indices[wtype] = ++widx;
 
@@ -222,21 +216,21 @@ export default class DialogSupply extends Vue {
     if (items.length) {
       const max = Members.length;
       let idx = 0;
-      let data: ITeamData = Builder.team("", "");
+      let data: ITeamData = Team.create("", "");
       for (const item of items) {
         if (idx === max) {
-          Builder.resonance(data, this.$db);
+          Team.resonance(data, this.$db);
           this.$db.team.push(data);
           idx = 0;
         }
         if (idx === 0) {
-          data = Builder.team(this.$makeUniqueId(), item.id);
+          data = Team.create(this.$makeUniqueId(), item.id);
         } else {
           data[Members[idx]] = item.id;
         }
         ++idx;
       }
-      Builder.resonance(data, this.$db);
+      Team.resonance(data, this.$db);
       this.$db.team.push(data);
     }
   }

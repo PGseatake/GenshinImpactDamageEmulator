@@ -32,6 +32,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiMenuDown } from "@mdi/js";
+import { Arrayable } from "~/src/utility";
 
 @Component({
   name: "SelectRange",
@@ -47,7 +48,7 @@ export default class SelectRange extends Vue {
   get items() {
     const min = this.min;
     const max = this.max;
-    return Array.from({ length: max - min + 1 }, (_, i): { value: number } => ({
+    return Arrayable.make(max - min + 1, (_, i) => ({
       value: min + i,
     }));
   }

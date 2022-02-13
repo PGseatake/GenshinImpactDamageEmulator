@@ -174,12 +174,12 @@
         "vaporize_dmg": "Vaporize DMG",
         "melt_dmg": "Melt DMG",
         "swirl_dmg": "Swirl DMG",
-        "echarge_dmg": "E-Charged DMG",
+        "echarge_dmg": "Electro-Charged DMG",
         "shutter_dmg": "Shattered DMG",
         "conduct_dmg": "Superconduct DMG",
         "overload_dmg": "Overloaded DMG",
-        "swirl": "拡散させた元素ダメージ",
-        "contact": "変化した元素ダメージ"
+        "energy": "Energy",
+        "contact": "Absorbed element DMG Bonus"
     },
     "bonus_short": {
         "none": "none",

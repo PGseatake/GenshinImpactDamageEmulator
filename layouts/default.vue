@@ -370,7 +370,7 @@ export default class Default extends Vue {
 
   onSave() {
     Database.save(this.$db);
-    this.$store.commit("popup", this.$t("popup.save"));
+    this.$store.commit("popup", "save");
     this.toolOpened = false;
   }
 

@@ -1,62 +1,11 @@
 import * as konst from "~/src/const";
+import { parseLevel } from "~/src/ascension";
 import { ICharaInfo } from "~/src/interface";
 import { ICharaData } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
-import { SubBonus, DBArtifactTable } from "~/src/artifact";
-import { IMember, Member } from "~/src/team";
-import { parseLevel } from "./ascension";
-
-const ReactionScaleTable: ReadonlyPartial<Record<konst.ElementType, ReadonlyPartial<Record<konst.ReactionType, number>>>> = {
-    pyro: {
-        "vaporize": 1.5,
-        "overload": 1.0,
-        "melt": 2.0,
-    },
-    hydro: {
-        "vaporize": 2.0,
-        "echarge": 1.0,
-    },
-    elect: {
-        "overload": 1.0,
-        "echarge": 1.0,
-        "conduct": 1.0,
-    },
-    cryo: {
-        "melt": 1.5,
-        "conduct": 1.0,
-    },
-    anemo: {
-        "swirl": 1.0,
-    }
-} as const;
-
-export function enumerateReaction(chara: ICharaInfo | null, enchant: konst.EnchantType) {
-    let types: konst.ReactionType[] = [];
-    if (chara) {
-        let elems = [chara.element];
-        if (enchant && (enchant !== chara.element)) {
-            elems.push(enchant);
-        }
-
-        for (const elem of elems) {
-            const scales = ReactionScaleTable[elem];
-            if (scales) {
-                // 元素反応を追加
-                for (const type in scales) {
-                    types.push(type as konst.ReactionType);
-                }
-            }
-
-            // 氷砕きを追加
-            if (elem === konst.ElementType.Geo) {
-                types.push(konst.ReactionType.Shutter);
-            } else if (chara.weapon === konst.WeaponType.Claymore) {
-                types.push(konst.ReactionType.Shutter);
-            }
-        }
-    }
-    return types;
-}
+import { DBArtifactTable, SubBonus } from "~/src/artifact";
+import { Member, IMember } from "~/src/team";
+import Reaction from "~/src/reaction";
 
 export type StatusTalent = Record<konst.TalentType, number>;
 export type StatusBase = Record<konst.StatusType, number>;
@@ -69,6 +18,35 @@ export type StatusEnchant = {
     self: boolean;
 };
 
+export type StatusPart = {
+    type: konst.BonusType;
+    total: number;
+    base: number;
+};
+
+export const StatusBase = {
+    "en_rec": 100,
+    "cri_dmg": 50,
+    "cri_rate": 5,
+    check(type: konst.BonusType): type is konst.StatusType {
+        switch (type) {
+            case konst.StatusBonusType.Hp:
+            case konst.StatusBonusType.Atk:
+            case konst.StatusBonusType.Def:
+                return true;
+        }
+        return false;
+    },
+    value(type: konst.BonusType): number {
+        return StatusBase[type as ("en_rec" | "cri_dmg" | "cri_rate")] || 0;
+    },
+} as const;
+
+export type Critical = {
+    rate: number;
+    damage: number;
+};
+
 export interface IStatus {
     talent: StatusTalent;
     base: StatusBase;
@@ -78,12 +56,7 @@ export interface IStatus {
     enchant: StatusEnchant;
 };
 
-export type Critical = {
-    rate: number;
-    damage: number;
-};
-
-export class Status {
+export default class Status {
     public static empty(): IStatus {
         return {
             talent: { combat: 0, skill: 0, burst: 0 },
@@ -154,6 +127,17 @@ export class Status {
         };
     }
 
+    public static part(type: konst.BonusType, param: Readonly<StatusParam>, base: Readonly<StatusBase>): StatusPart {
+        let total = param[type];
+        if (StatusBase.check(type)) {
+            const x = param[konst.TypeToBonus.buffer(type)];
+            const b = base[type];
+            total += b + (b * x) / 100;
+            return { type, total, base: b };
+        }
+        return { type, total, base: StatusBase.value(type) };
+    }
+
     public info: ICharaInfo | null;
     public chara: ICharaData | null;
     public talent: StatusTalent;
@@ -194,9 +178,9 @@ export class Status {
 
         if (info && chara && equip) {
             // 基礎値
-            this.param[konst.StatusBonusType.EnRec] = 100;
-            this.param[konst.CriticalBonusType.Damage] = 50;
-            this.param[konst.CriticalBonusType.Rate] = 5;
+            this.param[konst.StatusBonusType.EnRec] = StatusBase[konst.StatusBonusType.EnRec];
+            this.param[konst.StatusBonusType.CriDmg] = StatusBase[konst.StatusBonusType.CriDmg];
+            this.param[konst.StatusBonusType.CriRate] = StatusBase[konst.StatusBonusType.CriRate];
 
             this.talent.combat = chara.combat;
             this.talent.skill = chara.skill;
@@ -232,37 +216,24 @@ export class Status {
         }
     }
 
-    get level() {
-        return parseLevel(this.chara?.level).level;
-    }
-
-    get hp() {
-        const a = this.param.hp;
-        const x = this.param.hp_buf;
-        const b = this.base.hp;
-        return a + b + (x * b) / 100;
-    }
-
-    get atk() {
-        const a = this.param.atk;
-        const x = this.param.atk_buf;
-        const b = this.base.atk;
-        return a + b + (x * b) / 100;
-    }
-
-    get def() {
-        const a = this.param.def;
-        const x = this.param.def_buf;
-        const b = this.base.def;
-        return a + b + (x * b) / 100;
-    }
-
     private apply({ type, value }: { type: konst.AnyBonusType, value: number; }) {
         if (type !== konst.BonusType.None) {
             this.param[type] += value;
         }
     }
 
+    get level() {
+        return parseLevel(this.chara?.level).level;
+    }
+
+    // 最終値取得
+    total(type: konst.StatusType) {
+        const x = this.param[konst.TypeToBonus.buffer(type)];
+        const b = this.base[type];
+        return b + (x * b) / 100 + this.param[type];
+    }
+
+    // 元素付与ボーナス適用
     renchant(type: konst.EnchantType, dest: ReadonlyArray<konst.CombatType>, self: boolean) {
         if (!self && this.enchant.type) {
             switch (this.enchant.type) {
@@ -287,6 +258,14 @@ export class Status {
         this.enchant.dest.splice(0);
         this.enchant.dest.push(...dest);
         this.enchant.self = self;
+    }
+
+    // 付与元素取得
+    elchant(type: konst.CombatType) {
+        if (this.enchant.type && this.enchant.dest.includes(type)) {
+            return this.enchant.type;
+        }
+        return konst.ElementType.Phys;
     }
 
     // 攻撃ダメージ値（％）
@@ -327,7 +306,7 @@ export class Status {
                     return 1.0;
             }
         } else {
-            const scales = ReactionScaleTable[act];
+            const scales = Reaction.Scale[act];
             if (scales) {
                 const value = scales[type];
                 if (value) {
@@ -339,7 +318,7 @@ export class Status {
     }
 
     // 会心値（％）
-    critical(type: konst.CombatType = konst.CombatType.Normal): Critical {
+    critical(type: konst.CombatType): Critical {
         let rate = this.param.cri_rate;
         switch (type) {
             case konst.CombatType.Normal:

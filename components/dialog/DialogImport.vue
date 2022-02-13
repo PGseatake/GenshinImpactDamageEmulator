@@ -57,7 +57,7 @@ export default class DialogImport extends Vue {
       reader.onload = () => {
         this.reflect(reader.result as string);
         Database.save(this.$db);
-        this.$store.commit("popup", this.$t("popup.import"));
+        this.$store.commit("popup", "import");
         this.$store.commit("reload");
       };
     }

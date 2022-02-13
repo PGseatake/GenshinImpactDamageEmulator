@@ -50,10 +50,6 @@ export const WeaponType = {
 } as const;
 export type WeaponType = typeof WeaponType[keyof typeof WeaponType];
 
-export function isWeaponType(type: string): type is WeaponType {
-    return WeaponTypes.includes(type as WeaponType);
-}
-
 export const ArtifactTypes = [
     "flower",
     "feather",
@@ -69,10 +65,6 @@ export const ArtifactType = {
     Circlet: "circlet"
 } as const;
 export type ArtifactType = typeof ArtifactType[keyof typeof ArtifactType];
-
-export function isArtifactType(type: string): type is ArtifactType {
-    return ArtifactTypes.includes(type as ArtifactType);
-}
 
 export const TalentTypes = [
     "combat",
@@ -140,17 +132,6 @@ export const ContactTypes = [
 ] as const;
 export type ContactType = typeof ContactTypes[number];
 export type NoneContactType = ContactType | "";
-
-export type AmplifyReactionType = "vaporize" | "melt";
-export function isAmplifyReaction(type: ReactionType): type is AmplifyReactionType {
-    switch (type) {
-        case ReactionType.Vaporize:
-        case ReactionType.Melt:
-            return true;
-    }
-    return false;
-}
-export type TransformReactionType = "burning" | "swirl" | "echarge" | "shutter" | "conduct" | "overload";
 
 export type StatusType = "hp" | "atk" | "def";
 
@@ -340,6 +321,7 @@ export const FlatBonusDest = {
     // ElementBonusType 割合
     HydroDmg: "hydro_dmg",
     CryoDmg: "cryo_dmg",
+    // その他
     Contact: "contact",
 } as const;
 export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];

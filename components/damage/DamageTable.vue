@@ -52,12 +52,13 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import { TalentType, TalentTypes } from "~/src/const";
 import { ICombat } from "~/src/interface";
 import { IMember } from "~/src/team";
-import { IStatus, Status } from "~/src/status";
-import { IDamageData, CombatAttribute, Enemy } from "~/src/damage";
-import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
+import Status, { IStatus } from "~/src/status";
+import Enemy from "~/src/enemy";
+import { IDamageData, CombatAttribute } from "~/src/damage";
 import { SettingCritical } from "~/src/setting";
 
 interface IAttribute extends ICombat {
@@ -65,7 +66,7 @@ interface IAttribute extends ICombat {
   status: Status;
   enemy: Enemy;
   key: number;
-  group: string;
+  group: number;
 }
 
 @Component({
@@ -133,17 +134,17 @@ export default class DamageTable extends Vue {
       let key = 1;
       let talent: TalentType = TalentType.Combat;
       for (const data of info.talent.combat) {
-        items.push({ ...data, talent, status, enemy, key, group: "0" });
+        items.push({ ...data, talent, status, enemy, key, group: 0 });
         key++;
       }
       talent = TalentType.Skill;
       for (const data of info.talent.skill) {
-        items.push({ ...data, talent, status, enemy, key, group: "1" });
+        items.push({ ...data, talent, status, enemy, key, group: 1 });
         key++;
       }
       talent = TalentType.Burst;
       for (const data of info.talent.burst) {
-        items.push({ ...data, talent, status, enemy, key, group: "2" });
+        items.push({ ...data, talent, status, enemy, key, group: 2 });
         key++;
       }
     }
@@ -154,10 +155,10 @@ export default class DamageTable extends Vue {
     return this.$db.setting.critical;
   }
 
-  formatGroup(index: string) {
-    const group = TalentTypes[Number(index)];
-    return `${this.$t("combat." + group)} : ${this.$t("general.level")}${
-      this.status.talent[group]
+  formatGroup(group: number) {
+    const type = TalentTypes[group];
+    return `${this.$t("combat." + type)} : ${this.$t("general.level")}${
+      this.status.talent[type]
     }`;
   }
 
@@ -168,12 +169,7 @@ export default class DamageTable extends Vue {
       this.$db.setting.critical as SettingCritical
     );
     let html = `<td>${this.$t("combat." + item.name)}</td>` + attr.toHtml();
-    const damage = attr.damage(
-      item.status,
-      item.enemy,
-      this.data.reaction || undefined,
-      this.data.contact || undefined
-    );
+    const damage = attr.damage(this.data, item.status, item.enemy);
     const len = this.critical === SettingCritical.Both ? 6 : 4;
     for (let i = 0; i < len; ++i) {
       if (i < damage.length) {

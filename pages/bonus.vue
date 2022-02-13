@@ -5,35 +5,19 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { DBEquipTable } from "~/src/interface";
-import { DBCharaTable } from "~/src/character";
-import { DBWeaponTable } from "~/src/weapon";
-import { DBArtifactTable } from "~/src/artifact";
-import { DBTeamTable, Team } from "~/src/team";
-import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
-import { Status } from "~/src/status";
+import { Vue, Component, Watch } from "vue-property-decorator";
+import { BonusBase, BonusBuilder } from "~/src/bonus";
+import { Team } from "~/src/team";
+import Status from "~/src/status";
 import BonusTable from "~/components/damage/BonusTable.vue";
-
-type TabItem = {
-  key: number;
-  name: string;
-  text: (item: TabItem) => string;
-};
 
 @Component({
   name: "PageBonus",
   components: { BonusTable },
 })
 export default class PageBonus extends Vue {
-  db!: DBTeamTable &
-    DBEquipTable &
-    DBCharaTable &
-    DBWeaponTable &
-    DBArtifactTable &
-    DBBonusTable;
-  statues: Array<Status[]> = [];
-  bonuses: Array<BonusBase[]> = [];
+  status: Status[] = [];
+  bonus: BonusBase[] = [];
 
   get tab() {
     return this.$store.getters.tab;
@@ -42,44 +26,48 @@ export default class PageBonus extends Vue {
     this.$store.commit("tab", value);
   }
 
-  get bonus() {
-    return this.bonuses[this.tab] || [];
-  }
+  @Watch("tab")
+  onChangeTab(value: number) {
+    this.status.splice(0);
+    this.bonus.splice(0);
 
-  get status() {
-    return this.statues[this.tab] || [];
+    const team = this.$db.team[value];
+    if (team) {
+      let builder = new BonusBuilder(this.$i18n, this.$db.bonus);
+      for (const member of new Team(team).members(this.$db)) {
+        if (member.equip) {
+          let status = new Status(Status.empty());
+          status.equip(member, this.$db);
+          this.status.push(status);
+        }
+      }
+      this.bonus.push(...builder.build(team, this.$db));
+    }
   }
 
   created() {
-    this.db = this.$db;
     this.$store.commit("appendable", false);
     this.$store.commit("tabs", {});
   }
 
   mounted() {
     const i18n = this.$i18n;
-    const text = (item: TabItem) =>
-      item.name || `${i18n.t("menu.team")}${item.key + 1}`;
-
-    let names: TabItem[] = [];
-    let builder = new BonusBuilder(i18n, this.db.bonus);
-    this.db.team.forEach((t, i) => {
-      let status: Status[] = [];
-      for (let m of new Team(t).members(this.db)) {
-        let s = new Status(Status.empty());
-        s.equip(m, this.db);
-        if (m.equip) {
-          status.push(s);
-        }
-      }
-      this.statues.push(status);
-
-      this.bonuses.push(builder.build(t, this.db));
-      names.push({ key: i, name: t.name, text });
+    this.$store.commit("tabs", {
+      tab: "bonus",
+      items: this.$db.team.map((t, i) => ({
+        key: t.id,
+        text: () => Team.format(t, i, i18n),
+      })),
     });
-    this.db.bonus = builder.output;
 
-    this.$store.commit("tabs", { tab: "bonus", items: names });
+    // ボーナスデータの正規化
+    let builder = new BonusBuilder(i18n, this.$db.bonus);
+    for (const t of this.$db.team) {
+      builder.build(t, this.$db);
+    }
+    this.$db.bonus = builder.output;
+
+    this.onChangeTab(this.tab);
   }
 }
 </script>

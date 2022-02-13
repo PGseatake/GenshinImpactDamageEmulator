@@ -1,7 +1,9 @@
+import { IVueI18n } from "vue-i18n";
 import { ElementType, NoneElementType } from "~/src/const";
 import { INameable } from "~/src/interface";
+import { StatusReduct } from "~/src/status";
 
-export type Phase = {
+type Phase = {
     readonly label: string;
     readonly fixed: number;
 };
@@ -890,4 +892,64 @@ export interface IEnemyData extends INameable {
     elem: NoneElementType;
     level: number;
     fixed: number;
+}
+
+// IEnemyDataのユーティリティクラス
+export default class Enemy {
+    public readonly data: Readonly<IEnemyData>;
+    public readonly info: Readonly<IEnemyInfo>;
+    public readonly reduct: StatusReduct;
+
+    constructor(data: Readonly<IEnemyData>, reduct: StatusReduct) {
+        this.data = data;
+        this.info = EnemyList[data.name];
+        this.reduct = reduct;
+    }
+
+    value(type: ElementType) {
+        return (
+            this.info.resist[type] -
+            this.reduct[type] +
+            this.data.fixed +
+            ((type === this.data.elem && this.info.value) || 0)
+        );
+    }
+
+    resist(type: ElementType) {
+        let rate = this.value(type);
+        if (rate < 0) {
+            return (100 - rate / 2) / 100;
+        } else if (75 <= rate) {
+            return 100 / (rate * 4 + 100);
+        } else {
+            return (100 - rate) / 100;
+        }
+    }
+
+    defence(charaLevel: number) {
+        const enemy = this.data.level + 100;
+        const chara = charaLevel + 100;
+        let def = (chara / (enemy + chara)) * 100 + this.reduct.defence;
+        return def < 100 ? def : 100;
+    }
+
+    public static format(data: Readonly<IEnemyData>, info: Readonly<IEnemyInfo>, name: EnemyName, i18n: IVueI18n) {
+        let type: NoneElementType;
+        if (data.name === name) {
+            type = data.elem;
+        } else {
+            type = info.element ? info.element[0] : "";
+        }
+        let text = "enemy." + name;
+        if (type) {
+            if (info.unique) {
+                return i18n.t(`${text}.${type}`);
+            }
+            if (info.custom) {
+                return i18n.t(text + ".format", [i18n.t(`${text}.${type}`)]);
+            }
+            return i18n.t(text, [i18n.t("element." + type)]);
+        }
+        return i18n.t(text);
+    }
 }

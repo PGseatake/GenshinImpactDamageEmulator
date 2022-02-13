@@ -30,7 +30,6 @@ export interface IFlatBonusBound {
     readonly base: konst.FlatBonusBase;
     readonly value: number;
 }
-
 export interface IFlatBonusScale {
     type: konst.DamageScale;
     talent: konst.TalentType;
@@ -46,6 +45,7 @@ export interface IFlatBonus extends IBonusOption {
     // readonly limit?: string;
     // readonly times?: number;
     // readonly stack?: number;
+    // readonly target?: konst.BonusTarget;
 }
 export interface IWeaponFlatBonus extends IFlatBonus {
     readonly value: ReadonlyArray<number>;
@@ -57,6 +57,7 @@ export interface IReductBonus extends IBonusOption {
     readonly value: ReadonlyArrayable<number>;
     // readonly limit?: string;
     // readonly times?: number;
+    // readonly target?: konst.BonusTarget;
 }
 
 export interface IEnchantBonus extends IBonusOption {
@@ -128,9 +129,3 @@ export interface INameable {
 export interface ICommentable {
     comment: string;
 }
-
-export interface IEquipData extends IIdentify, ICommentable, Record<konst.ArtifactType, string> {
-    chara: string;
-    weapon: string;
-}
-export type DBEquipTable = { equip: IEquipData[]; };

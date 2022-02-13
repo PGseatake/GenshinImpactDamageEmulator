@@ -59,16 +59,14 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { DBEquipTable } from "~/src/interface";
-import { DBCharaTable } from "~/src/character";
-import { DBWeaponTable } from "~/src/weapon";
-import { DBArtifactTable } from "~/src/artifact";
-import { DBTeamTable, ITeamData, IMember, Team } from "~/src/team";
-import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
-import { Status, IStatus, enumerateReaction } from "~/src/status";
-import { IEnemyData } from "~/src/enemy";
-import { Enemy, IDamageData } from "~/src/damage";
+import { Team, ITeamData, IMember } from "~/src/team";
+import { BonusBase, BonusBuilder } from "~/src/bonus";
+import Status, { IStatus } from "~/src/status";
+import Enemy, { IEnemyData } from "~/src/enemy";
+import { IDamageData } from "~/src/damage";
 import { parseLevel } from "~/src/ascension";
+import Reaction from "~/src/reaction";
+import { Arrayable } from "~/src/utility";
 
 @Component({
   name: "DamageDetail",
@@ -84,19 +82,13 @@ import { parseLevel } from "~/src/ascension";
 export default class DamageDetail extends Vue {
   @Prop({ required: true }) data!: IDamageData;
 
-  db!: DBTeamTable &
-    DBEquipTable &
-    DBBonusTable &
-    DBCharaTable &
-    DBWeaponTable &
-    DBArtifactTable;
-  tab = 0;
-  members: IMember[] = Array.from({ length: 4 }, () => ({
+  index = 0;
+  members: IMember[] = Arrayable.make(4, (_, i) => ({
     info: null,
     chara: null,
     equip: null,
   }));
-  params: IStatus[] = Array.from({ length: 4 }, () => Status.empty());
+  params: IStatus[] = Arrayable.make(4, () => Status.empty());
   statues: Status[] = [];
   bonuses: BonusBase[] = [];
 
@@ -110,11 +102,11 @@ export default class DamageDetail extends Vue {
   }
 
   get member() {
-    return this.members[this.tab];
+    return this.members[this.index];
   }
 
   get status() {
-    return this.params[this.tab];
+    return this.params[this.index];
   }
 
   get bonus() {
@@ -130,23 +122,19 @@ export default class DamageDetail extends Vue {
   get reactions() {
     return [
       "",
-      ...enumerateReaction(this.member.info, this.status.enchant.type),
+      ...Reaction.enumerate(this.member.info, this.status.enchant.type),
     ];
-  }
-
-  created() {
-    this.db = this.$db;
   }
 
   mounted() {
     const { team, member } = this.data;
-    const t = this.db.team.find((val) => val.id === team);
+    const t = this.$db.team.find((val) => val.id === team);
     if (t) {
       this.changeTeam(t);
 
       for (let [i, m] of this.members.entries()) {
         if (m.equip?.id === member) {
-          this.tab = i;
+          this.index = i;
           this.onChangeBonus();
           break;
         }
@@ -156,7 +144,7 @@ export default class DamageDetail extends Vue {
 
   private changeTeam(team: ITeamData) {
     let i = 0;
-    for (let m of new Team(team).members(this.db)) {
+    for (let m of new Team(team).members(this.$db)) {
       let member = this.members[i];
       member.info = m.info;
       member.chara = m.chara;
@@ -170,11 +158,10 @@ export default class DamageDetail extends Vue {
       member.equip = null;
     }
 
-    let builder = new BonusBuilder(this.$i18n, this.db.bonus);
-    let bonus = builder.build(team, this.db);
+    let builder = new BonusBuilder(this.$i18n, this.$db.bonus);
     this.bonuses.splice(0);
-    this.bonuses.push(...bonus);
-    this.db.bonus = { ...this.db.bonus, ...builder.output };
+    this.bonuses.push(...builder.build(team, this.$db));
+    this.$db.bonus = { ...this.$db.bonus, ...builder.output };
   }
 
   onChangeMember(team: ITeamData, member: IMember) {
@@ -191,7 +178,7 @@ export default class DamageDetail extends Vue {
 
       for (let [i, m] of this.members.entries()) {
         if (m.equip?.id === equip.id) {
-          this.tab = i;
+          this.index = i;
           this.onChangeBonus();
           break;
         }
@@ -203,7 +190,7 @@ export default class DamageDetail extends Vue {
     this.statues.splice(0);
     this.members.forEach((m, i) => {
       let s = new Status(this.params[i], this.data.contact);
-      s.equip(m, this.db);
+      s.equip(m, this.$db);
       if (m.equip) {
         this.statues.push(s);
       }
