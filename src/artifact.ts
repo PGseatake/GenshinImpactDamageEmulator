@@ -496,16 +496,17 @@ export const Builder = {
         data.main.value = calcMain(data.main.type, data.star, data.level);
     },
     score(data: IArtifactData) {
-        if (data.star < 4) return "";
+        const { star, level } = data;
+        if (star < 3) return "";
         let total = 0;
-        let limit = 10 + Math.floor(data.level / 4) * 10;
         for (const sub of SubBonus) {
-            const score = calcScore(data[sub], data.star, data.level);
+            const score = calcScore(data[sub], star, level);
             if (score !== undefined) {
                 total += score;
             }
         }
-        limit += data.star === 4 ? 20 : 30;
+        const limit = star * 10 - 10 + // 初期最大値
+            Math.floor(level / 4) * 10; // 強化回数x10
         return `${total}/${limit}`;
     },
     shuffle(data: IArtifactData, types: konst.AnyBonusType[]) {
