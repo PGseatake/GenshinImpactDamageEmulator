@@ -22,11 +22,11 @@
         <v-divider v-if="!desktop" />
 
         <v-list>
-          <v-list-item-group v-model="selectedPage" mandatory color="primary">
+          <v-list-item-group mandatory color="primary">
             <v-list-item
-              v-for="(item, index) in pages"
+              v-for="item in pages"
               exact
-              :key="index"
+              :key="item.page"
               :ripple="false"
               :to="localePath(item.to)"
             >
@@ -223,7 +223,6 @@ export default class Default extends Vue {
   clipped = false;
   pageOpened = false;
   toolOpened = false;
-  selectedPage = 0;
 
   readonly pages = [
     { icon: mdiHome, page: "index", to: "/" },
@@ -266,7 +265,7 @@ export default class Default extends Vue {
   }
 
   get page() {
-    return this.pages[this.selectedPage].page;
+    return this.$store.state.page || "index";
   }
 
   get tabable() {
@@ -343,12 +342,6 @@ export default class Default extends Vue {
       ],
       link: i18nHead.link,
     };
-  }
-
-  created() {
-    const page = this.$store.state.page;
-    const index = this.pages.findIndex((item) => item.page === page);
-    this.selectedPage = index < 0 ? 0 : index;
   }
 
   beforeMount() {
