@@ -40,10 +40,11 @@ declare global {
 declare module "vue/types/vue" {
     interface Vue {
         $db: Database;
+        $roundRate: (value: number) => string;
         $makeUniqueId: () => string;
         $appendData: (data: IIdentify[], item: IIdentify) => void;
         $removeData: (data: IIdentify[], item: IIdentify) => void;
-        $formatBonus: (i18n: IVueI18n, data: BonusValue | undefined) => string;
+        $formatBonus: (data?: BonusValue) => string;
         $starColor: (star: number) => string;
         $elementBGColor: (elem: ElementType) => string;
         $roundRate: (value: number) => string;

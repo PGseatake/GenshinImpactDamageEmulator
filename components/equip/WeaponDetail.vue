@@ -101,7 +101,7 @@ export default class WeaponDetail extends Vue {
   }
 
   get second() {
-    return this.$formatBonus(this.$i18n, this.item?.second);
+    return this.$formatBonus(this.item?.second);
   }
 }
 </script>
