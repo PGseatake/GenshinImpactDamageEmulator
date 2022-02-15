@@ -2,7 +2,7 @@
   <v-dialog v-bind="$attrs" v-on="$listeners" v-model="refShow" persistent>
     <v-card>
       <v-card-title>{{ $t("setting.supply.title") }}</v-card-title>
-      <v-card-text v-html="$t('setting.supply.text')" class="pb-3" />
+      <v-card-text v-html="$h('setting.supply.text')" class="pb-3" />
       <v-card-text class="d-flex justify-center pb-2">
         <v-list dense class="pa-0" width="250px">
           <template v-for="item of items">

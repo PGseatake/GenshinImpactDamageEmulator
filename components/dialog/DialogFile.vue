@@ -4,7 +4,7 @@
       <v-card-title v-text="label" />
       <v-card-text>
         <slot />
-        <div v-html="detail" :style="textStyle" />
+        <div v-text="detail" :style="textStyle" />
       </v-card-text>
       <v-card-actions class="justify-end">
         <v-btn

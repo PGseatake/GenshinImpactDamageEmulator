@@ -46,7 +46,7 @@ export default class DialogSetting extends Vue {
   }
 
   get text() {
-    return this.$t(`setting.${this.group}.text`);
+    return this.$h(`setting.${this.group}.text`);
   }
 
   get exists() {
@@ -54,7 +54,7 @@ export default class DialogSetting extends Vue {
   }
 
   get subtext() {
-    return this.$t(`setting.${this.group}.subtext`);
+    return this.$h(`setting.${this.group}.subtext`);
   }
 
   @Emit("accept")

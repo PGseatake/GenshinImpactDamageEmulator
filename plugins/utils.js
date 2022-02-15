@@ -77,6 +77,18 @@ const utils = {
             }
             return "indigo darken-4";
         }
+
+        Vue.prototype.$h = function(key, values) {
+            const ret = this.$t(key, values);
+            if (typeof ret === "string") {
+                // HTMLタグの埋め込み禁止
+                if (ret.includes("<")) {
+                    return "";
+                }
+                return ret.replace(/\n/g, "<br>");
+            }
+            return String(ret);
+        }
     }
 }
 

@@ -1,5 +1,5 @@
+import VueI18n from "vue-i18n/types";
 import { LocaleObject } from "nuxt-i18n";
-import { IVueI18n } from "vue-i18n/types";
 import { ElementType } from "~/src/const";
 import { BonusValue, IIdentify } from "~/src/interface";
 import { Database } from "~/src/convert";
@@ -47,7 +47,7 @@ declare module "vue/types/vue" {
         $formatBonus: (data?: BonusValue) => string;
         $starColor: (star: number) => string;
         $elementBGColor: (elem: ElementType) => string;
-        $roundRate: (value: number) => string;
+        $h: (key: string, values?: VueI18n.Values) => string;
     }
 }
 
