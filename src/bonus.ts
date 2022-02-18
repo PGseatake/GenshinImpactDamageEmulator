@@ -385,6 +385,17 @@ export class FlatBonus extends BonusBase {
             case konst.FlatBonusBase.Def:
                 value = src.def * value / 100;
                 break;
+            case konst.FlatBonusBase.Elem:
+                switch (this.dest[0]) {
+                    case konst.FlatBonusDest.CombatDmg:
+                    case konst.FlatBonusDest.Contact:
+                        value = src.param[this.base] * value;
+                        break;
+                    default:
+                        value = src.param[this.base] * value / 100;
+                        break;
+                }
+                break;
             default:
                 value = src.param[this.base] * value / 100;
                 break;
@@ -466,13 +477,6 @@ export class FlatBonus extends BonusBase {
                         if (dst.contact) {
                             const type = konst.TypeToBonus.element(dst.contact);
                             dst.param[type] += value;
-                        }
-                        break;
-                    // TODO: とりあえず楓原万葉専用
-                    case konst.FlatBonusDest.Swirl:
-                        if (dst.contact) {
-                            const type = konst.TypeToBonus.element(dst.contact);
-                            dst.param[type] += value * 100;
                         }
                         break;
                     default:

@@ -341,7 +341,6 @@ export const FlatBonusDest = {
     HydroDmg: "hydro_dmg",
     CryoDmg: "cryo_dmg",
     Contact: "contact",
-    Swirl: "swirl", // 楓原万葉専用
 } as const;
 export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
 
