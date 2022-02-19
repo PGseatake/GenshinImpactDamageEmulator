@@ -875,6 +875,7 @@
     "format": {
         "basic": "{type} {value}",
         "flat": "{type} +{base}の{value}分",
+        "elem": "{type} +{base}1あたり{value}分",
         "reduct": "{type} -{value}",
         "enchant": "{dest}に{type}元素付与"
     },

@@ -244,6 +244,19 @@ export class FlatBonus extends BonusBase {
         }
     }
 
+    private isDirect() {
+        switch (this.dest[0]) {
+            case konst.FlatBonusDest.CombatDmg:
+            case konst.FlatBonusDest.NormalDmg:
+            case konst.FlatBonusDest.HeavyDmg:
+            case konst.FlatBonusDest.SkillDmg:
+            case konst.FlatBonusDest.BurstDmg:
+            case konst.FlatBonusDest.Contact:
+                return true;
+        }
+        return false;
+    }
+
     public effect(src: Status[]) {
         let type = join(this.dest, (item) => this.formatText(item));
         const base = this.i18n.t("bonus." + this.base);
@@ -259,6 +272,13 @@ export class FlatBonus extends BonusBase {
                     "format.basic",
                     { type, value: RateBonus.xround(value, konst.BonusType.None) }
                 );
+            case konst.FlatBonusBase.Elem:
+                if (this.isDirect()) {
+                    return this.i18n.t(
+                        "format.elem",
+                        { type, base, value: RateBonus.round(value) }
+                    );
+                }
         }
         return this.i18n.t(
             "format.flat",
@@ -297,15 +317,10 @@ export class FlatBonus extends BonusBase {
                 value = src.total(this.base) * value / 100;
                 break;
             case konst.FlatBonusBase.Elem:
-                switch (this.dest[0]) {
-                    case konst.FlatBonusDest.CombatDmg:
-                    case konst.FlatBonusDest.SkillDmg:
-                    case konst.FlatBonusDest.Contact:
-                        value = src.param[this.base] * value;
-                        break;
-                    default:
-                        value = src.param[this.base] * value / 100;
-                        break;
+                if (this.isDirect()) {
+                    value = src.param[this.base] * value;
+                } else {
+                    value = src.param[this.base] * value / 100;
                 }
                 break;
             default:
