@@ -49,11 +49,11 @@ const utils = {
         Vue.prototype.$starColor = function(star) {
             switch (star) {
                 case 5:
-                    return "amber darken-4";
+                    return "orange darken-3";
                 case 4:
-                    return "purple darken-1";
+                    return "purple darken-2";
             }
-            return "blue darken-1";
+            return "blue";
         }
 
         Vue.prototype.$elementBGColor = function(elem) {
@@ -61,19 +61,19 @@ const utils = {
                 case ElementType.Pyro:
                     return "red darken-1";
                 case ElementType.Hydro:
-                    return "indigo darken-1";
+                    return "blue darken-3";
                 case ElementType.Dendro:
-                    return "green darken-2";
+                    return "green darken-3";
                 case ElementType.Elect:
-                    return "purple darken-1";
+                    return "deep-purple lighten-1";
                 case ElementType.Anemo:
-                    return "light-green darken-1";
+                    return "light-green";
                 case ElementType.Cryo:
-                    return "light-blue darken-1";
+                    return "light-blue lighten-1";
                 case ElementType.Geo:
                     return "yellow darken-3";
                 case ElementType.Phys:
-                    return "gray darken-3";
+                    return "gray darken-2";
             }
             return "indigo darken-4";
         }
