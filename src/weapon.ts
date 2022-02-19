@@ -1214,6 +1214,7 @@ const CatalystNames = [
     "SkywardAtlas",
     "MemoryDust",
     "EverlastingMoonglow",
+    "KaguraVerity",
     "MappaMare",
     "BlackcliffAmulet",
     "RoyalGrimoire",
@@ -1227,6 +1228,7 @@ const CatalystNames = [
     "PrototypeMalice",
     "Frostbearer",
     "EyePerception",
+    "OathswornEye",
     "MagicGuide",
     "OtherworldlyStory",
     "TwinNephrite",
@@ -1277,6 +1279,19 @@ const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = 
             // この武器を装備したキャラクターのHP上限の1~3%分、通常攻撃ダメージがアップする。
             { extra: konst.ExtraBonusType.Flat, dest: konst.FlatBonusDest.Normal, base: konst.FlatBonusBase.Hp, value: [1, 1.5, 2, 2.5, 3] },
             // 元素爆発を発動した後の12秒間、通常攻撃が敵に命中すると元素エネルギーが0.6ポイント回復する。この方式での元素エネルギー回復は、0.1秒毎に1回のみ可能。
+        ],
+    },
+    KaguraVerity: {
+        star: 5,
+        atk: WeaponAtk5[46],
+        second: konst.CriticalBonusType.Damage,
+        secval: [14.4, 25.4, 37.1, 42.9, 48.7, 54.5, 60.3, 66.2],
+        passive: [
+            // 元素スキルを発動すると、「神楽舞」の効果を獲得する。1
+            // この武器を装備したキャラクターの元素スキルによるダメージ+12~24%、継続時間16秒、最大3層まで。
+            { items: konst.CombatBonusType.Skill, value: [12, 15, 18, 21, 24], stack: 3, times: 16 },
+            // 3層の効果を持つ時、該当キャラクターの全元素ダメージ+12%。
+            { items: konst.AnyBonusType.Element, value: [12, 15, 18, 21, 24], limit: "weapon.more_layer3" },
         ],
     },
     MappaMare: {
@@ -1406,6 +1421,14 @@ const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = 
         secval: [12.0, 21.2, 30.9, 35.7, 40.6, 45.4, 50.3, 55.1],
         // 通常攻撃と重撃が命中する時、50%の確率で昭心法珠を1つ発射し、敵に攻撃力の240~360%のダメージを与える。敵同士に最大4回跳ね返る。この効果は12~8秒毎に1回発動可能。
         // passive: null,
+    },
+    OathswornEye: {
+        star: 4,
+        atk: WeaponAtk4[44],
+        second: konst.StatusBonusType.AtkBuf,
+        secval: [6.0, 10.6, 15.5, 17.9, 20.3, 22.7, 25.1, 27.6],
+        // 元素スキルを発動すると、元素チャージ効率+24~48%、継続時間10秒。
+        passive: { items: konst.StatusBonusType.EnRec, value: [24, 30, 36, 42, 48], limit: "skill.use", times: 10 },
     },
     MagicGuide: {
         star: 3,

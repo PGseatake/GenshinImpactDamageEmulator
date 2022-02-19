@@ -275,6 +275,7 @@
         "Xiao": "Xiao",
         "Xingqiu": "Xingqiu",
         "Xinyan": "Xinyan",
+        "YaeMiko": "Yae Miko",
         "Yanfei": "Yanfei",
         "Yoimiya": "Yoimiya",
         "YunJin": "Yun Jin",
@@ -390,6 +391,7 @@
             "SkywardAtlas": "Skyward Atlas",
             "MemoryDust": "Memory of Dust",
             "EverlastingMoonglow": "Everlasting Moonglow",
+            "KaguraVerity": "Kagura's Verity",
             "MappaMare": "Mappa Mare",
             "BlackcliffAmulet": "Blackcliff Agate",
             "RoyalGrimoire": "Royal Grimoire",
@@ -403,6 +405,7 @@
             "PrototypeMalice": "Prototype Amber",
             "Frostbearer": "Frostbearer",
             "EyePerception": "Eye of Perception",
+            "OathswornEye": "Oathsworn Eye",
             "MagicGuide": "Magic Guide",
             "OtherworldlyStory": "Otherworldly Story",
             "TwinNephrite": "Twin Nephrite",
@@ -629,6 +632,7 @@
         "shield": "Shield",
         "wakeup": "Wake up",
         "enter": "Appearing",
+        "baleful": "Shadowlord",
         "Slime": "{0} Slime",
         "Specters": "{0} Specter",
         "Hilichurl": "Hilichurl",
@@ -705,7 +709,8 @@
         "Azhdaha2": "Azhdaha - Phase 2",
         "Azhdaha3": "Azhdaha - Phase 3",
         "Signora1": "La Signora - Phase 1",
-        "Signora2": "La Signora - Phase 2"
+        "Signora2": "La Signora - Phase 2",
+        "NarukamiMikoto": "Magatsu Mitake Narukami no Mikoto"
     },
     "parts": {
         "page_all": "All",

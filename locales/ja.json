@@ -270,6 +270,13 @@
             "swing": "振り回しダメージ",
             "pyro": "継続炎ダメージ"
         },
+        "yaemiko": {
+            "skill1": "殺生櫻ダメージ・階位壱",
+            "skill2": "殺生櫻ダメージ・階位弐",
+            "skill3": "殺生櫻ダメージ・階位参",
+            "skill4": "殺生櫻ダメージ・階位肆",
+            "burst": "天狐雷霆ダメージ"
+        },
         "yoimiya": {
             "burst": "琉金の炎爆発ダメージ"
         },
@@ -429,6 +436,7 @@
         "Xiao": "魈",
         "Xingqiu": "行秋",
         "Xinyan": "辛炎",
+        "YaeMiko": "八重神子",
         "Yanfei": "煙緋",
         "Yoimiya": "宵宮",
         "YunJin": "雲菫",
@@ -544,6 +552,7 @@
             "SkywardAtlas": "天空の巻",
             "MemoryDust": "浮世の錠",
             "EverlastingMoonglow": "不滅の月華",
+            "KaguraVerity": "神楽の真意",
             "MappaMare": "万国諸海の図譜",
             "BlackcliffAmulet": "黒岩の緋玉",
             "RoyalGrimoire": "旧貴族秘法録",
@@ -557,6 +566,7 @@
             "PrototypeMalice": "金珀・試作",
             "Frostbearer": "冬忍びの実",
             "EyePerception": "昭心",
+            "OathswornEye": "誓いの明瞳",
             "MagicGuide": "魔導緒論",
             "OtherworldlyStory": "異世界旅行記",
             "TwinNephrite": "特級の宝玉",
@@ -783,6 +793,7 @@
         "shield": "シールド",
         "wakeup": "寝起き",
         "enter": "登場中",
+        "baleful": "悪曜影向天魔",
         "Slime": "スライム・{0}",
         "Specters": "フライム・{0}",
         "Hilichurl": "ヒルチャール",
@@ -859,7 +870,8 @@
         "Azhdaha2": "若陀龍王・第2段階",
         "Azhdaha3": "若陀龍王・第3段階",
         "Signora1": "シニョーラ・第1段階",
-        "Signora2": "シニョーラ・第2段階"
+        "Signora2": "シニョーラ・第2段階",
+        "NarukamiMikoto": "禍津御建鳴神命"
     },
     "format": {
         "basic": "{type} {value}",
@@ -939,6 +951,7 @@
             "dash": "ダッシュした時、{0}",
             "next": "次に登場するキャラに対して、{0}",
             "layer3": "武器効果が3層の時、{0}",
+            "more_layer3": "さらに武器効果が3層の時、{0}",
             "layer4": "武器効果が4層の時、{0}",
             "react_x2": "元素反応を2度起こした時、{0}",
             "hit_hpge30": "HP30%以下の敵に命中した時、{0}",
@@ -1290,8 +1303,23 @@
         "page_all": "全て",
         "page_row": "行数 :"
     },
-    "footer": "Ver. 2.2.11",
+    "footer": "Ver. 2.2.12",
     "releasenote": {
+        "v2_2_12": {
+            "date": "2022/02/19",
+            "items": [
+                "キャラクター「八重神子」を追加",
+                "敵キャラ「禍津御建鳴神命」を追加",
+                {
+                    "title": "以下の武器を追加",
+                    "items": [
+                        "神楽の真意",
+                        "誓いの明瞳"
+                    ]
+                },
+                "楓原万葉：命の星座6の効果が小さくなっていた不具合を修正"
+            ]
+        },
         "v2_2_11": {
             "date": "2022/02/13",
             "items": [

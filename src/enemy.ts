@@ -70,6 +70,7 @@ export const EnemyNames = [
     "Azhdaha3",
     "Signora1",
     "Signora2",
+    "NarukamiMikoto",
 ] as const;
 export type EnemyName = typeof EnemyNames[number];
 
@@ -865,6 +866,22 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
             geo: 10,
             phys: 10
         },
+    },
+    NarukamiMikoto: {
+        resist: {
+            pyro: 10,
+            hydro: 10,
+            dendro: 10,
+            elect: 10,
+            anemo: 10,
+            cryo: 10,
+            geo: 10,
+            phys: 10
+        },
+        phase: [
+            { label: "enemy.baleful", fixed: 200 },
+            { label: "enemy.down", fixed: -35 },
+        ],
     },
 } as const;
 

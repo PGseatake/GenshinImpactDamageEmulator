@@ -48,6 +48,7 @@ export const CharaNames = [
     "Xiao",
     "Xingqiu",
     "Xinyan",
+    "YaeMiko",
     "Yanfei",
     "Yoimiya",
     "YunJin",
@@ -4020,6 +4021,84 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 5. 反逆の弾きのスキルLv.+3
             // 6. 辛炎の重撃によるスタミナ消費-30%。重撃を発動する時、辛炎の防御力50%分の攻撃力が増加する。
             // TODO: lv6: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk/*for Heavy*/, base: FlatBonusBase.Def, value: 50.0 },
+        },
+    },
+    YaeMiko: {
+        star: 5,
+        element: konst.ElementType.Elect,
+        energy: 90,
+        weapon: konst.WeaponType.Catalyst,
+        status: {
+            hp: [
+                807, 2065,
+                2787, 4170,
+                4662, 5364,
+                6020, 6729,
+                7220, 7936,
+                8428, 9151,
+                9643, 10372,
+            ],
+            atk: [
+                26, 69,
+                91, 137,
+                153, 176,
+                197, 220,
+                236, 260,
+                276, 300,
+                316, 340,
+            ],
+            def: [
+                44, 115,
+                153, 229,
+                256, 294,
+                330, 369,
+                396, 435,
+                462, 502,
+                529, 569,
+            ],
+        },
+        special: konst.CriticalBonusType.Rate,
+        spvalue: [0.0, 0.0, 0.0, 4.8, 9.6, 9.6, 14.4, 19.2],
+        talent: {
+            combat: [
+                { name: "general.one", type: konst.CombatType.Normal, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 39.7 },
+                { name: "general.two", type: konst.CombatType.Normal, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 38.5 },
+                { name: "general.three", type: konst.CombatType.Normal, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 56.9 },
+                { name: "general.heavy", type: konst.CombatType.Heavy, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 142.9 },
+                { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Elect, scale: konst.DamageScale.Phys, value: 56.8 },
+                { name: "general.low", type: konst.CombatType.Plunge, elem: konst.ElementType.Elect, scale: konst.DamageScale.Phys, value: 114 },
+                { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Elect, scale: konst.DamageScale.Phys, value: 142 },
+            ],
+            skill: [
+                { name: "yaemiko.skill1", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 60.7 },
+                { name: "yaemiko.skill2", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 75.8 },
+                { name: "yaemiko.skill3", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 94.8 },
+                { name: "yaemiko.skill4", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 118.5 },
+            ],
+            burst: [
+                { name: "general.skill", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 260 },
+                { name: "yaemiko.burst", type: konst.CombatType.Burst, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 334 },
+            ],
+        },
+        passive: {
+            // 4. 大密法・天狐顕現発動時、殺生櫻を1株破壊するごとに、野干役呪・殺生櫻のクールタイムを1回分リセットする。
+            // 5. 八重神子の元素熟知の数値が1につき、殺生櫻によるダメージ+0.15%。
+            asc4th: {
+                extra: konst.ExtraBonusType.Flat,
+                dest: konst.FlatBonusDest.SkillDmg,
+                base: konst.FlatBonusBase.Elem,
+                value: 0.15,
+            },
+        },
+        conste: {
+            // 1. 大密法・天狐顕現で天狐顕現を1回発生させるたびに、八重神子自身の元素エネルギーを8ポイント回復する。
+            // 2. 殺生櫻の創造時の初期階位を弐、最大階位を肆にアップ、攻撃範囲+60%。
+            // 3. 野干役呪・殺生櫻のスキルLv.+3
+            // 4. 殺生櫻の落雷が敵に命中すると、周囲のチーム全員の雷元素ダメージ+20%、継続時間5秒。
+            lv4: { items: konst.ElementBonusType.Elect, value: 20, limit: "skill.hit", times: 5, target: konst.BonusTarget.All },
+            // 5. 大密法・天狐顕現のスキルLv.+3
+            // 6. 殺生櫻が攻撃する時、敵の防御力の60%を無視する。
+            // TODO: 実装
         },
     },
     Yanfei: {

@@ -388,6 +388,7 @@ export class FlatBonus extends BonusBase {
             case konst.FlatBonusBase.Elem:
                 switch (this.dest[0]) {
                     case konst.FlatBonusDest.CombatDmg:
+                    case konst.FlatBonusDest.SkillDmg:
                     case konst.FlatBonusDest.Contact:
                         value = src.param[this.base] * value;
                         break;
