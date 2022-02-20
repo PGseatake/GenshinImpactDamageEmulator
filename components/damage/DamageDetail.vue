@@ -23,7 +23,12 @@
           />
           <v-row dense justify="center" class="ma-0">
             <v-col cols="12">
-              <damage-table :data="data" :member="member" :status="status" />
+              <damage-table
+                :data="data"
+                :member="member"
+                :status="status"
+                :bonus="extra"
+              />
             </v-col>
           </v-row>
         </v-col>
@@ -112,6 +117,11 @@ export default class DamageDetail extends Vue {
   get bonus() {
     const { chara } = this.member;
     return this.bonuses.filter((val) => val.isMine(chara));
+  }
+
+  get extra() {
+    const { chara } = this.member;
+    return this.bonuses.filter((val) => val.isExtra(chara));
   }
 
   get defence() {

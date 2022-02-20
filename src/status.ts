@@ -23,6 +23,10 @@ export type StatusPart = {
     total: number;
     base: number;
 };
+export type StatusCritical = {
+    rate: number;
+    damage: number;
+};
 
 export const StatusBase = {
     "en_rec": 100,
@@ -41,11 +45,6 @@ export const StatusBase = {
         return StatusBase[type as ("en_rec" | "cri_dmg" | "cri_rate")] || 0;
     },
 } as const;
-
-export type Critical = {
-    rate: number;
-    damage: number;
-};
 
 export interface IStatus {
     talent: StatusTalent;
@@ -318,19 +317,20 @@ export default class Status {
     }
 
     // 会心値（％）
-    critical(type: konst.CombatType): Critical {
-        let rate = this.param.cri_rate;
+    critical(base: StatusCritical, type: konst.CombatType): StatusCritical {
+        base.damage += this.param.cri_dmg;
+        base.rate += this.param.cri_rate;
         switch (type) {
             case konst.CombatType.Normal:
-                rate += this.param.normal_cri;
+                base.rate += this.param.normal_cri;
                 break;
             case konst.CombatType.Heavy:
-                rate += this.param.heavy_cri;
+                base.rate += this.param.heavy_cri;
                 break;
             case konst.CombatType.Skill:
-                rate += this.param.skill_cri;
+                base.rate += this.param.skill_cri;
                 break;
         }
-        return { rate, damage: this.param.cri_dmg };
+        return base;
     }
 }

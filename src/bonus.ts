@@ -1,8 +1,9 @@
 import VueI18n, { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
 import {
-    IBonusOption, IBasicBonus, IFlatBonus, IFlatBonusScale, IFlatBonusBound,
-    IEnchantBonus, IReductBonus, AnyBonus, Constes, Passives, Passive
+    IBonusOption, IBasicBonus, IEnchantBonus, IReductBonus,
+    IFlatBonus, IFlatBonusScale, IFlatBonusBound, ICombatBonus,
+    AnyBonus, Constes, Passives, Passive,
 } from "~/src/interface";
 import { parseLevel } from "~/src/ascension";
 import { DBEquipTable } from "~/src/equipment";
@@ -10,7 +11,7 @@ import { DBCharaTable, ICharaData, CharaName, CharaList } from "~/src/character"
 import { DBWeaponTable, IWeaponData, WeaponList } from "~/src/weapon";
 import { DBArtifactTable, ArtifactName, ArtifactList } from "~/src/artifact";
 import { Team, ITeamData, Member, IRequiredMember } from "~/src/team";
-import Status from "~/src/status";
+import Status, { StatusCritical } from "~/src/status";
 import { roundRate } from "~/plugins/utils";
 import { Arrayable } from "~/src/utility";
 
@@ -69,6 +70,14 @@ const ConductBonus: IReductBonus = {
 function join<T>(items: readonly T[], pred: (item: T) => VueI18n.TranslateResult) {
     return items.map(item => pred(item)).join("/");
 }
+
+// 追加ボーナス
+export type ExtraBonus = {
+    atk: number;
+    dmg: number;
+    crit: StatusCritical;
+    flat: number;
+};
 
 // ボーナス基底
 export class BonusBase {
@@ -162,6 +171,10 @@ export class BonusBase {
             }
         }
         return false;
+    }
+
+    public isExtra(chara: ICharaData | null) {
+        return this.isMine(chara) && this.applyStep < 0;
     }
 
     public isApply(status: Status, step: number) {
@@ -415,6 +428,86 @@ export class FlatBonus extends BonusBase {
     }
 }
 
+// 特定攻撃ボーナス
+export class CombatBonus extends BonusBase {
+    private readonly bind: ReadonlyArray<string>;
+    private readonly dest: konst.BonusType | undefined;
+    private readonly base: konst.StatusBonusType | undefined;
+    private readonly value: number;
+    private readonly format: string;
+
+    constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: ICombatBonus, talent = 0) {
+        super(i18n, key, index, group, source, data);
+        this.bind = Arrayable.from(data.bind);
+        this.dest = data.dest;
+        this.base = data.base;
+        this.value = Arrayable.clamp(data.value, talent);
+        this.format = data.format;
+    }
+
+    public get applyStep() {
+        return -1;
+    }
+
+    public effect(_: Status[]) {
+        return this.i18n.t("combat." + this.format, {
+            bind: join(this.bind, (item) => this.i18n.t("combat." + item)),
+            dest: this.dest ? this.i18n.t("bonus." + this.dest) : "",
+            base: this.base ? this.i18n.t("bonus." + this.base) : "",
+            value: roundRate(this.value),
+        });
+    }
+
+    private bound(type: konst.CombatType, name: string) {
+        const bind = this.bind[0];
+        switch (bind) {
+            case konst.CombatType.Normal:
+            case konst.CombatType.Heavy:
+            case konst.CombatType.Plunge:
+            case konst.CombatType.Skill:
+            case konst.CombatType.Burst:
+                return type === bind;
+        }
+        return this.bind.includes(name);
+    }
+
+    private calc(status: Status) {
+        let value = this.value;
+        switch (this.base) {
+            case konst.FlatBonusBase.Hp:
+            case konst.FlatBonusBase.Def:
+                value = status.total(this.base) * value / 100;
+                break;
+        }
+        return value * this.data.stack;
+    }
+
+    public applyEx(dst: ExtraBonus, status: Status, type: konst.CombatType, name: string) {
+        if (this.isApply(status, -1)) {
+            if (this.bound(type, name)) {
+                const value = this.calc(status);
+                switch (this.dest) {
+                    case konst.CombatBonusDest.Atk:
+                        dst.atk += value;
+                        break;
+                    case konst.CombatBonusDest.Damage:
+                        dst.dmg += value;
+                        break;
+                    case konst.CombatBonusDest.CriDmg:
+                        dst.crit.damage += value;
+                        break;
+                    case konst.CombatBonusDest.CriRate:
+                        dst.crit.rate += value;
+                        break;
+                    default:
+                        dst.flat += value;
+                        break;
+                }
+            }
+        }
+    }
+}
+
 // 耐性減衰ボーナス
 export class ReductBonus extends BonusBase {
     private readonly types: Readonly<konst.AnyReductType[]>;
@@ -561,6 +654,9 @@ export class BonusBuilder {
         switch (data.extra) {
             case konst.ExtraBonusType.Flat:
                 bonus = new FlatBonus(this.i18n, this.sortKey(index), this.index, group, source, data, talent);
+                break;
+            case konst.ExtraBonusType.Combat:
+                bonus = new CombatBonus(this.i18n, this.sortKey(index), this.index, group, source, data, talent);
                 break;
             case konst.ExtraBonusType.Reduct:
                 bonus = new ReductBonus(this.i18n, this.sortKey(index), this.index, group, source, data, talent);

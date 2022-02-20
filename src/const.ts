@@ -292,6 +292,7 @@ export type DamageBased = typeof DamageBased[keyof typeof DamageBased];
 
 export const ExtraBonusType = {
     Flat: "flat",
+    Combat: "combat",
     Reduct: "reduct",
     Enchant: "enchant",
 } as const;
@@ -339,6 +340,14 @@ export const FlatBonusBase = {
     CriRate: "cri_rate",
 } as const;
 export type FlatBonusBase = typeof FlatBonusBase[keyof typeof FlatBonusBase];
+
+export const CombatBonusDest = {
+    Atk: "atk",
+    Damage: "any_dmg",
+    CriDmg: "cri_dmg",
+    CriRate: "cri_rate",
+} as const;
+export type CombatBonusDest = typeof CombatBonusDest[keyof typeof CombatBonusDest];
 
 export const EnchantType = {
     None: "",

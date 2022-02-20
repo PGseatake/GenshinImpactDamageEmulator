@@ -1,6 +1,5 @@
 import {
     ElementType,
-    ReactionType,
     CombatType,
     CombatElementType,
     DamageBased,
@@ -8,10 +7,10 @@ import {
     NoneContactType,
 } from "~/src/const";
 import { ICombat, IIdentify } from "~/src/interface";
-import { DamageScaleTable } from "~/src/bonus";
+import { BonusBase, CombatBonus, DamageScaleTable } from "~/src/bonus";
 import Reaction from "~/src/reaction";
 import Enemy, { IEnemyData } from "~/src/enemy";
-import Status, { Critical } from "~/src/status";
+import Status, { StatusCritical } from "~/src/status";
 import { roundRate } from "~/plugins/utils";
 import { SettingCritical } from "~/src/setting";
 
@@ -41,12 +40,12 @@ class Attribute {
     public readonly atk: number;
     public readonly def: number;
     public readonly flat: number;
-    public readonly crit: Critical;
+    public readonly crit: StatusCritical;
     public readonly value: ReadonlyArray<number>;
     public readonly multi: number;
     public strike: boolean;
 
-    constructor(atk: number, def: number, flat: number, value: ReadonlyArray<number>, multi: number, crit?: Critical) {
+    constructor(atk: number, def: number, flat: number, value: ReadonlyArray<number>, multi: number, crit?: StatusCritical) {
         this.atk = atk;
         this.def = def;
         this.flat = flat;
@@ -86,8 +85,9 @@ export class CombatAttribute {
     public readonly value: ReadonlyArray<number>;
     public readonly multi: number;
     public readonly based: DamageBased;
+    public readonly bonus: ReadonlyArray<BonusBase>;
 
-    constructor(info: ICombat, level: number, crit: SettingCritical) {
+    constructor(info: ICombat, level: number, crit: SettingCritical, bonus: ReadonlyArray<BonusBase>) {
         this.crit = crit;
         const scale = DamageScaleTable[info.scale];
         const index = clamp(level, 1, scale.length) - 1;
@@ -101,6 +101,7 @@ export class CombatAttribute {
         }
         this.multi = info.multi ?? 1;
         this.based = info.based ?? DamageBased.Atk;
+        this.bonus = bonus;
     }
 
     toHtml() {
@@ -113,6 +114,10 @@ export class CombatAttribute {
             this.value.map((val) => roundRate(val)).join("<br>") +
             "</td>"
         );
+    }
+
+    private attribute(atk: number, def: number, flat: number, crit?: StatusCritical) {
+        return new Attribute(atk, def, flat, this.value, this.multi, crit);
     }
 
     damage(data: IDamageData, status: Status, enemy: Enemy): string[] {
@@ -132,8 +137,11 @@ export class CombatAttribute {
         // 元素反応の正規化
         reaction = Reaction.normalize(reaction, elem);
 
+        // 追加ボーナス
+        const extra = this.extra(status);
+
         // 攻撃力
-        let attackPower = status.total(this.based);
+        let attackPower = status.total(this.based) + extra.atk;
         // 防御力
         const enemyDefence = enemy.defence(status.level) / 100;
         const enemyResist = enemy.resist(elem);
@@ -141,13 +149,13 @@ export class CombatAttribute {
         // 各種倍率
         const combatBonus = status.combatBonus(this.type);
         const elementBonus = status.elementBonus(elem);
-        const damageBonus = status.param.any_dmg;
+        const damageBonus = status.param.any_dmg + extra.dmg;
         const combatScale = toScale(combatBonus + elementBonus + damageBonus);
-        const critical = status.critical(this.type);
+        const critical = status.critical(extra.crit, this.type);
 
         const atk = attackPower * combatScale;
         const def = enemyDefence * enemyResist;
-        const flat = status.flat[this.type];
+        const flat = status.flat[this.type] + extra.flat;
         const make = (rate: number) => {
             let items = [this.attribute(rate, def, flat)]; // 通常ダメージ
             if (this.crit !== SettingCritical.Expc) { // 会心ダメージ（直値）
@@ -192,7 +200,18 @@ export class CombatAttribute {
         return attrs.map((val) => val.toHtml());
     }
 
-    private attribute(atk: number, def: number, flat: number, crit?: Critical) {
-        return new Attribute(atk, def, flat, this.value, this.multi, crit);
+    private extra(status: Status) {
+        let val = {
+            atk: 0,
+            dmg: 0,
+            crit: { damage: 0, rate: 0 },
+            flat: 0,
+        };
+        for (const b of this.bonus) {
+            if (b instanceof CombatBonus) {
+                b.applyEx(val, status, this.type, this.name);
+            }
+        }
+        return val;
     }
 }

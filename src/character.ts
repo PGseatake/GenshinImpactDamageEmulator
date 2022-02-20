@@ -600,10 +600,11 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // これらの効果は連続斬撃が終了した時にクリアされる。
             // 5. 「荒瀧逆袈裟」のダメージが荒瀧一斗の防御力35%分アップする。
             asc4th: {
-                extra: konst.ExtraBonusType.Flat,
-                dest: konst.FlatBonusDest.Heavy, // TODO: 一部
-                base: konst.FlatBonusBase.Def,
+                extra: konst.ExtraBonusType.Combat,
+                bind: ["arataki.keep", "arataki.last"],
+                base: konst.StatusBonusType.Def,
                 value: 35.0,
+                format: "arataki.asc4th",
             },
         },
         conste: {
@@ -621,7 +622,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             },
             // 5. 最強鬼王・一斗轟臨!!のスキルLv.+3。
             // 6. 荒瀧一斗の重撃の会心ダメージ+70%、また「荒瀧逆袈裟」を発動する時、50％の確率で「乱神の怪力」が消費されなくなる。
-            // lv6: { items: konst.CriticalBonusType.HeavyDmg, value: 70 }, TODO: 実装
+            lv6: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: konst.CombatType.Heavy,
+                dest: konst.CombatBonusDest.CriDmg,
+                value: 70.0,
+                format: "arataki.lv6",
+            },
         },
     },
     Amber: {
@@ -1311,7 +1318,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 2. 氷彫の渦の長押しのクールタイムを短縮し、一回押しと同じクールタイムにする。
             // 3. 氷浪の光剣のスキルLv.+3
             // 4. HP50%未満の敵に対する光臨の剣のダメージ+25%
-            // lv4: { }, // TODO: 実装
+            lv4: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: ["eula.burst", "eula.once", "eula.total"],
+                dest: konst.CombatBonusDest.Damage,
+                value: 25.0,
+                limit: "hp.lt50_en",
+                format: "eula.lv4",
+            },
             // 5. 氷潮の渦のスキルLv.+3
             // 6. 氷浪の光剣で創造した光臨の剣は、直ちにエネルギーを5つ獲得する。通常攻撃、元素スキルまたは元素爆発によりエネルギーを獲得する際、50％の確率でさらに1つ獲得する。
         },
@@ -1450,7 +1464,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         },
         passive: {
             // 4. 霜華の矢を放った後の5秒以内に放たれた霜華の矢と霜華満開の会心率+20%
-            // TODO: lv4: { items: CriticalBonusType.Heavy, value: 20.0, limit: "霜華の矢を放った後", times: 5, target: "heavy_ex" },
+            asc1st: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: ["ganyu.frost", "ganyu.bloom"],
+                dest: konst.CombatBonusDest.CriRate,
+                value: 20.0,
+                limit: "ganyu.max_charge",
+                format: "ganyu.asc1st",
+            },
             // 5. 降衆天華エリア内のキャラクターの氷元素ダメージ+20%
             asc4th: { items: konst.ElementBonusType.Cryo, value: 20.0, limit: "burst.area", times: 15, target: konst.BonusTarget.All },
         },
@@ -3570,14 +3591,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. フィールド上キャラクターが烈炎侍立シールドを獲得または更新した時、シールド強化+5%、継続時間6秒。
             // この効果は0.3秒毎に1回のみ発動可能、最大5重まで。
             // 5. 真紅熾炎の大鎧の熾炎崩滅によるダメージがトーマのHP上限2.2%分アップする。
-            // asc4th: { TODO: 実装
-            //     extra: konst.ExtraBonusType.Flat,
-            //     dest: konst.FlatBonusDest.Burst,
-            //     base: konst.FlatBonusBase.Hp,
-            //     value: 2.2,
-            //     limit: "burst.using",
-            //     stack: 5,
-            // },
+            asc4th: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: "thoma.shield",
+                base: konst.StatusBonusType.Hp,
+                value: 2.2,
+                format: "thoma.asc4th",
+            },
         },
         conste: {
             // 1. トーマ自身の烈炎侍立シールドに守られたキャラクター（トーマ自身を除く）が攻撃を受けた時、トーマ自身の烈炎侍立のクールタイム-3秒、真紅熾炎の大鎧のクールタイム-3秒。
@@ -4007,7 +4027,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         conste: {
             // 1. 会心攻撃が発生した5秒間、通常攻撃と重撃の攻撃速度が12%上昇する。5秒毎に1回のみ発動可能。
             // 2. 反逆の弾きによる物理ダメージの会心率を100%上昇させる。さらに発動する時にLv3シールド・舞のリズムを生成する。
-            // TODO: lv2: { items: CriticalBonusType.Burst/*for Phys*/, value: 100.0 },
+            lv2: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: "xinyan.swing",
+                dest: konst.CombatBonusDest.CriRate,
+                value: 100,
+                format: "xinyan.lv2",
+            },
             // 3. 情熱の薙ぎ払いのスキルLv.+3
             // 4. 情熱の薙ぎ払いの振り回しダメージを受けた敵の物理耐性が15%減少する、継続時間12秒。
             lv4: {
@@ -4020,7 +4046,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             },
             // 5. 反逆の弾きのスキルLv.+3
             // 6. 辛炎の重撃によるスタミナ消費-30%。重撃を発動する時、辛炎の防御力50%分の攻撃力が増加する。
-            // TODO: lv6: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk/*for Heavy*/, base: FlatBonusBase.Def, value: 50.0 },
+            lv6: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: konst.CombatType.Heavy,
+                dest: konst.CombatBonusDest.Atk,
+                base: konst.StatusBonusType.Def,
+                value: 50.0,
+                format: "xinyan.lv6"
+            },
         },
     },
     YaeMiko: {

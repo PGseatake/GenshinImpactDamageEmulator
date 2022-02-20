@@ -58,6 +58,7 @@ import { ICombat } from "~/src/interface";
 import { IMember } from "~/src/team";
 import Status, { IStatus } from "~/src/status";
 import Enemy from "~/src/enemy";
+import { BonusBase } from "~/src/bonus";
 import { IDamageData, CombatAttribute } from "~/src/damage";
 import { SettingCritical } from "~/src/setting";
 
@@ -77,6 +78,7 @@ export default class DamageTable extends Vue {
   @Prop({ required: true }) data!: Readonly<IDamageData>;
   @Prop({ required: true }) member!: Readonly<IMember>;
   @Prop({ required: true }) status!: IStatus;
+  @Prop({ required: true }) bonus!: BonusBase[];
 
   readonly icons = { open: mdiChevronDown, close: mdiChevronUp };
 
@@ -166,7 +168,8 @@ export default class DamageTable extends Vue {
     let attr = new CombatAttribute(
       item,
       item.status.talent[item.talent],
-      this.$db.setting.critical as SettingCritical
+      this.$db.setting.critical as SettingCritical,
+      this.bonus
     );
     let html = `<td>${this.$h("combat." + item.name)}</td>` + attr.toHtml();
     const damage = attr.damage(this.data, item.status, item.enemy);
