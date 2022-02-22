@@ -346,7 +346,8 @@
         "conduct_dmg": "超電導ダメージ",
         "overload_dmg": "過負荷ダメージ",
         "energy": "元素エネルギー",
-        "contact": "変化した元素ダメージ"
+        "contact": "変化した元素ダメージ",
+        "direct": "unused"
     },
     "bonus_short": {
         "none": "なし",

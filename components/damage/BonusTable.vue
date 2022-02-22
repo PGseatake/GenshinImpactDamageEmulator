@@ -109,8 +109,8 @@ import Status from "~/src/status";
   inheritAttrs: false,
 })
 export default class BonusTable extends Vue {
-  @Prop({ required: true }) items!: Array<BonusBase>;
-  @Prop({ required: true }) status!: Array<Status>;
+  @Prop({ required: true }) items!: BonusBase[];
+  @Prop({ required: true }) status!: Status[];
 
   readonly icons = {
     on: mdiCheckboxMarked,

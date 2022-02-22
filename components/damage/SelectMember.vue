@@ -68,7 +68,7 @@
 
 <script lang="ts">
 import { Vue, Component, Emit, Prop } from "vue-property-decorator";
-import { ContactTypes, NoneElementType, NoneReactionType } from "~/src/const";
+import { ContactTypes, AnyElementType, AnyReactionType } from "~/src/const";
 import { ITeamData, IMember, Team } from "~/src/team";
 import Chara from "~/src/character";
 
@@ -83,9 +83,9 @@ import Chara from "~/src/character";
 })
 export default class SelectMember extends Vue {
   @Prop({ required: true }) damage!: string;
-  @Prop({ required: true }) contact!: NoneElementType;
-  @Prop({ required: true }) reaction!: NoneReactionType;
-  @Prop({ required: true }) reactions!: ReadonlyArray<NoneReactionType>;
+  @Prop({ required: true }) contact!: AnyElementType;
+  @Prop({ required: true }) reaction!: AnyReactionType;
+  @Prop({ required: true }) reactions!: ReadonlyArray<AnyReactionType>;
 
   team: ITeamData | null = null;
   member: IMember | null = null;
@@ -109,14 +109,14 @@ export default class SelectMember extends Vue {
   get refContact() {
     return this.contact;
   }
-  set refContact(value: NoneElementType) {
+  set refContact(value: AnyElementType) {
     this.$emit("update:contact", value);
   }
 
   get refReaction() {
     return this.reaction;
   }
-  set refReaction(value: NoneReactionType) {
+  set refReaction(value: AnyReactionType) {
     this.$emit("update:reaction", value);
   }
 

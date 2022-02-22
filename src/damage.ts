@@ -3,8 +3,8 @@ import {
     CombatType,
     CombatElementType,
     DamageBased,
-    NoneReactionType,
-    NoneContactType,
+    AnyReactionType,
+    AnyContactType,
 } from "~/src/const";
 import { ICombat, IIdentify } from "~/src/interface";
 import { BonusBase, CombatBonus, DamageScaleTable } from "~/src/bonus";
@@ -17,8 +17,8 @@ import { SettingCritical } from "~/src/setting";
 export interface IDamageData extends IIdentify, IEnemyData {
     team: string;
     member: string;
-    contact: NoneContactType;
-    reaction: NoneReactionType;
+    contact: AnyContactType;
+    reaction: AnyReactionType;
 }
 export type DBDamageTable = { damage: IDamageData[]; };
 

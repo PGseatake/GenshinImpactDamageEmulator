@@ -25,7 +25,7 @@
       </td>
     </template>
     <template #item="{ item }">
-      <tr :key="item.key" v-html="makeHtml(item)" />
+      <tr :key="item.name + item.group" v-html="makeHtml(item)" />
     </template>
   </v-data-table>
 </template>
@@ -66,7 +66,6 @@ interface IAttribute extends ICombat {
   talent: TalentType;
   status: Status;
   enemy: Enemy;
-  key: number;
   group: number;
 }
 
@@ -77,8 +76,8 @@ interface IAttribute extends ICombat {
 export default class DamageTable extends Vue {
   @Prop({ required: true }) data!: Readonly<IDamageData>;
   @Prop({ required: true }) member!: Readonly<IMember>;
-  @Prop({ required: true }) status!: IStatus;
-  @Prop({ required: true }) bonus!: BonusBase[];
+  @Prop({ required: true }) status!: Readonly<IStatus>;
+  @Prop({ required: true }) bonus!: ReadonlyArray<BonusBase>;
 
   readonly icons = { open: mdiChevronDown, close: mdiChevronUp };
 
@@ -127,27 +126,23 @@ export default class DamageTable extends Vue {
   }
 
   get items() {
-    let status = new Status(this.status, this.data.contact);
+    let status = new Status(this.status);
     status.chara = this.member.chara;
     let enemy = new Enemy(this.data, this.status.reduct);
     let items: IAttribute[] = [];
     const info = this.member.info;
     if (info) {
-      let key = 1;
       let talent: TalentType = TalentType.Combat;
       for (const data of info.talent.combat) {
-        items.push({ ...data, talent, status, enemy, key, group: 0 });
-        key++;
+        items.push({ ...data, talent, status, enemy, group: 0 });
       }
       talent = TalentType.Skill;
       for (const data of info.talent.skill) {
-        items.push({ ...data, talent, status, enemy, key, group: 1 });
-        key++;
+        items.push({ ...data, talent, status, enemy, group: 1 });
       }
       talent = TalentType.Burst;
       for (const data of info.talent.burst) {
-        items.push({ ...data, talent, status, enemy, key, group: 2 });
-        key++;
+        items.push({ ...data, talent, status, enemy, group: 2 });
       }
     }
     return items;

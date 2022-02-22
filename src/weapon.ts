@@ -512,7 +512,7 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         //     dest: konst.FlatBonusDest.Burst,
         //     base: konst.FlatBonusBase.EnRec, // チーム全員
         //     value: 0.12,
-        //     bound: { base: konst.FlatBonusBase.None, value: 40 },
+        //     bound: { value: 40 },
         // },
     },
     Whiteblind: {
@@ -664,7 +664,7 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
             //     dest: konst.FlatBonusDest.AtkBuf,
             //     base: konst.FlatBonusBase.EnRec, // 100%超え分
             //     value: 28,
-            //     bound: { base: konst.FlatBonusBase.None, value: 80 },
+            //     bound: { value: 80 },
             // },
             // 元素爆発を発動した後の12秒間、元素チャージ効率+30~50%。
             { items: konst.StatusBonusType.EnRec, value: [30, 35, 40, 45, 50], limit: "burst.use", times: 12 },
@@ -811,7 +811,7 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         //     dest: konst.FlatBonusDest.Burst,
         //     base: konst.FlatBonusBase.EnRec, // チーム全員
         //     value: 0.12,
-        //     bound: { base: konst.FlatBonusBase.None, value: 40 },
+        //     bound: { value: 40 },
         // },
     },
     RoyalSpear: {
@@ -1084,7 +1084,7 @@ const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
         //     dest: konst.FlatBonusDest.Burst,
         //     base: konst.FlatBonusBase.EnRec, // チーム全員
         //     value: 0.12,
-        //     bound: { base: konst.FlatBonusBase.None, value: 40 },
+        //     bound: { value: 40 },
         // },
     },
     MitternachtsWaltz: {

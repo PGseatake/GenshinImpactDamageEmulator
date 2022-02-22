@@ -76,10 +76,10 @@ export default class Status {
                 normal_cri: 0,
                 heavy_cri: 0,
                 skill_cri: 0,
+                combat_dmg: 0,
                 normal_dmg: 0,
                 heavy_dmg: 0,
                 plunge_dmg: 0,
-                combat_dmg: 0,
                 skill_dmg: 0,
                 burst_dmg: 0,
                 phys_dmg: 0,
@@ -145,9 +145,8 @@ export default class Status {
     public flat: StatusFlat;
     public reduct: StatusReduct;
     public enchant: StatusEnchant;
-    public contact: konst.NoneContactType;
 
-    constructor(data: IStatus, contact: konst.NoneContactType = "") {
+    constructor(data: IStatus) {
         this.info = null;
         this.chara = null;
         this.talent = data.talent;
@@ -156,7 +155,6 @@ export default class Status {
         this.flat = data.flat;
         this.reduct = data.reduct;
         this.enchant = data.enchant;
-        this.contact = contact;
     }
 
     equip({ info, chara, equip }: IMember, db: DBWeaponTable & DBArtifactTable) {

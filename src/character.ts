@@ -467,7 +467,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 {
                     extra: konst.ExtraBonusType.Flat,
                     dest: konst.FlatBonusDest.NormalDmg,
-                    base: konst.FlatBonusBase.None,
                     value: 5.85,
                     limit: "skill.hit",
                     scale: { type: konst.DamageScale.Xiao, talent: konst.TalentType.Skill },
@@ -477,7 +476,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 {
                     extra: konst.ExtraBonusType.Flat,
                     dest: konst.FlatBonusDest.NormalDmg,
-                    base: konst.FlatBonusBase.None,
                     value: 29.2,
                     limit: "aloy.ice_rush",
                     scale: { type: konst.DamageScale.Xiao, talent: konst.TalentType.Skill },
@@ -2825,7 +2823,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.AtkBuf,
-                base: konst.FlatBonusBase.None,
                 value: 0.73,
                 scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Burst },
                 limit: "burst.using",
@@ -3346,7 +3343,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv4: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.SkillDmg,
-                base: konst.FlatBonusBase.None,
                 value: 5.0,
                 limit: "shenhe.skill_up",
                 stack: 50,
@@ -3441,7 +3437,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv6: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.Contact,
-                base: konst.FlatBonusBase.None,
                 value: 20,
                 limit: "sucrose.burst_change",
                 target: konst.BonusTarget.All,
@@ -3610,7 +3605,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv6: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.CombatDmg,
-                base: konst.FlatBonusBase.None,
                 value: 15.0,
                 limit: "thoma.shield_update",
                 times: 6,
@@ -3859,7 +3853,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.CombatDmg,
-                base: konst.FlatBonusBase.None,
                 value: 58.5,
                 scale: { type: konst.DamageScale.Xiao, talent: konst.TalentType.Burst },
                 limit: "burst.using",
@@ -4193,7 +4186,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.HeavyDmg,
-                base: konst.FlatBonusBase.None,
                 value: [33, 35, 37, 40, 42, 44, 47, 49, 52, 54, 57, 60, 62],
                 limit: "burst.using",
                 times: 15,

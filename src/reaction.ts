@@ -1,4 +1,4 @@
-import { ElementType, EnchantType, NoneReactionType, ReactionType, WeaponType } from "~/src/const";
+import { ElementType, EnchantType, AnyReactionType, ReactionType, WeaponType } from "~/src/const";
 import { ICharaInfo } from "~/src/interface";
 
 export type AmplifyReactionType = "vaporize" | "melt";
@@ -158,7 +158,7 @@ export default class Reaction {
         return types;
     }
 
-    public static normalize(type: NoneReactionType, elem: ElementType) {
+    public static normalize(type: AnyReactionType, elem: ElementType) {
         if (type === ReactionType.Shutter) {
             switch (elem) {
                 case ElementType.Phys:

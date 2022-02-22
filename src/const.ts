@@ -19,7 +19,7 @@ export const ElementType = {
     Phys: "phys",
 } as const;
 export type ElementType = typeof ElementType[keyof typeof ElementType];
-export type NoneElementType = ElementType | "";
+export type AnyElementType = ElementType | "";
 
 export const ReactionType = {
     Burning: "burning",
@@ -32,7 +32,7 @@ export const ReactionType = {
     Overload: "overload",
 } as const;
 export type ReactionType = typeof ReactionType[keyof typeof ReactionType];
-export type NoneReactionType = ReactionType | "";
+export type AnyReactionType = ReactionType | "";
 
 export const WeaponTypes = [
     "sword",
@@ -131,7 +131,7 @@ export const ContactTypes = [
     "cryo",
 ] as const;
 export type ContactType = typeof ContactTypes[number];
-export type NoneContactType = ContactType | "";
+export type AnyContactType = ContactType | "";
 
 export type StatusType = "hp" | "atk" | "def";
 
@@ -174,10 +174,10 @@ export type ElementBonusType = typeof ElementBonusType[keyof typeof ElementBonus
 export type AnyElementBonusType = ElementBonusType | "elem_dmg";
 
 export const CombatBonusType = {
+    Combat: "combat_dmg",
     Normal: "normal_dmg",
     Heavy: "heavy_dmg",
     Plunge: "plunge_dmg",
-    Combat: "combat_dmg",
     Skill: "skill_dmg",
     Burst: "burst_dmg"
 } as const;
@@ -232,10 +232,10 @@ export const BonusTypes = [
     "any_dmg",
     "elem_dmg",
     // CombatBonusType
+    "combat_dmg",
     "normal_dmg",
     "heavy_dmg",
     "plunge_dmg",
-    "combat_dmg",
     "skill_dmg",
     "burst_dmg",
     // CriticalBonusType
@@ -328,7 +328,6 @@ export const FlatBonusDest = {
 export type FlatBonusDest = typeof FlatBonusDest[keyof typeof FlatBonusDest];
 
 export const FlatBonusBase = {
-    None: "none",
     Direct: "direct",
     Energy: "energy",
     Hp: "hp", // 最終値
@@ -350,14 +349,13 @@ export const CombatBonusDest = {
 export type CombatBonusDest = typeof CombatBonusDest[keyof typeof CombatBonusDest];
 
 export const EnchantType = {
-    None: "",
     Pyro: "pyro",
     Elect: "elect",
     Cryo: "cryo",
     Anemo: "anemo",
     Geo: "geo",
 } as const;
-export type EnchantType = typeof EnchantType[keyof typeof EnchantType];
+export type EnchantType = typeof EnchantType[keyof typeof EnchantType] | "";
 
 export const TypeToBonus = {
     element(type: ElementType) {

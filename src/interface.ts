@@ -27,7 +27,7 @@ export interface IWeaponBonus extends IBasicBonus {
 }
 
 export interface IFlatBonusBound {
-    readonly base: konst.FlatBonusBase;
+    readonly base?: konst.FlatBonusBase;
     readonly value: number;
 }
 export interface IFlatBonusScale {
@@ -38,7 +38,7 @@ export interface IFlatBonusScale {
 export interface IFlatBonus extends IBonusOption {
     readonly extra: "flat";
     readonly dest: ReadonlyArrayable<konst.FlatBonusDest>;
-    readonly base: konst.FlatBonusBase;
+    readonly base?: konst.FlatBonusBase; // undefined = 整数直値
     readonly value: ReadonlyArrayable<number>;
     readonly bound?: IFlatBonusBound;
     readonly scale?: IFlatBonusScale;

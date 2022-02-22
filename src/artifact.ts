@@ -295,7 +295,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
             dest: konst.FlatBonusDest.BurstDmg,
             base: konst.FlatBonusBase.EnRec,
             value: 25,
-            bound: { base: konst.FlatBonusBase.None, value: 75 },
+            bound: { value: 75 },
         },
     },
     HuskOpulentDreams: {

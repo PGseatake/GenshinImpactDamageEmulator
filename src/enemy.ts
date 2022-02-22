@@ -1,5 +1,5 @@
 import { IVueI18n } from "vue-i18n";
-import { ElementType, NoneElementType } from "~/src/const";
+import { ElementType, AnyElementType } from "~/src/const";
 import { INameable } from "~/src/interface";
 import { StatusReduct } from "~/src/status";
 
@@ -889,7 +889,7 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
 
 export interface IEnemyData extends INameable {
     name: EnemyName;
-    elem: NoneElementType;
+    elem: AnyElementType;
     level: number;
     fixed: number;
 }
@@ -934,7 +934,7 @@ export default class Enemy {
     }
 
     public static format(data: Readonly<IEnemyData>, info: Readonly<IEnemyInfo>, name: EnemyName, i18n: IVueI18n) {
-        let type: NoneElementType;
+        let type: AnyElementType;
         if (data.name === name) {
             type = data.elem;
         } else {

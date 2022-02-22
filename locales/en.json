@@ -179,7 +179,8 @@
         "conduct_dmg": "Superconduct DMG",
         "overload_dmg": "Overloaded DMG",
         "energy": "Energy",
-        "contact": "Absorbed element DMG Bonus"
+        "contact": "Absorbed element DMG Bonus",
+        "direct": "unused"
     },
     "bonus_short": {
         "none": "none",
