@@ -17,7 +17,7 @@
     <v-col cols="auto" class="px-1">
       <name-comment
         :items="members"
-        :value.sync="refMember"
+        :value.sync="member"
         :comment="comment"
         :commentable="false"
         @change="onChangeMember"
@@ -88,27 +88,12 @@ export default class SelectMember extends Vue {
   @Prop({ required: true }) reactions!: ReadonlyArray<NoneReactionType>;
 
   team: ITeamData | null = null;
-  member: IMember = { info: null, chara: null, equip: null };
+  member: IMember | null = null;
 
   readonly contacts = ["", ...ContactTypes];
 
   @Emit("change")
   onChange(team: ITeamData, member: IMember) {}
-
-  get refMember() {
-    return this.member;
-  }
-  set refMember(member: IMember | null) {
-    if (member) {
-      this.member.info = member.info;
-      this.member.chara = member.chara;
-      this.member.equip = member.equip;
-    } else {
-      this.member.info = null;
-      this.member.chara = null;
-      this.member.equip = null;
-    }
-  }
 
   get refLevel() {
     return this.member?.chara?.level || null;
@@ -165,7 +150,7 @@ export default class SelectMember extends Vue {
   }
 
   get comment() {
-    return this.member.equip?.comment || "-";
+    return this.member?.equip?.comment || "-";
   }
 
   mounted() {
@@ -175,34 +160,21 @@ export default class SelectMember extends Vue {
       if (team) {
         this.team = team;
 
-        this.changeMember(
-          new Team(team).member.findIndex((val) => val === item.member)
-        );
+        const index = new Team(team).index(item.member);
+        if (index >= 0) {
+          this.member = this.members[index]?.value || null;
+        }
       }
     }
   }
 
-  private changeMember(index = 0) {
-    const members = this.members;
-    if (index >= 0) {
-      const member = members[index].value;
-      this.member.info = member.info;
-      this.member.chara = member.chara;
-      this.member.equip = member.equip;
-    } else {
-      this.member.info = null;
-      this.member.chara = null;
-      this.member.equip = null;
-    }
-  }
-
   onChangeTeam() {
-    this.changeMember();
+    this.member = this.members[0]?.value || null;
     this.onChangeMember();
   }
 
   onChangeMember() {
-    if (this.team) {
+    if (this.team && this.member) {
       this.onChange(this.team, this.member);
     }
   }

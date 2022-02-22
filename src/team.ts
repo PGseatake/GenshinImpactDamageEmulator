@@ -76,6 +76,10 @@ export class Team {
         }
     }
 
+    index(id: string) {
+        return this.member.findIndex((val) => val === id);
+    }
+
     public * members({ equip, chara }: DBEquipTable & DBCharaTable) {
         for (const id of this.member) {
             const e = equip.find((val) => val.id === id);
