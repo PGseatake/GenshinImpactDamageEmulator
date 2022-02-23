@@ -200,9 +200,15 @@ export class BasicBonus extends BonusBase {
 
     public apply(dst: Status, _: Status[], step: number) {
         if (this.isApply(dst, step)) {
-            const value = this.value;
+            const value = this.value * this.data.stack;
             for (const type of this.types) {
-                dst.param[type] += value * this.data.stack;
+                if (type === konst.FlatBonusDest.CombatDmg) {
+                    dst.param[konst.CombatBonusType.Normal] += value;
+                    dst.param[konst.CombatBonusType.Heavy] += value;
+                    dst.param[konst.CombatBonusType.Plunge] += value;
+                } else {
+                    dst.param[type] += value;
+                }
             }
         }
     }
