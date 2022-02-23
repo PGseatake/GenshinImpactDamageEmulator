@@ -14,14 +14,16 @@ export interface ITeamData extends IIdentify, INameable, Record<typeof Members[n
 export type DBTeamTable = { team: ITeamData[]; };
 
 export interface IMember {
-    info: ICharaInfo | null;
-    chara: ICharaData | null;
-    equip: IEquipData | null;
-}
-export interface IRequiredMember {
-    info: ICharaInfo;
+    index: number;
+    info: Readonly<ICharaInfo>;
     chara: ICharaData;
-    equip: IEquipData;
+    equip: Readonly<IEquipData>;
+}
+export interface IAnyMember {
+    index: number;
+    info: Readonly<ICharaInfo> | null;
+    chara: ICharaData | null;
+    equip: Readonly<IEquipData> | null;
 }
 
 // IMemberのユーティリティクラス
@@ -30,7 +32,7 @@ export class Member {
     public chara: ICharaData;
     public equip: IEquipData;
 
-    constructor({ info, chara, equip }: IRequiredMember) {
+    constructor({ info, chara, equip }: IMember) {
         this.info = info;
         this.chara = chara;
         this.equip = equip;
@@ -76,17 +78,15 @@ export class Team {
         }
     }
 
-    index(id: string) {
-        return this.member.findIndex((val) => val === id);
-    }
-
     public * members({ equip, chara }: DBEquipTable & DBCharaTable) {
+        let index = 0;
         for (const id of this.member) {
             const e = equip.find((val) => val.id === id);
             if (e) {
                 const c = chara.find((val) => val.id === e.chara);
                 if (c) {
-                    yield { info: CharaList[c.name], chara: c, equip: e };
+                    yield { index, id, info: CharaList[c.name], chara: c, equip: e };
+                    ++index;
                 }
             }
         }

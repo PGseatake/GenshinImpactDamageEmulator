@@ -56,7 +56,7 @@ import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import { TalentType, TalentTypes } from "~/src/const";
 import { ICombat } from "~/src/interface";
 import { IMember } from "~/src/team";
-import Status, { IStatus } from "~/src/status";
+import Status from "~/src/status";
 import Enemy from "~/src/enemy";
 import { BonusBase } from "~/src/bonus";
 import { IDamageData, CombatAttribute } from "~/src/damage";
@@ -64,7 +64,6 @@ import { SettingCritical } from "~/src/setting";
 
 interface IAttribute extends ICombat {
   talent: TalentType;
-  status: Status;
   enemy: Enemy;
   group: number;
 }
@@ -75,8 +74,8 @@ interface IAttribute extends ICombat {
 })
 export default class DamageTable extends Vue {
   @Prop({ required: true }) data!: Readonly<IDamageData>;
-  @Prop({ required: true }) member!: Readonly<IMember>;
-  @Prop({ required: true }) status!: Readonly<IStatus>;
+  @Prop({ required: true }) leader!: Readonly<IMember>;
+  @Prop({ required: true }) party!: ReadonlyArray<Status>;
   @Prop({ required: true }) bonus!: ReadonlyArray<BonusBase>;
 
   readonly icons = { open: mdiChevronDown, close: mdiChevronUp };
@@ -125,24 +124,29 @@ export default class DamageTable extends Vue {
     return headers;
   }
 
+  get status() {
+    return this.party[this.leader.index];
+  }
+
   get items() {
-    let status = new Status(this.status);
-    status.chara = this.member.chara;
-    let enemy = new Enemy(this.data, this.status.reduct);
     let items: IAttribute[] = [];
-    const info = this.member.info;
-    if (info) {
-      let talent: TalentType = TalentType.Combat;
-      for (const data of info.talent.combat) {
-        items.push({ ...data, talent, status, enemy, group: 0 });
-      }
-      talent = TalentType.Skill;
-      for (const data of info.talent.skill) {
-        items.push({ ...data, talent, status, enemy, group: 1 });
-      }
-      talent = TalentType.Burst;
-      for (const data of info.talent.burst) {
-        items.push({ ...data, talent, status, enemy, group: 2 });
+    let status = this.status;
+    if (status) {
+      let enemy = new Enemy(this.data, status.reduct);
+      const info = this.leader.info;
+      if (info) {
+        let talent: TalentType = TalentType.Combat;
+        for (const data of info.talent.combat) {
+          items.push({ ...data, talent, enemy, group: 0 });
+        }
+        talent = TalentType.Skill;
+        for (const data of info.talent.skill) {
+          items.push({ ...data, talent, enemy, group: 1 });
+        }
+        talent = TalentType.Burst;
+        for (const data of info.talent.burst) {
+          items.push({ ...data, talent, enemy, group: 2 });
+        }
       }
     }
     return items;
@@ -162,12 +166,12 @@ export default class DamageTable extends Vue {
   makeHtml(item: IAttribute) {
     let attr = new CombatAttribute(
       item,
-      item.status.talent[item.talent],
-      this.$db.setting.critical as SettingCritical,
+      this.status.talent[item.talent],
+      this.critical as SettingCritical,
       this.bonus
     );
     let html = `<td>${this.$h("combat." + item.name)}</td>` + attr.toHtml();
-    const damage = attr.damage(this.data, item.status, item.enemy);
+    const damage = attr.damage(this.data, this.status, item.enemy);
     const len = this.critical === SettingCritical.Both ? 6 : 4;
     for (let i = 0; i < len; ++i) {
       if (i < damage.length) {

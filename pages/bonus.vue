@@ -35,11 +35,9 @@ export default class PageBonus extends Vue {
     if (team) {
       let builder = new BonusBuilder(this.$i18n, this.$db.bonus);
       for (const member of new Team(team).members(this.$db)) {
-        if (member.equip) {
-          let status = new Status(Status.empty());
-          status.equip(member, this.$db);
-          this.status.push(status);
-        }
+        let status = new Status(Status.empty());
+        status.equip(member, this.$db);
+        this.status.push(status);
       }
       this.bonus.push(...builder.build(team, this.$db));
     }

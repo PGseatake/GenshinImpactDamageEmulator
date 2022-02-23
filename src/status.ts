@@ -4,7 +4,7 @@ import { ICharaInfo } from "~/src/interface";
 import { ICharaData } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
 import { DBArtifactTable, SubBonus } from "~/src/artifact";
-import { Member, IMember } from "~/src/team";
+import { Member, IMember, IAnyMember } from "~/src/team";
 import Reaction from "~/src/reaction";
 
 export type StatusTalent = Record<konst.TalentType, number>;
@@ -157,11 +157,13 @@ export default class Status {
         this.enchant = data.enchant;
     }
 
-    equip({ info, chara, equip }: IMember, db: DBWeaponTable & DBArtifactTable) {
+    equip(member: IAnyMember, db: DBWeaponTable & DBArtifactTable) {
+        const { info, chara } = member;
         this.info = info;
         this.chara = chara;
+
         for (const type of konst.BonusTypes) {
-            this.param[type] = 0;
+            this.param[type] = StatusBase.value(type);
         }
         for (const type of konst.CombatTypes) {
             this.flat[type] = 0;
@@ -173,15 +175,10 @@ export default class Status {
         this.enchant.dest.splice(0);
         this.enchant.self = false;
 
-        if (info && chara && equip) {
-            // 基礎値
-            this.param[konst.StatusBonusType.EnRec] = StatusBase[konst.StatusBonusType.EnRec];
-            this.param[konst.StatusBonusType.CriDmg] = StatusBase[konst.StatusBonusType.CriDmg];
-            this.param[konst.StatusBonusType.CriRate] = StatusBase[konst.StatusBonusType.CriRate];
-
-            this.talent.combat = chara.combat;
-            this.talent.skill = chara.skill;
-            this.talent.burst = chara.burst;
+        if (chara) {
+            for (const type of konst.TalentTypes) {
+                this.talent[type] = chara[type];
+            }
             this.base.hp = chara.hp;
             this.base.atk = chara.atk;
             this.base.def = chara.def;
@@ -189,7 +186,7 @@ export default class Status {
             // キャラクタ
             this.apply(chara.special);
             // 武器
-            const m = new Member({ info, chara, equip });
+            const m = new Member(member as IMember);
             const { data } = m.weapon(db);
             if (data) {
                 this.base.atk += data.atk;
@@ -204,9 +201,9 @@ export default class Status {
                 }
             }
         } else {
-            this.talent.combat = 0;
-            this.talent.skill = 0;
-            this.talent.burst = 0;
+            for (const type of konst.TalentTypes) {
+                this.talent[type] = 0;
+            }
             this.base.hp = 0;
             this.base.atk = 0;
             this.base.def = 0;

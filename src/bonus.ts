@@ -10,7 +10,7 @@ import { DBEquipTable } from "~/src/equipment";
 import { DBCharaTable, ICharaData, CharaName, CharaList } from "~/src/character";
 import { DBWeaponTable, IWeaponData, WeaponList } from "~/src/weapon";
 import { DBArtifactTable, ArtifactName, ArtifactList } from "~/src/artifact";
-import { Team, ITeamData, Member, IRequiredMember } from "~/src/team";
+import { Team, ITeamData, Member, IMember } from "~/src/team";
 import Status, { StatusCritical } from "~/src/status";
 import { roundRate } from "~/plugins/utils";
 import { Arrayable } from "~/src/utility";
@@ -633,8 +633,8 @@ export class BonusBuilder {
         this.chara = null;
     }
 
-    private member(member: IRequiredMember) {
-        this.index++;
+    private member(member: IMember) {
+        this.index = member.index;
         this.equip = member.equip.id;
         this.chara = member.chara;
         return new Member(member);

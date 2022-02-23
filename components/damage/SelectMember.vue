@@ -96,7 +96,7 @@ export default class SelectMember extends Vue {
   onChange(team: ITeamData, member: IMember) {}
 
   get refLevel() {
-    return this.member?.chara?.level || null;
+    return this.member?.chara.level || null;
   }
   set refLevel(value: string | null) {
     if (this.member?.chara && value) {
@@ -136,11 +136,12 @@ export default class SelectMember extends Vue {
   }
 
   get members() {
-    let items: { text: string; value: IMember }[] = [];
+    let items: { id: string; text: string; value: IMember }[] = [];
     const team = this.team;
     if (team) {
       for (const member of new Team(team).members(this.$db)) {
         items.push({
+          id: member.id,
           text: String(this.$t("chara." + member.chara.name)),
           value: member,
         });
@@ -150,7 +151,7 @@ export default class SelectMember extends Vue {
   }
 
   get comment() {
-    return this.member?.equip?.comment || "-";
+    return this.member?.equip.comment || "-";
   }
 
   mounted() {
@@ -159,11 +160,8 @@ export default class SelectMember extends Vue {
       const team = this.$db.team.find((val) => val.id === item.team);
       if (team) {
         this.team = team;
-
-        const index = new Team(team).index(item.member);
-        if (index >= 0) {
-          this.member = this.members[index]?.value || null;
-        }
+        this.member =
+          this.members.find((val) => val.id === item.member)?.value || null;
       }
     }
   }

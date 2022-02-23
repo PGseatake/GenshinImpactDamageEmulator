@@ -25,8 +25,8 @@
             <v-col cols="12">
               <damage-table
                 :data="data"
-                :member="member"
-                :status="status"
+                :leader="member"
+                :party="party"
                 :bonus="extra"
               />
             </v-col>
@@ -34,11 +34,7 @@
         </v-col>
         <!-- ボーナス -->
         <v-col cols="12" class="pa-1">
-          <bonus-table
-            :items="bonus"
-            :status="statues"
-            @change="onChangeBonus"
-          />
+          <bonus-table :items="mines" :status="party" @change="onChangeBonus" />
         </v-col>
       </v-row>
     </v-col>
@@ -65,7 +61,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { AnyContactType, AnyReactionType } from "~/src/const";
-import { Team, ITeamData, IMember as IMemberBase } from "~/src/team";
+import { Team, ITeamData, IMember, IAnyMember } from "~/src/team";
 import { BonusBase, BonusBuilder } from "~/src/bonus";
 import Status, { IStatus } from "~/src/status";
 import Enemy, { IEnemyData } from "~/src/enemy";
@@ -73,10 +69,6 @@ import Reaction from "~/src/reaction";
 import { IDamageData } from "~/src/damage";
 import { parseLevel } from "~/src/ascension";
 import { Arrayable } from "~/src/utility";
-
-interface IMember extends IMemberBase {
-  index: number;
-}
 
 @Component({
   name: "DamageDetail",
@@ -93,15 +85,18 @@ export default class DamageDetail extends Vue {
   @Prop({ required: true }) data!: IDamageData;
 
   index = 0;
-  members: IMember[] = Arrayable.make(4, (_, i) => ({
-    info: null,
-    chara: null,
-    equip: null,
-    index: i,
-  }));
+  members = Arrayable.make(
+    4,
+    (_, i): IAnyMember => ({
+      index: i,
+      info: null,
+      chara: null,
+      equip: null,
+    })
+  );
   params: IStatus[] = Arrayable.make(4, () => Status.empty());
-  statues: Status[] = [];
-  bonuses: BonusBase[] = [];
+  party: Status[] = [];
+  bonus: BonusBase[] = [];
 
   get large() {
     return this.$vuetify.breakpoint.lg || this.$vuetify.breakpoint.xl;
@@ -115,14 +110,14 @@ export default class DamageDetail extends Vue {
     return this.params[this.index];
   }
 
-  get bonus() {
+  get mines() {
     const { chara } = this.member;
-    return this.bonuses.filter((val) => val.isMine(chara));
+    return this.bonus.filter((val) => val.isMine(chara));
   }
 
   get extra() {
     const { chara } = this.member;
-    return this.bonuses.filter((val) => val.isExtra(chara));
+    return this.bonus.filter((val) => val.isExtra(chara));
   }
 
   get defence() {
@@ -158,9 +153,9 @@ export default class DamageDetail extends Vue {
     if (t) {
       this.changeTeam(t);
 
-      for (let [i, m] of this.members.entries()) {
+      for (const m of this.members) {
         if (m.equip?.id === member) {
-          this.index = i;
+          this.index = m.index;
           this.onChangeBonus();
           break;
         }
@@ -185,12 +180,12 @@ export default class DamageDetail extends Vue {
     }
 
     let builder = new BonusBuilder(this.$i18n, this.$db.bonus);
-    this.bonuses.splice(0);
-    this.bonuses.push(...builder.build(team, this.$db));
+    this.bonus.splice(0);
+    this.bonus.push(...builder.build(team, this.$db));
     this.$db.bonus = { ...this.$db.bonus, ...builder.output };
   }
 
-  onChangeMember(team: ITeamData, member: IMember) {
+  onChangeMember(team: ITeamData, member: IAnyMember) {
     if (this.data.team != team.id) {
       this.data.team = team.id;
       this.changeTeam(team);
@@ -200,10 +195,11 @@ export default class DamageDetail extends Vue {
 
     const equip = member.equip;
     if (equip) {
-      this.data.member = equip.id;
+      const { id } = equip;
+      this.data.member = id;
 
       for (let m of this.members) {
-        if (m.equip?.id === equip.id) {
+        if (m.equip?.id === id) {
           this.index = m.index;
           this.onChangeBonus();
           break;
@@ -213,20 +209,20 @@ export default class DamageDetail extends Vue {
   }
 
   onChangeBonus() {
-    this.statues.splice(0);
+    this.party.splice(0);
     for (let m of this.members) {
       let s = new Status(this.params[m.index]);
       s.equip(m, this.$db);
-      if (m.equip) {
-        this.statues.push(s);
+      if (s.chara) {
+        this.party.push(s);
       }
     }
 
-    const party = this.statues;
+    const party = this.party;
     const contact = this.contact;
     for (let step = 0; step <= 2; ++step) {
-      for (let target of this.statues) {
-        for (const bonus of this.bonuses) {
+      for (let target of this.party) {
+        for (const bonus of this.bonus) {
           bonus.apply({ step, target, party, contact });
         }
       }
