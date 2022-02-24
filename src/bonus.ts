@@ -72,11 +72,16 @@ function join<T>(items: readonly T[], pred: (item: T) => VueI18n.TranslateResult
 }
 
 // 通常ボーナス
-export type StatusBonus = {
+export interface IStatusBonus {
     step: number;
     target: Status;
     party: ReadonlyArray<Status>;
     contact?: konst.AnyContactType;
+    reaction?: konst.AnyReactionType;
+};
+export interface ICombatStatusBonus extends IStatusBonus {
+    type: konst.CombatType;
+    name: string;
 };
 
 // 追加ボーナス
@@ -193,7 +198,7 @@ export class BonusBase {
         return false;
     }
 
-    public apply(arg: StatusBonus) { }
+    public apply(arg: IStatusBonus) { }
 
     protected text(type: konst.AnyBonusType | "energy" | "contact") {
         return String(this.i18n.t("bonus." + type)).replace("(%)", "");
@@ -219,7 +224,7 @@ export class BasicBonus extends BonusBase {
         );
     }
 
-    public apply(arg: StatusBonus) {
+    public apply(arg: IStatusBonus) {
         const dst = arg.target;
         if (this.isApply(dst, arg.step)) {
             const value = this.value * this.data.stack;
@@ -397,7 +402,7 @@ export class FlatBonus extends BonusBase {
         return value;
     }
 
-    public apply(arg: StatusBonus) {
+    public apply(arg: IStatusBonus) {
         const target = arg.target;
         if (this.isApply(target, arg.step)) {
             const owner = arg.party[this.index];
@@ -485,21 +490,21 @@ export class CombatBonus extends BonusBase {
         return this.bind.includes(name);
     }
 
-    private calc(target: Readonly<Status>) {
+    private calc(owner: Readonly<Status>) {
         let value = this.value;
         switch (this.base) {
             case konst.FlatBonusBase.Hp:
             case konst.FlatBonusBase.Def:
-                value = target.total(this.base) * value / 100;
+                value = owner.total(this.base) * value / 100;
                 break;
         }
         return value * this.data.stack;
     }
 
-    public applyEx(dst: ExtraBonus, status: Readonly<Status>, type: konst.CombatType, name: string) {
-        if (this.isApply(status, -1)) {
-            if (this.bound(type, name)) {
-                const value = this.calc(status);
+    public applyEx(dst: ExtraBonus, arg: ICombatStatusBonus) {
+        if (this.isApply(arg.target, -1)) {
+            if (this.bound(arg.type, arg.name)) {
+                const value = this.calc(arg.party[this.index]);
                 switch (this.dest) {
                     case konst.CombatBonusDest.Atk:
                         dst.atk += value;
@@ -541,7 +546,7 @@ export class ReductBonus extends BonusBase {
         );
     }
 
-    public apply(arg: StatusBonus) {
+    public apply(arg: IStatusBonus) {
         const target = arg.target;
         if (this.isApply(target, arg.step)) {
             for (const type of this.types) {
@@ -585,7 +590,7 @@ export class EnchantBonus extends BonusBase {
         );
     }
 
-    public apply(arg: StatusBonus) {
+    public apply(arg: IStatusBonus) {
         const target = arg.target;
         if (this.isApply(target, arg.step)) {
             target.renchant(this.type, this.dest, this.target === konst.BonusTarget.Self);

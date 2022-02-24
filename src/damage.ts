@@ -1,18 +1,20 @@
 import {
     ElementType,
     CombatType,
+    TalentType,
     CombatElementType,
     DamageBased,
     AnyReactionType,
     AnyContactType,
 } from "~/src/const";
 import { ICombat, IIdentify } from "~/src/interface";
-import { BonusBase, CombatBonus, DamageScaleTable } from "~/src/bonus";
 import Reaction from "~/src/reaction";
 import Enemy, { IEnemyData } from "~/src/enemy";
 import Status, { StatusCritical } from "~/src/status";
 import { roundRate } from "~/plugins/utils";
 import { SettingCritical } from "~/src/setting";
+import { BonusBase, CombatBonus, DamageScaleTable, ICombatStatusBonus } from "~/src/bonus";
+import { Arrayable } from "~/src/utility";
 
 export interface IDamageData extends IIdentify, IEnemyData {
     team: string;
@@ -36,7 +38,7 @@ function toScale(rate: number) {
     return 1.0 + rate / 100.0;
 }
 
-class Attribute {
+class DamageCell {
     public readonly atk: number;
     public readonly def: number;
     public readonly flat: number;
@@ -55,7 +57,7 @@ class Attribute {
         this.strike = false;
     }
 
-    toHtml() {
+    make() {
         if (this.multi > 1) {
             const val = this.value[0];
             return `<td class="text-right">${this.calc(val)} x${this.multi}</td>`;
@@ -76,35 +78,47 @@ class Attribute {
     }
 }
 
+export interface IAttribute extends ICombat {
+    talent: TalentType;
+}
+
 // 天賦の各種倍率
-export class CombatAttribute {
-    public readonly crit: SettingCritical;
-    public readonly name: string;
+export class Attribute implements ICombatStatusBonus {
+    public readonly step: number;
     public readonly type: CombatType;
+    public readonly name: string;
     public readonly elem: CombatElementType;
     public readonly value: ReadonlyArray<number>;
     public readonly multi: number;
     public readonly based: DamageBased;
-    public readonly bonus: ReadonlyArray<BonusBase>;
+    public readonly party: ReadonlyArray<Status>;
+    public readonly target: Status;
+    public readonly contact: AnyContactType;
+    public readonly reaction: AnyReactionType;
 
-    constructor(info: ICombat, level: number, crit: SettingCritical, bonus: ReadonlyArray<BonusBase>) {
-        this.crit = crit;
-        const scale = DamageScaleTable[info.scale];
+    constructor(attr: IAttribute, data: IDamageData, target: Status, party: ReadonlyArray<Status>) {
+        const level = target.talent[attr.talent];
+        const scale = DamageScaleTable[attr.scale];
         const index = clamp(level, 1, scale.length) - 1;
-        this.name = info.name;
-        this.type = info.type;
-        this.elem = info.elem;
-        if (Array.isArray(info.value)) {
-            this.value = info.value.map((val) => (val * scale[index]) / 100);
+        this.type = attr.type;
+        this.name = attr.name;
+        this.elem = attr.elem;
+        if (Array.isArray(attr.value)) {
+            this.value = attr.value.map((val) => (val * scale[index]) / 100);
         } else {
-            this.value = [(info.value * scale[index]) / 100];
+            this.value = [(attr.value * scale[index]) / 100];
         }
-        this.multi = info.multi ?? 1;
-        this.based = info.based ?? DamageBased.Atk;
-        this.bonus = bonus;
+        this.multi = attr.multi ?? 1;
+        this.based = attr.based ?? DamageBased.Atk;
+
+        this.step = -1;
+        this.party = party;
+        this.target = target;
+        this.contact = data.contact;
+        this.reaction = data.reaction;
     }
 
-    toHtml() {
+    head() {
         if (this.multi > 1) {
             const val = this.value[0];
             return `<td class="text-right">${roundRate(val)} x${this.multi}</td>`;
@@ -116,57 +130,69 @@ export class CombatAttribute {
         );
     }
 
-    private attribute(atk: number, def: number, flat: number, crit?: StatusCritical) {
-        return new Attribute(atk, def, flat, this.value, this.multi, crit);
+    private cell(atk: number, def: number, flat: number, crit?: StatusCritical) {
+        return new DamageCell(atk, def, flat, this.value, this.multi, crit);
     }
 
-    damage(data: IDamageData, status: Status, enemy: Enemy): string[] {
-        let elem = this.elem;
-        let reaction = data.reaction;
+    make(crit: SettingCritical, enemy: Enemy, bonus: ReadonlyArray<BonusBase>): string[] {
+        let element = this.elem;
+        let reaction = this.reaction;
         // 元素変化
-        if (elem === CombatElementType.Contact) {
-            let contact = data.contact;
+        if (element === CombatElementType.Contact) {
+            let contact = this.contact;
             if (!contact) return [];
-            elem = contact;
+            element = contact;
             reaction = "";
         }
         // 元素付与
-        if (elem === ElementType.Phys) {
-            elem = status.elchant(this.type);
+        let combat = this.type;
+        let status = this.target;
+        if (element === ElementType.Phys) {
+            element = status.elchant(combat);
         }
         // 元素反応の正規化
-        reaction = Reaction.normalize(reaction, elem);
+        reaction = Reaction.normalize(reaction, element);
 
         // 追加ボーナス
-        const extra = this.extra(status);
+        let extra = {
+            atk: 0,
+            dmg: 0,
+            crit: { damage: 0, rate: 0 },
+            flat: 0,
+        };
+        for (const b of bonus) {
+            if (b instanceof CombatBonus) {
+                b.applyEx(extra, this);
+            }
+        }
 
         // 攻撃力
         let attackPower = status.total(this.based) + extra.atk;
         // 防御力
         const enemyDefence = enemy.defence(status.level) / 100;
-        const enemyResist = enemy.resist(elem);
+        const enemyResist = enemy.resist(element);
 
         // 各種倍率
-        const combatBonus = status.combatBonus(this.type);
-        const elementBonus = status.elementBonus(elem);
+        const combatBonus = status.combatBonus(combat);
+        const elementBonus = status.elementBonus(element);
         const damageBonus = status.param.any_dmg + extra.dmg;
         const combatScale = toScale(combatBonus + elementBonus + damageBonus);
-        const critical = status.critical(extra.crit, this.type);
+        const critical = status.critical(extra.crit, combat);
 
         const atk = attackPower * combatScale;
         const def = enemyDefence * enemyResist;
-        const flat = status.flat[this.type] + extra.flat;
+        const flat = status.flat[combat] + extra.flat;
         const make = (rate: number) => {
-            let items = [this.attribute(rate, def, flat)]; // 通常ダメージ
-            if (this.crit !== SettingCritical.Expc) { // 会心ダメージ（直値）
-                items.push(this.attribute(rate, def, flat, { rate: 100, damage: critical.damage }));
+            let cells = [this.cell(rate, def, flat)]; // 通常ダメージ
+            if (crit !== SettingCritical.Expc) { // 会心ダメージ（直値）
+                cells.push(this.cell(rate, def, flat, { rate: 100, damage: critical.damage }));
             }
-            if (this.crit !== SettingCritical.Base) { // 会心ダメージ（期待値）
-                items.push(this.attribute(rate, def, flat, critical));
+            if (crit !== SettingCritical.Base) { // 会心ダメージ（期待値）
+                cells.push(this.cell(rate, def, flat, critical));
             }
-            return items;
+            return cells;
         };
-        let attrs = make(atk);
+        let cells = make(atk);
 
         if (reaction) {
             const elementMaster = status.elementMaster(reaction);
@@ -174,44 +200,29 @@ export class CombatAttribute {
 
             if (Reaction.isAmplify(reaction)) {
                 // 蒸発と溶解は取り消し線で表示
-                attrs.forEach((val) => (val.strike = true));
+                cells.forEach((val) => (val.strike = true));
 
                 const reactionScale =
                     toScale(elementMaster + reactionBonus) *
-                    status.reactionScale(reaction, elem);
+                    status.reactionScale(reaction, element);
 
                 // 元素反応ダメージ
-                attrs.push(...make(atk * reactionScale));
+                cells.push(...make(atk * reactionScale));
             } else {
                 const reactionScale = toScale(elementMaster + reactionBonus);
                 const reactionFactor = Reaction.Factor[reaction];
                 const reactionResist = enemy.resist(reactionFactor.resist);
                 const reactionDamage =
-                    (reactionFactor.values[status.level - 1] || 0) *
+                    Arrayable.clamp(reactionFactor.values, status.level) *
                     reactionScale *
                     reactionResist;
 
                 return [
-                    ...attrs.map((val) => val.toHtml()),
+                    ...cells.map((val) => val.make()),
                     `<td class="text-right">${reactionDamage.toFixed()}</td>`, // 元素反応ダメージ
                 ];
             }
         }
-        return attrs.map((val) => val.toHtml());
-    }
-
-    private extra(status: Status) {
-        let val = {
-            atk: 0,
-            dmg: 0,
-            crit: { damage: 0, rate: 0 },
-            flat: 0,
-        };
-        for (const b of this.bonus) {
-            if (b instanceof CombatBonus) {
-                b.applyEx(val, status, this.type, this.name);
-            }
-        }
-        return val;
+        return cells.map((val) => val.make());
     }
 }

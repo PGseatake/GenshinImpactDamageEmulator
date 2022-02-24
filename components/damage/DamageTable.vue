@@ -54,16 +54,14 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import { TalentType, TalentTypes } from "~/src/const";
-import { ICombat } from "~/src/interface";
 import { IMember } from "~/src/team";
 import Status from "~/src/status";
 import Enemy from "~/src/enemy";
 import { BonusBase } from "~/src/bonus";
-import { IDamageData, CombatAttribute } from "~/src/damage";
+import { IDamageData, Attribute, IAttribute } from "~/src/damage";
 import { SettingCritical } from "~/src/setting";
 
-interface IAttribute extends ICombat {
-  talent: TalentType;
+interface IAttrItem extends IAttribute {
   enemy: Enemy;
   group: number;
 }
@@ -129,7 +127,7 @@ export default class DamageTable extends Vue {
   }
 
   get items() {
-    let items: IAttribute[] = [];
+    let items: IAttrItem[] = [];
     let status = this.status;
     if (status) {
       let enemy = new Enemy(this.data, status.reduct);
@@ -153,7 +151,7 @@ export default class DamageTable extends Vue {
   }
 
   get critical() {
-    return this.$db.setting.critical;
+    return this.$db.setting.critical as SettingCritical;
   }
 
   formatGroup(group: number) {
@@ -163,19 +161,15 @@ export default class DamageTable extends Vue {
     }`;
   }
 
-  makeHtml(item: IAttribute) {
-    let attr = new CombatAttribute(
-      item,
-      this.status.talent[item.talent],
-      this.critical as SettingCritical,
-      this.bonus
-    );
-    let html = `<td>${this.$h("combat." + item.name)}</td>` + attr.toHtml();
-    const damage = attr.damage(this.data, this.status, item.enemy);
-    const len = this.critical === SettingCritical.Both ? 6 : 4;
+  makeHtml(item: IAttrItem) {
+    let attr = new Attribute(item, this.data, this.status, this.party);
+    let html = `<td>${this.$h("combat." + item.name)}</td>` + attr.head();
+    const crit = this.critical;
+    const cells = attr.make(crit, item.enemy, this.bonus);
+    const len = crit === SettingCritical.Both ? 6 : 4;
     for (let i = 0; i < len; ++i) {
-      if (i < damage.length) {
-        html += damage[i];
+      if (i < cells.length) {
+        html += cells[i];
       } else {
         html += "<td></td>";
       }
