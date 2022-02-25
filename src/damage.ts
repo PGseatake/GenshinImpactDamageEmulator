@@ -6,6 +6,7 @@ import {
     DamageBased,
     AnyReactionType,
     AnyContactType,
+    AnyElementType,
 } from "~/src/const";
 import { ICombat, IIdentify } from "~/src/interface";
 import Reaction from "~/src/reaction";
@@ -13,7 +14,7 @@ import Enemy, { IEnemyData } from "~/src/enemy";
 import Status, { StatusCritical } from "~/src/status";
 import { roundRate } from "~/plugins/utils";
 import { SettingCritical } from "~/src/setting";
-import { BonusBase, CombatBonus, DamageScaleTable, ICombatStatusBonus } from "~/src/bonus";
+import { BonusBase, DamageScaleTable, ICombatStatusBonus } from "~/src/bonus";
 import { Arrayable } from "~/src/utility";
 
 export interface IDamageData extends IIdentify, IEnemyData {
@@ -87,12 +88,12 @@ export class Attribute implements ICombatStatusBonus {
     public readonly step: number;
     public readonly type: CombatType;
     public readonly name: string;
-    public readonly elem: CombatElementType;
     public readonly value: ReadonlyArray<number>;
     public readonly multi: number;
     public readonly based: DamageBased;
     public readonly party: ReadonlyArray<Status>;
     public readonly target: Status;
+    public readonly element: AnyElementType;
     public readonly contact: AnyContactType;
     public readonly reaction: AnyReactionType;
 
@@ -102,7 +103,6 @@ export class Attribute implements ICombatStatusBonus {
         const index = clamp(level, 1, scale.length) - 1;
         this.type = attr.type;
         this.name = attr.name;
-        this.elem = attr.elem;
         if (Array.isArray(attr.value)) {
             this.value = attr.value.map((val) => (val * scale[index]) / 100);
         } else {
@@ -114,8 +114,27 @@ export class Attribute implements ICombatStatusBonus {
         this.step = -1;
         this.party = party;
         this.target = target;
+        this.element = "";
         this.contact = data.contact;
-        this.reaction = data.reaction;
+        this.reaction = "";
+
+        let element = attr.elem;
+        let reaction = data.reaction;
+        // 元素変化
+        if (element === CombatElementType.Contact) {
+            let contact = data.contact;
+            if (!contact) return;
+            element = contact;
+            reaction = "";
+        }
+        // 元素付与
+        let combat = attr.type;
+        if (element === ElementType.Phys) {
+            element = target.elchant(combat);
+        }
+        this.element = element;
+        // 元素反応の正規化
+        this.reaction = Reaction.normalize(reaction, element);
     }
 
     head() {
@@ -135,23 +154,12 @@ export class Attribute implements ICombatStatusBonus {
     }
 
     make(crit: SettingCritical, enemy: Enemy, bonus: ReadonlyArray<BonusBase>): string[] {
-        let element = this.elem;
-        let reaction = this.reaction;
-        // 元素変化
-        if (element === CombatElementType.Contact) {
-            let contact = this.contact;
-            if (!contact) return [];
-            element = contact;
-            reaction = "";
-        }
-        // 元素付与
-        let combat = this.type;
-        let status = this.target;
-        if (element === ElementType.Phys) {
-            element = status.elchant(combat);
-        }
-        // 元素反応の正規化
-        reaction = Reaction.normalize(reaction, element);
+        if (!this.element) return [];
+
+        const combat = this.type;
+        const status = this.target;
+        const element = this.element;
+        const reaction = this.reaction;
 
         // 追加ボーナス
         let extra = {
@@ -161,9 +169,7 @@ export class Attribute implements ICombatStatusBonus {
             flat: 0,
         };
         for (const b of bonus) {
-            if (b instanceof CombatBonus) {
-                b.applyEx(extra, this);
-            }
+            b.applyEx(extra, this);
         }
 
         // 攻撃力

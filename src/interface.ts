@@ -56,7 +56,19 @@ export interface ICombatBonus extends IBonusOption {
     readonly bind: ReadonlyArrayable<string>;
     readonly dest?: konst.CombatBonusDest; // undefined = ダメージ実数
     readonly base?: konst.StatusBonusType; // undefined = 割合直値
+    readonly value: number;
+    readonly format: string;
+    // readonly limit?: string;
+    // readonly times?: number;
+    // readonly target?: konst.BonusTarget;
+}
+
+export interface IElementBonus extends IBonusOption {
+    readonly extra: "element";
+    readonly dest?: konst.StatusBonusType;
+    readonly base?: konst.StatusBonusType;
     readonly value: ReadonlyArrayable<number>;
+    readonly scale?: IFlatBonusScale;
     readonly format: string;
     // readonly limit?: string;
     // readonly times?: number;
@@ -80,7 +92,7 @@ export interface IEnchantBonus extends IBonusOption {
     // readonly times?: number;
 }
 
-export type AnyBonus = IBasicBonus | IFlatBonus | ICombatBonus | IReductBonus | IEnchantBonus;
+export type AnyBonus = IBasicBonus | IFlatBonus | ICombatBonus | IElementBonus | IReductBonus | IEnchantBonus;
 
 export interface ICombat {
     readonly name: string;

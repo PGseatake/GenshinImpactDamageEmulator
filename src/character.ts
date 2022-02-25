@@ -1597,7 +1597,35 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // ・「堅牢」：10%アップ。
             // ・「破耐」：20%アップ。
             // ・「粉砕」：40%アップ。
-            // TODO: 実装
+            lv6: [
+                {
+                    extra: konst.ExtraBonusType.Element,
+                    dest: konst.StatusBonusType.CriDmg,
+                    value: 10.0,
+                    limit: "goro.skill_burst1",
+                    times: 12,
+                    target: konst.BonusTarget.All,
+                    format: "goro.elem",
+                },
+                {
+                    extra: konst.ExtraBonusType.Element,
+                    dest: konst.StatusBonusType.CriDmg,
+                    value: 20.0,
+                    limit: "goro.skill_burst2",
+                    times: 12,
+                    target: konst.BonusTarget.All,
+                    format: "goro.elem",
+                },
+                {
+                    extra: konst.ExtraBonusType.Element,
+                    dest: konst.StatusBonusType.CriDmg,
+                    value: 40.0,
+                    limit: "goro.skill_burst3",
+                    times: 12,
+                    target: konst.BonusTarget.All,
+                    format: "goro.elem",
+                },
+            ],
         },
     },
     Hutao: {
@@ -2325,7 +2353,15 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 煌煌千道鎮式による天狗呪雷・雷礫の数が6つに増加する。
             // 5. 烏天狗雷霆召呪のスキルLv.+3
             // 6. 天狗呪雷による攻撃力アップ状態のキャラクターは、雷元素ダメージの会心ダメージ+60%。
-            // TODO: 実装
+            lv6: {
+                extra: konst.ExtraBonusType.Element,
+                dest: konst.StatusBonusType.CriDmg,
+                value: 60.0,
+                limit: "kujo.skill_use",
+                times: 6,
+                target: konst.BonusTarget.All,
+                format: "kujo.elem",
+            },
         },
     },
     Lisa: {
@@ -3285,17 +3321,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         },
         passive: {
             // 通常攻撃、重撃、落下攻撃、元素スキル、元素爆発が敵に氷元素ダメージを与える時、申鶴自身の攻撃力を基準にダメージがアップする。
-            // TODO: 氷元素ダメージに対して
-            // skill: {
-            //     extra: konst.ExtraBonusType.Flat,
-            //     dest: [konst.FlatBonusDest.Combat, konst.FlatBonusDest.Skill, konst.FlatBonusDest.Burst],
-            //     base: konst.FlatBonusBase.Atk,
-            //     value: 45.7,
-            //     scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Skill },
-            //     limit: "skill.using",
-            //     times: 10, // or 15
-            //     target: konst.BonusTarget.All,
-            // },
+            skill: {
+                extra: konst.ExtraBonusType.Element,
+                base: konst.StatusBonusType.Atk,
+                value: 45.7,
+                scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Skill },
+                limit: "shenhe.skill_use",
+                times: 10, // or 15
+                target: konst.BonusTarget.All,
+                format: "shenhe.elem",
+            },
             // 「籙霊」は領域を形成し、中にいるすべての敵の氷元素耐性と物理耐性をダウンさせ、継続的に氷元素ダメージを与える。
             burst: {
                 extra: konst.ExtraBonusType.Reduct,

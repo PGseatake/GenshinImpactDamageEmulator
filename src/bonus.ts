@@ -3,7 +3,7 @@ import * as konst from "~/src/const";
 import {
     IBonusOption, IBasicBonus, IEnchantBonus, IReductBonus,
     IFlatBonus, IFlatBonusScale, IFlatBonusBound, ICombatBonus,
-    AnyBonus, Constes, Passives, Passive,
+    IElementBonus, AnyBonus, Constes, Passives, Passive,
 } from "~/src/interface";
 import { parseLevel } from "~/src/ascension";
 import { DBEquipTable } from "~/src/equipment";
@@ -82,6 +82,7 @@ export interface IStatusBonus {
 export interface ICombatStatusBonus extends IStatusBonus {
     type: konst.CombatType;
     name: string;
+    element: konst.AnyElementType;
 };
 
 // 追加ボーナス
@@ -199,6 +200,8 @@ export class BonusBase {
     }
 
     public apply(arg: IStatusBonus) { }
+
+    public applyEx(dst: ExtraBonus, arg: ICombatStatusBonus) { }
 
     protected text(type: konst.AnyBonusType | "energy" | "contact") {
         return String(this.i18n.t("bonus." + type)).replace("(%)", "");
@@ -527,6 +530,94 @@ export class CombatBonus extends BonusBase {
     }
 }
 
+// 元素ダメージボーナス
+export class ElementBonus extends BonusBase {
+    private readonly dest?: konst.StatusBonusType;
+    private readonly base?: konst.StatusBonusType;
+    private readonly value: number;
+    private readonly scale?: IFlatBonusScale;
+    private readonly format: string;
+
+    constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: IElementBonus, talent = 0) {
+        super(i18n, key, index, group, source, data);
+        this.dest = data.dest;
+        this.base = data.base;
+        this.value = Arrayable.clamp(data.value, talent);
+        this.scale = data.scale;
+        this.format = data.format;
+    }
+
+    public get step() {
+        return -1;
+    }
+
+    public effect(party: ReadonlyArray<Status>) {
+        const owner = party[this.index];
+        let elem = "";
+        const element = owner.info?.element;
+        if (element) {
+            elem = this.text(konst.TypeToBonus.element(element));
+        }
+        let dest = "";
+        if (this.dest) {
+            dest = this.text(this.dest);
+        }
+        let base = "";
+        if (this.base) {
+            base = this.text(this.base);
+        }
+        const value = this.applyScale(this.value, owner);
+        return this.i18n.t(
+            "combat." + this.format,
+            { elem, dest, base, value: RateBonus.round(value) }
+        );
+    }
+
+    private applyValue(owner: Status) {
+        let value = this.value;
+        switch (this.base) {
+            case konst.StatusBonusType.Atk:
+                value = owner.total(this.base) * value / 100;
+                break;
+        }
+        return value * this.data.stack;
+    }
+
+    private applyScale(value: number, owner: Status) {
+        const scale = this.scale;
+        if (scale) {
+            const talent = owner.talent[scale.talent] || 1;
+            value *= DamageScaleTable[scale.type][talent - 1] / 100;
+        }
+        return value;
+    }
+
+    public applyEx(dst: ExtraBonus, arg: ICombatStatusBonus) {
+        const target = arg.target;
+        const owner = arg.party[this.index];
+        if (arg.element === owner.info?.element && this.isApply(target, -1)) {
+            let value = this.applyValue(owner);
+            // ダメージ倍率適用
+            value = this.applyScale(value, owner);
+
+            switch (this.dest) {
+                case konst.StatusBonusType.CriDmg:
+                    dst.crit.damage += value;
+                    break;
+                case konst.StatusBonusType.CriRate:
+                    dst.crit.damage += value;
+                    break;
+                case konst.StatusBonusType.Atk:
+                    dst.atk += value;
+                    break;
+                default:
+                    dst.flat += value;
+                    break;
+            }
+        }
+    }
+}
+
 // 耐性減衰ボーナス
 export class ReductBonus extends BonusBase {
     private readonly types: Readonly<konst.AnyReductType[]>;
@@ -683,6 +774,9 @@ export class BonusBuilder {
                 break;
             case konst.ExtraBonusType.Combat:
                 bonus = new CombatBonus(i18n, key, index, group, source, data, talent);
+                break;
+            case konst.ExtraBonusType.Element:
+                bonus = new ElementBonus(i18n, key, index, group, source, data, talent);
                 break;
             case konst.ExtraBonusType.Reduct:
                 bonus = new ReductBonus(i18n, key, index, group, source, data, talent);
