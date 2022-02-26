@@ -120,7 +120,6 @@ export type ReductType = ElementType | typeof ReductType[keyof typeof ReductType
 
 export const AnyReductType = {
     Contact: "contact",
-    All: "all",
 } as const;
 export type AnyReductType = ReductType | typeof AnyReductType[keyof typeof AnyReductType];
 

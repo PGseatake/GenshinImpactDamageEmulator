@@ -165,8 +165,19 @@ export class Attribute implements ICombatStatusBonus {
         let extra = {
             atk: 0,
             dmg: 0,
-            crit: { damage: 0, rate: 0 },
             flat: 0,
+            crit: { damage: 0, rate: 0 },
+            reduct: {
+                pyro: 0,
+                hydro: 0,
+                dendro: 0,
+                elect: 0,
+                anemo: 0,
+                cryo: 0,
+                geo: 0,
+                phys: 0,
+                defence: 0,
+            },
         };
         for (const b of bonus) {
             b.applyEx(extra, this);
@@ -175,8 +186,8 @@ export class Attribute implements ICombatStatusBonus {
         // 攻撃力
         let attackPower = status.total(this.based) + extra.atk;
         // 防御力
-        const enemyDefence = enemy.defence(status.level) / 100;
-        const enemyResist = enemy.resist(element);
+        const enemyDefence = enemy.defence(status.level, extra.reduct) / 100;
+        const enemyResist = enemy.resist(element, extra.reduct);
 
         // 各種倍率
         const combatBonus = status.combatBonus(combat);

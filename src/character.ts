@@ -4159,7 +4159,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv4: { items: konst.ElementBonusType.Elect, value: 20, limit: "skill.hit", times: 5, target: konst.BonusTarget.All },
             // 5. 大密法・天狐顕現のスキルLv.+3
             // 6. 殺生櫻が攻撃する時、敵の防御力の60%を無視する。
-            // TODO: 実装
+            lv6: {
+                extra: konst.ExtraBonusType.Reduct,
+                type: konst.ReductType.Defence,
+                value: 60.0,
+                limit: "skill.hit",
+                target: konst.BonusTarget.Self,
+                bind: konst.CombatType.Skill,
+            },
         },
     },
     Yanfei: {
@@ -4545,7 +4552,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 玉璋シールドに守られたキャラクターは、付近範囲内の敵の全元素耐性と物理耐性-20%。この効果は重ねがけ不可。
             skill: {
                 extra: konst.ExtraBonusType.Reduct,
-                type: konst.AnyReductType.All,
                 value: 20,
                 limit: "zhongli.shield_en",
                 target: konst.BonusTarget.All,

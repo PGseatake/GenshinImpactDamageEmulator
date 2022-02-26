@@ -896,41 +896,48 @@ export interface IEnemyData extends INameable {
 
 // IEnemyDataのユーティリティクラス
 export default class Enemy {
+    private readonly info: Readonly<IEnemyInfo>;
     public readonly data: Readonly<IEnemyData>;
-    public readonly info: Readonly<IEnemyInfo>;
     public readonly reduct: StatusReduct;
 
     constructor(data: Readonly<IEnemyData>, reduct: StatusReduct) {
-        this.data = data;
         this.info = EnemyList[data.name];
+        this.data = data;
         this.reduct = reduct;
     }
 
     value(type: ElementType) {
-        return (
-            this.info.resist[type] -
-            this.reduct[type] +
-            this.data.fixed +
-            ((type === this.data.elem && this.info.value) || 0)
-        );
+        const { data, info } = this;
+        let elem_resist = 0;
+        if (type === data.elem) {
+            elem_resist = info.value || 0;
+        }
+        return data.fixed + elem_resist + info.resist[type] - this.reduct[type];
     }
 
-    resist(type: ElementType) {
+    resist(type: ElementType, extra?: StatusReduct) {
         let rate = this.value(type);
+        if (extra) {
+            rate -= extra[type];
+        }
         if (rate < 0) {
             return (100 - rate / 2) / 100;
-        } else if (75 <= rate) {
-            return 100 / (rate * 4 + 100);
-        } else {
-            return (100 - rate) / 100;
         }
+        if (75 <= rate) {
+            return 100 / (rate * 4 + 100);
+        }
+        return (100 - rate) / 100;
     }
 
-    defence(charaLevel: number) {
+    defence(charaLevel: number, extra?: StatusReduct) {
+        let reduct = this.reduct.defence;
+        if (extra) {
+            reduct += extra.defence;
+        }
         const enemy = this.data.level + 100;
         const chara = charaLevel + 100;
-        let def = (chara / (enemy + chara)) * 100 + this.reduct.defence;
-        return def < 100 ? def : 100;
+        const rate = (chara / (enemy + chara)) * 100 + reduct;
+        return rate < 100 ? rate : 100;
     }
 
     public static format(data: Readonly<IEnemyData>, info: Readonly<IEnemyInfo>, name: EnemyName, i18n: IVueI18n) {

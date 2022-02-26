@@ -77,8 +77,9 @@ export interface IElementBonus extends IBonusOption {
 
 export interface IReductBonus extends IBonusOption {
     readonly extra: "reduct";
-    readonly type: ReadonlyArrayable<konst.AnyReductType>;
+    readonly type?: ReadonlyArrayable<konst.AnyReductType>;
     readonly value: ReadonlyArrayable<number>;
+    readonly bind?: string;
     // readonly limit?: string;
     // readonly times?: number;
     // readonly target?: konst.BonusTarget;

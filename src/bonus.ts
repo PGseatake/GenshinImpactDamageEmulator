@@ -11,7 +11,7 @@ import { DBCharaTable, ICharaData, CharaName, CharaList } from "~/src/character"
 import { DBWeaponTable, IWeaponData, WeaponList } from "~/src/weapon";
 import { DBArtifactTable, ArtifactName, ArtifactList } from "~/src/artifact";
 import { Team, ITeamData, Member, IMember } from "~/src/team";
-import Status, { StatusCritical } from "~/src/status";
+import Status, { StatusCritical, StatusReduct } from "~/src/status";
 import { roundRate } from "~/plugins/utils";
 import { Arrayable } from "~/src/utility";
 
@@ -89,8 +89,9 @@ export interface ICombatStatusBonus extends IStatusBonus {
 export type ExtraBonus = {
     atk: number;
     dmg: number;
-    crit: StatusCritical;
     flat: number;
+    crit: StatusCritical;
+    reduct: StatusReduct;
 };
 
 // ボーナス基底
@@ -620,43 +621,76 @@ export class ElementBonus extends BonusBase {
 
 // 耐性減衰ボーナス
 export class ReductBonus extends BonusBase {
-    private readonly types: Readonly<konst.AnyReductType[]>;
+    private readonly types?: ReadonlyArray<konst.AnyReductType>;
     private readonly value: number;
+    private readonly bind: string;
 
     constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: IReductBonus, talent = 0) {
         super(i18n, key, index, group, source, data);
         this.types = Arrayable.from(data.type);
         this.value = Arrayable.clamp(data.value, talent);
+        this.bind = data.bind || "";
+    }
+
+    public get step() {
+        if (this.bind) {
+            return -1;
+        }
+        return 0;
     }
 
     public effect(_: ReadonlyArray<Status>) {
-        const type = join(this.types, type => this.i18n.t("reduct." + type));
-        return this.i18n.t(
+        const i18n = this.i18n;
+        let type: string;
+        if (this.types) {
+            type = join(this.types, type => i18n.t("reduct." + type));
+        } else {
+            type = i18n.t("reduct.all") as string;
+        }
+        return i18n.t(
             "format.reduct",
             { type, value: RateBonus.round(this.value) }
         );
     }
 
     public apply(arg: IStatusBonus) {
+        if (this.bind) return;
         const target = arg.target;
         if (this.isApply(target, arg.step)) {
-            for (const type of this.types) {
+            this.applyTo(target.reduct, arg.contact);
+        }
+    }
+
+    public applyEx(dst: ExtraBonus, arg: ICombatStatusBonus) {
+        if (this.isApply(arg.target, -1)) {
+            switch (this.bind) {
+                case arg.type:
+                case arg.name:
+                    this.applyTo(dst.reduct, arg.contact);
+                    break;
+            }
+        }
+    }
+
+    private applyTo(reduct: StatusReduct, contact?: konst.AnyContactType) {
+        const { types, value } = this;
+        if (types) {
+            for (const type of types) {
                 switch (type) {
                     case konst.AnyReductType.Contact:
-                        const contact = arg.contact;
                         if (contact) {
-                            target.reduct[contact] += this.value;
-                        }
-                        break;
-                    case konst.AnyReductType.All:
-                        for (const elem of konst.ElementTypes) {
-                            target.reduct[elem] += this.value;
+                            reduct[contact] += value;
                         }
                         break;
                     default:
-                        target.reduct[type] += this.value;
+                        reduct[type] += value;
                         break;
                 }
+            }
+        } else {
+            // 全元素＆物理
+            for (const elem of konst.ElementTypes) {
+                reduct[elem] += value;
             }
         }
     }
