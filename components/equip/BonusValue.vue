@@ -73,7 +73,7 @@ import {
   mdiWaterPercent,
 } from "@mdi/js";
 import { BonusType, StatusBonusType, ElementBonusType } from "~/src/const";
-import { RateBonus } from "~/src/bonus";
+import { RateBonus } from "~/src/special";
 
 type DisplayBonusType = "none" | StatusBonusType | ElementBonusType;
 

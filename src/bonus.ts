@@ -1,9 +1,10 @@
 import VueI18n, { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
 import {
-    IBonusOption, IBasicBonus, IEnchantBonus, IReductBonus,
-    IFlatBonus, IFlatBonusScale, IFlatBonusBound, ICombatBonus,
-    IElementBonus, AnyBonus, Constes, Passives, Passive,
+    StatusReduct, ExtraBonus, IBonusOption, IBasicBonus,
+    IEnchantBonus, IReductBonus, IFlatBonus, IFlatBonusScale,
+    IFlatBonusBound, ICombatBonus, IElementBonus, ISpecialBonus,
+    AnyBonus, Constes, Passives, Passive,
 } from "~/src/interface";
 import { parseLevel } from "~/src/ascension";
 import { DBEquipTable } from "~/src/equipment";
@@ -11,46 +12,9 @@ import { DBCharaTable, ICharaData, CharaName, CharaList } from "~/src/character"
 import { DBWeaponTable, IWeaponData, WeaponList } from "~/src/weapon";
 import { DBArtifactTable, ArtifactName, ArtifactList } from "~/src/artifact";
 import { Team, ITeamData, Member, IMember } from "~/src/team";
-import Status, { StatusCritical, StatusReduct } from "~/src/status";
-import { roundRate } from "~/plugins/utils";
-import { Arrayable } from "~/src/utility";
-
-export const DamageScaleTable: ReadonlyRecord<konst.DamageScale, ReadonlyArray<number>> = {
-    //    [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
-    phys: [100.0, 108.0, 116.0, 127.5, 135.0, 145.0, 157.5, 170.0, 182.5, 197.5, 211.5, 225.5, 239.5, 253.5, 267.5],
-    elem: [100.0, 107.5, 115.0, 125.0, 132.5, 140.0, 150.0, 160.0, 170.0, 180.0, 190.0, 200.0, 212.5, 225.0, 237.5], // 確定
-    xiao: [100.0, 106.0, 112.0, 119.5, 125.5, 131.5, 139.5, 147.0, 155.0, 162.5, 170.5, 178.0, 186.0, 193.5, 201.0],
-    //     [    1,      2,     3,      4,     5,     6,      7,     8,      9,    10,     11,    12,     13,    14,     15]
-    hutao: [100.0, 106.75, 113.5, 122.75, 129.5, 137.5, 147.75, 158.0, 168.25, 178.5, 188.75, 199.0, 209.25, 219.5, 229.75],
-    //       [    1,     2,     3,     4,     5,     6,     7,     8,     9,    10,    11,    12,    13,    14,    15]
-    zhongli: [100.0, 110.5, 121.5, 135.0, 147.0, 159.5, 175.5, 192.0, 208.0, 224.0, 240.5, 256.5, 270.0, 283.5, 297.0],
-} as const;
-
-export const DirectBonus: ReadonlyArray<string> = [
-    konst.BonusType.None,
-    konst.StatusBonusType.Hp,
-    konst.StatusBonusType.Atk,
-    konst.StatusBonusType.Def,
-    konst.StatusBonusType.Elem,
-] as const;
-
-export const RateBonus = {
-    check(type: konst.AnyBonusType) {
-        return !DirectBonus.includes(type);
-    },
-    suffix(type: konst.AnyBonusType) {
-        return DirectBonus.includes(type) ? "" : "%";
-    },
-    round(value: number, type?: konst.AnyBonusType) {
-        if (!DirectBonus.includes(type!)) {
-            return roundRate(value);
-        }
-        return Math.round(value).toFixed();
-    },
-    xround(value: number, type?: konst.AnyBonusType) {
-        return value < 0 ? "-" : "+" + RateBonus.round(value, type);
-    },
-} as const;
+import { Damage, BonusStep, RateBonus } from "~/src/special";
+import Status from "~/src/status";
+import { Arrayable, Maths } from "~/src/utility";
 
 const TeamBonus: Partial<ReadonlyRecord<konst.ElementType, IBasicBonus>> = {
     pyro: { items: konst.StatusBonusType.AtkBuf, value: 25 },
@@ -72,26 +36,17 @@ function join<T>(items: readonly T[], pred: (item: T) => VueI18n.TranslateResult
 }
 
 // 通常ボーナス
-export interface IStatusBonus {
+export type StatusBonus = {
     step: number;
     target: Status;
     party: ReadonlyArray<Status>;
     contact?: konst.AnyContactType;
     reaction?: konst.AnyReactionType;
 };
-export interface ICombatStatusBonus extends IStatusBonus {
+export type CombatStatusBonus = StatusBonus & {
     type: konst.CombatType;
     name: string;
     element: konst.AnyElementType;
-};
-
-// 追加ボーナス
-export type ExtraBonus = {
-    atk: number;
-    dmg: number;
-    flat: number;
-    crit: StatusCritical;
-    reduct: StatusReduct;
 };
 
 // ボーナス基底
@@ -200,9 +155,9 @@ export class BonusBase {
         return false;
     }
 
-    public apply(arg: IStatusBonus) { }
+    public apply(arg: StatusBonus) { }
 
-    public applyEx(dst: ExtraBonus, arg: ICombatStatusBonus) { }
+    public applyEx(dst: ExtraBonus, arg: CombatStatusBonus) { }
 
     protected text(type: konst.AnyBonusType | "energy" | "contact") {
         return String(this.i18n.t("bonus." + type)).replace("(%)", "");
@@ -228,7 +183,7 @@ export class BasicBonus extends BonusBase {
         );
     }
 
-    public apply(arg: IStatusBonus) {
+    public apply(arg: StatusBonus) {
         const dst = arg.target;
         if (this.isApply(dst, arg.step)) {
             const value = this.value * this.data.stack;
@@ -265,15 +220,15 @@ export class FlatBonus extends BonusBase {
     public get step() {
         switch (this.base) {
             case konst.FlatBonusBase.Direct:
-                return 0;
+                return BonusStep.Direct;
             case konst.FlatBonusBase.Elem:
             case konst.FlatBonusBase.EnRec:
                 if (!this.dest.includes(this.base)) {
                     // 変換元と適用先が違うものは後回し
-                    return 2;
+                    return BonusStep.Defer;
                 }
         }
-        return 1;
+        return BonusStep.Relate;
     }
 
     private get direct() {
@@ -367,8 +322,7 @@ export class FlatBonus extends BonusBase {
     private applyScale(value: number, owner: Readonly<Status>) {
         const scale = this.scale;
         if (scale) {
-            const talent = owner.talent[scale.talent] || 1;
-            value *= DamageScaleTable[scale.type][talent - 1] / 100;
+            value *= Damage.scale(scale.type, owner.talent[scale.talent]);
         }
         return value;
     }
@@ -406,7 +360,7 @@ export class FlatBonus extends BonusBase {
         return value;
     }
 
-    public apply(arg: IStatusBonus) {
+    public apply(arg: StatusBonus) {
         const target = arg.target;
         if (this.isApply(target, arg.step)) {
             const owner = arg.party[this.index];
@@ -477,7 +431,7 @@ export class CombatBonus extends BonusBase {
             bind: join(this.bind, (item) => this.i18n.t("combat." + item)),
             dest: this.dest ? this.i18n.t("bonus." + this.dest) : "",
             base: this.base ? this.i18n.t("bonus." + this.base) : "",
-            value: roundRate(this.value),
+            value: Maths.rate(this.value),
         });
     }
 
@@ -505,7 +459,7 @@ export class CombatBonus extends BonusBase {
         return value * this.data.stack;
     }
 
-    public applyEx(dst: ExtraBonus, arg: ICombatStatusBonus) {
+    public applyEx(dst: ExtraBonus, arg: CombatStatusBonus) {
         if (this.isApply(arg.target, -1)) {
             if (this.bound(arg.type, arg.name)) {
                 const value = this.calc(arg.party[this.index]);
@@ -587,13 +541,12 @@ export class ElementBonus extends BonusBase {
     private applyScale(value: number, owner: Status) {
         const scale = this.scale;
         if (scale) {
-            const talent = owner.talent[scale.talent] || 1;
-            value *= DamageScaleTable[scale.type][talent - 1] / 100;
+            value *= Damage.scale(scale.type, owner.talent[scale.talent]);
         }
         return value;
     }
 
-    public applyEx(dst: ExtraBonus, arg: ICombatStatusBonus) {
+    public applyEx(dst: ExtraBonus, arg: CombatStatusBonus) {
         const target = arg.target;
         const owner = arg.party[this.index];
         if (arg.element === owner.info?.element && this.isApply(target, -1)) {
@@ -634,9 +587,9 @@ export class ReductBonus extends BonusBase {
 
     public get step() {
         if (this.bind) {
-            return -1;
+            return BonusStep.Extra;
         }
-        return 0;
+        return BonusStep.Direct;
     }
 
     public effect(_: ReadonlyArray<Status>) {
@@ -653,7 +606,7 @@ export class ReductBonus extends BonusBase {
         );
     }
 
-    public apply(arg: IStatusBonus) {
+    public apply(arg: StatusBonus) {
         if (this.bind) return;
         const target = arg.target;
         if (this.isApply(target, arg.step)) {
@@ -661,7 +614,7 @@ export class ReductBonus extends BonusBase {
         }
     }
 
-    public applyEx(dst: ExtraBonus, arg: ICombatStatusBonus) {
+    public applyEx(dst: ExtraBonus, arg: CombatStatusBonus) {
         if (this.isApply(arg.target, -1)) {
             switch (this.bind) {
                 case arg.type:
@@ -715,10 +668,48 @@ export class EnchantBonus extends BonusBase {
         );
     }
 
-    public apply(arg: IStatusBonus) {
+    public apply(arg: StatusBonus) {
         const target = arg.target;
         if (this.isApply(target, arg.step)) {
             target.renchant(this.type, this.dest, this.target === konst.BonusTarget.Self);
+        }
+    }
+}
+
+// 特殊ボーナス
+export class SpecialBonus extends BonusBase {
+    private readonly self: ISpecialBonus;
+
+    constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: ISpecialBonus) {
+        super(i18n, key, index, group, source, data);
+        this.self = data;
+    }
+
+    public get step() {
+        const self = this.self;
+        return self.step(self);
+    }
+
+    public effect(party: ReadonlyArray<Status>) {
+        const self = this.self;
+        return self.effect(self, party[this.index], this.i18n);
+    }
+
+    public apply(arg: StatusBonus) {
+        if (this.isApply(arg.target, arg.step)) {
+            const self = this.self;
+            if (self.apply) {
+                self.apply(self, arg);
+            }
+        }
+    }
+
+    public applyEx(dst: ExtraBonus, arg: CombatStatusBonus) {
+        if (this.isApply(arg.target, -1)) {
+            const self = this.self;
+            if (self.applyEx) {
+                self.applyEx(self, dst, arg);
+            }
         }
     }
 }
@@ -817,6 +808,9 @@ export class BonusBuilder {
                 break;
             case konst.ExtraBonusType.Enchant:
                 bonus = new EnchantBonus(i18n, key, index, group, source, data);
+                break;
+            case konst.ExtraBonusType.Special:
+                bonus = new SpecialBonus(i18n, key, index, group, source, data);
                 break;
             default:
                 bonus = new BasicBonus(i18n, key, index, group, source, data);

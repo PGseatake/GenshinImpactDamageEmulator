@@ -1,58 +1,19 @@
 import * as konst from "~/src/const";
 import { parseLevel } from "~/src/ascension";
-import { ICharaInfo } from "~/src/interface";
+import {
+    ICharaInfo, IStatus, StatusTalent, StatusBase, StatusParam,
+    StatusFlat, StatusEnchant, StatusReduct, StatusCritical
+} from "~/src/interface";
 import { ICharaData } from "~/src/character";
 import { DBWeaponTable } from "~/src/weapon";
 import { DBArtifactTable, SubBonus } from "~/src/artifact";
 import { Member, IMember, IAnyMember } from "~/src/team";
 import Reaction from "~/src/reaction";
 
-export type StatusTalent = Record<konst.TalentType, number>;
-export type StatusBase = Record<konst.StatusType, number>;
-export type StatusParam = Record<konst.BonusType, number>;
-export type StatusFlat = Record<konst.CombatType, number>;
-export type StatusReduct = Record<konst.ReductType, number>;
-export type StatusEnchant = {
-    type: konst.EnchantType;
-    dest: konst.CombatType[];
-    self: boolean;
-};
-
 export type StatusPart = {
     type: konst.BonusType;
     total: number;
     base: number;
-};
-export type StatusCritical = {
-    rate: number;
-    damage: number;
-};
-
-export const StatusBase = {
-    "en_rec": 100,
-    "cri_dmg": 50,
-    "cri_rate": 5,
-    check(type: konst.BonusType): type is konst.StatusType {
-        switch (type) {
-            case konst.StatusBonusType.Hp:
-            case konst.StatusBonusType.Atk:
-            case konst.StatusBonusType.Def:
-                return true;
-        }
-        return false;
-    },
-    value(type: konst.BonusType): number {
-        return StatusBase[type as ("en_rec" | "cri_dmg" | "cri_rate")] || 0;
-    },
-} as const;
-
-export interface IStatus {
-    talent: StatusTalent;
-    base: StatusBase;
-    param: StatusParam;
-    flat: StatusFlat;
-    reduct: StatusReduct;
-    enchant: StatusEnchant;
 };
 
 export default class Status {

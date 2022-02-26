@@ -61,12 +61,14 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { AnyContactType, AnyReactionType } from "~/src/const";
-import { Team, ITeamData, IMember, IAnyMember } from "~/src/team";
+import { IStatus } from "~/src/interface";
+import { Team, ITeamData, IAnyMember } from "~/src/team";
 import { BonusBase, BonusBuilder } from "~/src/bonus";
-import Status, { IStatus } from "~/src/status";
+import Status from "~/src/status";
 import Enemy, { IEnemyData } from "~/src/enemy";
 import Reaction from "~/src/reaction";
 import { IDamageData } from "~/src/damage";
+import { BonusStep } from "~/src/special";
 import { parseLevel } from "~/src/ascension";
 import { Arrayable } from "~/src/utility";
 
@@ -220,7 +222,7 @@ export default class DamageDetail extends Vue {
 
     const party = this.party;
     const contact = this.contact;
-    for (let step = 0; step <= 2; ++step) {
+    for (let step = 0; step <= BonusStep.Special; ++step) {
       for (let target of this.party) {
         for (const bonus of this.bonus) {
           bonus.apply({ step, target, party, contact });

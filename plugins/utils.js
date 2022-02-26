@@ -1,20 +1,14 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib'
 import { BonusType, ElementType } from '~/src/const';
-import { DirectBonus } from '~/src/bonus';
+import { DirectBonus } from '~/src/special';
 import convert from '~/src/convert';
-
-export function roundRate(value) {
-    // 小数点以下 = value < 1.0: 2桁 / value < 100: 1桁 / 他: 0桁
-    const frac = Math.max(0, value < 100 ? (value < 1 ? 2 : 1) : 0);
-    const scale = Math.pow(10, frac);
-    return (Math.round(value * scale) / scale).toFixed(frac) + "%";
-}
+import { Maths } from '~/src/utility';
 
 const utils = {
     install(Vue) {
         Vue.prototype.$db = convert();
-        Vue.prototype.$roundRate = roundRate;
+        Vue.prototype.$roundRate = Maths.rate;
 
         Vue.prototype.$makeUniqueId = function() {
             return Date.now().toString(16) +

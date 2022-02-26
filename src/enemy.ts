@@ -1,7 +1,6 @@
 import { IVueI18n } from "vue-i18n";
 import { ElementType, AnyElementType } from "~/src/const";
-import { INameable } from "~/src/interface";
-import { StatusReduct } from "~/src/status";
+import { INameable, StatusReduct } from "~/src/interface";
 
 type Phase = {
     readonly label: string;

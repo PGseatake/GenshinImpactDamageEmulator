@@ -295,6 +295,7 @@ export const ExtraBonusType = {
     Element: "element",
     Reduct: "reduct",
     Enchant: "enchant",
+    Special: "special",
 } as const;
 export type ExtraBonusType = typeof ExtraBonusType[keyof typeof ExtraBonusType];
 

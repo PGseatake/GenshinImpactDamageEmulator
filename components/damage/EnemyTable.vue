@@ -126,7 +126,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { ElementType, ResistTypes } from "~/src/const";
-import { StatusReduct } from "~/src/status";
+import { StatusReduct } from "~/src/interface";
 import Enemy, {
   EnemyList,
   EnemyName,

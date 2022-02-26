@@ -1,4 +1,47 @@
+import VueI18n, { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
+
+export type StatusTalent = Record<konst.TalentType, number>;
+export type StatusBase = Record<konst.StatusType, number>;
+export type StatusParam = Record<konst.BonusType, number>;
+export type StatusFlat = Record<konst.CombatType, number>;
+export type StatusReduct = Record<konst.ReductType, number>;
+export type StatusEnchant = {
+    type: konst.EnchantType;
+    dest: konst.CombatType[];
+    self: boolean;
+};
+export type StatusCritical = {
+    rate: number;
+    damage: number;
+};
+
+export const StatusBase = {
+    "en_rec": 100,
+    "cri_dmg": 50,
+    "cri_rate": 5,
+    check(type: konst.BonusType): type is konst.StatusType {
+        switch (type) {
+            case konst.StatusBonusType.Hp:
+            case konst.StatusBonusType.Atk:
+            case konst.StatusBonusType.Def:
+                return true;
+        }
+        return false;
+    },
+    value(type: konst.BonusType): number {
+        return StatusBase[type as ("en_rec" | "cri_dmg" | "cri_rate")] || 0;
+    },
+} as const;
+
+export interface IStatus {
+    talent: StatusTalent;
+    base: StatusBase;
+    param: StatusParam;
+    flat: StatusFlat;
+    reduct: StatusReduct;
+    enchant: StatusEnchant;
+};
 
 export type BonusValue = {
     type: konst.AnyBonusType;
@@ -93,7 +136,38 @@ export interface IEnchantBonus extends IBonusOption {
     // readonly times?: number;
 }
 
-export type AnyBonus = IBasicBonus | IFlatBonus | ICombatBonus | IElementBonus | IReductBonus | IEnchantBonus;
+export interface IStatusBonus {
+    step: number;
+    target: IStatus;
+    party: ReadonlyArray<IStatus>;
+    contact?: konst.AnyContactType;
+    reaction?: konst.AnyReactionType;
+}
+export interface ICombatStatusBonus extends IStatusBonus {
+    type: konst.CombatType;
+    name: string;
+    element: konst.AnyElementType;
+}
+
+// 追加ボーナス
+export type ExtraBonus = {
+    atk: number;
+    dmg: number;
+    flat: number;
+    crit: StatusCritical;
+    reduct: StatusReduct;
+};
+
+export interface ISpecialBonus extends IBonusOption {
+    readonly extra: "special";
+    readonly [key: string]: any;
+    readonly step: (self: ISpecialBonus) => number;
+    readonly effect: (self: ISpecialBonus, owner: Readonly<IStatus>, i18n: IVueI18n) => VueI18n.TranslateResult;
+    readonly apply?: (self: ISpecialBonus, arg: IStatusBonus) => void;
+    readonly applyEx?: (self: ISpecialBonus, dst: ExtraBonus, arg: ICombatStatusBonus) => void;
+}
+
+export type AnyBonus = IBasicBonus | IFlatBonus | ICombatBonus | IElementBonus | IReductBonus | IEnchantBonus | ISpecialBonus;
 
 export interface ICombat {
     readonly name: string;

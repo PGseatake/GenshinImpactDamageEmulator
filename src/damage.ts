@@ -8,14 +8,14 @@ import {
     AnyContactType,
     AnyElementType,
 } from "~/src/const";
-import { ICombat, IIdentify } from "~/src/interface";
+import { ICombat, IIdentify, StatusCritical } from "~/src/interface";
 import Reaction from "~/src/reaction";
 import Enemy, { IEnemyData } from "~/src/enemy";
-import Status, { StatusCritical } from "~/src/status";
-import { roundRate } from "~/plugins/utils";
+import Status from "~/src/status";
+import { BonusStep, Damage } from "~/src/special";
+import { BonusBase, CombatStatusBonus } from "~/src/bonus";
 import { SettingCritical } from "~/src/setting";
-import { BonusBase, DamageScaleTable, ICombatStatusBonus } from "~/src/bonus";
-import { Arrayable } from "~/src/utility";
+import { Arrayable, Maths } from "~/src/utility";
 
 export interface IDamageData extends IIdentify, IEnemyData {
     team: string;
@@ -24,16 +24,6 @@ export interface IDamageData extends IIdentify, IEnemyData {
     reaction: AnyReactionType;
 }
 export type DBDamageTable = { damage: IDamageData[]; };
-
-function clamp(val: number, min: number, max: number) {
-    if (val < min) return min;
-    if (val > max) return max;
-    return val;
-}
-
-function lerp(x0: number, x1: number, ratio: number) {
-    return x0 * (1 - ratio) + x1 * ratio;
-}
 
 function toScale(rate: number) {
     return 1.0 + rate / 100.0;
@@ -52,7 +42,11 @@ class DamageCell {
         this.atk = atk;
         this.def = def;
         this.flat = flat;
-        this.crit = crit ? { rate: clamp(crit.rate / 100, 0, 1), damage: toScale(crit.damage) } : { rate: 0, damage: 1 };
+        if (crit) {
+            this.crit = { rate: Maths.clamp(crit.rate / 100, 0, 1), damage: toScale(crit.damage) };
+        } else {
+            this.crit = { rate: 0, damage: 1 };
+        }
         this.value = value;
         this.multi = multi;
         this.strike = false;
@@ -74,7 +68,7 @@ class DamageCell {
     }
 
     private calc(val: number) {
-        const crit = lerp(1.0, this.crit.damage, this.crit.rate);
+        const crit = Maths.lerp(1.0, this.crit.damage, this.crit.rate);
         return (((val * this.atk * this.def * crit) / 100) + this.flat).toFixed();
     }
 }
@@ -84,7 +78,7 @@ export interface IAttribute extends ICombat {
 }
 
 // 天賦の各種倍率
-export class Attribute implements ICombatStatusBonus {
+export class Attribute implements CombatStatusBonus {
     public readonly step: number;
     public readonly type: CombatType;
     public readonly name: string;
@@ -99,19 +93,18 @@ export class Attribute implements ICombatStatusBonus {
 
     constructor(attr: IAttribute, data: IDamageData, target: Status, party: ReadonlyArray<Status>) {
         const level = target.talent[attr.talent];
-        const scale = DamageScaleTable[attr.scale];
-        const index = clamp(level, 1, scale.length) - 1;
+        const scale = attr.scale;
         this.type = attr.type;
         this.name = attr.name;
         if (Array.isArray(attr.value)) {
-            this.value = attr.value.map((val) => (val * scale[index]) / 100);
+            this.value = attr.value.map((val) => val * Damage.scale(scale, level));
         } else {
-            this.value = [(attr.value * scale[index]) / 100];
+            this.value = [attr.value * Damage.scale(scale, level)];
         }
         this.multi = attr.multi ?? 1;
         this.based = attr.based ?? DamageBased.Atk;
 
-        this.step = -1;
+        this.step = BonusStep.Extra;
         this.party = party;
         this.target = target;
         this.element = "";
@@ -140,11 +133,11 @@ export class Attribute implements ICombatStatusBonus {
     head() {
         if (this.multi > 1) {
             const val = this.value[0];
-            return `<td class="text-right">${roundRate(val)} x${this.multi}</td>`;
+            return `<td class="text-right">${Maths.rate(val)} x${this.multi}</td>`;
         }
         return (
             `<td class="text-right">` +
-            this.value.map((val) => roundRate(val)).join("<br>") +
+            this.value.map((val) => Maths.rate(val)).join("<br>") +
             "</td>"
         );
     }

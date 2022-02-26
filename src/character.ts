@@ -2,6 +2,7 @@ import * as konst from "~/src/const";
 import { BonusValue, IIdentify, INameable, ICommentable, ICharaInfo } from "~/src/interface";
 import * as ascension from "~/src/ascension";
 import { SettingChara } from "~/src/setting";
+import { MonaBurstBonus, RaidenEnrecBonus, SayuBurstBonus } from "~/src/special";
 
 export const CharaNames = [
     "TravelAnemo",
@@ -2504,11 +2505,12 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         passive: {
             // burst: 星異状態継続中、受けるダメージがアップする
             burst: {
-                items: konst.AnyBonusType.Damage,
-                value: 42, // [42, 44, 46, 48, 50, 52, 54, 56, 58, 60],
+                extra: konst.ExtraBonusType.Special,
+                value: [42, 44, 46, 48, 50, 52, 54, 56, 58, 60],
                 limit: "mona.bind",
-                times: 4, // TODO: 配列
+                times: 5, // TODO: 4~5 sec
                 target: konst.BonusTarget.All,
+                ...MonaBurstBonus,
             },
             // 4. 虚実流動状態に入った2秒後、周囲に敵がいる場合は自動的に虚影を1つ生成する。
             //    虚影は2秒間存在し破裂する。破裂ダメージは水中幻願のダメージの50%。
@@ -2868,7 +2870,15 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 周囲にいるチーム内キャラクターが元素オーブまたは元素粒子を獲得した時、諸願百目の輪に願力を2層蓄積する。
             // 5. 元素チャージ効率が100%を超えている場合、超えた分1%につき、雷電将軍は以下の効果を獲得する。
             // ・夢想の一心状態で提供する元素エネルギー回復+0.6%。雷元素ダメージ+0.4%。
-            // asc4th: {}, TODO: 実装
+            asc4th: {
+                extra: konst.ExtraBonusType.Special,
+                dest: konst.ElementBonusType.Elect,
+                value: 0.4,
+                limit: "raiden.enrec",
+                times: 7,
+                target: konst.BonusTarget.Self,
+                ...RaidenEnrecBonus,
+            },
         },
         conste: {
             // 1. 諸願百目の輪の願力をより早く蓄積できるようになる。
@@ -3252,14 +3262,15 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 6. 早柚自身の嗚呼流・影貉繚乱によって召喚されたむじむじだるまの攻撃力と回復量は、早柚の元素熟知によって決まる。早柚の元素熟知の数値が１につき、下記効果が発動する。
             // ・むじむじだるまのダメージは攻撃力0.2％分アップする。この方式でアップできるダメージは攻撃力400％まで。
             // ・むじむじだるまによるHP回復量＋3。この方式でアップできる回復量は6000まで。
-            // lv6: {
-            //     extra: konst.ExtraBonusType.Flat,
-            //     dest: konst.FlatBonusDest.Burst,
-            //     base: konst.FlatBonusBase.Elem,
-            //     value: 0.2,
-            //     bound: { base: konst.FlatBonusBase.Atk, value: 400 },
-            //     limit: "むじむじだるまの攻撃",
-            // },
+            lv6: {
+                extra: konst.ExtraBonusType.Special,
+                value: 0.2,
+                bind: "sayu.daruma",
+                limit: "burst.using",
+                times: 12,
+                target: konst.BonusTarget.Self,
+                ...SayuBurstBonus,
+            },
         },
     },
     Shenhe: {
@@ -4311,13 +4322,21 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 継続時間中、「通常攻撃・打ち上げ花火」の2段チャージで焔硝の矢を生成できなくなる。
             skill: [
                 {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.NormalDmg,
+                    value: 37.9,
+                    scale: { type: konst.DamageScale.Xiao, talent: konst.TalentType.Skill },
+                    limit: "skill.using",
+                    times: 10,
+                    target: konst.BonusTarget.Self,
+                },
+                {
                     extra: konst.ExtraBonusType.Enchant,
                     elem: konst.ElementType.Pyro,
                     dest: [konst.CombatType.Normal],
                     limit: "skill.using",
                     times: 10,
                 },
-                // TODO: 通常攻撃ダメージ倍率アップ
             ],
             // 4. 焔硝の庭火舞いの効果継続時間中、宵宮の通常攻撃が命中すると、炎元素ダメージ+2%、継続時間3秒、最大10重まで。
             asc1st: { items: konst.ElementBonusType.Pyro, value: 2, limit: "yoimiya.skill_normal", stack: 10, times: 3 },
