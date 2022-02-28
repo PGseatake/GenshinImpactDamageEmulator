@@ -1,5 +1,8 @@
 import * as konst from "~/src/const";
-import { BonusValue, IIdentify, INameable, ICommentable, IWeaponInfo } from "~/src/interface";
+import {
+    IIdentify, INameable, ICommentable, IWeaponInfo,
+    BonusValue, WeaponBonus, AnyWeaponBonus,
+} from "~/src/interface";
 import * as ascension from "~/src/ascension";
 import { SettingWeapon } from "~/src/setting";
 
@@ -506,14 +509,13 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         // チーム全員の元素エネルギー上限の合計を基に、元素爆発ダメージをアップさせる。
         // 1ポイン卜につき、装備したキャラクターの元素爆発ダメージ+0.12~0.24%。
         // この方式アップできる元素爆発ダメージは最大40~80%まで。
-        // TODO:
-        // passive: {
-        //     extra: konst.ExtraBonusType.Flat,
-        //     dest: konst.FlatBonusDest.Burst,
-        //     base: konst.FlatBonusBase.EnRec, // チーム全員
-        //     value: 0.12,
-        //     bound: { value: 40 },
-        // },
+        passive: {
+            extra: konst.ExtraBonusType.Energy,
+            dest: konst.CombatBonusType.Burst,
+            value: [0.12, 0.15, 0.18, 0.21, 0.24],
+            bound: [40, 50, 60, 70, 80],
+            limit: "general.energy_all",
+        },
     },
     Whiteblind: {
         star: 4,
@@ -805,14 +807,13 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         // チーム全員の元素エネルギー上限の合計を基に、元素爆発ダメージをアップさせる。
         // 1ポイン卜につき、装備したキャラクターの元素爆発ダメージ+0.12~0.24%。
         // この方式アップできる元素爆発ダメージは最大40~80%まで。
-        // TODO:
-        // passive: {
-        //     extra: konst.ExtraBonusType.Flat,
-        //     dest: konst.FlatBonusDest.Burst,
-        //     base: konst.FlatBonusBase.EnRec, // チーム全員
-        //     value: 0.12,
-        //     bound: { value: 40 },
-        // },
+        passive: {
+            extra: konst.ExtraBonusType.Energy,
+            dest: konst.CombatBonusType.Burst,
+            value: [0.12, 0.15, 0.18, 0.21, 0.24],
+            bound: [40, 50, 60, 70, 80],
+            limit: "general.energy_all",
+        },
     },
     RoyalSpear: {
         star: 4,
@@ -1078,14 +1079,13 @@ const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
         // チーム全員の元素エネルギー上限の合計を基に、元素爆発ダメージをアップさせる。
         // 1ポイン卜につき、装備したキャラクターの元素爆発ダメージ+0.12~0.24%。
         // この方式アップできる元素爆発ダメージは最大40~80%まで。
-        // TODO: 
-        // passive: {
-        //     extra: konst.ExtraBonusType.Flat,
-        //     dest: konst.FlatBonusDest.Burst,
-        //     base: konst.FlatBonusBase.EnRec, // チーム全員
-        //     value: 0.12,
-        //     bound: { value: 40 },
-        // },
+        passive: {
+            extra: konst.ExtraBonusType.Energy,
+            dest: konst.CombatBonusType.Burst,
+            value: [0.12, 0.15, 0.18, 0.21, 0.24],
+            bound: [40, 50, 60, 70, 80],
+            limit: "general.energy_all",
+        },
     },
     MitternachtsWaltz: {
         star: 4,
@@ -1538,5 +1538,12 @@ export default class Weapon {
         const { atk, secval } = WeaponList[type][data.name];
         data.atk = ascension.calc14(data.level, atk);
         data.second.value = ascension.calc8(data.level, secval);
+    }
+
+    public static ranked(bonus: AnyWeaponBonus, rank: number): WeaponBonus {
+        if (bonus.extra === konst.ExtraBonusType.Energy) {
+            return { ...bonus, value: bonus.value[rank - 1], bound: bonus.bound[rank - 1] };
+        }
+        return { ...bonus, value: bonus.value[rank - 1] };
     }
 }

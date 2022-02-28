@@ -4,12 +4,12 @@ import {
     StatusReduct, ExtraBonus, IBonusOption, IBasicBonus,
     IEnchantBonus, IReductBonus, IFlatBonus, IFlatBonusScale,
     IFlatBonusBound, ICombatBonus, IElementBonus, ISpecialBonus,
-    AnyBonus, Constes, Passives, Passive,
+    IEnergyBonus, AnyBonus, Constes, Passives, Passive,
 } from "~/src/interface";
 import { parseLevel } from "~/src/ascension";
 import { DBEquipTable } from "~/src/equipment";
 import { DBCharaTable, ICharaData, CharaName, CharaList } from "~/src/character";
-import { DBWeaponTable, IWeaponData, WeaponList } from "~/src/weapon";
+import Weapon, { DBWeaponTable, IWeaponData, WeaponList } from "~/src/weapon";
 import { DBArtifactTable, ArtifactName, ArtifactList } from "~/src/artifact";
 import { Team, ITeamData, Member, IMember } from "~/src/team";
 import { Damage, BonusStep, RateBonus } from "~/src/special";
@@ -401,6 +401,51 @@ export class FlatBonus extends BonusBase {
                         break;
                 }
             }
+        }
+    }
+}
+
+// 元素エネルギーボーナス
+export class EnergyBonus extends BonusBase {
+    private readonly dest: konst.BonusType;
+    private readonly value: number;
+    private readonly bound: number;
+
+    constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: IEnergyBonus, talent = 0) {
+        super(i18n, key, index, group, source, data);
+        this.dest = data.dest;
+        this.value = Arrayable.clamp(data.value, talent);
+        this.bound = Arrayable.clamp(data.bound, talent);
+    }
+
+    public get step() {
+        return BonusStep.Special;
+    }
+
+    public effect(_: ReadonlyArray<Status>) {
+        let dest = "";
+        if (this.dest) {
+            dest = this.text(this.dest);
+        }
+        return this.i18n.t(
+            "format.energy",
+            { dest, value: RateBonus.round(this.value) }
+        );
+    }
+
+    public apply(arg: StatusBonus) {
+        const target = arg.target;
+        if (this.isApply(target, arg.step)) {
+            let energy = 0;
+            for (const status of arg.party) {
+                energy += status.info?.energy || 0;
+            }
+
+            let value = energy * this.value;
+            if (value > this.bound) {
+                value = this.bound;
+            }
+            target.param[this.dest] += value;
         }
     }
 }
@@ -797,6 +842,9 @@ export class BonusBuilder {
             case konst.ExtraBonusType.Flat:
                 bonus = new FlatBonus(i18n, key, index, group, source, data, talent);
                 break;
+            case konst.ExtraBonusType.Energy:
+                bonus = new EnergyBonus(i18n, key, index, group, source, data, talent);
+                break;
             case konst.ExtraBonusType.Combat:
                 bonus = new CombatBonus(i18n, key, index, group, source, data, talent);
                 break;
@@ -885,10 +933,10 @@ export class BonusBuilder {
             if (bonus) {
                 if (Array.isArray(bonus)) {
                     return bonus.map((value, i) => this.convert(
-                        { ...value, value: value.value[data.rank - 1] }, 300 + i, "weapon", source));
+                        Weapon.ranked(value, data.rank), 300 + i, "weapon", source));
                 } else {
                     return [this.convert(
-                        { ...bonus, value: bonus.value[data.rank - 1] }, 300, "weapon", source)];
+                        Weapon.ranked(bonus, data.rank), 300, "weapon", source)];
                 }
             }
         }

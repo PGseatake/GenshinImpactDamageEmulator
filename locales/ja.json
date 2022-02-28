@@ -891,6 +891,7 @@
         "basic": "{type} {value}",
         "flat": "{type} +{base}の{value}分",
         "elem": "{type} +{base}1あたり{value}分",
+        "energy": "1ポイントにつき{dest} +{value}",
         "reduct": "{type} -{value}",
         "enchant": "{dest}に{type}元素付与"
     },
@@ -906,7 +907,8 @@
             "normal_aim": "通常攻撃/狙い撃ちが命中した時、{0}",
             "skill_burst": "元素スキル/元素爆発が命中した時、{0}",
             "weak_aim": "狙い撃ちが弱点に命中した時、{0}",
-            "energy_orb": "元素オーブ/元素粒子を獲得した時、{0}"
+            "energy_orb": "元素オーブ/元素粒子を獲得した時、{0}",
+            "energy_all": "チーム全員の元素エネルギー上限の合計を基に、{0}"
         },
         "hp": {
             "leXX": "HPが一定値以下の時、{0}",

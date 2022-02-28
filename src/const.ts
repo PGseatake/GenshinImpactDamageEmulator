@@ -291,6 +291,7 @@ export type DamageBased = typeof DamageBased[keyof typeof DamageBased];
 
 export const ExtraBonusType = {
     Flat: "flat",
+    Energy: "energy",
     Combat: "combat",
     Element: "element",
     Reduct: "reduct",

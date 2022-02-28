@@ -35,6 +35,7 @@ export const StatusBase = {
 } as const;
 
 export interface IStatus {
+    info: ICharaInfo | null;
     talent: StatusTalent;
     base: StatusBase;
     param: StatusParam;
@@ -92,6 +93,20 @@ export interface IFlatBonus extends IBonusOption {
 }
 export interface IWeaponFlatBonus extends IFlatBonus {
     readonly value: ReadonlyArray<number>;
+}
+
+export interface IEnergyBonus extends IBonusOption {
+    readonly extra: "energy";
+    readonly dest: konst.BonusType;
+    readonly value: ReadonlyArrayable<number>;
+    readonly bound: ReadonlyArrayable<number>;
+    // readonly limit?: string;
+    // readonly times?: number;
+    // readonly target?: konst.BonusTarget;
+}
+export interface IWeaponEnergyBonus extends IEnergyBonus {
+    readonly value: ReadonlyArray<number>;
+    readonly bound: ReadonlyArray<number>;
 }
 
 export interface ICombatBonus extends IBonusOption {
@@ -167,7 +182,12 @@ export interface ISpecialBonus extends IBonusOption {
     readonly applyEx?: (self: ISpecialBonus, dst: ExtraBonus, arg: ICombatStatusBonus) => void;
 }
 
-export type AnyBonus = IBasicBonus | IFlatBonus | ICombatBonus | IElementBonus | IReductBonus | IEnchantBonus | ISpecialBonus;
+export type AnyBonus =
+    IBasicBonus | IFlatBonus | IEnergyBonus | ICombatBonus |
+    IElementBonus | IReductBonus | IEnchantBonus | ISpecialBonus;
+
+export type AnyWeaponBonus = IWeaponBonus | IWeaponFlatBonus | IWeaponEnergyBonus;
+export type WeaponBonus = IBasicBonus | IFlatBonus | IEnergyBonus;
 
 export interface ICombat {
     readonly name: string;
@@ -216,7 +236,7 @@ export interface IWeaponInfo {
     readonly atk: ReadonlyArray<number>;
     readonly second: konst.AnyBonusType;
     readonly secval: ReadonlyArray<number>;
-    readonly passive?: ReadonlyArrayable<IWeaponBonus | IWeaponFlatBonus>;
+    readonly passive?: ReadonlyArrayable<AnyWeaponBonus>;
 }
 
 export interface IIdentify {

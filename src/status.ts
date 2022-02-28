@@ -19,6 +19,7 @@ export type StatusPart = {
 export default class Status {
     public static empty(): IStatus {
         return {
+            info: null,
             talent: { combat: 0, skill: 0, burst: 0 },
             base: { hp: 0, atk: 0, def: 0 },
             param: {
