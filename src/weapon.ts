@@ -5,6 +5,7 @@ import {
 } from "~/src/interface";
 import * as ascension from "~/src/ascension";
 import { SettingWeapon } from "~/src/setting";
+import { WeaponEnrecBonus } from "./special";
 
 const WeaponAtk3: IReadonlyHash<ReadonlyArray<number>> = {
     //    1,  20, 20+,  40, 40+,  50, 50+,  60, 60+,  70, 70+,  80, 80+,  90
@@ -661,13 +662,13 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         secval: [12.0, 21.2, 30.9, 35.7, 40.6, 45.4, 50.3, 55.1],
         passive: [
             // 元素チャージ効率が100%を超えている場合、その超えた部分の28%分、攻撃力がアップする。この方式でアップできる攻撃力は最大80%まで。
-            // TODO: {
-            //     extra: konst.ExtraBonusType.Flat,
-            //     dest: konst.FlatBonusDest.AtkBuf,
-            //     base: konst.FlatBonusBase.EnRec, // 100%超え分
-            //     value: 28,
-            //     bound: { value: 80 },
-            // },
+            {
+                extra: konst.ExtraBonusType.Special,
+                value: [28, 35, 42, 49, 56],
+                bound: [80, 90, 100, 110, 120],
+                limit: "general.enrec_over",
+                ...WeaponEnrecBonus,
+            },
             // 元素爆発を発動した後の12秒間、元素チャージ効率+30~50%。
             { items: konst.StatusBonusType.EnRec, value: [30, 35, 40, 45, 50], limit: "burst.use", times: 12 },
         ],
@@ -1541,8 +1542,13 @@ export default class Weapon {
     }
 
     public static ranked(bonus: AnyWeaponBonus, rank: number): WeaponBonus {
-        if (bonus.extra === konst.ExtraBonusType.Energy) {
-            return { ...bonus, value: bonus.value[rank - 1], bound: bonus.bound[rank - 1] };
+        switch (bonus.extra) {
+            case konst.ExtraBonusType.Energy:
+                return { ...bonus, value: bonus.value[rank - 1], bound: bonus.bound[rank - 1] };
+            case konst.ExtraBonusType.Special:
+                if (bonus.bound) {
+                    return { ...bonus, value: bonus.value[rank - 1], bound: bonus.bound[rank - 1] };
+                }
         }
         return { ...bonus, value: bonus.value[rank - 1] };
     }

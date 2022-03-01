@@ -1,6 +1,9 @@
 import { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
-import { ExtraBonus, ICombatStatusBonus, ISpecialBonus, IStatus, IStatusBonus } from "~/src/interface";
+import {
+    IStatus, IStatusBonus, ICombatStatusBonus, ISpecialBonus,
+    ExtraBonus, StatusBase
+} from "~/src/interface";
 import { Arrayable, Maths } from "~/src/utility";
 
 const DamageScaleTable: ReadonlyRecord<konst.DamageScale, ReadonlyArray<number>> = {
@@ -66,9 +69,10 @@ export const RaidenEnrecBonus = {
         return BonusStep.Special;
     },
     effect: function (self: ISpecialBonus, _: Readonly<IStatus>, i18n: IVueI18n) {
+        const { dest, value } = self as IRaidenEnrecBonus;
         return i18n.t("combat.raiden.enrec", {
-            elem: i18n.t("bonus." + self.dest),
-            value: RateBonus.round(self.value),
+            elem: i18n.t("bonus." + dest),
+            value: RateBonus.round(value),
         });
     },
     apply: function (self: ISpecialBonus, arg: IStatusBonus) {
@@ -89,25 +93,19 @@ export const SayuBurstBonus = {
         return BonusStep.Extra;
     },
     effect: function (self: ISpecialBonus, _: Readonly<IStatus>, i18n: IVueI18n) {
+        const { value } = self as ISayuBurstBonus;
         return i18n.t("combat.sayu.elem", {
             dest: i18n.t("bonus.atk"),
             base: i18n.t("bonus.elem"),
-            value: RateBonus.round(self.value),
+            value: RateBonus.round(value),
         });
     },
     applyEx: function (self: ISpecialBonus, dst: ExtraBonus, arg: ICombatStatusBonus) {
         if (self.bind === arg.name) {
+            const { value } = self as ISayuBurstBonus;
             const target = arg.target;
-            // 攻撃力
-            const x = target.param.atk_buf;
-            const b = target.base.atk;
-            const atk = b + (x * b) / 100 + target.param.atk;
-            // 加算分
-            let add = target.param.elem * self.value;
-            if (add > atk * 4) {
-                add = atk * 4;
-            }
-            dst.atk += add;
+            const atk = StatusBase.total("atk", target.param, target.base);
+            dst.atk += Math.min(target.param.elem * value, atk * 4);
         }
     },
 } as const;
@@ -132,5 +130,29 @@ export const MonaBurstBonus = {
         const target = arg.target;
         const { value } = self as IMonaBurstBonus;
         target.param.any_dmg += Arrayable.clamp(value, target.talent.burst);
+    },
+} as const;
+
+// 草薙の稲光のボーナス
+export interface IWeaponEnrecBonus extends ISpecialBonus {
+    readonly value: number;
+    readonly bound: number;
+}
+export const WeaponEnrecBonus = {
+    step: function (_: ISpecialBonus) {
+        return BonusStep.Special;
+    },
+    effect: function (self: ISpecialBonus, _: Readonly<IStatus>, i18n: IVueI18n) {
+        const { value } = self as IWeaponEnrecBonus;
+        return i18n.t("format.weapon_enrec", {
+            dest: i18n.t("bonus.atk"),
+            value: RateBonus.round(value),
+        });
+    },
+    apply: function (self: ISpecialBonus, arg: IStatusBonus) {
+        const { value, bound } = self as IWeaponEnrecBonus;
+        let target = arg.target;
+        const enrec = target.param.en_rec - 100;
+        target.param.atk_buf += Math.min(enrec * value / 100, bound);
     },
 } as const;

@@ -2874,7 +2874,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 extra: konst.ExtraBonusType.Special,
                 dest: konst.ElementBonusType.Elect,
                 value: 0.4,
-                limit: "raiden.enrec",
+                limit: "general.enrec_over",
                 times: 7,
                 target: konst.BonusTarget.Self,
                 ...RaidenEnrecBonus,

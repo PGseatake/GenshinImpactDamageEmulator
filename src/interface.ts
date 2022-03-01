@@ -32,6 +32,11 @@ export const StatusBase = {
     value(type: konst.BonusType): number {
         return StatusBase[type as ("en_rec" | "cri_dmg" | "cri_rate")] || 0;
     },
+    total(type: konst.StatusType, param: Readonly<StatusParam>, base: Readonly<StatusBase>): number {
+        const x = param[konst.TypeToBonus.buffer(type)];
+        const b = base[type];
+        return b + (b * x) / 100 + param[type];
+    }
 } as const;
 
 export interface IStatus {
@@ -175,19 +180,25 @@ export type ExtraBonus = {
 
 export interface ISpecialBonus extends IBonusOption {
     readonly extra: "special";
+    readonly value: ReadonlyArrayable<number>;
+    readonly bound?: ReadonlyArrayable<number>;
     readonly [key: string]: any;
     readonly step: (self: ISpecialBonus) => number;
     readonly effect: (self: ISpecialBonus, owner: Readonly<IStatus>, i18n: IVueI18n) => VueI18n.TranslateResult;
     readonly apply?: (self: ISpecialBonus, arg: IStatusBonus) => void;
     readonly applyEx?: (self: ISpecialBonus, dst: ExtraBonus, arg: ICombatStatusBonus) => void;
 }
+export interface IWeaponSpecialBonus extends ISpecialBonus {
+    readonly value: ReadonlyArray<number>;
+    readonly bound?: ReadonlyArray<number>;
+}
 
 export type AnyBonus =
     IBasicBonus | IFlatBonus | IEnergyBonus | ICombatBonus |
     IElementBonus | IReductBonus | IEnchantBonus | ISpecialBonus;
 
-export type AnyWeaponBonus = IWeaponBonus | IWeaponFlatBonus | IWeaponEnergyBonus;
-export type WeaponBonus = IBasicBonus | IFlatBonus | IEnergyBonus;
+export type AnyWeaponBonus = IWeaponBonus | IWeaponFlatBonus | IWeaponEnergyBonus | IWeaponSpecialBonus;
+export type WeaponBonus = IBasicBonus | IFlatBonus | IEnergyBonus | ISpecialBonus;
 
 export interface ICombat {
     readonly name: string;
