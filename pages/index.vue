@@ -2,12 +2,12 @@
   <v-container>
     <v-row no-gutters>
       <v-col cols="auto" style="line-height: 1.7em">
-        <h1>G.I.D.E. - Genshin Impact Damage Emulator</h1>
+        <h2>G.I.D.E. - Genshin Impact Damage Emulator</h2>
       </v-col>
     </v-row>
     <v-row no-gutters align="center">
       <v-col cols="auto" class="pt-1">
-        <h2>{{ $t("subtitle") }}</h2>
+        <h1>{{ $t("subtitle") }}</h1>
       </v-col>
       <v-spacer />
       <v-col cols="auto">
@@ -81,13 +81,13 @@
   </v-container>
 </template>
 
-<style lang="scss" scoped>
+<style>
 h1 {
-  font-size: 1.5em;
-}
-h2 {
   font-size: 1.1em;
   color: silver;
+}
+h2 {
+  font-size: 1.5em;
 }
 </style>
 
