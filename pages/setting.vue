@@ -283,10 +283,6 @@ export default class PageSetting extends Vue {
     this.$store.commit("tabs", {});
   }
 
-  popup(label: string) {
-    this.$store.commit("popup", this.$t("popup." + label));
-  }
-
   onClickDialog(item: ListItem) {
     const dialog = item.dialog;
     if (dialog) {
@@ -298,13 +294,13 @@ export default class PageSetting extends Vue {
 
   onClickSave() {
     Database.save(this.$db);
-    this.popup("save");
+    this.$store.commit("popup", "save");
   }
 
   onClickDelete() {
     Database.reset(this.$db);
     Database.save(this.$db);
-    this.popup("delete");
+    this.$store.commit("popup", "delete");
   }
 
   onClickInitChara() {
@@ -369,7 +365,7 @@ export default class PageSetting extends Vue {
 
   onChangeSupply() {
     Database.save(this.$db);
-    this.popup("append");
+    this.$store.commit("popup", "append");
   }
 }
 </script>

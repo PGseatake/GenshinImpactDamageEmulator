@@ -203,9 +203,9 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { IEquipData } from "~/src/interface";
+import Equip, { IEquipData } from "~/src/equipment";
 import { ICharaData } from "~/src/character";
-import { Builder, Team } from "~/src/team";
+import { Team } from "~/src/team";
 import Pagination from "~/src/pagination";
 
 @Component({
@@ -296,7 +296,7 @@ export default class PageEquipment extends Vue {
   }
 
   onAppend() {
-    const data = Builder.equip(this.$makeUniqueId(), this.append);
+    const data = Equip.create(this.$makeUniqueId(), this.append);
     this.$appendData(this.items, data);
     this.append = "";
 

@@ -17,7 +17,7 @@
     <v-col cols="auto" class="px-1">
       <name-comment
         :items="members"
-        :value.sync="refMember"
+        :value.sync="member"
         :comment="comment"
         :commentable="false"
         @change="onChangeMember"
@@ -68,9 +68,9 @@
 
 <script lang="ts">
 import { Vue, Component, Emit, Prop } from "vue-property-decorator";
-import { ContactTypes, NoneElementType, NoneReactionType } from "~/src/const";
+import { ContactTypes, AnyElementType, AnyReactionType } from "~/src/const";
 import { ITeamData, IMember, Team } from "~/src/team";
-import { Builder as CharaBuilder } from "~/src/character";
+import Chara from "~/src/character";
 
 @Component({
   name: "SelectMember",
@@ -83,40 +83,25 @@ import { Builder as CharaBuilder } from "~/src/character";
 })
 export default class SelectMember extends Vue {
   @Prop({ required: true }) damage!: string;
-  @Prop({ required: true }) contact!: NoneElementType;
-  @Prop({ required: true }) reaction!: NoneReactionType;
-  @Prop({ required: true }) reactions!: ReadonlyArray<NoneReactionType>;
+  @Prop({ required: true }) contact!: AnyElementType;
+  @Prop({ required: true }) reaction!: AnyReactionType;
+  @Prop({ required: true }) reactions!: ReadonlyArray<AnyReactionType>;
 
   team: ITeamData | null = null;
-  member: IMember = { info: null, chara: null, equip: null };
+  member: IMember | null = null;
 
   readonly contacts = ["", ...ContactTypes];
 
   @Emit("change")
   onChange(team: ITeamData, member: IMember) {}
 
-  get refMember() {
-    return this.member;
-  }
-  set refMember(member: IMember | null) {
-    if (member) {
-      this.member.info = member.info;
-      this.member.chara = member.chara;
-      this.member.equip = member.equip;
-    } else {
-      this.member.info = null;
-      this.member.chara = null;
-      this.member.equip = null;
-    }
-  }
-
   get refLevel() {
-    return this.member?.chara?.level || null;
+    return this.member?.chara.level || null;
   }
   set refLevel(value: string | null) {
     if (this.member?.chara && value) {
       this.member.chara.level = value;
-      CharaBuilder.level(this.member.chara);
+      Chara.level(this.member.chara);
       this.onChangeMember();
     }
   }
@@ -124,14 +109,14 @@ export default class SelectMember extends Vue {
   get refContact() {
     return this.contact;
   }
-  set refContact(value: NoneElementType) {
+  set refContact(value: AnyElementType) {
     this.$emit("update:contact", value);
   }
 
   get refReaction() {
     return this.reaction;
   }
-  set refReaction(value: NoneReactionType) {
+  set refReaction(value: AnyReactionType) {
     this.$emit("update:reaction", value);
   }
 
@@ -143,20 +128,21 @@ export default class SelectMember extends Vue {
   }
 
   get teams() {
-    let items: { text: string; value: ITeamData }[] = [];
-    this.$db.team.forEach((t, i) => {
-      items.push({ text: new Team(t).getName(this.$i18n, i), value: t });
-    });
-    return items;
+    const i18n = this.$i18n;
+    return this.$db.team.map((t, i) => ({
+      text: Team.format(t, i, i18n),
+      value: t,
+    }));
   }
 
   get members() {
-    let items: { text: string; value: IMember }[] = [];
+    let items: { id: string; text: string; value: IMember }[] = [];
     const team = this.team;
     if (team) {
       for (const member of new Team(team).members(this.$db)) {
         items.push({
-          text: this.$t("chara." + member.chara.name) as string,
+          id: member.id,
+          text: String(this.$t("chara." + member.chara.name)),
           value: member,
         });
       }
@@ -165,7 +151,7 @@ export default class SelectMember extends Vue {
   }
 
   get comment() {
-    return this.member.equip?.comment || "-";
+    return this.member?.equip.comment || "-";
   }
 
   mounted() {
@@ -174,35 +160,19 @@ export default class SelectMember extends Vue {
       const team = this.$db.team.find((val) => val.id === item.team);
       if (team) {
         this.team = team;
-
-        this.changeMember(
-          new Team(team).member.findIndex((val) => val === item.member)
-        );
+        this.member =
+          this.members.find((val) => val.id === item.member)?.value || null;
       }
     }
   }
 
-  private changeMember(index = 0) {
-    const members = this.members;
-    if (index >= 0) {
-      const member = members[index].value;
-      this.member.info = member.info;
-      this.member.chara = member.chara;
-      this.member.equip = member.equip;
-    } else {
-      this.member.info = null;
-      this.member.chara = null;
-      this.member.equip = null;
-    }
-  }
-
   onChangeTeam() {
-    this.changeMember();
+    this.member = this.members[0]?.value || null;
     this.onChangeMember();
   }
 
   onChangeMember() {
-    if (this.team) {
+    if (this.team && this.member) {
       this.onChange(this.team, this.member);
     }
   }

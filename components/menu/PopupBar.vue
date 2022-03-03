@@ -22,7 +22,7 @@ export default class PopupBar extends Vue {
   @Watch("storePopup")
   onChangeStorePopup(value: string) {
     if (value) {
-      this.text = value;
+      this.text = this.$t("popup." + value) as string;
       this.show = true;
       this.$nextTick(() => this.$store.commit("popup", ""));
     }

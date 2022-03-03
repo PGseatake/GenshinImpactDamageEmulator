@@ -48,14 +48,12 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import {
   BonusType,
   BonusTypes,
-  StatusType,
   StatusBonusType,
-  CriticalBonusType,
   CombatBonusType,
-  TypeToBonus,
 } from "~/src/const";
-import { StatusBase, StatusParam } from "~/src/status";
-import { RateBonus } from "~/src/bonus";
+import { StatusBase, StatusParam } from "~/src/interface";
+import { RateBonus } from "~/src/special";
+import Status from "~/src/status";
 
 const excludeTypes: ReadonlyArray<BonusType> = [
   StatusBonusType.HpBuf,
@@ -63,14 +61,6 @@ const excludeTypes: ReadonlyArray<BonusType> = [
   StatusBonusType.DefBuf,
   CombatBonusType.Combat,
 ] as const;
-
-function isBaseBonus(type: BonusType): type is StatusType {
-  return (
-    type === StatusBonusType.Hp ||
-    type === StatusBonusType.Atk ||
-    type === StatusBonusType.Def
-  );
-}
 
 @Component({
   name: "StatusTable",
@@ -94,29 +84,7 @@ export default class StatusTable extends Vue {
 
   get items() {
     return BonusTypes.filter((type) => !excludeTypes.includes(type)).map(
-      (type) => {
-        let total = this.param[type];
-        let base = 0;
-        if (isBaseBonus(type)) {
-          const x = this.param[TypeToBonus.buffer(type)];
-          const b = this.base[type];
-          total += b + (x * b) / 100;
-          base = b;
-        } else {
-          switch (type) {
-            case StatusBonusType.EnRec:
-              base = 100;
-              break;
-            case CriticalBonusType.Damage:
-              base = 50;
-              break;
-            case CriticalBonusType.Rate:
-              base = 5;
-              break;
-          }
-        }
-        return { type, total, base };
-      }
+      (type) => Status.part(type, this.param, this.base)
     );
   }
 

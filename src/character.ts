@@ -2,6 +2,7 @@ import * as konst from "~/src/const";
 import { BonusValue, IIdentify, INameable, ICommentable, ICharaInfo } from "~/src/interface";
 import * as ascension from "~/src/ascension";
 import { SettingChara } from "~/src/setting";
+import { MonaBurstBonus, RaidenEnrecBonus, SayuBurstBonus } from "~/src/special";
 
 export const CharaNames = [
     "TravelAnemo",
@@ -467,7 +468,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 {
                     extra: konst.ExtraBonusType.Flat,
                     dest: konst.FlatBonusDest.NormalDmg,
-                    base: konst.FlatBonusBase.None,
                     value: 5.85,
                     limit: "skill.hit",
                     scale: { type: konst.DamageScale.Xiao, talent: konst.TalentType.Skill },
@@ -477,7 +477,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 {
                     extra: konst.ExtraBonusType.Flat,
                     dest: konst.FlatBonusDest.NormalDmg,
-                    base: konst.FlatBonusBase.None,
                     value: 29.2,
                     limit: "aloy.ice_rush",
                     scale: { type: konst.DamageScale.Xiao, talent: konst.TalentType.Skill },
@@ -600,10 +599,11 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // これらの効果は連続斬撃が終了した時にクリアされる。
             // 5. 「荒瀧逆袈裟」のダメージが荒瀧一斗の防御力35%分アップする。
             asc4th: {
-                extra: konst.ExtraBonusType.Flat,
-                dest: konst.FlatBonusDest.Heavy, // TODO: 一部
-                base: konst.FlatBonusBase.Def,
+                extra: konst.ExtraBonusType.Combat,
+                bind: ["arataki.keep", "arataki.last"],
+                base: konst.StatusBonusType.Def,
                 value: 35.0,
+                format: "arataki.asc4th",
             },
         },
         conste: {
@@ -621,7 +621,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             },
             // 5. 最強鬼王・一斗轟臨!!のスキルLv.+3。
             // 6. 荒瀧一斗の重撃の会心ダメージ+70%、また「荒瀧逆袈裟」を発動する時、50％の確率で「乱神の怪力」が消費されなくなる。
-            // lv6: { items: konst.CriticalBonusType.HeavyDmg, value: 70 }, TODO: 実装
+            lv6: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: konst.CombatType.Heavy,
+                dest: konst.CombatBonusDest.CriDmg,
+                value: 70.0,
+                format: "arataki.lv6",
+            },
         },
     },
     Amber: {
@@ -915,7 +921,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
             ],
             skill: [
-                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 138 },
+                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 138 },
                 { name: "general.charge1", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: [84.0, 92.0] },
                 { name: "general.charge2", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: [88.0, 96.0] },
                 { name: "general.burst", type: konst.CombatType.Skill, elem: konst.ElementType.Pyro, scale: konst.DamageScale.Elem, value: 132 },
@@ -1270,7 +1276,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 186 },
             ],
             skill: [
-                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 146 },
+                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 146 },
                 { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 246 },
                 { name: "eula.skill", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 96, multi: 2 },
             ],
@@ -1311,7 +1317,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 2. 氷彫の渦の長押しのクールタイムを短縮し、一回押しと同じクールタイムにする。
             // 3. 氷浪の光剣のスキルLv.+3
             // 4. HP50%未満の敵に対する光臨の剣のダメージ+25%
-            // lv4: { }, // TODO: 実装
+            lv4: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: ["eula.burst", "eula.once", "eula.total"],
+                dest: konst.CombatBonusDest.Damage,
+                value: 25.0,
+                limit: "hp.lt50_en",
+                format: "eula.lv4",
+            },
             // 5. 氷潮の渦のスキルLv.+3
             // 6. 氷浪の光剣で創造した光臨の剣は、直ちにエネルギーを5つ獲得する。通常攻撃、元素スキルまたは元素爆発によりエネルギーを獲得する際、50％の確率でさらに1つ獲得する。
         },
@@ -1450,7 +1463,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         },
         passive: {
             // 4. 霜華の矢を放った後の5秒以内に放たれた霜華の矢と霜華満開の会心率+20%
-            // TODO: lv4: { items: CriticalBonusType.Heavy, value: 20.0, limit: "霜華の矢を放った後", times: 5, target: "heavy_ex" },
+            asc1st: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: ["ganyu.frost", "ganyu.bloom"],
+                dest: konst.CombatBonusDest.CriRate,
+                value: 20.0,
+                limit: "ganyu.max_charge",
+                format: "ganyu.asc1st",
+            },
             // 5. 降衆天華エリア内のキャラクターの氷元素ダメージ+20%
             asc4th: { items: konst.ElementBonusType.Cryo, value: 20.0, limit: "burst.area", times: 15, target: konst.BonusTarget.All },
         },
@@ -1550,7 +1570,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 {
                     items: konst.ElementBonusType.Geo,
                     value: 15,
-                    limit: "goro.skill_per_geo",
+                    limit: "goro.skill_per_geo3",
                     times: 10,
                     target: konst.BonusTarget.All,
                 },
@@ -1578,7 +1598,35 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // ・「堅牢」：10%アップ。
             // ・「破耐」：20%アップ。
             // ・「粉砕」：40%アップ。
-            // TODO: 実装
+            lv6: [
+                {
+                    extra: konst.ExtraBonusType.Element,
+                    dest: konst.StatusBonusType.CriDmg,
+                    value: 10.0,
+                    limit: "goro.skill_burst1",
+                    times: 12,
+                    target: konst.BonusTarget.All,
+                    format: "goro.elem",
+                },
+                {
+                    extra: konst.ExtraBonusType.Element,
+                    dest: konst.StatusBonusType.CriDmg,
+                    value: 20.0,
+                    limit: "goro.skill_burst2",
+                    times: 12,
+                    target: konst.BonusTarget.All,
+                    format: "goro.elem",
+                },
+                {
+                    extra: konst.ExtraBonusType.Element,
+                    dest: konst.StatusBonusType.CriDmg,
+                    value: 40.0,
+                    limit: "goro.skill_burst3",
+                    times: 12,
+                    target: konst.BonusTarget.All,
+                    format: "goro.elem",
+                },
+            ],
         },
     },
     Hutao: {
@@ -1815,7 +1863,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 204 },
             ],
             skill: [
-                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 192 },
+                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 192 },
                 { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 261 },
             ],
             burst: [
@@ -2306,7 +2354,15 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 煌煌千道鎮式による天狗呪雷・雷礫の数が6つに増加する。
             // 5. 烏天狗雷霆召呪のスキルLv.+3
             // 6. 天狗呪雷による攻撃力アップ状態のキャラクターは、雷元素ダメージの会心ダメージ+60%。
-            // TODO: 実装
+            lv6: {
+                extra: konst.ExtraBonusType.Element,
+                dest: konst.StatusBonusType.CriDmg,
+                value: 60.0,
+                limit: "kujo.skill_use",
+                times: 6,
+                target: konst.BonusTarget.All,
+                format: "kujo.elem",
+            },
         },
     },
     Lisa: {
@@ -2357,7 +2413,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Elect, scale: konst.DamageScale.Phys, value: 142 },
             ],
             skill: [
-                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 80.0 },
+                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 80.0 },
                 { name: "lisa.zero", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 320 },
                 { name: "lisa.one", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 368 },
                 { name: "lisa.two", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 424 },
@@ -2449,11 +2505,12 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         passive: {
             // burst: 星異状態継続中、受けるダメージがアップする
             burst: {
-                items: konst.AnyBonusType.Damage,
-                value: 42, // [42, 44, 46, 48, 50, 52, 54, 56, 58, 60],
+                extra: konst.ExtraBonusType.Special,
+                value: [42, 44, 46, 48, 50, 52, 54, 56, 58, 60],
                 limit: "mona.bind",
-                times: 4, // TODO: 配列
+                times: 5, // TODO: 4~5 sec
                 target: konst.BonusTarget.All,
+                ...MonaBurstBonus,
             },
             // 4. 虚実流動状態に入った2秒後、周囲に敵がいる場合は自動的に虚影を1つ生成する。
             //    虚影は2秒間存在し破裂する。破裂ダメージは水中幻願のダメージの50%。
@@ -2804,7 +2861,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.AtkBuf,
-                base: konst.FlatBonusBase.None,
                 value: 0.73,
                 scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Burst },
                 limit: "burst.using",
@@ -2814,7 +2870,15 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. 周囲にいるチーム内キャラクターが元素オーブまたは元素粒子を獲得した時、諸願百目の輪に願力を2層蓄積する。
             // 5. 元素チャージ効率が100%を超えている場合、超えた分1%につき、雷電将軍は以下の効果を獲得する。
             // ・夢想の一心状態で提供する元素エネルギー回復+0.6%。雷元素ダメージ+0.4%。
-            // asc4th: {}, TODO: 実装
+            asc4th: {
+                extra: konst.ExtraBonusType.Special,
+                dest: konst.ElementBonusType.Elect,
+                value: 0.4,
+                limit: "general.enrec_over",
+                times: 7,
+                target: konst.BonusTarget.Self,
+                ...RaidenEnrecBonus,
+            },
         },
         conste: {
             // 1. 諸願百目の輪の願力をより早く蓄積できるようになる。
@@ -2885,7 +2949,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 205 },
             ],
             skill: [
-                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 199 },
+                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 199 },
                 { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Elect, scale: konst.DamageScale.Elem, value: 295 },
             ],
             burst: [
@@ -3198,14 +3262,15 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 6. 早柚自身の嗚呼流・影貉繚乱によって召喚されたむじむじだるまの攻撃力と回復量は、早柚の元素熟知によって決まる。早柚の元素熟知の数値が１につき、下記効果が発動する。
             // ・むじむじだるまのダメージは攻撃力0.2％分アップする。この方式でアップできるダメージは攻撃力400％まで。
             // ・むじむじだるまによるHP回復量＋3。この方式でアップできる回復量は6000まで。
-            // lv6: {
-            //     extra: konst.ExtraBonusType.Flat,
-            //     dest: konst.FlatBonusDest.Burst,
-            //     base: konst.FlatBonusBase.Elem,
-            //     value: 0.2,
-            //     bound: { base: konst.FlatBonusBase.Atk, value: 400 },
-            //     limit: "むじむじだるまの攻撃",
-            // },
+            lv6: {
+                extra: konst.ExtraBonusType.Special,
+                value: 0.2,
+                bind: "sayu.daruma",
+                limit: "burst.using",
+                times: 12,
+                target: konst.BonusTarget.Self,
+                ...SayuBurstBonus,
+            },
         },
     },
     Shenhe: {
@@ -3257,7 +3322,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
             ],
             skill: [
-                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 139 },
+                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 139 },
                 { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Cryo, scale: konst.DamageScale.Elem, value: 188.8 },
             ],
             burst: [
@@ -3267,17 +3332,16 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         },
         passive: {
             // 通常攻撃、重撃、落下攻撃、元素スキル、元素爆発が敵に氷元素ダメージを与える時、申鶴自身の攻撃力を基準にダメージがアップする。
-            // TODO: 氷元素ダメージに対して
-            // skill: {
-            //     extra: konst.ExtraBonusType.Flat,
-            //     dest: [konst.FlatBonusDest.Combat, konst.FlatBonusDest.Skill, konst.FlatBonusDest.Burst],
-            //     base: konst.FlatBonusBase.Atk,
-            //     value: 45.7,
-            //     scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Skill },
-            //     limit: "skill.using",
-            //     times: 10, // or 15
-            //     target: konst.BonusTarget.All,
-            // },
+            skill: {
+                extra: konst.ExtraBonusType.Element,
+                base: konst.StatusBonusType.Atk,
+                value: 45.7,
+                scale: { type: konst.DamageScale.Elem, talent: konst.TalentType.Skill },
+                limit: "shenhe.skill_use",
+                times: 10, // or 15
+                target: konst.BonusTarget.All,
+                format: "shenhe.elem",
+            },
             // 「籙霊」は領域を形成し、中にいるすべての敵の氷元素耐性と物理耐性をダウンさせ、継続的に氷元素ダメージを与える。
             burst: {
                 extra: konst.ExtraBonusType.Reduct,
@@ -3325,7 +3389,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv4: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.SkillDmg,
-                base: konst.FlatBonusBase.None,
                 value: 5.0,
                 limit: "shenhe.skill_up",
                 stack: 50,
@@ -3420,7 +3483,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv6: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.Contact,
-                base: konst.FlatBonusBase.None,
                 value: 20,
                 limit: "sucrose.burst_change",
                 target: konst.BonusTarget.All,
@@ -3570,14 +3632,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 4. フィールド上キャラクターが烈炎侍立シールドを獲得または更新した時、シールド強化+5%、継続時間6秒。
             // この効果は0.3秒毎に1回のみ発動可能、最大5重まで。
             // 5. 真紅熾炎の大鎧の熾炎崩滅によるダメージがトーマのHP上限2.2%分アップする。
-            // asc4th: { TODO: 実装
-            //     extra: konst.ExtraBonusType.Flat,
-            //     dest: konst.FlatBonusDest.Burst,
-            //     base: konst.FlatBonusBase.Hp,
-            //     value: 2.2,
-            //     limit: "burst.using",
-            //     stack: 5,
-            // },
+            asc4th: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: "thoma.shield",
+                base: konst.StatusBonusType.Hp,
+                value: 2.2,
+                format: "thoma.asc4th",
+            },
         },
         conste: {
             // 1. トーマ自身の烈炎侍立シールドに守られたキャラクター（トーマ自身を除く）が攻撃を受けた時、トーマ自身の烈炎侍立のクールタイム-3秒、真紅熾炎の大鎧のクールタイム-3秒。
@@ -3590,7 +3651,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv6: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.CombatDmg,
-                base: konst.FlatBonusBase.None,
                 value: 15.0,
                 limit: "thoma.shield_update",
                 times: 6,
@@ -3649,7 +3709,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 142 },
             ],
             skill: [
-                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 276 },
+                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 276 },
                 { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Anemo, scale: konst.DamageScale.Elem, value: 380 },
             ],
             burst: [
@@ -3839,7 +3899,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.CombatDmg,
-                base: konst.FlatBonusBase.None,
                 value: 58.5,
                 scale: { type: konst.DamageScale.Xiao, talent: konst.TalentType.Burst },
                 limit: "burst.using",
@@ -4007,7 +4066,13 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         conste: {
             // 1. 会心攻撃が発生した5秒間、通常攻撃と重撃の攻撃速度が12%上昇する。5秒毎に1回のみ発動可能。
             // 2. 反逆の弾きによる物理ダメージの会心率を100%上昇させる。さらに発動する時にLv3シールド・舞のリズムを生成する。
-            // TODO: lv2: { items: CriticalBonusType.Burst/*for Phys*/, value: 100.0 },
+            lv2: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: "xinyan.swing",
+                dest: konst.CombatBonusDest.CriRate,
+                value: 100,
+                format: "xinyan.lv2",
+            },
             // 3. 情熱の薙ぎ払いのスキルLv.+3
             // 4. 情熱の薙ぎ払いの振り回しダメージを受けた敵の物理耐性が15%減少する、継続時間12秒。
             lv4: {
@@ -4020,7 +4085,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             },
             // 5. 反逆の弾きのスキルLv.+3
             // 6. 辛炎の重撃によるスタミナ消費-30%。重撃を発動する時、辛炎の防御力50%分の攻撃力が増加する。
-            // TODO: lv6: { extra: ExtraBonusType.Flat, dest: FlatBonusDest.Atk/*for Heavy*/, base: FlatBonusBase.Def, value: 50.0 },
+            lv6: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: konst.CombatType.Heavy,
+                dest: konst.CombatBonusDest.Atk,
+                base: konst.StatusBonusType.Def,
+                value: 50.0,
+                format: "xinyan.lv6"
+            },
         },
     },
     YaeMiko: {
@@ -4098,7 +4170,14 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv4: { items: konst.ElementBonusType.Elect, value: 20, limit: "skill.hit", times: 5, target: konst.BonusTarget.All },
             // 5. 大密法・天狐顕現のスキルLv.+3
             // 6. 殺生櫻が攻撃する時、敵の防御力の60%を無視する。
-            // TODO: 実装
+            lv6: {
+                extra: konst.ExtraBonusType.Reduct,
+                type: konst.ReductType.Defence,
+                value: 60.0,
+                limit: "skill.hit",
+                target: konst.BonusTarget.Self,
+                bind: konst.CombatType.Skill,
+            },
         },
     },
     Yanfei: {
@@ -4160,7 +4239,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             burst: {
                 extra: konst.ExtraBonusType.Flat,
                 dest: konst.FlatBonusDest.HeavyDmg,
-                base: konst.FlatBonusBase.None,
                 value: [33, 35, 37, 40, 42, 44, 47, 49, 52, 54, 57, 60, 62],
                 limit: "burst.using",
                 times: 15,
@@ -4244,13 +4322,21 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 継続時間中、「通常攻撃・打ち上げ花火」の2段チャージで焔硝の矢を生成できなくなる。
             skill: [
                 {
+                    extra: konst.ExtraBonusType.Flat,
+                    dest: konst.FlatBonusDest.NormalDmg,
+                    value: 37.9,
+                    scale: { type: konst.DamageScale.Xiao, talent: konst.TalentType.Skill },
+                    limit: "skill.using",
+                    times: 10,
+                    target: konst.BonusTarget.Self,
+                },
+                {
                     extra: konst.ExtraBonusType.Enchant,
                     elem: konst.ElementType.Pyro,
                     dest: [konst.CombatType.Normal],
                     limit: "skill.using",
                     times: 10,
                 },
-                // TODO: 通常攻撃ダメージ倍率アップ
             ],
             // 4. 焔硝の庭火舞いの効果継続時間中、宵宮の通常攻撃が命中すると、炎元素ダメージ+2%、継続時間3秒、最大10重まで。
             asc1st: { items: konst.ElementBonusType.Pyro, value: 2, limit: "yoimiya.skill_normal", stack: 10, times: 3 },
@@ -4330,7 +4416,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
             ],
             skill: [
-                { name: "general.hold", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 149.1, based: konst.DamageBased.Def },
+                { name: "general.press", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 149.1, based: konst.DamageBased.Def },
                 { name: "general.charge1", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 261.0, based: konst.DamageBased.Def },
                 { name: "general.charge2", type: konst.CombatType.Skill, elem: konst.ElementType.Geo, scale: konst.DamageScale.Elem, value: 372.8, based: konst.DamageBased.Def },
             ],
@@ -4485,7 +4571,6 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 玉璋シールドに守られたキャラクターは、付近範囲内の敵の全元素耐性と物理耐性-20%。この効果は重ねがけ不可。
             skill: {
                 extra: konst.ExtraBonusType.Reduct,
-                type: konst.AnyReductType.All,
                 value: 20,
                 limit: "zhongli.shield_en",
                 target: konst.BonusTarget.All,
@@ -4522,8 +4607,8 @@ export interface ICharaData extends IIdentify, INameable, ICommentable {
 }
 export type DBCharaTable = { chara: ICharaData[]; };
 
-export const Builder = {
-    make(id: string, name: CharaName, init: SettingChara) {
+export default class Chara {
+    public static create(id: string, name: CharaName, init: SettingChara) {
         const item = CharaList[name];
         const data: ICharaData = {
             id,
@@ -4542,10 +4627,11 @@ export const Builder = {
             skill: init.skill,
             burst: init.burst,
         };
-        Builder.level(data);
+        Chara.level(data);
         return data;
-    },
-    name(data: ICharaData, init: SettingChara) {
+    }
+
+    public static reset(data: ICharaData, init: SettingChara) {
         const { special } = CharaList[data.name];
         data.conste = init.conste;
         data.level = init.level;
@@ -4553,14 +4639,15 @@ export const Builder = {
         data.combat = init.combat;
         data.skill = init.skill;
         data.burst = init.burst;
-        Builder.level(data);
-    },
-    level(data: ICharaData) {
+        Chara.level(data);
+    }
+
+    public static level(data: ICharaData) {
         const { status, spvalue } = CharaList[data.name];
         const level = data.level;
         data.hp = ascension.calc14(level, status.hp);
         data.atk = ascension.calc14(level, status.atk);
         data.def = ascension.calc14(level, status.def);
         data.special.value = ascension.step8(level, spvalue);
-    },
-} as const;
+    }
+}

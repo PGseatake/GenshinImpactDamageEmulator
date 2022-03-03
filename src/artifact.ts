@@ -295,7 +295,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
             dest: konst.FlatBonusDest.BurstDmg,
             base: konst.FlatBonusBase.EnRec,
             value: 25,
-            bound: { base: konst.FlatBonusBase.None, value: 75 },
+            bound: { value: 75 },
         },
     },
     HuskOpulentDreams: {
@@ -318,15 +318,25 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
     },
 } as const;
 
+export const SubBonus = ["sub1", "sub2", "sub3", "sub4"] as const;
+export type SubBonus = typeof SubBonus[number];
+
+export interface IArtifactData extends IIdentify, INameable, ICommentable, Record<SubBonus, BonusValue> {
+    name: ArtifactName;
+    star: number;
+    level: number;
+    main: BonusValue;
+}
+export type DBArtifactTable = Record<konst.ArtifactType, IArtifactData[]>;
+
 type ArtifactParam = {
     readonly intercept: number;
     readonly slope: number;
     readonly substep?: number;
 };
 type ArtifactParamType = "hp" | "atk" | "def" | "atk_buf" | "def_buf" | "en_rec" | "cri_rate" | "cri_dmg" | "heal_buf";
-type ArtifactParamData = ReadonlyRecord<ArtifactParamType, ArtifactParam>;
 
-const ArtifactParamList: Readonly<ArtifactParamData[]> = [
+const ArtifactTable: ReadonlyArray<ReadonlyRecord<ArtifactParamType, ArtifactParam>> = [
     // ☆☆☆
     {
         hp: { intercept: 430, slope: 121.8846154, substep: 14.3 }, // HP
@@ -367,7 +377,7 @@ const ArtifactParamList: Readonly<ArtifactParamData[]> = [
 
 const ArtifactLevel = [12, 16, 20];
 
-function getArtifactParam(type: konst.AnyBonusType, star: number, level: number): ArtifactParam | null {
+function getParam(type: konst.AnyBonusType, star: number, level: number): ArtifactParam | null {
     // ☆を正規化
     if (star < 3 || 5 < star) {
         return null;
@@ -378,7 +388,7 @@ function getArtifactParam(type: konst.AnyBonusType, star: number, level: number)
         return null;
     }
 
-    const param = ArtifactParamList[star];
+    const param = ArtifactTable[star];
     switch (type) {
         case konst.StatusBonusType.Hp:
         case konst.StatusBonusType.Atk:
@@ -409,48 +419,25 @@ function getArtifactParam(type: konst.AnyBonusType, star: number, level: number)
     return null;
 }
 
-export function calcMain(type: konst.AnyBonusType, star: number, level: number): number {
-    const param = getArtifactParam(type, star, level);
-    if (param) {
-        return param.intercept + level * param.slope;
-    }
-    return 0;
-}
-
-export function calcScore(bonus: BonusValue, star: number, level: number): number | undefined {
-    const param = getArtifactParam(bonus.type, star, level);
-    if (param?.substep) {
-        return Math.round(bonus.value / param.substep);
-    }
-    return undefined;
-}
-
-export const SubBonus = ["sub1", "sub2", "sub3", "sub4"] as const;
-export type SubBonus = typeof SubBonus[number];
-
-export interface IArtifactData extends IIdentify, INameable, ICommentable, Record<SubBonus, BonusValue> {
-    name: ArtifactName;
-    star: number;
-    level: number;
-    main: BonusValue;
-}
-export type DBArtifactTable = Record<konst.ArtifactType, IArtifactData[]>;
-
-function randomRange(max: number): number {
+function random(max: number): number {
     return Math.floor(Math.random() * max);
 }
 
 function randomSubStep(type: konst.AnyBonusType, star: number): number {
-    const param = getArtifactParam(type, star, 0);
-    if (param) {
-        const rand = 7 + Math.floor(Math.random() * 4); // 7~10
-        return param.substep! * rand;
+    const param = getParam(type, star, 0);
+    if (param?.substep) {
+        const rand = 7 + random(4); // 7~10
+        return param.substep * rand;
     }
     return 0;
 }
 
-export const Builder = {
-    make(
+export default class Artifact {
+    public static check(type: string): type is konst.ArtifactType {
+        return konst.ArtifactTypes.includes(type as konst.ArtifactType);
+    }
+
+    public static create(
         id: string,
         type: konst.ArtifactType,
         name: ArtifactName,
@@ -483,24 +470,41 @@ export const Builder = {
                 value: 0,
             },
         };
-        Builder.main(data);
+        Artifact.main(data);
         return data;
-    },
-    star(data: IArtifactData) {
+    }
+
+    public static star(data: IArtifactData) {
         if (data.star * 4 < data.level) {
             data.level = data.star * 4;
         }
-        Builder.main(data);
-    },
-    main(data: IArtifactData) {
-        data.main.value = calcMain(data.main.type, data.star, data.level);
-    },
-    score(data: IArtifactData) {
+        Artifact.main(data);
+    }
+
+    public static main(data: IArtifactData) {
+        const param = getParam(data.main.type, data.star, data.level);
+        if (param) {
+            data.main.value = param.intercept + data.level * param.slope;
+        } else {
+            data.main.value = 0;
+        }
+    }
+
+    public static score(data: IArtifactData, sub: SubBonus) {
+        const bonus = data[sub];
+        const param = getParam(bonus.type, data.star, data.level);
+        if (param?.substep) {
+            return Math.round(bonus.value / param.substep);
+        }
+        return undefined;
+    }
+
+    public static total(data: IArtifactData) {
         const { star, level } = data;
         if (star < 3) return "";
         let total = 0;
         for (const sub of SubBonus) {
-            const score = calcScore(data[sub], star, level);
+            const score = Artifact.score(data, sub);
             if (score !== undefined) {
                 total += score;
             }
@@ -508,8 +512,9 @@ export const Builder = {
         const limit = star * 10 - 10 + // 初期最大値
             Math.floor(level / 4) * 10; // 強化回数x10
         return `${total}/${limit}`;
-    },
-    shuffle(data: IArtifactData, types: konst.AnyBonusType[]) {
+    }
+
+    public static shuffle(data: IArtifactData, types: konst.AnyBonusType[]) {
         const { star, level } = data;
         if (star < 3 || 5 < star) return;
 
@@ -532,7 +537,7 @@ export const Builder = {
         const range = ArtifactSub.length;
         for (var i = 0; i < init; ++i) {
             while (types[i] === konst.BonusType.None) {
-                const type = ArtifactSub[randomRange(range)];
+                const type = ArtifactSub[random(range)];
                 if (!types.includes(type)) {
                     types[i] = type;
                 }
@@ -554,8 +559,8 @@ export const Builder = {
 
         // 強化値加算
         for (var n = 4; n < max; ++n) {
-            const i = randomRange(4);
+            const i = random(4);
             data[SubBonus[i]].value += randomSubStep(types[i], star);
         }
-    },
-} as const;
+    }
+}

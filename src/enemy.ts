@@ -1,7 +1,8 @@
-import { ElementType, NoneElementType } from "~/src/const";
-import { INameable } from "~/src/interface";
+import { IVueI18n } from "vue-i18n";
+import { ElementType, AnyElementType } from "~/src/const";
+import { INameable, StatusReduct } from "~/src/interface";
 
-export type Phase = {
+type Phase = {
     readonly label: string;
     readonly fixed: number;
 };
@@ -887,7 +888,74 @@ export const EnemyList: ReadonlyRecord<EnemyName, IEnemyInfo> = {
 
 export interface IEnemyData extends INameable {
     name: EnemyName;
-    elem: NoneElementType;
+    elem: AnyElementType;
     level: number;
     fixed: number;
+}
+
+// IEnemyDataのユーティリティクラス
+export default class Enemy {
+    private readonly info: Readonly<IEnemyInfo>;
+    public readonly data: Readonly<IEnemyData>;
+    public readonly reduct: StatusReduct;
+
+    constructor(data: Readonly<IEnemyData>, reduct: StatusReduct) {
+        this.info = EnemyList[data.name];
+        this.data = data;
+        this.reduct = reduct;
+    }
+
+    value(type: ElementType) {
+        const { data, info } = this;
+        let elem_resist = 0;
+        if (type === data.elem) {
+            elem_resist = info.value || 0;
+        }
+        return data.fixed + elem_resist + info.resist[type] - this.reduct[type];
+    }
+
+    resist(type: ElementType, extra?: StatusReduct) {
+        let rate = this.value(type);
+        if (extra) {
+            rate -= extra[type];
+        }
+        if (rate < 0) {
+            return (100 - rate / 2) / 100;
+        }
+        if (75 <= rate) {
+            return 100 / (rate * 4 + 100);
+        }
+        return (100 - rate) / 100;
+    }
+
+    defence(charaLevel: number, extra?: StatusReduct) {
+        let reduct = this.reduct.defence;
+        if (extra) {
+            reduct += extra.defence;
+        }
+        const enemy = this.data.level + 100;
+        const chara = charaLevel + 100;
+        const rate = (chara / (enemy + chara)) * 100 + reduct;
+        return rate < 100 ? rate : 100;
+    }
+
+    public static format(data: Readonly<IEnemyData>, info: Readonly<IEnemyInfo>, name: EnemyName, i18n: IVueI18n) {
+        let type: AnyElementType;
+        if (data.name === name) {
+            type = data.elem;
+        } else {
+            type = info.element ? info.element[0] : "";
+        }
+        let text = "enemy." + name;
+        if (type) {
+            if (info.unique) {
+                return i18n.t(`${text}.${type}`);
+            }
+            if (info.custom) {
+                return i18n.t(text + ".format", [i18n.t(`${text}.${type}`)]);
+            }
+            return i18n.t(text, [i18n.t("element." + type)]);
+        }
+        return i18n.t(text);
+    }
 }

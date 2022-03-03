@@ -16,24 +16,25 @@
           <!-- メンバー選択 -->
           <select-member
             :damage="data.id"
-            :contact.sync="data.contact"
-            :reaction.sync="data.reaction"
+            :contact.sync="contact"
+            :reaction.sync="reaction"
             :reactions="reactions"
             @change="onChangeMember"
           />
           <v-row dense justify="center" class="ma-0">
             <v-col cols="12">
-              <damage-table :data="data" :member="member" :status="status" />
+              <damage-table
+                :data="data"
+                :leader="member"
+                :party="party"
+                :bonus="extra"
+              />
             </v-col>
           </v-row>
         </v-col>
         <!-- ボーナス -->
         <v-col cols="12" class="pa-1">
-          <bonus-table
-            :items="bonus"
-            :status="statues"
-            @change="onChangeBonus"
-          />
+          <bonus-table :items="mines" :status="party" @change="onChangeBonus" />
         </v-col>
       </v-row>
     </v-col>
@@ -58,17 +59,18 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { DBEquipTable } from "~/src/interface";
-import { DBCharaTable } from "~/src/character";
-import { DBWeaponTable } from "~/src/weapon";
-import { DBArtifactTable } from "~/src/artifact";
-import { DBTeamTable, ITeamData, IMember, Team } from "~/src/team";
-import { DBBonusTable, BonusBase, BonusBuilder } from "~/src/bonus";
-import { Status, IStatus, enumerateReaction } from "~/src/status";
-import { IEnemyData } from "~/src/enemy";
-import { Enemy, IDamageData } from "~/src/damage";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { AnyContactType, AnyReactionType } from "~/src/const";
+import { IStatus } from "~/src/interface";
+import { Team, ITeamData, IAnyMember } from "~/src/team";
+import { BonusBase, BonusBuilder } from "~/src/bonus";
+import Status from "~/src/status";
+import Enemy, { IEnemyData } from "~/src/enemy";
+import Reaction from "~/src/reaction";
+import { IDamageData } from "~/src/damage";
+import { BonusStep } from "~/src/special";
 import { parseLevel } from "~/src/ascension";
+import { Arrayable } from "~/src/utility";
 
 @Component({
   name: "DamageDetail",
@@ -84,42 +86,40 @@ import { parseLevel } from "~/src/ascension";
 export default class DamageDetail extends Vue {
   @Prop({ required: true }) data!: IDamageData;
 
-  db!: DBTeamTable &
-    DBEquipTable &
-    DBBonusTable &
-    DBCharaTable &
-    DBWeaponTable &
-    DBArtifactTable;
-  tab = 0;
-  members: IMember[] = Array.from({ length: 4 }, () => ({
-    info: null,
-    chara: null,
-    equip: null,
-  }));
-  params: IStatus[] = Array.from({ length: 4 }, () => Status.empty());
-  statues: Status[] = [];
-  bonuses: BonusBase[] = [];
-
-  @Watch("data.contact")
-  onChangeContact() {
-    this.onChangeBonus();
-  }
+  index = 0;
+  members = Arrayable.make(
+    4,
+    (_, i): IAnyMember => ({
+      index: i,
+      info: null,
+      chara: null,
+      equip: null,
+    })
+  );
+  params: IStatus[] = Arrayable.make(4, () => Status.empty());
+  party: Status[] = [];
+  bonus: BonusBase[] = [];
 
   get large() {
     return this.$vuetify.breakpoint.lg || this.$vuetify.breakpoint.xl;
   }
 
   get member() {
-    return this.members[this.tab];
+    return this.members[this.index];
   }
 
   get status() {
-    return this.params[this.tab];
+    return this.params[this.index];
   }
 
-  get bonus() {
+  get mines() {
     const { chara } = this.member;
-    return this.bonuses.filter((val) => val.isMine(chara));
+    return this.bonus.filter((val) => val.isMine(chara));
+  }
+
+  get extra() {
+    const { chara } = this.member;
+    return this.bonus.filter((val) => val.isExtra(chara));
   }
 
   get defence() {
@@ -127,26 +127,37 @@ export default class DamageDetail extends Vue {
     return enemy.defence(parseLevel(this.member.chara?.level).level);
   }
 
+  get contact() {
+    return this.data.contact;
+  }
+  set contact(value: AnyContactType) {
+    this.data.contact = value;
+    this.onChangeBonus();
+  }
+
+  get reaction() {
+    return this.data.reaction;
+  }
+  set reaction(value: AnyReactionType) {
+    this.data.reaction = value;
+  }
+
   get reactions() {
     return [
       "",
-      ...enumerateReaction(this.member.info, this.status.enchant.type),
+      ...Reaction.enumerate(this.member.info, this.status.enchant.type),
     ];
-  }
-
-  created() {
-    this.db = this.$db;
   }
 
   mounted() {
     const { team, member } = this.data;
-    const t = this.db.team.find((val) => val.id === team);
+    const t = this.$db.team.find((val) => val.id === team);
     if (t) {
       this.changeTeam(t);
 
-      for (let [i, m] of this.members.entries()) {
+      for (const m of this.members) {
         if (m.equip?.id === member) {
-          this.tab = i;
+          this.index = m.index;
           this.onChangeBonus();
           break;
         }
@@ -156,7 +167,7 @@ export default class DamageDetail extends Vue {
 
   private changeTeam(team: ITeamData) {
     let i = 0;
-    for (let m of new Team(team).members(this.db)) {
+    for (let m of new Team(team).members(this.$db)) {
       let member = this.members[i];
       member.info = m.info;
       member.chara = m.chara;
@@ -170,14 +181,13 @@ export default class DamageDetail extends Vue {
       member.equip = null;
     }
 
-    let builder = new BonusBuilder(this.$i18n, this.db.bonus);
-    let bonus = builder.build(team, this.db);
-    this.bonuses.splice(0);
-    this.bonuses.push(...bonus);
-    this.db.bonus = { ...this.db.bonus, ...builder.output };
+    let builder = new BonusBuilder(this.$i18n, this.$db.bonus);
+    this.bonus.splice(0);
+    this.bonus.push(...builder.build(team, this.$db));
+    this.$db.bonus = { ...this.$db.bonus, ...builder.output };
   }
 
-  onChangeMember(team: ITeamData, member: IMember) {
+  onChangeMember(team: ITeamData, member: IAnyMember) {
     if (this.data.team != team.id) {
       this.data.team = team.id;
       this.changeTeam(team);
@@ -187,11 +197,12 @@ export default class DamageDetail extends Vue {
 
     const equip = member.equip;
     if (equip) {
-      this.data.member = equip.id;
+      const { id } = equip;
+      this.data.member = id;
 
-      for (let [i, m] of this.members.entries()) {
-        if (m.equip?.id === equip.id) {
-          this.tab = i;
+      for (let m of this.members) {
+        if (m.equip?.id === id) {
+          this.index = m.index;
           this.onChangeBonus();
           break;
         }
@@ -200,18 +211,21 @@ export default class DamageDetail extends Vue {
   }
 
   onChangeBonus() {
-    this.statues.splice(0);
-    this.members.forEach((m, i) => {
-      let s = new Status(this.params[i], this.data.contact);
-      s.equip(m, this.db);
-      if (m.equip) {
-        this.statues.push(s);
+    this.party.splice(0);
+    for (let m of this.members) {
+      let s = new Status(this.params[m.index]);
+      s.equip(m, this.$db);
+      if (s.chara) {
+        this.party.push(s);
       }
-    });
-    for (let step = 0; step <= 2; ++step) {
-      for (let s of this.statues) {
-        for (const bonus of this.bonuses) {
-          bonus.apply(s, this.statues, step);
+    }
+
+    const party = this.party;
+    const contact = this.contact;
+    for (let step = 0; step <= BonusStep.Special; ++step) {
+      for (let target of this.party) {
+        for (const bonus of this.bonus) {
+          bonus.apply({ step, target, party, contact });
         }
       }
     }

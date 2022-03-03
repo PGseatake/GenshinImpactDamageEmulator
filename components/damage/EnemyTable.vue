@@ -7,7 +7,7 @@
           v-model="data.name"
           :items="enemies"
           :label="$t('enemy.label')"
-          :item-text="getEnemyText"
+          :item-text="formatEnemy"
           :menu-props="{ auto: true, transition: false }"
           item-value="name"
           dense
@@ -125,16 +125,15 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { ElementType, NoneElementType, ResistTypes } from "~/src/const";
-import { StatusReduct } from "~/src/status";
-import {
+import { ElementType, ResistTypes } from "~/src/const";
+import { StatusReduct } from "~/src/interface";
+import Enemy, {
   EnemyList,
   EnemyName,
   EnemyNames,
   IEnemyInfo,
   IEnemyData,
 } from "~/src/enemy";
-import { Enemy } from "~/src/damage";
 import ChipElement from "~/components/ChipElement.vue";
 
 type TextValue = {
@@ -218,24 +217,8 @@ export default class EnemyTable extends Vue {
     return this.$roundRate(enemy.resist(type) * 100);
   }
 
-  getEnemyText({ name, item }: TextValue) {
-    let type: NoneElementType;
-    if (this.data.name === name) {
-      type = this.data.elem;
-    } else {
-      type = item.element ? item.element[0] : "";
-    }
-    let text = "enemy." + name;
-    if (type) {
-      if (item.unique) {
-        return this.$t(`${text}.${type}`);
-      }
-      if (item.custom) {
-        return this.$t(text + ".format", [this.$t(`${text}.${type}`)]);
-      }
-      return this.$t(text, [this.$t("element." + type)]);
-    }
-    return this.$t(text);
+  formatEnemy({ name, item }: TextValue) {
+    return Enemy.format(this.data, item, name, this.$i18n);
   }
 
   onChangeData() {

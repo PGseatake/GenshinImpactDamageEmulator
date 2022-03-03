@@ -67,7 +67,7 @@ export default class DialogExport extends Vue {
         link.click();
         link.remove();
         (URL || webkitURL).revokeObjectURL(url);
-        this.$store.commit("popup", this.$t("popup.export"));
+        this.$store.commit("popup", "export");
       }
     }
   }

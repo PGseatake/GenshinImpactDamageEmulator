@@ -1,7 +1,11 @@
 import * as konst from "~/src/const";
-import { BonusValue, IIdentify, INameable, ICommentable, IWeaponInfo } from "~/src/interface";
+import {
+    IIdentify, INameable, ICommentable, IWeaponInfo,
+    BonusValue, WeaponBonus, AnyWeaponBonus,
+} from "~/src/interface";
 import * as ascension from "~/src/ascension";
 import { SettingWeapon } from "~/src/setting";
+import { WeaponEnrecBonus } from "./special";
 
 const WeaponAtk3: IReadonlyHash<ReadonlyArray<number>> = {
     //    1,  20, 20+,  40, 40+,  50, 50+,  60, 60+,  70, 70+,  80, 80+,  90
@@ -72,7 +76,7 @@ const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
             // 元素爆発を発動した時、継続時間10秒の霧切の巴紋を1層獲得する。
             // また、キャラクターの元素エネルギーが100％未満の場合、霧切の巴紋を1層獲得する
             { items: konst.AnyBonusType.Element, value: [28, 35, 42, 49, 56], limit: "weapon.layer3", times: 5 },
-            // { items: konst.ElementBonusType.Self, value: [28, 35, 42, 49, 56], limit: "weapon.layer3", times: 5 },
+            // TODO: { items: konst.ElementBonusType.Self, value: [28, 35, 42, 49, 56], limit: "weapon.layer3", times: 5 },
         ],
     },
     SkywardBlade: {
@@ -506,13 +510,13 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         // チーム全員の元素エネルギー上限の合計を基に、元素爆発ダメージをアップさせる。
         // 1ポイン卜につき、装備したキャラクターの元素爆発ダメージ+0.12~0.24%。
         // この方式アップできる元素爆発ダメージは最大40~80%まで。
-        // passive: {
-        //     extra: konst.ExtraBonusType.Flat,
-        //     dest: konst.FlatBonusDest.Burst,
-        //     base: konst.FlatBonusBase.EnRec, // チーム全員
-        //     value: 0.12,
-        //     bound: { base: konst.FlatBonusBase.None, value: 40 },
-        // },
+        passive: {
+            extra: konst.ExtraBonusType.Energy,
+            dest: konst.CombatBonusType.Burst,
+            value: [0.12, 0.15, 0.18, 0.21, 0.24],
+            bound: [40, 50, 60, 70, 80],
+            limit: "general.energy_all",
+        },
     },
     Whiteblind: {
         star: 4,
@@ -658,13 +662,13 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         secval: [12.0, 21.2, 30.9, 35.7, 40.6, 45.4, 50.3, 55.1],
         passive: [
             // 元素チャージ効率が100%を超えている場合、その超えた部分の28%分、攻撃力がアップする。この方式でアップできる攻撃力は最大80%まで。
-            // {
-            //     extra: konst.ExtraBonusType.Flat,
-            //     dest: konst.FlatBonusDest.AtkBuf,
-            //     base: konst.FlatBonusBase.EnRec, // 100%超え分
-            //     value: 28,
-            //     bound: { base: konst.FlatBonusBase.None, value: 80 },
-            // },
+            {
+                extra: konst.ExtraBonusType.Special,
+                value: [28, 35, 42, 49, 56],
+                bound: [80, 90, 100, 110, 120],
+                limit: "general.enrec_over",
+                ...WeaponEnrecBonus,
+            },
             // 元素爆発を発動した後の12秒間、元素チャージ効率+30~50%。
             { items: konst.StatusBonusType.EnRec, value: [30, 35, 40, 45, 50], limit: "burst.use", times: 12 },
         ],
@@ -804,13 +808,13 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         // チーム全員の元素エネルギー上限の合計を基に、元素爆発ダメージをアップさせる。
         // 1ポイン卜につき、装備したキャラクターの元素爆発ダメージ+0.12~0.24%。
         // この方式アップできる元素爆発ダメージは最大40~80%まで。
-        // passive: {
-        //     extra: konst.ExtraBonusType.Flat,
-        //     dest: konst.FlatBonusDest.Burst,
-        //     base: konst.FlatBonusBase.EnRec, // チーム全員
-        //     value: 0.12,
-        //     bound: { base: konst.FlatBonusBase.None, value: 40 },
-        // },
+        passive: {
+            extra: konst.ExtraBonusType.Energy,
+            dest: konst.CombatBonusType.Burst,
+            value: [0.12, 0.15, 0.18, 0.21, 0.24],
+            bound: [40, 50, 60, 70, 80],
+            limit: "general.energy_all",
+        },
     },
     RoyalSpear: {
         star: 4,
@@ -933,6 +937,7 @@ const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
             // 通常攻撃、重撃、元素スキル、元素爆発が敵に命中すると、それぞれ継続時間12秒の「白夜極星」効果を1層獲得する。
             // 「白夜極星」を1/2/3/4層有する時、キャラクターの攻撃力+10~20/20~40/30~60/48~96%。
             // 各攻撃によって獲得する「白夜極星」の継続時間は、層ごとに独立する。
+            // TODO: 層
             { items: konst.StatusBonusType.AtkBuf, value: [48, 60, 72, 84, 96], limit: "weapon.layer4", times: 12 },
         ],
     },
@@ -947,6 +952,7 @@ const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
             // 飛雷の巴紋を1/2/3層有する時、通常攻撃のダメージ+12~24/24~48/40~80%。飛雷の巴紋は次の各状況において獲得できる。
             // 通常攻撃でダメージを与えた時、継続時間5秒の飛雷の巴紋を1層獲得する。元素スキルを発動した時、継続時間10秒の飛雷の巴紋を1層獲得する。また、キャラクターの元素
             // エネルギーが100％未満の場合、飛雷の巴紋を1層獲得する、この飛雷の巴紋は元素エネルギーが満タンになると消失する。飛雷の巴紋の継続時間は層ごとに独立している。
+            // TODO: 層
             { items: konst.CombatBonusType.Normal, value: [40, 50, 60, 70, 80], limit: "weapon.layer3", times: 10 },
         ],
     },
@@ -1074,13 +1080,13 @@ const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
         // チーム全員の元素エネルギー上限の合計を基に、元素爆発ダメージをアップさせる。
         // 1ポイン卜につき、装備したキャラクターの元素爆発ダメージ+0.12~0.24%。
         // この方式アップできる元素爆発ダメージは最大40~80%まで。
-        // passive: {
-        //     extra: konst.ExtraBonusType.Flat,
-        //     dest: konst.FlatBonusDest.Burst,
-        //     base: konst.FlatBonusBase.EnRec, // チーム全員
-        //     value: 0.12,
-        //     bound: { base: konst.FlatBonusBase.None, value: 40 },
-        // },
+        passive: {
+            extra: konst.ExtraBonusType.Energy,
+            dest: konst.CombatBonusType.Burst,
+            value: [0.12, 0.15, 0.18, 0.21, 0.24],
+            bound: [40, 50, 60, 70, 80],
+            limit: "general.energy_all",
+        },
     },
     MitternachtsWaltz: {
         star: 4,
@@ -1287,7 +1293,7 @@ const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = 
         second: konst.CriticalBonusType.Damage,
         secval: [14.4, 25.4, 37.1, 42.9, 48.7, 54.5, 60.3, 66.2],
         passive: [
-            // 元素スキルを発動すると、「神楽舞」の効果を獲得する。1
+            // 元素スキルを発動すると、「神楽舞」の効果を獲得する。
             // この武器を装備したキャラクターの元素スキルによるダメージ+12~24%、継続時間16秒、最大3層まで。
             { items: konst.CombatBonusType.Skill, value: [12, 15, 18, 21, 24], stack: 3, times: 16 },
             // 3層の効果を持つ時、該当キャラクターの全元素ダメージ+12%。
@@ -1359,7 +1365,8 @@ const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = 
         second: konst.StatusBonusType.EnRec,
         secval: [6.7, 11.8, 17.2, 19.9, 22.6, 25.2, 27.9, 30.6],
         // この武器を装備したキャラクターが雷元素に関連する反応を起こした時、周囲チーム内にてその反応に関わった元素タイプのキャラクターは強化効果を獲得する。
-        // 強化効果：該当元素タイプの元素ダメージ+ 10 %、継続時間6秒、この方式で獲得する元素ダメージアップ効果は重ね掛けできない。
+        // 強化効果：該当元素タイプの元素ダメージ+10~20%、継続時間6秒、この方式で獲得する元素ダメージアップ効果は重ね掛けできない。
+        // TODO: 
         passive: {
             items: [konst.ElementBonusType.Pyro, konst.ElementBonusType.Hydro, konst.ElementBonusType.Elect, konst.ElementBonusType.Anemo, konst.ElementBonusType.Cryo],
             value: [10, 12.5, 15, 17.5, 20],
@@ -1497,8 +1504,12 @@ export interface IWeaponData extends IIdentify, INameable, ICommentable {
 }
 export type DBWeaponTable = Record<konst.WeaponType, IWeaponData[]>;
 
-export const Builder = {
-    make(id: string, type: konst.WeaponType, name: string, init: SettingWeapon) {
+export default class Weapon {
+    public static check(type: string): type is konst.WeaponType {
+        return konst.WeaponTypes.includes(type as konst.WeaponType);
+    }
+
+    public static create(id: string, type: konst.WeaponType, name: string, init: SettingWeapon) {
         const item = WeaponList[type][name];
         const data: IWeaponData = {
             id,
@@ -1512,19 +1523,33 @@ export const Builder = {
                 value: item.secval[0],
             },
         };
-        Builder.level(data, type);
+        Weapon.level(data, type);
         return data;
-    },
-    name(data: IWeaponData, type: konst.WeaponType, init: SettingWeapon) {
+    }
+
+    public static reset(data: IWeaponData, type: konst.WeaponType, init: SettingWeapon) {
         const { second } = WeaponList[type][data.name];
         data.rank = init.rank;
         data.level = init.level;
         data.second = { type: second, value: 0 };
-        Builder.level(data, type);
-    },
-    level(data: IWeaponData, type: konst.WeaponType) {
+        Weapon.level(data, type);
+    }
+
+    public static level(data: IWeaponData, type: konst.WeaponType) {
         const { atk, secval } = WeaponList[type][data.name];
         data.atk = ascension.calc14(data.level, atk);
         data.second.value = ascension.calc8(data.level, secval);
-    },
-} as const;
+    }
+
+    public static ranked(bonus: AnyWeaponBonus, rank: number): WeaponBonus {
+        switch (bonus.extra) {
+            case konst.ExtraBonusType.Energy:
+                return { ...bonus, value: bonus.value[rank - 1], bound: bonus.bound[rank - 1] };
+            case konst.ExtraBonusType.Special:
+                if (bonus.bound) {
+                    return { ...bonus, value: bonus.value[rank - 1], bound: bonus.bound[rank - 1] };
+                }
+        }
+        return { ...bonus, value: bonus.value[rank - 1] };
+    }
+}

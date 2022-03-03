@@ -1,9 +1,10 @@
 import * as ascension from "~/src/ascension";
 import { BonusType, WeaponTypes, ArtifactType, ArtifactTypes } from "~/src/const";
-import { BonusValue, IEquipData, DBEquipTable } from "~/src/interface";
-import { ArtifactName, ArtifactNames, ArtifactMain, ArtifactSub, calcMain, DBArtifactTable } from "~/src/artifact";
-import { CharaList, CharaName, DBCharaTable } from "~/src/character";
-import { WeaponList, DBWeaponTable } from "~/src/weapon";
+import { BonusValue } from "~/src/interface";
+import { DBEquipTable } from "~/src/equipment";
+import Artifact, { DBArtifactTable, ArtifactName, ArtifactNames, ArtifactMain, ArtifactSub } from "~/src/artifact";
+import { DBCharaTable, CharaList, CharaName } from "~/src/character";
+import { DBWeaponTable, WeaponList } from "~/src/weapon";
 import { DBBonusTable } from "~/src/bonus";
 import { DBTeamTable } from "~/src/team";
 import { DBDamageTable } from "~/src/damage";
@@ -94,19 +95,16 @@ function tryParseFloat(val: string) {
 
 const ver002 = {
     main(type: ArtifactType, { main, star, level }: IArtifactV002): BonusValue {
-        const s = tryParseFloat(star);
-        const l = tryParseFloat(level.replace("+", ""));
-        const artifactMain = ArtifactMain[type];
-        if (artifactMain.includes(main)) {
-            return {
-                type: main,
-                value: calcMain(main, s, l)
-            };
+        let data = Artifact.create("", type, ArtifactNames[0], {
+            star: tryParseFloat(star),
+            level: tryParseFloat(level.replace("+", "")),
+        });
+        const types = ArtifactMain[type];
+        if (!types.includes(main)) {
+            data.main.type = types[0];
+            Artifact.main(data);
         }
-        return {
-            type: artifactMain[0],
-            value: calcMain(artifactMain[0], s, l)
-        };
+        return data.main;
     },
     sub([type, value]: [BonusType, string]): BonusValue {
         if (ArtifactSub.includes(type)) {
@@ -177,7 +175,7 @@ const ver002 = {
             });
         }
         before.equip.forEach((equip, index) => {
-            let data: IEquipData = {
+            let data = {
                 id: `equip002_${index}`,
                 comment: "",
                 chara: "",

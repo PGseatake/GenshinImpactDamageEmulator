@@ -15,12 +15,10 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import VueI18n from "vue-i18n/types";
-import { Store } from "vuex/types";
 import { ElementType } from "~/src/const";
-import { DBTeamTable, Team } from "~/src/team";
+import { Team, TeamMember } from "~/src/team";
 import { EnemyNames } from "~/src/enemy";
-import { DBDamageTable, IDamageData } from "~/src/damage";
+import { IDamageData } from "~/src/damage";
 import { mdiClose, mdiPlaylistPlus } from "@mdi/js";
 import DamageDetail from "~/components/damage/DamageDetail.vue";
 
@@ -30,51 +28,12 @@ type TabItem = {
   text: (item: TabItem) => string;
   close: (item: TabItem) => void;
 };
-type DamageItem = {
-  team: string;
-  member: string;
-};
-
-class TabBuilder {
-  private i18n: VueI18n;
-  private store: Store<any>;
-  private items: IDamageData[];
-
-  constructor(app: Vue) {
-    this.i18n = app.$i18n;
-    this.store = app.$store;
-    this.items = app.$db.damage;
-  }
-
-  update() {
-    const i18n = this.i18n;
-    const text = (item: TabItem) =>
-      `${i18n.t("general.data")}${item.index + 1}`;
-
-    let items: TabItem[] = [];
-    this.items.forEach((item, index) =>
-      items.push({
-        key: item.id,
-        index,
-        text,
-        close: (item: TabItem) => {
-          this.items.splice(item.index, 1);
-          this.update();
-        },
-      })
-    );
-    this.store.commit("tabs", { tab: "damage", items });
-  }
-}
 
 @Component({
   name: "PageDamage",
   components: { DamageDetail },
 })
 export default class PageDamage extends Vue {
-  db: DBTeamTable & DBDamageTable = this.$db;
-  tabs!: TabBuilder;
-
   readonly icons = {
     append: mdiPlaylistPlus,
     remove: mdiClose,
@@ -83,15 +42,18 @@ export default class PageDamage extends Vue {
   @Watch("append")
   onChangeAppend(value: boolean) {
     if (value) {
-      const index = this.db.damage.length;
-      this.onAppend(this.verify({ team: "", member: "" })!);
-      this.tab = index;
-      this.$nextTick(() => (this.append = false));
+      const index = this.$db.damage.length;
+      let data = Team.delegate(this.$db.team);
+      if (data) {
+        this.onAppend(data);
+        this.tab = index;
+        this.$nextTick(() => (this.append = false));
+      }
     }
   }
 
   get item() {
-    return this.db.damage[this.tab];
+    return this.$db.damage[this.tab];
   }
 
   get tab() {
@@ -112,10 +74,10 @@ export default class PageDamage extends Vue {
     this.$store.commit("appendable", true);
     this.$store.commit("tabs", {});
 
-    let { damage } = this.db;
+    let { damage } = this.$db;
     for (let index = 0; index < damage.length; ) {
       let data = damage[index];
-      const change = this.verify(data);
+      const change = Team.delegate(this.$db.team, data);
       if (change) {
         if (change.team) {
           data.team = change.team;
@@ -132,40 +94,12 @@ export default class PageDamage extends Vue {
       }
     }
 
-    this.tabs = new TabBuilder(this);
-    this.tabs.update();
+    this.updateTabs();
   }
 
-  private verify(data: DamageItem): DamageItem | undefined {
-    const team = data.team;
+  onAppend({ team, member }: TeamMember) {
     if (team) {
-      const t = this.db.team.find((val) => val.id === team);
-      if (t) {
-        let member = "";
-        for (const m of new Team(t).member) {
-          if (m === data.member) {
-            // 変更なし
-            return undefined;
-          }
-          member = member || m;
-        }
-        // メンバー交代
-        return { team, member };
-      }
-    }
-
-    for (const t of this.db.team) {
-      for (const member of new Team(t).member) {
-        // チーム交代
-        return { team: t.id, member };
-      }
-    }
-    // チームなし
-    return { team: "", member: "" };
-  }
-
-  onAppend({ team, member }: DamageItem) {
-    if (team) {
+      let items = this.$db.damage;
       const data: IDamageData = {
         id: this.$makeUniqueId(),
         team: team,
@@ -177,9 +111,58 @@ export default class PageDamage extends Vue {
         level: 1,
         fixed: 0,
       };
-      this.$appendData(this.db.damage, data);
-      this.tabs.update();
+      this.$appendData(items, data);
+      this.updateTabs();
     }
+  }
+
+  private updateTabs(select?: string, remove?: TabItem) {
+    let items = this.$db.damage;
+    const i18n = this.$i18n;
+    const text = (item: TabItem) =>
+      `${i18n.t("general.data")}${item.index + 1}`;
+    const close = (item: TabItem) => {
+      const id = items[this.tab].id;
+      items.splice(item.index, 1);
+      this.updateTabs(id, item);
+    };
+
+    // タブの更新
+    this.$store.commit("tabs", {
+      tab: "damage",
+      items: items.map((item, index) => ({
+        key: item.id,
+        index,
+        text,
+        close,
+      })),
+    });
+    if (!remove) return;
+
+    // タブインデックスの調整
+    let tab = 0;
+    const max = items.length;
+    if (max) {
+      if (select === remove.key) {
+        switch (remove.index) {
+          case 0: // 丸め込みで先頭のタブ
+          case max: // 末尾のタブ
+            tab = remove.index - 1;
+            break;
+          default:
+            // タブはそのまま
+            return;
+        }
+      } else {
+        // 選択済みの同じタブ
+        tab = items.findIndex((val) => val.id === select);
+      }
+    } else {
+      // タブ初期化
+      tab = -1;
+    }
+    this.tab = tab; // TODO: 1回だけではうまくいかない
+    this.$nextTick(() => (this.tab = tab));
   }
 }
 </script>

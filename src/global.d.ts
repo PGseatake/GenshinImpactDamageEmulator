@@ -1,5 +1,5 @@
+import VueI18n from "vue-i18n/types";
 import { LocaleObject } from "nuxt-i18n";
-import { IVueI18n } from "vue-i18n/types";
 import { ElementType } from "~/src/const";
 import { BonusValue, IIdentify } from "~/src/interface";
 import { Database } from "~/src/convert";
@@ -40,13 +40,14 @@ declare global {
 declare module "vue/types/vue" {
     interface Vue {
         $db: Database;
+        $roundRate: (value: number) => string;
         $makeUniqueId: () => string;
         $appendData: (data: IIdentify[], item: IIdentify) => void;
         $removeData: (data: IIdentify[], item: IIdentify) => void;
-        $formatBonus: (i18n: IVueI18n, data: BonusValue | undefined) => string;
+        $formatBonus: (data?: BonusValue) => string;
         $starColor: (star: number) => string;
         $elementBGColor: (elem: ElementType) => string;
-        $roundRate: (value: number) => string;
+        $h: (key: string, values?: VueI18n.Values) => string;
     }
 }
 

@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { NoneElementType } from "~/src/const";
+import { AnyElementType } from "~/src/const";
 import ChipElement from "~/components/ChipElement.vue";
 
 @Component({
@@ -41,8 +41,8 @@ import ChipElement from "~/components/ChipElement.vue";
   inheritAttrs: false,
 })
 export default class SelectElement extends Vue {
-  @Prop({ required: true }) type!: NoneElementType;
-  @Prop({ required: true }) types!: NoneElementType[];
+  @Prop({ required: true }) type!: AnyElementType;
+  @Prop({ required: true }) types!: AnyElementType[];
 
   get items() {
     return this.types.map((val) => ({
@@ -54,7 +54,7 @@ export default class SelectElement extends Vue {
   get refType() {
     return this.type;
   }
-  set refType(value: NoneElementType) {
+  set refType(value: AnyElementType) {
     this.$emit("update:type", value);
   }
 }

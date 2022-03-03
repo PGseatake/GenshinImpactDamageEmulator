@@ -49,28 +49,28 @@
         <bonus-value
           v-bind.sync="item.sub1"
           :types="subs"
-          :score="getScore(item, item.sub1)"
+          :score="getScore(item, 'sub1')"
         />
       </template>
       <template #[`item.sub2`]="{ item }">
         <bonus-value
           v-bind.sync="item.sub2"
           :types="subs"
-          :score="getScore(item, item.sub2)"
+          :score="getScore(item, 'sub2')"
         />
       </template>
       <template #[`item.sub3`]="{ item }">
         <bonus-value
           v-bind.sync="item.sub3"
           :types="subs"
-          :score="getScore(item, item.sub3)"
+          :score="getScore(item, 'sub3')"
         />
       </template>
       <template #[`item.sub4`]="{ item }">
         <bonus-value
           v-bind.sync="item.sub4"
           :types="subs"
-          :score="getScore(item, item.sub4)"
+          :score="getScore(item, 'sub4')"
         />
       </template>
       <template #[`item.action`]="{ item }">
@@ -210,16 +210,13 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiDelete, mdiShuffleVariant } from "@mdi/js";
 import { ArtifactType, BonusType } from "~/src/const";
-import { BonusValue } from "~/src/interface";
-import {
+import Artifact, {
   IArtifactData,
   ArtifactNames,
   ArtifactName,
   ArtifactMain,
   ArtifactSub,
   SubBonus,
-  calcScore,
-  Builder,
 } from "~/src/artifact";
 import Pagination from "~/src/pagination";
 
@@ -293,19 +290,19 @@ export default class ArtifactData extends Vue {
   }
 
   onChangeStar(item: IArtifactData) {
-    Builder.star(item);
+    Artifact.star(item);
   }
 
   onChangeLevel(item: IArtifactData) {
-    Builder.main(item);
+    Artifact.main(item);
   }
 
   onChangeMain(item: IArtifactData) {
-    Builder.main(item);
+    Artifact.main(item);
   }
 
-  getScore({ star, level }: IArtifactData, bonus: BonusValue) {
-    const score = calcScore(bonus, star, level);
+  getScore(item: IArtifactData, sub: SubBonus) {
+    const score = Artifact.score(item, sub);
     if (score !== undefined) {
       return score.toString();
     }
@@ -313,13 +310,13 @@ export default class ArtifactData extends Vue {
   }
 
   getTotal(item: IArtifactData) {
-    return Builder.score(item);
+    return Artifact.total(item);
   }
 
   onAppend() {
     const name = this.append;
     if (name) {
-      const data = Builder.make(
+      const data = Artifact.create(
         this.$makeUniqueId(),
         this.type,
         name,
@@ -346,7 +343,7 @@ export default class ArtifactData extends Vue {
   onRandom(item: IArtifactData, type?: boolean) {
     if (type) {
       // 効果の種類も入れ替える
-      Builder.shuffle(item, [
+      Artifact.shuffle(item, [
         BonusType.None,
         BonusType.None,
         BonusType.None,
@@ -354,7 +351,7 @@ export default class ArtifactData extends Vue {
       ]);
     } else {
       // 現在の効果に基づく
-      Builder.shuffle(
+      Artifact.shuffle(
         item,
         SubBonus.map((val) => item[val].type)
       );

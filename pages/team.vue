@@ -180,7 +180,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
-import { Builder, ITeamData } from "~/src/team";
+import { Team, ITeamData } from "~/src/team";
 import { SelectItem } from "~/components/SelectName.vue";
 import Pagination from "~/src/pagination";
 
@@ -280,7 +280,7 @@ export default class PageTeam extends Vue {
   }
 
   onChangeItem(item: ITeamData) {
-    Builder.resonance(item, this.$db);
+    Team.resonance(item, this.$db);
   }
 
   onBeforeAppend() {
@@ -288,7 +288,7 @@ export default class PageTeam extends Vue {
   }
 
   onAppend() {
-    const data = Builder.team(this.$makeUniqueId(), this.append);
+    const data = Team.create(this.$makeUniqueId(), this.append);
     this.$appendData(this.items, data);
     this.append = "";
 

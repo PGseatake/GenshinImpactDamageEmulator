@@ -32,12 +32,13 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { mdiMenuDown } from "@mdi/js";
 import * as Ascension from "~/src/ascension";
+import { Arrayable } from "~/src/utility";
 
 type LevelText = { readonly value: string };
 
 const LevelTexts = (() => {
   const make = (min: number, max: number) => {
-    return Array.from({ length: max - min }, (_, i): LevelText => {
+    return Arrayable.make(max - min, (_, i): LevelText => {
       return { value: `${min + i + 1}` };
     });
   };

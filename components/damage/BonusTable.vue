@@ -99,7 +99,7 @@ import {
 } from "@mdi/js";
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import { BonusBase } from "~/src/bonus";
-import { Status } from "~/src/status";
+import Status from "~/src/status";
 
 @Component({
   name: "BonusTable",
@@ -109,8 +109,8 @@ import { Status } from "~/src/status";
   inheritAttrs: false,
 })
 export default class BonusTable extends Vue {
-  @Prop({ required: true }) items!: Array<BonusBase>;
-  @Prop({ required: true }) status!: Array<Status>;
+  @Prop({ required: true }) items!: BonusBase[];
+  @Prop({ required: true }) status!: Status[];
 
   readonly icons = {
     on: mdiCheckboxMarked,

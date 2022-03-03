@@ -25,7 +25,7 @@
       </td>
     </template>
     <template #item="{ item }">
-      <tr :key="item.key" v-html="makeHtml(item)" />
+      <tr :key="item.name + item.group" v-html="makeHtml(item)" />
     </template>
   </v-data-table>
 </template>
@@ -52,20 +52,18 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { TalentType, TalentTypes } from "~/src/const";
-import { ICombat } from "~/src/interface";
-import { IMember } from "~/src/team";
-import { IStatus, Status } from "~/src/status";
-import { IDamageData, CombatAttribute, Enemy } from "~/src/damage";
 import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
+import { TalentType, TalentTypes } from "~/src/const";
+import { IMember } from "~/src/team";
+import Status from "~/src/status";
+import Enemy from "~/src/enemy";
+import { BonusBase } from "~/src/bonus";
+import { IDamageData, Attribute, IAttribute } from "~/src/damage";
 import { SettingCritical } from "~/src/setting";
 
-interface IAttribute extends ICombat {
-  talent: TalentType;
-  status: Status;
+interface IAttrItem extends IAttribute {
   enemy: Enemy;
-  key: number;
-  group: string;
+  group: number;
 }
 
 @Component({
@@ -74,8 +72,9 @@ interface IAttribute extends ICombat {
 })
 export default class DamageTable extends Vue {
   @Prop({ required: true }) data!: Readonly<IDamageData>;
-  @Prop({ required: true }) member!: Readonly<IMember>;
-  @Prop({ required: true }) status!: IStatus;
+  @Prop({ required: true }) leader!: Readonly<IMember>;
+  @Prop({ required: true }) party!: ReadonlyArray<Status>;
+  @Prop({ required: true }) bonus!: ReadonlyArray<BonusBase>;
 
   readonly icons = { open: mdiChevronDown, close: mdiChevronUp };
 
@@ -123,61 +122,54 @@ export default class DamageTable extends Vue {
     return headers;
   }
 
+  get status() {
+    return this.party[this.leader.index];
+  }
+
   get items() {
-    let status = new Status(this.status, this.data.contact);
-    status.chara = this.member.chara;
-    let enemy = new Enemy(this.data, this.status.reduct);
-    let items: IAttribute[] = [];
-    const info = this.member.info;
-    if (info) {
-      let key = 1;
-      let talent: TalentType = TalentType.Combat;
-      for (const data of info.talent.combat) {
-        items.push({ ...data, talent, status, enemy, key, group: "0" });
-        key++;
-      }
-      talent = TalentType.Skill;
-      for (const data of info.talent.skill) {
-        items.push({ ...data, talent, status, enemy, key, group: "1" });
-        key++;
-      }
-      talent = TalentType.Burst;
-      for (const data of info.talent.burst) {
-        items.push({ ...data, talent, status, enemy, key, group: "2" });
-        key++;
+    let items: IAttrItem[] = [];
+    let status = this.status;
+    if (status) {
+      let enemy = new Enemy(this.data, status.reduct);
+      const info = this.leader.info;
+      if (info) {
+        let talent: TalentType = TalentType.Combat;
+        for (const data of info.talent.combat) {
+          items.push({ ...data, talent, enemy, group: 0 });
+        }
+        talent = TalentType.Skill;
+        for (const data of info.talent.skill) {
+          items.push({ ...data, talent, enemy, group: 1 });
+        }
+        talent = TalentType.Burst;
+        for (const data of info.talent.burst) {
+          items.push({ ...data, talent, enemy, group: 2 });
+        }
       }
     }
     return items;
   }
 
   get critical() {
-    return this.$db.setting.critical;
+    return this.$db.setting.critical as SettingCritical;
   }
 
-  formatGroup(index: string) {
-    const group = TalentTypes[Number(index)];
-    return `${this.$t("combat." + group)} : ${this.$t("general.level")}${
-      this.status.talent[group]
+  formatGroup(group: number) {
+    const type = TalentTypes[group];
+    return `${this.$t("combat." + type)} : ${this.$t("general.level")}${
+      this.status.talent[type]
     }`;
   }
 
-  makeHtml(item: IAttribute) {
-    let attr = new CombatAttribute(
-      item,
-      item.status.talent[item.talent],
-      this.$db.setting.critical as SettingCritical
-    );
-    let html = `<td>${this.$t("combat." + item.name)}</td>` + attr.toHtml();
-    const damage = attr.damage(
-      item.status,
-      item.enemy,
-      this.data.reaction || undefined,
-      this.data.contact || undefined
-    );
-    const len = this.critical === SettingCritical.Both ? 6 : 4;
+  makeHtml(item: IAttrItem) {
+    let attr = new Attribute(item, this.data, this.status, this.party);
+    let html = `<td>${this.$h("combat." + item.name)}</td>` + attr.head();
+    const crit = this.critical;
+    const cells = attr.make(crit, item.enemy, this.bonus);
+    const len = crit === SettingCritical.Both ? 6 : 4;
     for (let i = 0; i < len; ++i) {
-      if (i < damage.length) {
-        html += damage[i];
+      if (i < cells.length) {
+        html += cells[i];
       } else {
         html += "<td></td>";
       }

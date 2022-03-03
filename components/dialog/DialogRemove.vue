@@ -81,7 +81,7 @@ export default class DialogRemove extends Vue {
   get titleText() {
     return (
       this.title ||
-      (this.$t("tab." + this.type) as string) + this.$t("dialog.remove")
+      String(this.$t("tab." + this.type)) + this.$t("dialog.remove")
     );
   }
 

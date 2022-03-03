@@ -45,7 +45,7 @@ export default class DialogAppend extends Vue {
   }
 
   get title() {
-    return (this.$t("tab." + this.type) as string) + this.$t("dialog.append");
+    return String(this.$t("tab." + this.type)) + this.$t("dialog.append");
   }
 
   get show() {
