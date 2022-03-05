@@ -400,7 +400,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             lv4: { items: konst.CombatBonusType.Plunge, value: 30.0, limit: "burst.area", target: konst.BonusTarget.All },
             // 5. 誕生式・大地の潮のスキルLv.+3
             // 6. 陽華のエリア内にいるフィールド上のキャラクターが、結晶反応で生成されたシールド状態にある時、与えるダメージ+17%。
-            lv6: { items: konst.AnyBonusType.Damage, value: 17.0, limit: "albedo.burst_crystal" },
+            lv6: { items: konst.BonusType.Damage, value: 17.0, limit: "albedo.burst_crystal" },
         },
     },
     Aloy: {
@@ -1134,7 +1134,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         },
         conste: {
             // 1. HPが50%より上回る敵に対して、ディルックの与えるダメージ+15％。
-            lv1: { items: konst.AnyBonusType.Damage, value: 15.0, limit: "diluc.hp_gt50" },
+            lv1: { items: konst.BonusType.Damage, value: 15.0, limit: "diluc.hp_gt50" },
             // 2. ディルックがダメージを受けると、攻撃力+10%、攻撃速度+5％、継続時間10秒。該当効果は最大3重まで、1.5秒に1回のみ発動可能。
             lv2: { items: konst.StatusBonusType.AtkBuf, value: 10.0, limit: "diluc.damage", stack: 3, times: 10 },
             // 3. 逆焔の刃のスキルLv.+3
@@ -2963,7 +2963,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
         },
         conste: {
             // 1. レザーが元素オーブまたは元素粒子を獲得した8秒内、与えるダメージが10％上昇する。
-            lv1: { items: konst.AnyBonusType.Damage, value: 10.0, limit: "general.energy_orb", times: 8 },
+            lv1: { items: konst.BonusType.Damage, value: 10.0, limit: "general.energy_orb", times: 8 },
             // 2. HPが30％以下の敵を攻撃する時、会心率が10％上昇する。
             lv2: { items: konst.CriticalBonusType.Rate, value: 10.0, limit: "hp.le30_en" },
             // 3. 雷牙のスキルLv.+3
@@ -3905,7 +3905,7 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
                 times: 15,
             },
             // 4. 靖妖儺舞状態の時、魈の与える全ダメージ+5%。また、スキル継続中、3秒毎に与える全ダメージが更に+5%。最大25％まで。
-            asc1st: { items: konst.AnyBonusType.Damage, value: 5.0, limit: "xiao.burst_per_3sec", stack: 5 },
+            asc1st: { items: konst.BonusType.Damage, value: 5.0, limit: "xiao.burst_per_3sec", stack: 5 },
             // 5. 風輪両立発動後の7秒間、風輪両立によるダメージ+15%。継続時間7秒、最大3重まで、重複で発動すると継続時間がリセットされる。
             asc4th: { items: konst.CombatBonusType.Skill, value: 15.0, limit: "skill.use", stack: 3, times: 7 },
         },

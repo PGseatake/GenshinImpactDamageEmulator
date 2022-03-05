@@ -100,15 +100,6 @@ export const CombatElementType = {
 } as const;
 export type CombatElementType = ElementType | typeof CombatElementType[keyof typeof CombatElementType];
 
-export const ResistTypes = [
-    ...ElementTypes,
-    "defence",
-] as const;
-export const ResistType = {
-    Defence: "defence",
-} as const;
-export type ResistType = ElementType | typeof ResistType[keyof typeof ResistType];
-
 export const ReductTypes = [
     ...ElementTypes,
     "defence",
@@ -196,13 +187,10 @@ export type ReactionBonusType = typeof ReactionBonusType[keyof typeof ReactionBo
 
 export const BonusType = {
     None: "none",
-} as const;
-export type BonusType = AnyStatusBonusType | CriticalBonusType | AnyElementBonusType | CombatBonusType | ReactionBonusType;
-
-export const AnyBonusType = {
     Damage: "any_dmg",
     Element: "elem_dmg",
 } as const;
+export type BonusType = AnyStatusBonusType | CriticalBonusType | AnyElementBonusType | CombatBonusType | ReactionBonusType;
 export type AnyBonusType = BonusType | "none";
 
 export const BonusTypes = [
@@ -228,8 +216,8 @@ export const BonusTypes = [
     "geo_dmg",
     "phys_dmg",
     // AnyBonusType
-    "any_dmg",
     "elem_dmg",
+    "any_dmg",
     // CombatBonusType
     "combat_dmg",
     "normal_dmg",

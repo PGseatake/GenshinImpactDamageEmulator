@@ -125,7 +125,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { ElementType, ResistTypes } from "~/src/const";
+import { ElementType, ReductTypes } from "~/src/const";
 import { StatusReduct } from "~/src/interface";
 import Enemy, {
   EnemyList,
@@ -193,7 +193,7 @@ export default class EnemyTable extends Vue {
   }
 
   get items() {
-    return ResistTypes.map((val) => ({ type: val }));
+    return ReductTypes.map((val) => ({ type: val }));
   }
 
   mounted() {

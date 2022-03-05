@@ -142,7 +142,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         // 攻撃力+18%
         set2: { items: konst.StatusBonusType.AtkBuf, value: 18 },
         // HPが50%以上の敵に対するダメージ+30%
-        set4: { items: konst.AnyBonusType.Damage, value: 30, limit: "hp.ge50_en" },
+        set4: { items: konst.BonusType.Damage, value: 30, limit: "hp.ge50_en" },
     },
     Artist: {
         // 通常攻撃と重撃のダメージ+15%
@@ -180,7 +180,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
     Thundersoother: {
         // 雷元素耐性+40%
         // 雷元素の影響を受けた敵に対するダメージ+35%
-        set4: { items: konst.AnyBonusType.Damage, value: 35, limit: "elem.elect" },
+        set4: { items: konst.BonusType.Damage, value: 35, limit: "elem.elect" },
     },
     Fury: {
         // 雷元素ダメージ+15%
@@ -224,7 +224,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
     Lavawalker: {
         // 炎元素耐性+40%
         // 炎元素の影響を受けた敵に対するダメージ+35%
-        set4: { items: konst.AnyBonusType.Damage, value: 35, limit: "elem.pyro" },
+        set4: { items: konst.BonusType.Damage, value: 35, limit: "elem.pyro" },
     },
     Noblesse: {
         // 元素爆発のダメージ+20%
@@ -242,7 +242,7 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         // 岩ダメージ+15%
         set2: { items: konst.ElementBonusType.Geo, value: 15 },
         // 結晶反応で形成された欠片を獲得すると、チーム全員の該当元素ダメージ+35%、継続時間10秒。元素ダメージ上昇は同時に1種類のみ獲得可能。
-        set4: { items: konst.AnyBonusType.Element, value: 35, limit: "artifact.crystal", times: 10, target: konst.BonusTarget.All },
+        set4: { items: konst.BonusType.Element, value: 35, limit: "artifact.crystal", times: 10, target: konst.BonusTarget.All },
     },
     Bolide: {
         // シールド強化+35%

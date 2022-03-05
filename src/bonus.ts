@@ -19,7 +19,7 @@ import { Arrayable, Maths } from "~/src/utility";
 const TeamBonus: Partial<ReadonlyRecord<konst.ElementType, IBasicBonus>> = {
     pyro: { items: konst.StatusBonusType.AtkBuf, value: 25 },
     cryo: { items: konst.CriticalBonusType.Rate, value: 15, limit: "elem.cryo" },
-    geo: { items: konst.AnyBonusType.Damage, value: 15, limit: "general.shield" },
+    geo: { items: konst.BonusType.Damage, value: 15, limit: "general.shield" },
 } as const;
 
 const ConductBonus: IReductBonus = {

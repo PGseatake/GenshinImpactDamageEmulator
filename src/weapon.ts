@@ -70,12 +70,12 @@ const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
         secval: [9.6, 17.0, 24.7, 28.6, 32.5, 36.4, 40.2, 44.1],
         passive: [
             // 全元素ダメージ+12~24%
-            { items: konst.AnyBonusType.Element, value: [12, 15, 18, 21, 24] },
+            { items: konst.BonusType.Element, value: [12, 15, 18, 21, 24] },
             // 霧切の巴紋を1/2/3層有する時、自身元素タイプの元素ダメージ+8~16/16~32/28~56%。
             // 霧切の巴紋は次の各状況において獲得できる。通常攻撃で元素ダメージを与えた時、継続時間5秒の霧切の巴紋を1層獲得する。
             // 元素爆発を発動した時、継続時間10秒の霧切の巴紋を1層獲得する。
             // また、キャラクターの元素エネルギーが100％未満の場合、霧切の巴紋を1層獲得する
-            { items: konst.AnyBonusType.Element, value: [28, 35, 42, 49, 56], limit: "weapon.layer3", times: 5 },
+            { items: konst.BonusType.Element, value: [28, 35, 42, 49, 56], limit: "weapon.layer3", times: 5 },
             // TODO: { items: konst.ElementBonusType.Self, value: [28, 35, 42, 49, 56], limit: "weapon.layer3", times: 5 },
         ],
     },
@@ -96,7 +96,7 @@ const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
         secval: [43, 76, 111, 129, 146, 164, 181, 198],
         passive: [
             // 与えるダメージ+10~20%。
-            { items: konst.AnyBonusType.Damage, value: [10, 12.5, 15, 17.5, 20] },
+            { items: konst.BonusType.Damage, value: [10, 12.5, 15, 17.5, 20] },
             // 元素反応を起こすと、奮起の欠片を1枚獲得する。この効果は0.5秒毎に1回のみ発動でき、待機中のキャラクターも発動できる。
             // 奮起の欠片を2枚集めると、全ての奮起の欠片を消費し、周囲のチーム全員に12秒間継続する「千年の大楽章・抗争の歌」効果を付与する:
             // 通常、重撃、落下攻撃のダメージ+16%~32、攻撃力+20~40%。
@@ -193,7 +193,7 @@ const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
         second: konst.StatusBonusType.Elem,
         secval: [12, 21, 31, 36, 41, 45, 50, 55],
         // キャラクターが与えるダメージ+12~24%。ダメージを受けると、このダメージアップ効果は5秒間無効になる。
-        passive: { items: konst.AnyBonusType.Damage, value: [12, 15, 18, 21, 24] },
+        passive: { items: konst.BonusType.Damage, value: [12, 15, 18, 21, 24] },
     },
     FavoniusSword: {
         star: 4,
@@ -265,7 +265,7 @@ const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
         second: konst.StatusBonusType.AtkBuf,
         secval: [9.0, 15.9, 23.2, 26.8, 30.4, 34.1, 37.7, 41.3],
         // 炎元素又は雷元素の影響を受けた敵に対するダメージ+20~36%。
-        passive: { items: konst.AnyBonusType.Damage, value: [20, 24, 28, 32, 36], limit: "elem.pyro_elect" },
+        passive: { items: konst.BonusType.Damage, value: [20, 24, 28, 32, 36], limit: "elem.pyro_elect" },
     },
     IronSting: {
         star: 4,
@@ -273,7 +273,7 @@ const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
         second: konst.StatusBonusType.Elem,
         secval: [36, 64, 93, 107, 122, 136, 151, 165],
         // 元素ダメージを与えた6秒間、キャラの与えるダメージ+6~12%、最大2重まで、1秒毎に1回のみ発動する。
-        passive: { items: konst.AnyBonusType.Damage, value: [6, 7.5, 9, 10.5, 12], limit: "elem.damage", stack: 2, times: 6 },
+        passive: { items: konst.BonusType.Damage, value: [6, 7.5, 9, 10.5, 12], limit: "elem.damage", stack: 2, times: 6 },
     },
     CinnabarSpindle: {
         star: 4,
@@ -322,7 +322,7 @@ const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
         second: konst.StatusBonusType.AtkBuf,
         secval: [7.7, 13.5, 19.7, 22.8, 25.9, 29.0, 32.1, 35.2],
         // 水元素又は氷元素の影響を受けた敵に対するダメージ+12~24%。
-        passive: { items: konst.AnyBonusType.Damage, value: [12, 15, 18, 21, 24], limit: "elem.hydro_cryo" },
+        passive: { items: konst.BonusType.Damage, value: [12, 15, 18, 21, 24], limit: "elem.hydro_cryo" },
     },
     SkyriderSword: {
         star: 3,
@@ -386,7 +386,7 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         second: konst.StatusBonusType.EnRec,
         secval: [8.0, 14.1, 20.6, 23.8, 27.1, 30.3, 33.5, 36.8],
         // 与えるダメージ+8~16%。
-        passive: { items: konst.AnyBonusType.Damage, value: [8, 10, 12, 14, 16] },
+        passive: { items: konst.BonusType.Damage, value: [8, 10, 12, 14, 16] },
         // 元素爆発を発動した後、通常攻撃と重撃が命中すると真空の刃を放ち、経路上の敵に攻撃力の80~160%のダメージを与える、継続時間20秒または真空の刃を8回発動まで。
     },
     SongBrokenPines: {
@@ -500,7 +500,7 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         second: konst.CriticalBonusType.Rate,
         secval: [6.0, 10.6, 15.5, 17.9, 20.3, 22.7, 25.1, 27.6],
         // フィールドにいる時、4秒毎に、与えるダメージ+6~10%、被ダメージ+3~2%。最大5重まで、退場後もリセットされず、攻撃を受けると効果数-1。
-        passive: { items: konst.AnyBonusType.Damage, value: [6, 7, 8, 9, 10], limit: "weapon.per_4sec_entry", stack: 5 },
+        passive: { items: konst.BonusType.Damage, value: [6, 7, 8, 9, 10], limit: "weapon.per_4sec_entry", stack: 5 },
     },
     Akuoumaru: {
         star: 4,
@@ -539,7 +539,7 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         secval: [9.0, 15.9, 23.2, 26.8, 30.4, 34.1, 37.7, 41.3],
         // ダメージを受けた時、HP上限の20~32%に相当するダメージを吸収できるシールドを生成する。継続時間は最大10秒まで。45秒毎に1回のみ発動する。
         // シールドが存在する時、キャラクターの与えるダメージ+12~24%。
-        passive: { items: konst.AnyBonusType.Damage, value: [12, 15, 18, 21, 24], limit: "general.shield" },
+        passive: { items: konst.BonusType.Damage, value: [12, 15, 18, 21, 24], limit: "general.shield" },
     },
     RoyalGreatsword: {
         star: 4,
@@ -555,7 +555,7 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         second: konst.StatusBonusType.Elem,
         secval: [36, 64, 93, 107, 122, 136, 151, 165],
         // 水元素又は雷元素の影響を受けた敵に対するダメージ+20~36%。
-        passive: { items: konst.AnyBonusType.Damage, value: [20, 24, 28, 32, 36], limit: "elem.hydro_elect" },
+        passive: { items: konst.BonusType.Damage, value: [20, 24, 28, 32, 36], limit: "elem.hydro_elect" },
     },
     PrototypeAminus: { // PrototypeArchaic
         star: 4,
@@ -617,7 +617,7 @@ const ClaymoreList: ReadonlyRecord<typeof ClaymoreNames[number], IWeaponInfo> = 
         second: konst.StatusBonusType.Elem,
         secval: [41, 72, 105, 122, 138, 154, 171, 187],
         // 炎元素又は雷元素の影響を受けた敵に対するダメージ+12~24%。
-        passive: { items: konst.AnyBonusType.Damage, value: [12, 15, 18, 21, 24], limit: "elem.pyro_elect" },
+        passive: { items: konst.BonusType.Damage, value: [12, 15, 18, 21, 24], limit: "elem.pyro_elect" },
     },
 } as const;
 
@@ -681,7 +681,7 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         passive: [
             // 敵に命中した時、自身の攻撃力+3.2~6%、継続時間6秒、最大7重まで。0.3秒に最大1回発動でき、7重まで発動すると与ダメージ+12~24%。
             { items: konst.StatusBonusType.AtkBuf, value: [3.2, 3.9, 4.6, 5.3, 6.0], limit: "general.attack", stack: 7, times: 6 },
-            { items: konst.AnyBonusType.Damage, value: [12, 15, 18, 21, 24], limit: "weapon.more_x7" },
+            { items: konst.BonusType.Damage, value: [12, 15, 18, 21, 24], limit: "weapon.more_x7" },
         ],
     },
     StaffHoma: {
@@ -729,7 +729,7 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         secval: [3.6, 6.4, 7.8, 10.7, 12.2, 13.6, 15.1, 16.5],
         passive: [
             // 全元素ダメージ+12~24%。
-            { items: konst.AnyBonusType.Element, value: [12, 15, 18, 21, 24] },
+            { items: konst.BonusType.Element, value: [12, 15, 18, 21, 24] },
             // 元素スキルを発動すると、継続時間20秒の「円頓」を獲得し、1秒毎に攻撃力が3.2~6.4%アップする。この効果は最大6回まで重ね掛け可能。
             {
                 items: konst.StatusBonusType.AtkBuf,
@@ -861,7 +861,7 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         second: konst.StatusBonusType.Elem,
         secval: [48, 85, 124, 143, 162, 182, 201, 221],
         // 水元素又は炎元素の影響を受けた敵に対するダメージ+20~36%。
-        passive: { items: konst.AnyBonusType.Damage, value: [20, 24, 28, 32, 36], limit: "elem.hydro_pyro" },
+        passive: { items: konst.BonusType.Damage, value: [20, 24, 28, 32, 36], limit: "elem.hydro_pyro" },
     },
     BlackcliffPole: {
         star: 4,
@@ -893,7 +893,7 @@ const PolearmList: ReadonlyRecord<typeof PolearmNames[number], IWeaponInfo> = {
         second: konst.StatusBonusType.HpBuf,
         secval: [10.2, 18.0, 26.3, 30.4, 34.6, 38.7, 42.8, 46.9],
         // スライムタイプの敵に与えるダメージ+40~80%。
-        passive: { items: konst.AnyBonusType.Damage, value: [40, 50, 60, 70, 80], limit: "weapon.slime" },
+        passive: { items: konst.BonusType.Damage, value: [40, 50, 60, 70, 80], limit: "weapon.slime" },
     },
 } as const;
 
@@ -1115,7 +1115,7 @@ const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
         secval: [6.0, 10.6, 15.5, 17.9, 20.3, 22.7, 25.1, 27.6],
         // この武器を装備したキャラクターが待機している時、1秒ごとに自身の与えるダメージ+2%。この方式で獲得できるダメージアップ効果は20%まで。
         // 4秒以上フィールド上にいると、上記ダメージアップ効果は0% になるまで、1秒毎に4%ダウンする。
-        passive: { items: konst.AnyBonusType.Damage, value: [2, 2.5, 3, 3.5, 4], limit: "weapon.per_1sec_stay", stack: 10 },
+        passive: { items: konst.BonusType.Damage, value: [2, 2.5, 3, 3.5, 4], limit: "weapon.per_1sec_stay", stack: 10 },
     },
     BlackcliffWarbow: {
         star: 4,
@@ -1195,7 +1195,7 @@ const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
         second: konst.CriticalBonusType.Damage,
         secval: [10.2, 18.0, 26.3, 30.4, 34.5, 38.6, 42.7, 46.9],
         // 弱点に対するダメージ+24~48%。
-        passive: { items: konst.AnyBonusType.Damage, value: [24, 30, 36, 42, 48], limit: "weapon.weak" },
+        passive: { items: konst.BonusType.Damage, value: [24, 30, 36, 42, 48], limit: "weapon.weak" },
     },
     RavenBow: {
         star: 3,
@@ -1203,7 +1203,7 @@ const BowList: ReadonlyRecord<typeof BowNames[number], IWeaponInfo> = {
         second: konst.StatusBonusType.Elem,
         secval: [20, 36, 53, 61, 69, 77, 85, 94],
         // 水元素又は炎元素の影響を受けた敵に対するダメージ+12~24%。
-        passive: { items: konst.AnyBonusType.Damage, value: [12, 15, 18, 21, 24], limit: "elem.hydro_pyro" },
+        passive: { items: konst.BonusType.Damage, value: [12, 15, 18, 21, 24], limit: "elem.hydro_pyro" },
     },
     RecurveBow: {
         star: 3,
@@ -1250,7 +1250,7 @@ const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = 
         secval: [7.2, 12.7, 18.5, 21.4, 24.4, 27.3, 30.2, 33.1],
         // 移動速度+10%。
         // 出場中は4秒毎に元素ダメージ+8~16%、最大4重まで。キャラが退場または戦闘不能まで有効する。
-        passive: { items: konst.AnyBonusType.Element, value: [8, 10, 12, 14, 16], limit: "weapon.per_4sec_entry", stack: 4 },
+        passive: { items: konst.BonusType.Element, value: [8, 10, 12, 14, 16], limit: "weapon.per_4sec_entry", stack: 4 },
     },
     SkywardAtlas: {
         star: 5,
@@ -1258,7 +1258,7 @@ const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = 
         second: konst.StatusBonusType.AtkBuf,
         secval: [7.2, 12.7, 18.5, 21.4, 24.4, 27.3, 30.2, 33.1],
         // 元素ダメージ+12~24%。
-        passive: { items: konst.AnyBonusType.Element, value: [12, 15, 18, 21, 24] },
+        passive: { items: konst.BonusType.Element, value: [12, 15, 18, 21, 24] },
         // 通常攻撃が命中した時、50%の確率で高天流雲の好意を獲得し、15秒内に自ら周囲の敵を攻撃すると、攻撃力の160~320%相当のダメージを与える。30秒毎に1回のみ発動可能。
     },
     MemoryDust: {
@@ -1297,7 +1297,7 @@ const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = 
             // この武器を装備したキャラクターの元素スキルによるダメージ+12~24%、継続時間16秒、最大3層まで。
             { items: konst.CombatBonusType.Skill, value: [12, 15, 18, 21, 24], stack: 3, times: 16 },
             // 3層の効果を持つ時、該当キャラクターの全元素ダメージ+12%。
-            { items: konst.AnyBonusType.Element, value: [12, 15, 18, 21, 24], limit: "weapon.more_layer3" },
+            { items: konst.BonusType.Element, value: [12, 15, 18, 21, 24], limit: "weapon.more_layer3" },
         ],
     },
     MappaMare: {
@@ -1306,7 +1306,7 @@ const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = 
         second: konst.StatusBonusType.Elem,
         secval: [24, 42, 62, 71, 81, 91, 101, 110],
         // 元素反応を起こした後、元素ダメージ+8~16%、継続時間10秒、最大2重まで。
-        passive: { items: konst.AnyBonusType.Element, value: [8, 10, 12, 14, 16], limit: "elem.react", stack: 2, times: 10 },
+        passive: { items: konst.BonusType.Element, value: [8, 10, 12, 14, 16], limit: "elem.react", stack: 2, times: 10 },
     },
     BlackcliffAmulet: {
         star: 4,
@@ -1354,7 +1354,7 @@ const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = 
             // 叙唱:攻撃力+60~120%
             { items: konst.StatusBonusType.AtkBuf, value: [60, 75, 90, 105, 120], limit: "weapon.entry_1", times: 10 },
             // 詠唱:全元素ダメージ+48~96%
-            { items: konst.AnyBonusType.Element, value: [48, 60, 72, 84, 96], limit: "weapon.entry_2", times: 10 },
+            { items: konst.BonusType.Element, value: [48, 60, 72, 84, 96], limit: "weapon.entry_2", times: 10 },
             // 間奏曲:元素熟知+240~480
             { items: konst.StatusBonusType.Elem, value: [240, 300, 360, 420, 480], limit: "weapon.entry_3", times: 10 },
         ],
@@ -1443,7 +1443,7 @@ const CatalystList: ReadonlyRecord<typeof CatalystNames[number], IWeaponInfo> = 
         second: konst.StatusBonusType.Elem,
         secval: [41, 72, 105, 122, 138, 154, 171, 187],
         // 水元素又は雷元素の影響を受けた敵に対するダメージ+12~24%。
-        passive: { items: konst.AnyBonusType.Damage, value: [12, 15, 18, 21, 24], limit: "elem.hydro_elect" },
+        passive: { items: konst.BonusType.Damage, value: [12, 15, 18, 21, 24], limit: "elem.hydro_elect" },
     },
     OtherworldlyStory: {
         star: 3,
