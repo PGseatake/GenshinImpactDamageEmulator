@@ -1,7 +1,7 @@
 {
     "title": "Genshin Impact Damage Emulator",
     "subtitle": "Damage calculation tool for Genshin Impact",
-    "description": "This app is a damage calculation tool for open-world game \"Genshin Impact\". Select the character and equipment to use, and calculate the damage in a situation close to the environment in the game.",
+    "description": "This app is a damage calculation tool for open-world game \"Genshin Impact\". Calculate the damage in a situation close to the environment in the game.",
     "copyright": "© 2021-2022 PGseatake",
     "menu": {
         "title": "Menu",
