@@ -10,10 +10,21 @@ import { DBArtifactTable, SubBonus } from "~/src/artifact";
 import { Member, IMember, IAnyMember } from "~/src/team";
 import Reaction from "~/src/reaction";
 
+const StatusBonusTypes = Object.values(konst.StatusBonusType);
+const ElementBonusTypes = [...Object.values(konst.ElementBonusType), konst.BonusType.Element];
+const ReactionBonusTypes = Object.values(konst.ReactionBonusType);
+const StatusGroup = (type: any) => {
+    if (StatusBonusTypes.includes(type)) return 0;
+    if (ElementBonusTypes.includes(type)) return 1;
+    if (ReactionBonusTypes.includes(type)) return 3;
+    return 2;
+};
+
 export type StatusPart = {
     type: konst.BonusType;
     total: number;
     base: number;
+    group: number;
 };
 
 export default class Status {
@@ -89,14 +100,15 @@ export default class Status {
     }
 
     public static part(type: konst.BonusType, param: Readonly<StatusParam>, base: Readonly<StatusBase>): StatusPart {
+        const group = StatusGroup(type);
         let total = param[type];
         if (StatusBase.check(type)) {
             const x = param[konst.TypeToBonus.buffer(type)];
             const b = base[type];
             total += b + (b * x) / 100;
-            return { type, total, base: b };
+            return { type, total, base: b, group };
         }
-        return { type, total, base: StatusBase.value(type) };
+        return { type, total, base: StatusBase.value(type), group };
     }
 
     public info: ICharaInfo | null;

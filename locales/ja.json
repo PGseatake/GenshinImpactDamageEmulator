@@ -41,7 +41,6 @@
         "none": "なし",
         "name": "名前",
         "comment": "コメント",
-        "status": "ステータス",
         "element": "元素",
         "level": "Lv.",
         "star": "☆",
@@ -354,7 +353,11 @@
         "overload_dmg": "過負荷ダメージ",
         "energy": "元素エネルギー",
         "contact": "変化した元素ダメージ",
-        "direct": "unused"
+        "direct": "unused",
+        "0": "ステータス",
+        "1": "元素バフ",
+        "2": "攻撃バフ",
+        "3": "元素反応バフ"
     },
     "bonus_short": {
         "none": "なし",

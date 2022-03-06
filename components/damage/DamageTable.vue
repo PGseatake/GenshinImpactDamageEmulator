@@ -14,15 +14,12 @@
     class="text-right"
   >
     <template #[`group.header`]="{ group, headers, isOpen, toggle }">
-      <td
-        :colspan="headers.length"
-        class="v-row-group__header text-subtitle-2 text-center"
-      >
-        <v-icon size="20" @click="toggle">
-          {{ isOpen ? icons.close : icons.open }}
-        </v-icon>
-        {{ formatGroup(group) }}
-      </td>
+      <table-group
+        :headers="headers"
+        :isOpen="isOpen"
+        :toggle="toggle"
+        :text="formatGroup(group)"
+      />
     </template>
     <template #item="{ item }">
       <tr :key="item.name + item.group" v-html="makeHtml(item)" />
@@ -52,7 +49,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { mdiChevronDown, mdiChevronUp } from "@mdi/js";
 import { TalentType, TalentTypes } from "~/src/const";
 import { IMember } from "~/src/team";
 import Status from "~/src/status";
@@ -60,6 +56,7 @@ import Enemy from "~/src/enemy";
 import { BonusBase } from "~/src/bonus";
 import { IDamageData, Attribute, IAttribute } from "~/src/damage";
 import { SettingCritical } from "~/src/setting";
+import TableGroup from "~/components/TableGroup.vue";
 
 interface IAttrItem extends IAttribute {
   enemy: Enemy;
@@ -69,14 +66,13 @@ interface IAttrItem extends IAttribute {
 @Component({
   name: "DamageTable",
   inheritAttrs: false,
+  components: { TableGroup },
 })
 export default class DamageTable extends Vue {
   @Prop({ required: true }) data!: Readonly<IDamageData>;
   @Prop({ required: true }) leader!: Readonly<IMember>;
   @Prop({ required: true }) party!: ReadonlyArray<Status>;
   @Prop({ required: true }) bonus!: ReadonlyArray<BonusBase>;
-
-  readonly icons = { open: mdiChevronDown, close: mdiChevronUp };
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;

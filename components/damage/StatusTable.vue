@@ -6,11 +6,20 @@
     :items="items"
     :class="tableClass"
     :items-per-page="-1"
+    group-by="group"
     dense
     disable-sort
     fixed-header
     hide-default-footer
   >
+    <template #[`group.header`]="{ group, headers, isOpen, toggle }">
+      <table-group
+        :headers="headers"
+        :isOpen="isOpen"
+        :toggle="toggle"
+        :text="$t(`bonus.${group}`)"
+      />
+    </template>
     <template #[`item.type`]="{ item }">
       <template>{{ $t("bonus." + item.type) }}</template>
     </template>
@@ -54,6 +63,7 @@ import {
 import { StatusBase, StatusParam } from "~/src/interface";
 import { RateBonus } from "~/src/special";
 import Status from "~/src/status";
+import TableGroup from "~/components/TableGroup.vue";
 
 const excludeTypes: ReadonlyArray<BonusType> = [
   StatusBonusType.HpBuf,
@@ -65,6 +75,7 @@ const excludeTypes: ReadonlyArray<BonusType> = [
 @Component({
   name: "StatusTable",
   inheritAttrs: false,
+  components: { TableGroup },
 })
 export default class StatusTable extends Vue {
   @Prop({ required: true }) param!: StatusParam;
@@ -76,7 +87,7 @@ export default class StatusTable extends Vue {
 
   get headers() {
     return [
-      { text: this.$t("general.status"), value: "type" },
+      { text: "", value: "type" },
       { text: this.$t("general.total"), value: "total", align: "right" },
       { text: this.$t("general.base"), value: "base", align: "right" },
     ];
