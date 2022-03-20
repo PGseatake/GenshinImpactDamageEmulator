@@ -451,7 +451,9 @@
             "Shimenawa": "Shimenawa's Reminiscence",
             "SeveredFate": "Emblem of Severed Fate",
             "HuskOpulentDreams": "Husk of Opulent Dreams",
-            "OceanHuedClam": "Ocean-Hued Clam"
+            "OceanHuedClam": "Ocean-Hued Clam",
+            "Vermillion": "Vermillion Hereafter",
+            "EchoesOffering": "Echoes of an Offering"
         },
         "flower": {
             "Adventurer": "Adventurer's Flower",
@@ -486,7 +488,9 @@
             "Shimenawa": "Entangling Bloom",
             "SeveredFate": "Magnificent Tsuba",
             "HuskOpulentDreams": "Bloom Times",
-            "OceanHuedClam": "Sea-Dyed Blossom"
+            "OceanHuedClam": "Sea-Dyed Blossom",
+            "Vermillion": "Vermillion Hereafter - Flower",
+            "EchoesOffering": "Echoes of an Offering - Flower"
         },
         "feather": {
             "Adventurer": "Adventurer's Tail Feather",
@@ -521,7 +525,9 @@
             "Shimenawa": "Shaft of Remembrance",
             "SeveredFate": "Sundered Feather",
             "HuskOpulentDreams": "Plume of Luxury",
-            "OceanHuedClam": "Deep Palace's Plume"
+            "OceanHuedClam": "Deep Palace's Plume",
+            "Vermillion": "Vermillion Hereafter - Plume",
+            "EchoesOffering": "Echoes of an Offering - Plume"
         },
         "sands": {
             "Adventurer": "Adventurer's Pocket Watch",
@@ -556,7 +562,9 @@
             "Shimenawa": "Morning Dew's Moment",
             "SeveredFate": "Storm Cage",
             "HuskOpulentDreams": "Song of Life",
-            "OceanHuedClam": "Cowry of Parting"
+            "OceanHuedClam": "Cowry of Parting",
+            "Vermillion": "Vermillion Hereafter - Sands",
+            "EchoesOffering": "Echoes of an Offering - Sands"
         },
         "goblet": {
             "Adventurer": "Adventurer's Golden Goblet",
@@ -591,7 +599,9 @@
             "Shimenawa": "Hopeful Heart",
             "SeveredFate": "Scarlet Vessel",
             "HuskOpulentDreams": "Calabash of Awakening",
-            "OceanHuedClam": "Pearl Cage"
+            "OceanHuedClam": "Pearl Cage",
+            "Vermillion": "Vermillion Hereafter - Goblet",
+            "EchoesOffering": "Echoes of an Offering - Goblet"
         },
         "circlet": {
             "Adventurer": "Adventurer's Bandana",
@@ -626,7 +636,9 @@
             "Shimenawa": "Capricious Visage",
             "SeveredFate": "Ornate Kabuto",
             "HuskOpulentDreams": "Skeletal Hat",
-            "OceanHuedClam": "Crown of Watatsumi"
+            "OceanHuedClam": "Crown of Watatsumi",
+            "Vermillion": "Vermillion Hereafter - Circlet",
+            "EchoesOffering": "Echoes of an Offering - Circlet"
         }
     },
     "enemy": {

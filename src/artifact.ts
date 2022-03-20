@@ -88,6 +88,8 @@ export const ArtifactNames = [
     "SeveredFate",
     "HuskOpulentDreams",
     "OceanHuedClam",
+    "Vermillion",
+    "EchoesOffering"
 ] as const;
 export type ArtifactName = typeof ArtifactNames[number];
 
@@ -315,6 +317,29 @@ export const ArtifactList: Record<typeof ArtifactNames[number], IArtifactInfo> =
         set2: { items: konst.StatusBonusType.HealBuf, value: 15 },
         //
         // set4: {},
+    },
+    Vermillion: {
+        // 攻撃力+18%
+        set2: { items: konst.StatusBonusType.AtkBuf, value: 18 },
+        // 
+        set4: [
+            { items: konst.StatusBonusType.AtkBuf, value: 8, limit: "burst.use", times: 16 },
+            { items: konst.StatusBonusType.AtkBuf, value: 10, limit: "hp.lost", stack: 4 },
+        ]
+    },
+    EchoesOffering: {
+        // 攻撃力+18%
+        set2: { items: konst.StatusBonusType.AtkBuf, value: 18 },
+        // 
+        set4: {
+            extra: konst.ExtraBonusType.Combat,
+            bind: konst.CombatType.Normal,
+            base: konst.StatusBonusType.Atk,
+            value: 70,
+            format: "general.flat",
+            limit: "artifact.hit_rate",
+            times: 0.05,
+        },
     },
 } as const;
 

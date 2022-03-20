@@ -472,7 +472,7 @@ export class CombatBonus extends BonusBase {
     }
 
     public effect(_: ReadonlyArray<Status>) {
-        return this.i18n.t("combat." + this.format, {
+        return this.i18n.t("combat." + this.format, { // TODO: combatからformatに変更する
             bind: join(this.bind, (item) => this.i18n.t("combat." + item)),
             dest: this.dest ? this.i18n.t("bonus." + this.dest) : "",
             base: this.base ? this.i18n.t("bonus." + this.base) : "",
@@ -496,8 +496,9 @@ export class CombatBonus extends BonusBase {
     private calc(owner: Readonly<Status>) {
         let value = this.value;
         switch (this.base) {
-            case konst.FlatBonusBase.Hp:
-            case konst.FlatBonusBase.Def:
+            case konst.StatusBonusType.Hp:
+            case konst.StatusBonusType.Atk:
+            case konst.StatusBonusType.Def:
                 value = owner.total(this.base) * value / 100;
                 break;
         }

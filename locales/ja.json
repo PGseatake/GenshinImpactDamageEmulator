@@ -121,7 +121,8 @@
             "burst": "爆発ダメージ",
             "slash": "斬撃ダメージ",
             "dot": "継続ダメージ",
-            "contact": "付加元素ダメージ"
+            "contact": "付加元素ダメージ",
+            "flat": "{bind} +{base}の{value}分"
         },
         "traveler": {
             "tear_init": "初期切裂ダメージ",
@@ -625,7 +626,9 @@
             "Shimenawa": "追憶のしめ縄",
             "SeveredFate": "絶縁の旗印",
             "HuskOpulentDreams": "華館夢醒形骸記",
-            "OceanHuedClam": "海染陣磲"
+            "OceanHuedClam": "海染陣磲",
+            "Vermillion": "辰砂往生録",
+            "EchoesOffering": "来歆の余響"
         },
         "flower": {
             "Adventurer": "冒険者の花",
@@ -660,7 +663,9 @@
             "Shimenawa": "覊絆の花",
             "SeveredFate": "威厳の鍔",
             "HuskOpulentDreams": "栄花の期",
-            "OceanHuedClam": "海染の花"
+            "OceanHuedClam": "海染の花",
+            "Vermillion": "辰砂往生録・花",
+            "EchoesOffering": "来歆の余響・花"
         },
         "feather": {
             "Adventurer": "冒険者の羽根",
@@ -695,7 +700,9 @@
             "Shimenawa": "憶念の矢",
             "SeveredFate": "切落の羽",
             "HuskOpulentDreams": "華館の羽",
-            "OceanHuedClam": "淵宮の羽"
+            "OceanHuedClam": "淵宮の羽",
+            "Vermillion": "辰砂往生録・羽",
+            "EchoesOffering": "来歆の余響・羽"
         },
         "sands": {
             "Adventurer": "冒険者の懐中時計",
@@ -730,7 +737,9 @@
             "Shimenawa": "朝露の時",
             "SeveredFate": "雷雲の印籠",
             "HuskOpulentDreams": "衆生の歌",
-            "OceanHuedClam": "別れの貝"
+            "OceanHuedClam": "別れの貝",
+            "Vermillion": "辰砂往生録・砂",
+            "EchoesOffering": "来歆の余響・砂"
         },
         "goblet": {
             "Adventurer": "冒険者の金杯",
@@ -765,7 +774,9 @@
             "Shimenawa": "祈望の心",
             "SeveredFate": "緋花の壺",
             "HuskOpulentDreams": "夢醒の瓢箪",
-            "OceanHuedClam": "真珠の籠"
+            "OceanHuedClam": "真珠の籠",
+            "Vermillion": "辰砂往生録・杯",
+            "EchoesOffering": "来歆の余響・杯"
         },
         "circlet": {
             "Adventurer": "冒険者のバンダナ",
@@ -800,7 +811,9 @@
             "Shimenawa": "無常の面",
             "SeveredFate": "華飾の兜",
             "HuskOpulentDreams": "形骸の笠",
-            "OceanHuedClam": "海祗の冠"
+            "OceanHuedClam": "海祗の冠",
+            "Vermillion": "辰砂往生録・冠",
+            "EchoesOffering": "来歆の余響・冠"
         }
     },
     "enemy": {
@@ -923,7 +936,8 @@
             "ge90": "HPが90%以上の時に、{0}",
             "ge50_en": "HPが50%以上の敵に対して、{0}",
             "lt50_en": "HPが50%未満の敵に対して、{0}",
-            "le30_en": "HPが30%以下の敵に対して、{0}"
+            "le30_en": "HPが30%以下の敵に対して、{0}",
+            "lost": "HPを失うたびに{0}"
         },
         "skill": {
             "use": "元素スキル発動後、{0}",
@@ -967,7 +981,8 @@
             "crystal": "結晶反応した元素の{0}",
             "hit_geo": "岩元素攻撃が命中した時、{0}",
             "more_x2": "さらに効果を2重にした時、{0}",
-            "more_frozen": "さらに凍結状態の敵に対して、{0}"
+            "more_frozen": "さらに凍結状態の敵に対して、{0}",
+            "hit_rate": "通常攻撃が命中すると一定の確率で、{0}"
         },
         "weapon": {
             "weak": "弱点に{0}",
@@ -1335,8 +1350,18 @@
         "page_all": "全て",
         "page_row": "行数 :"
     },
-    "footer": "Ver. 2.3.0",
+    "footer": "Ver. 2.3.1",
     "releasenote": {
+        "v2_3_1": {
+            "date": "2022/03/20",
+            "items": [{
+                "title": "以下の聖遺物のお試し期間",
+                "items": [
+                    "辰砂往生録",
+                    "来歆の余響"
+                ]
+            }]
+        },
         "v2_3_0": {
             "date": "2022/03/01",
             "items": [

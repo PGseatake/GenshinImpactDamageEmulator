@@ -197,6 +197,7 @@ export type AnyBonus =
     IBasicBonus | IFlatBonus | IEnergyBonus | ICombatBonus |
     IElementBonus | IReductBonus | IEnchantBonus | ISpecialBonus;
 
+export type AnyArtifactBonus = IBasicBonus | IFlatBonus | ICombatBonus | IReductBonus;
 export type AnyWeaponBonus = IWeaponBonus | IWeaponFlatBonus | IWeaponEnergyBonus | IWeaponSpecialBonus;
 export type WeaponBonus = IBasicBonus | IFlatBonus | IEnergyBonus | ISpecialBonus;
 
@@ -239,7 +240,7 @@ export interface ICharaInfo {
 
 export interface IArtifactInfo {
     readonly set2?: IBasicBonus;
-    readonly set4?: ReadonlyArrayable<IBasicBonus | IFlatBonus | IReductBonus>;
+    readonly set4?: ReadonlyArrayable<AnyArtifactBonus>;
 }
 
 export interface IWeaponInfo {
