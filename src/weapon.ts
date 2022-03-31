@@ -40,6 +40,7 @@ const SwordNames = [
     "PrimordialJadeCutter",
     "SummitShaper",
     "AquilaFavonia",
+    "HaranGeppakuFutsu",
     "AmenomaKageuchi",
     "FesteringDesire",
     "SwordDescension",
@@ -155,6 +156,21 @@ const SwordList: ReadonlyRecord<typeof SwordNames[number], IWeaponInfo> = {
         passive: { items: konst.StatusBonusType.AtkBuf, value: [20, 25, 30, 35, 40] },
         // ダメージを受けると発動:抗争の旗を高く掲げる西風の鷹の魂が蘇り、攻撃力の100~160%分のHPを回復し、
         // 周りの敵に攻撃力の200~320%のダメージを与える。15秒ごとに1回発動可能。
+    },
+    HaranGeppakuFutsu: {
+        star: 5,
+        atk: WeaponAtk5[46],
+        second: konst.CriticalBonusType.Rate,
+        secval: [7.2, 12.7, 18.5, 21.4, 24.4, 27.3, 30.2, 33.1],
+        passive: [
+            // 全元素ダメージ+12~24%
+            { items: konst.BonusType.Element, value: [12, 15, 18, 21, 24] },
+            // 周囲にいるチーム内の他キャラクターが元素スキルを発動すると、装備キャラクターに「波穂」効果を1層与える。
+            // 獲得できる「波穂」効果は最大2層まで、0.3秒毎に1回のみ獲得できる。
+            // 装備キャラクターが元素スキルを発動すると、既存の「波穂」効果をすべて消費し、「波乱」効果を獲得する。
+            // 「波乱」：消費した「波穂」1層につき、通常攻撃ダメージ+20~40%、 継続時間8秒。
+            { items: konst.CombatBonusType.Normal, value: [20, 25, 30, 35, 40], limit: "weapon.skill_consume", stack: 2, times: 8 },
+        ],
     },
     AmenomaKageuchi: {
         star: 4,

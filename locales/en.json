@@ -258,6 +258,7 @@
         "Kaeya": "Kaeya",
         "Keqing": "Keqing",
         "Kamisato": "Kamisato Ayaka",
+        "Ayato": "Kamisato Ayato",
         "Klee": "Klee",
         "Kujo": "Kujou Sara",
         "Lisa": "Lisa",
@@ -293,6 +294,7 @@
             "PrimordialJadeCutter": "Primordial Jade Cutter",
             "SummitShaper": "Summit Shaper",
             "AquilaFavonia": "Aquila Favonia",
+            "HaranGeppakuFutsu": "Haran Geppaku Futsu",
             "AmenomaKageuchi": "Amenoma Kageuchi",
             "FesteringDesire": "Festering Desire",
             "SwordDescension": "Sword of Descension",
@@ -489,8 +491,8 @@
             "SeveredFate": "Magnificent Tsuba",
             "HuskOpulentDreams": "Bloom Times",
             "OceanHuedClam": "Sea-Dyed Blossom",
-            "Vermillion": "Vermillion Hereafter - Flower",
-            "EchoesOffering": "Echoes of an Offering - Flower"
+            "Vermillion": "Flowering Life",
+            "EchoesOffering": "Soulscent Bloom"
         },
         "feather": {
             "Adventurer": "Adventurer's Tail Feather",
@@ -526,8 +528,8 @@
             "SeveredFate": "Sundered Feather",
             "HuskOpulentDreams": "Plume of Luxury",
             "OceanHuedClam": "Deep Palace's Plume",
-            "Vermillion": "Vermillion Hereafter - Plume",
-            "EchoesOffering": "Echoes of an Offering - Plume"
+            "Vermillion": "Feather of Nascent Light",
+            "EchoesOffering": "Jade Leaf"
         },
         "sands": {
             "Adventurer": "Adventurer's Pocket Watch",
@@ -563,8 +565,8 @@
             "SeveredFate": "Storm Cage",
             "HuskOpulentDreams": "Song of Life",
             "OceanHuedClam": "Cowry of Parting",
-            "Vermillion": "Vermillion Hereafter - Sands",
-            "EchoesOffering": "Echoes of an Offering - Sands"
+            "Vermillion": "Solar Relic",
+            "EchoesOffering": "Symbol of Felicitation"
         },
         "goblet": {
             "Adventurer": "Adventurer's Golden Goblet",
@@ -600,8 +602,8 @@
             "SeveredFate": "Scarlet Vessel",
             "HuskOpulentDreams": "Calabash of Awakening",
             "OceanHuedClam": "Pearl Cage",
-            "Vermillion": "Vermillion Hereafter - Goblet",
-            "EchoesOffering": "Echoes of an Offering - Goblet"
+            "Vermillion": "Moment of the Pact",
+            "EchoesOffering": "Chalice of the Font"
         },
         "circlet": {
             "Adventurer": "Adventurer's Bandana",
@@ -637,8 +639,8 @@
             "SeveredFate": "Ornate Kabuto",
             "HuskOpulentDreams": "Skeletal Hat",
             "OceanHuedClam": "Crown of Watatsumi",
-            "Vermillion": "Vermillion Hereafter - Circlet",
-            "EchoesOffering": "Echoes of an Offering - Circlet"
+            "Vermillion": "Thundering Poise",
+            "EchoesOffering": "Flowing Rings"
         }
     },
     "enemy": {

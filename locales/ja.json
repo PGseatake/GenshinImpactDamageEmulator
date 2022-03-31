@@ -198,6 +198,15 @@
         "kamisato": {
             "bloom": "咲きダメージ"
         },
+        "ayato": {
+            "shunsui1": "瞬水剣1段ダメージ",
+            "shunsui2": "瞬水剣2段ダメージ",
+            "shunsui3": "瞬水剣3段ダメージ",
+            "illusion": "水の幻影ダメージ",
+            "burst": "水沫剣ダメージ",
+            "skill": "瞬水剣のダメージ +{base}の{value}",
+            "conste": "瞬水剣のダメージ +{value}"
+        },
         "keqing": {
             "wedge": "雷楔ダメージ",
             "slash": "雷連斬ダメージ",
@@ -433,6 +442,7 @@
         "Kaeya": "ガイア",
         "Keqing": "刻晴",
         "Kamisato": "神里綾華",
+        "Ayato": "神里綾人",
         "Klee": "クレー",
         "Kujo": "九条裟羅",
         "Lisa": "リサ",
@@ -468,6 +478,7 @@
             "PrimordialJadeCutter": "磐岩結緑",
             "SummitShaper": "斬山の刃",
             "AquilaFavonia": "風鷹剣",
+            "HaranGeppakuFutsu": "波乱月白経津",
             "AmenomaKageuchi": "天目影打",
             "FesteringDesire": "腐植の剣",
             "SwordDescension": "降臨の剣",
@@ -664,8 +675,8 @@
             "SeveredFate": "威厳の鍔",
             "HuskOpulentDreams": "栄花の期",
             "OceanHuedClam": "海染の花",
-            "Vermillion": "辰砂往生録・花",
-            "EchoesOffering": "来歆の余響・花"
+            "Vermillion": "生霊の華",
+            "EchoesOffering": "魂香の花"
         },
         "feather": {
             "Adventurer": "冒険者の羽根",
@@ -701,8 +712,8 @@
             "SeveredFate": "切落の羽",
             "HuskOpulentDreams": "華館の羽",
             "OceanHuedClam": "淵宮の羽",
-            "Vermillion": "辰砂往生録・羽",
-            "EchoesOffering": "来歆の余響・羽"
+            "Vermillion": "潜光の羽",
+            "EchoesOffering": "垂玉の葉"
         },
         "sands": {
             "Adventurer": "冒険者の懐中時計",
@@ -738,8 +749,8 @@
             "SeveredFate": "雷雲の印籠",
             "HuskOpulentDreams": "衆生の歌",
             "OceanHuedClam": "別れの貝",
-            "Vermillion": "辰砂往生録・砂",
-            "EchoesOffering": "来歆の余響・砂"
+            "Vermillion": "陽轡の遺品",
+            "EchoesOffering": "祭祀の証"
         },
         "goblet": {
             "Adventurer": "冒険者の金杯",
@@ -775,8 +786,8 @@
             "SeveredFate": "緋花の壺",
             "HuskOpulentDreams": "夢醒の瓢箪",
             "OceanHuedClam": "真珠の籠",
-            "Vermillion": "辰砂往生録・杯",
-            "EchoesOffering": "来歆の余響・杯"
+            "Vermillion": "契約の時",
+            "EchoesOffering": "湧水の杯"
         },
         "circlet": {
             "Adventurer": "冒険者のバンダナ",
@@ -812,8 +823,8 @@
             "SeveredFate": "華飾の兜",
             "HuskOpulentDreams": "形骸の笠",
             "OceanHuedClam": "海祗の冠",
-            "Vermillion": "辰砂往生録・冠",
-            "EchoesOffering": "来歆の余響・冠"
+            "Vermillion": "虺雷の姿",
+            "EchoesOffering": "浮流の対玉"
         }
     },
     "enemy": {
@@ -994,6 +1005,7 @@
             "react_x2": "元素反応を2度起こした時、{0}",
             "hit_hpge30": "HP30%以下の敵に命中した時、{0}",
             "normal_heavy_x4": "通常攻撃/重撃が敵に4回命中した時、{0}",
+            "skill_consume": "元素スキルを使用して武器効果を消費した時、{0}",
             "skill_burst_x4": "元素スキル/元素爆発が4回命中した時、{0}",
             "more_x7": "さらに7重まで発動した時、{0}",
             "more_shield": "さらにシールド状態の時、{0}",
@@ -1072,6 +1084,9 @@
             "dash": "ダッシュした後、{0}",
             "dash_ice": "ダッシュ後に発生する氷が敵に命中した時、{0}",
             "thin_ice": "薄氷の舞を獲得した時、{0}"
+        },
+        "ayato": {
+            "conste": "3層以上の浪閃状態の時、{0}"
         },
         "keqing": {
             "skill": "星辰帰位を発動後、{0}",
@@ -1352,6 +1367,20 @@
     },
     "footer": "Ver. 2.3.1",
     "releasenote": {
+        "v2_3_2": {
+            "date": "2022/03/31",
+            "items": [
+                "キャラクター「神里綾人」を追加",
+                "武器「波乱月白経津」を追加",
+                {
+                    "title": "以下の聖遺物を正式追加",
+                    "items": [
+                        "辰砂往生録",
+                        "来歆の余響"
+                    ]
+                }
+            ]
+        },
         "v2_3_1": {
             "date": "2022/03/20",
             "items": [{

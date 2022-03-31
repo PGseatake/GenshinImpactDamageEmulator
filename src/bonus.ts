@@ -2,7 +2,7 @@ import VueI18n, { IVueI18n } from "vue-i18n/types";
 import * as konst from "~/src/const";
 import {
     StatusReduct, ExtraBonus, IBonusOption, IBasicBonus,
-    IEnchantBonus, IReductBonus, IFlatBonus, IFlatBonusScale,
+    IEnchantBonus, IReductBonus, IFlatBonus, IBonusScale,
     IFlatBonusBound, ICombatBonus, IElementBonus, ISpecialBonus,
     IEnergyBonus, AnyBonus, Constes, Passives, Passive,
 } from "~/src/interface";
@@ -205,7 +205,7 @@ export class FlatBonus extends BonusBase {
     private readonly dest: ReadonlyArray<konst.FlatBonusDest>;
     private readonly base?: konst.FlatBonusBase;
     private readonly value: number;
-    private readonly scale?: Readonly<IFlatBonusScale>;
+    private readonly scale?: Readonly<IBonusScale>;
     private readonly bound?: Readonly<IFlatBonusBound>;
 
     constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: IFlatBonus, talent = 0) {
@@ -221,6 +221,7 @@ export class FlatBonus extends BonusBase {
         switch (this.base) {
             case konst.FlatBonusBase.Direct:
                 return BonusStep.Direct;
+            case konst.FlatBonusBase.Hp:
             case konst.FlatBonusBase.Elem:
             case konst.FlatBonusBase.EnRec:
                 if (!this.dest.includes(this.base)) {
@@ -453,9 +454,10 @@ export class EnergyBonus extends BonusBase {
 // 特定攻撃ボーナス
 export class CombatBonus extends BonusBase {
     private readonly bind: ReadonlyArray<string>;
-    private readonly dest?: konst.BonusType;
+    private readonly dest?: konst.CombatBonusDest;
     private readonly base?: konst.StatusBonusType;
     private readonly value: number;
+    private readonly scale?: Readonly<IBonusScale>;
     private readonly format: string;
 
     constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: ICombatBonus, talent = 0) {
@@ -464,6 +466,7 @@ export class CombatBonus extends BonusBase {
         this.dest = data.dest;
         this.base = data.base;
         this.value = Arrayable.clamp(data.value, talent);
+        this.scale = data.scale;
         this.format = data.format;
     }
 
@@ -471,12 +474,13 @@ export class CombatBonus extends BonusBase {
         return -1;
     }
 
-    public effect(_: ReadonlyArray<Status>) {
+    public effect(party: ReadonlyArray<Status>) {
+        const value = this.applyScale(this.value, party[this.index]);
         return this.i18n.t("combat." + this.format, { // TODO: combatからformatに変更する
             bind: join(this.bind, (item) => this.i18n.t("combat." + item)),
             dest: this.dest ? this.i18n.t("bonus." + this.dest) : "",
             base: this.base ? this.i18n.t("bonus." + this.base) : "",
-            value: Maths.rate(this.value),
+            value: Maths.rate(value),
         });
     }
 
@@ -493,7 +497,7 @@ export class CombatBonus extends BonusBase {
         return this.bind.includes(name);
     }
 
-    private calc(owner: Readonly<Status>) {
+    private applyValue(owner: Readonly<Status>) {
         let value = this.value;
         switch (this.base) {
             case konst.StatusBonusType.Hp:
@@ -505,10 +509,23 @@ export class CombatBonus extends BonusBase {
         return value * this.data.stack;
     }
 
+    private applyScale(value: number, owner: Readonly<Status>) {
+        const scale = this.scale;
+        if (scale) {
+            value *= Damage.scale(scale.type, owner.talent[scale.talent]);
+        }
+        return value;
+    }
+
     public applyEx(dst: ExtraBonus, arg: CombatStatusBonus) {
         if (this.isApply(arg.target, -1)) {
             if (this.bound(arg.type, arg.name)) {
-                const value = this.calc(arg.party[this.index]);
+                const owner = arg.party[this.index];
+
+                let value = this.applyValue(owner);
+                // ダメージ倍率適用
+                value = this.applyScale(value, owner);
+
                 switch (this.dest) {
                     case konst.CombatBonusDest.Atk:
                         dst.atk += value;
@@ -536,7 +553,7 @@ export class ElementBonus extends BonusBase {
     private readonly dest?: konst.StatusBonusType;
     private readonly base?: konst.StatusBonusType;
     private readonly value: number;
-    private readonly scale?: IFlatBonusScale;
+    private readonly scale?: IBonusScale;
     private readonly format: string;
 
     constructor(i18n: IVueI18n, key: number, index: number, group: string, source: string, data: IElementBonus, talent = 0) {

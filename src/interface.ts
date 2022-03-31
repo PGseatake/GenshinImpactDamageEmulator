@@ -61,6 +61,10 @@ export interface IBonusOption {
     readonly times?: number;
     readonly target?: konst.BonusTarget;
 }
+export interface IBonusScale {
+    type: konst.DamageScale;
+    talent: konst.TalentType;
+}
 
 export interface IBasicBonus extends IBonusOption {
     readonly extra?: undefined;
@@ -79,10 +83,6 @@ export interface IFlatBonusBound {
     readonly base?: konst.FlatBonusBase;
     readonly value: number;
 }
-export interface IFlatBonusScale {
-    type: konst.DamageScale;
-    talent: konst.TalentType;
-};
 
 export interface IFlatBonus extends IBonusOption {
     readonly extra: "flat";
@@ -90,10 +90,10 @@ export interface IFlatBonus extends IBonusOption {
     readonly base?: konst.FlatBonusBase; // undefined = 整数直値
     readonly value: ReadonlyArrayable<number>;
     readonly bound?: IFlatBonusBound;
-    readonly scale?: IFlatBonusScale;
+    readonly scale?: IBonusScale;
     // readonly limit?: string;
-    // readonly times?: number;
     // readonly stack?: number;
+    // readonly times?: number;
     // readonly target?: konst.BonusTarget;
 }
 export interface IWeaponFlatBonus extends IFlatBonus {
@@ -120,8 +120,10 @@ export interface ICombatBonus extends IBonusOption {
     readonly dest?: konst.CombatBonusDest; // undefined = ダメージ実数
     readonly base?: konst.StatusBonusType; // undefined = 割合直値
     readonly value: number;
+    readonly scale?: IBonusScale;
     readonly format: string;
     // readonly limit?: string;
+    // readonly stack?: number;
     // readonly times?: number;
     // readonly target?: konst.BonusTarget;
 }
@@ -131,7 +133,7 @@ export interface IElementBonus extends IBonusOption {
     readonly dest?: konst.StatusBonusType;
     readonly base?: konst.StatusBonusType;
     readonly value: ReadonlyArrayable<number>;
-    readonly scale?: IFlatBonusScale;
+    readonly scale?: IBonusScale;
     readonly format: string;
     // readonly limit?: string;
     // readonly times?: number;

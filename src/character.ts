@@ -28,6 +28,7 @@ export const CharaNames = [
     "Kaeya",
     "Keqing",
     "Kamisato", // Ayaka
+    "Ayato", // KamisatoAyato
     "Klee",
     "Kujo", // Sara
     "Lisa",
@@ -2101,6 +2102,115 @@ export const CharaList: ReadonlyRecord<CharaName, ICharaInfo> = {
             // 6. 10秒毎に、神里綾華は「薄氷の舞」状態を獲得し、重撃ダメージが298%アップする。
             // 重撃が敵に命中してから0.5秒後、「薄氷の舞」の効果はクリアされ、クールタイムのカウントが開始される。
             lv6: { items: konst.CombatBonusType.Heavy, value: 298, limit: "kamisato.thin_ice" },
+        },
+    },
+    Ayato: {
+        star: 5,
+        element: konst.ElementType.Hydro,
+        energy: 80,
+        weapon: konst.WeaponType.Sword,
+        status: {
+            hp: [
+                1068, 2770,
+                3685, 5514,
+                6165, 7092,
+                7960, 8897,
+                9548, 10494,
+                11144, 12101,
+                12751, 13715,
+            ],
+            atk: [
+                24, 61,
+                81, 120,
+                135, 155,
+                174, 194,
+                208, 229,
+                243, 264,
+                278, 299,
+            ],
+            def: [
+                60, 155,
+                206, 309,
+                345, 397,
+                446, 499,
+                535, 558,
+                624, 678,
+                715, 769,
+            ],
+        },
+        special: konst.CriticalBonusType.Damage,
+        spvalue: [0.0, 0.0, 0.0, 9.6, 19.2, 19.2, 28.8, 38.4],
+        talent: {
+            combat: [
+                { name: "general.one", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 45.0 },
+                { name: "general.two", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 47.2 },
+                { name: "general.three", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 58.6 },
+                { name: "general.four", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 29.4, multi: 2 },
+                { name: "general.five", type: konst.CombatType.Normal, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 75.6 },
+                { name: "general.heavy", type: konst.CombatType.Heavy, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 129.5 },
+                { name: "general.fall", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 63.9 },
+                { name: "general.low", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 128 },
+                { name: "general.high", type: konst.CombatType.Plunge, elem: konst.ElementType.Phys, scale: konst.DamageScale.Phys, value: 160 },
+            ],
+            skill: [
+                { name: "ayato.shunsui1", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 52.9 },
+                { name: "ayato.shunsui2", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 58.9 },
+                { name: "ayato.shunsui3", type: konst.CombatType.Normal, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 64.9 },
+                { name: "ayato.illusion", type: konst.CombatType.Skill, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Phys, value: 101.5 },
+            ],
+            burst: [
+                { name: "ayato.burst", type: konst.CombatType.Burst, elem: konst.ElementType.Hydro, scale: konst.DamageScale.Elem, value: 66.5 },
+            ],
+        },
+        passive: {
+            skill: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: ["ayato.shunsui1", "ayato.shunsui2", "ayato.shunsui3"],
+                base: konst.StatusBonusType.Hp,
+                value: 0.56,
+                scale: { type: konst.DamageScale.Phys, talent: konst.TalentType.Skill },
+                format: "ayato.skill",
+                limit: "skill.using",
+                stack: 5,
+                times: 6,
+            },
+            burst: {
+                extra: konst.ExtraBonusType.Flat,
+                dest: konst.FlatBonusDest.Normal,
+                base: konst.FlatBonusBase.Hp,
+                value: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+                limit: "skill.using",
+                times: 18,
+                target: konst.BonusTarget.All,
+            },
+            // 4. 神里流・鏡花は下記の効果を持つ。
+            // ・発動後、神里綾人は2層の浪閃効果を獲得する。
+            // ・水の幻影が破裂すると、神里綾人は重ね掛け上限に相当する浪閃効果を獲得する。
+            // 5. 神里綾人が待機中の時、元素エネルギーが40未満の場合、1秒毎に元素エネルギーを2回復する。
+        },
+        conste: {
+            // 1. HP50%以下の敵に対して、瞬水剣によるダメージ+40%。
+            lv1: {
+                extra: konst.ExtraBonusType.Combat,
+                bind: ["ayato.shunsui1", "ayato.shunsui2", "ayato.shunsui3"],
+                dest: konst.CombatBonusDest.Damage,
+                value: 40,
+                format: "ayato.conste",
+                limit: "skill.using",
+            },
+            // 2. 浪閃の重ね掛け上限が5層になる。神里綾人が3層以上の浪閃状態の時、HP上限が50%アップする。
+            lv2: {
+                extra: konst.ExtraBonusType.Flat,
+                dest: konst.FlatBonusDest.Hp,
+                base: konst.FlatBonusBase.Hp,
+                value: 50,
+                limit: "ayato.conste",
+            },
+            // 3. 神里流・鏡花のスキルLv.+3
+            // 4. 神里流・水囿発動後、周囲チーム全員の通常攻撃速度+15%、継続期間15秒。
+            // 5. 神里流・水囿のスキルLv.+3
+            // 6. 神里流・鏡花発動後、神里綾人の次に発動する瞬水剣が敵に命中した時、神里綾人の攻撃力450%分のダメージを持つ瞬水剣を2回追加で発動する。
+            // 追加で発動する2回の瞬水剣は浪閃の効果を受けない。
         },
     },
     Keqing: {

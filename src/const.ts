@@ -290,6 +290,7 @@ export type ExtraBonusType = typeof ExtraBonusType[keyof typeof ExtraBonusType];
 
 export const FlatBonusDest = {
     // StatusType 実数
+    Hp: "hp",
     Atk: "atk",
     Def: "def",
     Elem: "elem",
