@@ -22,10 +22,9 @@
         />
       </template>
       <template #[`item.star`]="{ item }">
-        <select-range
+        <select-range-k
           v-model="item.star"
-          :min="3"
-          :max="5"
+          :items="stars"
           @change="onChangeStar(item)"
         />
       </template>
@@ -39,10 +38,11 @@
       </template>
       <template #[`item.main`]="{ item }">
         <bonus-value
-          v-bind.sync="item.main"
+          :value.sync="item.main.value"
+          :type.sync="item.main.type"
           :types="mains"
           :score="getTotal(item)"
-          @change="onChangeMain(item)"
+          @update:value="onChangeMain(item)"
         />
       </template>
       <template #[`item.sub1`]="{ item }">
@@ -219,12 +219,14 @@ import Artifact, {
   SubBonus,
 } from "~/src/artifact";
 import Pagination from "~/src/pagination";
+import { MakeRange } from "~/src/utility";
 
 @Component({
   name: "ArtifactData",
   components: {
-    NameComment: () => import("~/components/NameComment.vue"),
-    SelectRange: () => import("~/components/SelectRange.vue"),
+    NameComment: () => import("~/components/input/NameComment.vue"),
+    SelectRange: () => import("~/components/input/SelectRange.vue"),
+    SelectRangeK: () => import("~/components/input/SelectRangeK.vue"),
     BonusValue: () => import("~/components/equip/BonusValue.vue"),
     DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
     DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
@@ -234,9 +236,6 @@ import Pagination from "~/src/pagination";
 export default class ArtifactData extends Vue {
   @Prop({ required: true }) type!: ArtifactType;
 
-  readonly icons = { remove: mdiDelete, random: mdiShuffleVariant };
-  readonly subs = ArtifactSub;
-
   page = new Pagination();
   items: IArtifactData[] = [];
   append: ArtifactName | "" = "";
@@ -244,6 +243,18 @@ export default class ArtifactData extends Vue {
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get icons() {
+    return { remove: mdiDelete, random: mdiShuffleVariant };
+  }
+
+  get stars() {
+    return MakeRange(3, 5);
+  }
+
+  get subs() {
+    return ArtifactSub;
   }
 
   get footer() {

@@ -71,6 +71,10 @@ export type ListItem = IHeader | IRange | ILevel;
 
 @Component({
   name: "DialogInitial",
+  components: {
+    SelectRange: () => import("~/components/input/SelectRange.vue"),
+    AscensionLevel: () => import("~/components/input/AscensionLevel.vue"),
+  },
   inheritAttrs: false,
 })
 export default class DialogInitial extends Vue {

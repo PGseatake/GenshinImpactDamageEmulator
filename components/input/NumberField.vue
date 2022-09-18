@@ -4,13 +4,12 @@
     <v-text-field
       v-if="!editable"
       v-bind="$attrs"
-      v-on="$listeners"
-      v-model="strValue"
+      :value="strValue"
       type="string"
       hide-details="auto"
       :suffix="suffix"
       :class="textClass"
-      @focus.capture="focus1"
+      @focus.capture="focusTxt"
     />
     <!--数値入力用-->
     <v-text-field
@@ -24,8 +23,8 @@
       hide-details="auto"
       :step="step"
       :class="textClass"
-      @focus="focus2"
-      @blur="display"
+      @focus="focusNum"
+      @blur="confirm"
       @keyup.enter="enter"
     />
   </div>
@@ -55,8 +54,9 @@ export default class NumberField extends Vue {
   numValue = "0";
 
   get strValue() {
-    this.numValue = this.value.toFixed(this.precision);
-    return this.numValue;
+    const val = this.value.toFixed(this.precision);
+    this.numValue = val;
+    return val;
   }
 
   get step() {
@@ -68,23 +68,23 @@ export default class NumberField extends Vue {
   }
 
   // 表示用と入力用のtext-field切り替え
-  focus1() {
+  focusTxt() {
     // 切り替え時にblurが発生するので無視するように調整
     this.blurable = false;
     this.editable = true;
   }
-  focus2() {
+  focusNum() {
     this.blurable = true;
   }
 
-  display() {
+  confirm() {
     if (this.blurable) {
       const val = this.numValue;
       let num = 0;
-      if (val.length !== 0) {
+      if (val.length) {
         num = parseFloat(val);
         if (isNaN(num)) {
-          num = 0;
+          num = this.value;
         }
       }
       this.$emit("update:value", num);

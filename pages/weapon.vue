@@ -29,8 +29,13 @@ import WeaponData from "~/components/equip/WeaponData.vue";
   components: { WeaponData },
 })
 export default class PageWeapon extends Vue {
-  readonly types = WeaponTypes;
-  readonly icons = { append: mdiPlaylistPlus };
+  get types() {
+    return WeaponTypes;
+  }
+
+  get icons() {
+    return { append: mdiPlaylistPlus };
+  }
 
   get tab() {
     return this.$store.getters.tab;

@@ -98,7 +98,7 @@ import TableGroup from "~/components/TableGroup.vue";
   name: "BonusTable",
   components: {
     TableGroup,
-    SelectRange: () => import("~/components/SelectRange.vue"),
+    SelectRange: () => import("~/components/input/SelectRange.vue"),
   },
   inheritAttrs: false,
 })

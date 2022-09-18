@@ -46,11 +46,13 @@ import { CharaList } from "~/src/character";
 @Component({
   name: "CharaDetail",
   components: {
-    SelectName: () => import("~/components/SelectName.vue"),
+    SelectName: () => import("~/components/input/SelectName.vue"),
   },
   inheritAttrs: false,
 })
 export default class CharaDetail extends Vue {
+  // @Prop({ required: true }) value!: string;
+
   get cols() {
     return this.$vuetify.breakpoint.xs ? "auto" : "12";
   }
@@ -60,7 +62,8 @@ export default class CharaDetail extends Vue {
   }
 
   get item() {
-    return this.items.find((item) => item.id === this.$attrs.value);
+    const value = this.$attrs.value;
+    return this.items.find((item) => item.id === value);
   }
 
   get comment() {

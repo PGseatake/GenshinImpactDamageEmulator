@@ -1,10 +1,5 @@
 <template>
-  <bonus-value
-    v-bind="$attrs"
-    v-on="$listeners"
-    :types="[special]"
-    :value.sync="refValue"
-  />
+  <bonus-value v-bind="$attrs" v-on="$listeners" :types="[special]" />
 </template>
 
 <script lang="ts">
@@ -18,19 +13,12 @@ import BonusValue from "~/components/equip/BonusValue.vue";
   inheritAttrs: false,
 })
 export default class CharaSpecial extends Vue {
+  // @Prop({ required: true }) value!: number;
   @Prop({ required: true }) name!: CharaName;
-  @Prop({ required: true }) value!: number;
 
   @Watch("name")
   onChangeName() {
     this.$emit("update:type", this.special);
-  }
-
-  get refValue() {
-    return this.value;
-  }
-  set refValue(value: number) {
-    this.$emit("update:value", value);
   }
 
   get special() {

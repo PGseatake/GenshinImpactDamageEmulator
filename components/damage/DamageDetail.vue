@@ -212,19 +212,21 @@ export default class DamageDetail extends Vue {
 
   onChangeBonus() {
     this.party.splice(0);
+    let party: Array<Status> = [];
     for (let m of this.members) {
       let s = new Status(this.params[m.index]);
       s.equip(m, this.$db);
       if (s.chara) {
-        this.party.push(s);
+        party.push(s);
       }
     }
+    this.party.push(...party);
 
-    const party = this.party;
+    const bonuses = this.bonus;
     const contact = this.contact;
     for (let step = 0; step <= BonusStep.Special; ++step) {
-      for (let target of this.party) {
-        for (const bonus of this.bonus) {
+      for (let target of party) {
+        for (const bonus of bonuses) {
           bonus.apply({ step, target, party, contact });
         }
       }

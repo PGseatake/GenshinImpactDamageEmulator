@@ -11,7 +11,6 @@
     hide-details
     item-text="value"
     type="number"
-    :class="selectClass"
   />
 </template>
 
@@ -43,7 +42,9 @@ export default class SelectRange extends Vue {
   @Prop({ required: true }) max!: number;
   @Prop({ default: undefined }) label: string | undefined;
 
-  readonly icon = mdiMenuDown;
+  get icon() {
+    return mdiMenuDown;
+  }
 
   get items() {
     const min = this.min;
@@ -51,10 +52,6 @@ export default class SelectRange extends Vue {
     return Arrayable.make(max - min + 1, (_, i) => ({
       value: min + i,
     }));
-  }
-
-  get selectClass() {
-    return !this.label ? "ma-0" : "";
   }
 }
 </script>

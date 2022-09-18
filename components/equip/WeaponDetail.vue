@@ -13,7 +13,7 @@
             v-bind="$attrs"
             v-on="$listeners"
             :items="items"
-            :group="'weapon.' + type"
+            :group="'weapon.' + weapon"
           />
         </v-badge>
       </v-col>
@@ -54,7 +54,7 @@ import { WeaponList } from "~/src/weapon";
 @Component({
   name: "WeaponDetail",
   components: {
-    SelectName: () => import("~/components/SelectName.vue"),
+    SelectName: () => import("~/components/input/SelectName.vue"),
   },
   inheritAttrs: false,
 })
@@ -65,17 +65,19 @@ export default class WeaponDetail extends Vue {
     return this.$vuetify.breakpoint.xs ? "auto" : "12";
   }
 
-  get type() {
-    const chara = this.$db.chara.find((item) => item.id === this.chara);
-    return CharaList[chara!.name].weapon;
+  get weapon() {
+    const id = this.chara;
+    const data = this.$db.chara.find((item) => item.id === id);
+    return CharaList[data!.name].weapon;
   }
 
   get items() {
-    return this.$db[this.type];
+    return this.$db[this.weapon];
   }
 
   get item() {
-    return this.items.find((item) => item.id === this.$attrs.value);
+    const value = this.$attrs.value;
+    return this.items.find((item) => item.id === value);
   }
 
   get comment() {
@@ -92,7 +94,7 @@ export default class WeaponDetail extends Vue {
 
   get color() {
     return this.item
-      ? this.$starColor(WeaponList[this.type][this.item.name].star)
+      ? this.$starColor(WeaponList[this.weapon][this.item.name].star)
       : undefined;
   }
 

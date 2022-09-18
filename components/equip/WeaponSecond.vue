@@ -1,10 +1,5 @@
 <template>
-  <bonus-value
-    v-bind="$attrs"
-    v-on="$listeners"
-    :types="[second]"
-    :value.sync="refValue"
-  />
+  <bonus-value v-bind="$attrs" v-on="$listeners" :types="[second]" />
 </template>
 
 <script lang="ts">
@@ -18,20 +13,13 @@ import BonusValue from "~/components/equip/BonusValue.vue";
   inheritAttrs: false,
 })
 export default class WeaponSecond extends Vue {
+  // @Prop({ required: true }) value!: number;
   @Prop({ required: true }) list!: WeaponList;
   @Prop({ required: true }) name!: string;
-  @Prop({ required: true }) value!: number;
 
   @Watch("name")
   onChangeName() {
     this.$emit("update:type", this.second);
-  }
-
-  get refValue() {
-    return this.value;
-  }
-  set refValue(value: number) {
-    this.$emit("update:value", value);
   }
 
   get second() {

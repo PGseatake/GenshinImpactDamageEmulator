@@ -23,7 +23,7 @@
         />
       </template>
       <template #[`item.rank`]="{ item }">
-        <select-range v-model="item.rank" :min="1" :max="5" />
+        <select-range-k v-model="item.rank" :items="ranks" />
       </template>
       <template #[`item.level`]="{ item }">
         <ascension-level v-model="item.level" @change="onChangeLevel(item)" />
@@ -87,16 +87,22 @@
     &:nth-of-type(2) {
       min-width: 60px;
       max-width: 80px;
+      vertical-align: bottom;
+      padding: 0 6px 4px 6px;
     }
     // Lv
     &:nth-of-type(3) {
       min-width: 60px;
       max-width: 80px;
+      vertical-align: bottom;
+      padding: 0 6px 4px 6px;
     }
     // 攻撃力
     &:nth-of-type(4) {
       min-width: 70px;
       max-width: 90px;
+      vertical-align: bottom;
+      padding: 0 6px 4px 6px;
     }
     // 追加効果
     &:nth-of-type(5) {
@@ -137,14 +143,15 @@ import { mdiDelete } from "@mdi/js";
 import { WeaponType } from "~/src/const";
 import Weapon, { IWeaponData, WeaponNames, WeaponList } from "~/src/weapon";
 import Pagination from "~/src/pagination";
+import { MakeRange } from "~/src/utility";
 
 @Component({
   name: "WeaponData",
   components: {
-    NameComment: () => import("~/components/NameComment.vue"),
-    NumberField: () => import("~/components/NumberField.vue"),
-    SelectRange: () => import("~/components/SelectRange.vue"),
-    AscensionLevel: () => import("~/components/AscensionLevel.vue"),
+    NameComment: () => import("~/components/input/NameComment.vue"),
+    NumberField: () => import("~/components/input/NumberField.vue"),
+    SelectRangeK: () => import("~/components/input/SelectRangeK.vue"),
+    AscensionLevel: () => import("~/components/input/AscensionLevel.vue"),
     WeaponSecond: () => import("~/components/equip/WeaponSecond.vue"),
     DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
     DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
@@ -154,8 +161,6 @@ import Pagination from "~/src/pagination";
 export default class WeaponData extends Vue {
   @Prop({ required: true }) type!: WeaponType;
 
-  readonly icons = { remove: mdiDelete };
-
   page = new Pagination();
   items: IWeaponData[] = [];
   append = "";
@@ -163,6 +168,14 @@ export default class WeaponData extends Vue {
 
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get icons() {
+    return { remove: mdiDelete };
+  }
+
+  get ranks() {
+    return MakeRange(1, 5);
   }
 
   get footer() {
@@ -181,8 +194,9 @@ export default class WeaponData extends Vue {
   }
 
   get names() {
-    return WeaponNames[this.type].map((name) => ({
-      text: this.$t(`weapon.${this.type}.${name}`),
+    const type = this.type;
+    return WeaponNames[type].map((name) => ({
+      text: this.$t(`weapon.${type}.${name}`),
       value: name,
     }));
   }
@@ -197,8 +211,9 @@ export default class WeaponData extends Vue {
   }
 
   created() {
-    this.items = this.$db[this.type];
-    this.page.load(this.type);
+    const type = this.type;
+    this.items = this.$db[type];
+    this.page.load(type);
   }
 
   beforeDestroy() {

@@ -19,7 +19,7 @@
         :items="members"
         :value.sync="member"
         :comment="comment"
-        :commentable="false"
+        :full="false"
         @change="onChangeMember"
       />
     </v-col>
@@ -32,15 +32,17 @@
     <!-- 元素変化 -->
     <v-col cols="auto" class="pa-1">
       <select-element
-        :type.sync="refContact"
-        :types="contacts"
+        :value="$attrs.contact"
+        @input="$listeners['update:contact']"
+        :items="contacts"
         :label="$t('damage.contact')"
       />
     </v-col>
     <!-- 元素反応 -->
     <v-col cols="auto" class="pa-1">
       <v-select
-        v-model="refReaction"
+        :value="$attrs.reaction"
+        @input="$listeners['update:reaction']"
         :items="refReactions"
         :label="$t('damage.reaction')"
         :menu-props="{ auto: true, transition: false }"
@@ -68,23 +70,23 @@
 
 <script lang="ts">
 import { Vue, Component, Emit, Prop } from "vue-property-decorator";
-import { ContactTypes, AnyElementType, AnyReactionType } from "~/src/const";
+import { ContactTypes, AnyReactionType } from "~/src/const";
 import { ITeamData, IMember, Team } from "~/src/team";
 import Chara from "~/src/character";
 
 @Component({
   name: "SelectMember",
   components: {
-    NameComment: () => import("~/components/NameComment.vue"),
-    AscensionLevel: () => import("~/components/AscensionLevel.vue"),
+    NameComment: () => import("~/components/input/NameComment.vue"),
+    AscensionLevel: () => import("~/components/input/AscensionLevel.vue"),
     SelectElement: () => import("~/components/damage/SelectElement.vue"),
   },
   inheritAttrs: false,
 })
 export default class SelectMember extends Vue {
   @Prop({ required: true }) damage!: string;
-  @Prop({ required: true }) contact!: AnyElementType;
-  @Prop({ required: true }) reaction!: AnyReactionType;
+  // @Prop({ required: true }) contact!: AnyElementType;
+  // @Prop({ required: true }) reaction!: AnyReactionType;
   @Prop({ required: true }) reactions!: ReadonlyArray<AnyReactionType>;
 
   team: ITeamData | null = null;
@@ -104,20 +106,6 @@ export default class SelectMember extends Vue {
       Chara.level(this.member.chara);
       this.onChangeMember();
     }
-  }
-
-  get refContact() {
-    return this.contact;
-  }
-  set refContact(value: AnyElementType) {
-    this.$emit("update:contact", value);
-  }
-
-  get refReaction() {
-    return this.reaction;
-  }
-  set refReaction(value: AnyReactionType) {
-    this.$emit("update:reaction", value);
   }
 
   get refReactions() {

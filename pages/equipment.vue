@@ -84,7 +84,7 @@
         :items="names"
         :value.sync="append"
         :comment="comment"
-        :commentable="false"
+        :full="false"
         :dense="false"
       />
     </dialog-append>
@@ -211,7 +211,7 @@ import Pagination from "~/src/pagination";
 @Component({
   name: "PageEquipment",
   components: {
-    NameComment: () => import("~/components/NameComment.vue"),
+    NameComment: () => import("~/components/input/NameComment.vue"),
     CharaDetail: () => import("~/components/equip/CharaDetail.vue"),
     WeaponDetail: () => import("~/components/equip/WeaponDetail.vue"),
     ArtifactDetail: () => import("~/components/equip/ArtifactDetail.vue"),

@@ -46,20 +46,22 @@ import { IArtifactData } from "~/src/artifact";
 @Component({
   name: "ArtifactDetail",
   components: {
-    SelectName: () => import("~/components/SelectName.vue"),
+    SelectName: () => import("~/components/input/SelectName.vue"),
   },
   inheritAttrs: false,
 })
 export default class ArtifactDetail extends Vue {
-  @Prop({ required: true }) items!: ReadonlyArray<IArtifactData>;
+  // @Prop({ required: true }) value!: string;
   @Prop({ required: true }) type!: ArtifactType;
+  @Prop({ required: true }) items!: ReadonlyArray<IArtifactData>;
 
   get cols() {
     return this.$vuetify.breakpoint.xs ? "auto" : "12";
   }
 
   get item() {
-    return this.items.find((item) => item.id === this.$attrs.value);
+    const value = this.$attrs.value;
+    return this.items.find((item) => item.id === value);
   }
 
   get comment() {

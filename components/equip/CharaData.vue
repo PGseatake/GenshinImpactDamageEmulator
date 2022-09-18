@@ -23,7 +23,7 @@
         />
       </template>
       <template #[`item.conste`]="{ item }">
-        <select-range v-model="item.conste" :min="0" :max="6" />
+        <select-range-k v-model="item.conste" :items="constes" class="ma-0" />
       </template>
       <template #[`item.level`]="{ item }">
         <ascension-level v-model="item.level" @change="onChangeLevel(item)" />
@@ -41,13 +41,13 @@
         <chara-special :name="item.name" v-bind.sync="item.special" />
       </template>
       <template #[`item.combat`]="{ item }">
-        <select-range v-model="item.combat" :min="1" :max="15" />
+        <select-range-k v-model="item.combat" :items="talents" class="ma-0" />
       </template>
       <template #[`item.skill`]="{ item }">
-        <select-range v-model="item.skill" :min="1" :max="15" />
+        <select-range-k v-model="item.skill" :items="talents" class="ma-0" />
       </template>
       <template #[`item.burst`]="{ item }">
-        <select-range v-model="item.burst" :min="1" :max="15" />
+        <select-range-k v-model="item.burst" :items="talents" class="ma-0" />
       </template>
       <template #[`item.action`]="{ item }">
         <v-btn fab x-small class="my-1" @click="onBeforeRemove(item)">
@@ -184,14 +184,15 @@ import { Vue, Component } from "vue-property-decorator";
 import { mdiDelete } from "@mdi/js";
 import Chara, { ICharaData, CharaNames, CharaName } from "~/src/character";
 import Pagination from "~/src/pagination";
+import { MakeRange } from "~/src/utility";
 
 @Component({
   name: "CharaData",
   components: {
-    NameComment: () => import("~/components/NameComment.vue"),
-    NumberField: () => import("~/components/NumberField.vue"),
-    SelectRange: () => import("~/components/SelectRange.vue"),
-    AscensionLevel: () => import("~/components/AscensionLevel.vue"),
+    NameComment: () => import("~/components/input/NameComment.vue"),
+    NumberField: () => import("~/components/input/NumberField.vue"),
+    SelectRangeK: () => import("~/components/input/SelectRangeK.vue"),
+    AscensionLevel: () => import("~/components/input/AscensionLevel.vue"),
     CharaSpecial: () => import("~/components/equip/CharaSpecial.vue"),
     DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
     DialogRemove: () => import("~/components/dialog/DialogRemove.vue"),
@@ -204,10 +205,20 @@ export default class CharaData extends Vue {
   append: CharaName | "" = "";
   remove: ICharaData | null = null;
 
-  readonly icons = { remove: mdiDelete };
-
   get tableClass() {
     return `${this.$vuetify.breakpoint.xs ? "mb" : "pc"}-data-table px-1`;
+  }
+
+  get icons() {
+    return { remove: mdiDelete };
+  }
+
+  get constes() {
+    return MakeRange(0, 6);
+  }
+
+  get talents() {
+    return MakeRange(1, 15);
   }
 
   get footer() {

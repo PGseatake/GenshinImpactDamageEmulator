@@ -16,10 +16,16 @@
         color="primary"
         :mandatory="mandatory"
       >
-        <v-list-item v-for="item in items" :key="item.id" link dense two-line>
+        <v-list-item
+          v-for="item in selectItems"
+          :key="item.id"
+          link
+          dense
+          two-line
+        >
           <v-list-item-content class="pa-0">
-            <v-list-item-title>{{ getName(item) }}</v-list-item-title>
-            <v-list-item-subtitle>{{ getComment(item) }}</v-list-item-subtitle>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
@@ -42,6 +48,8 @@ export type SelectItem = {
   id: string;
   name: string;
   comment: string;
+  title?: string;
+  subtitle?: string;
 };
 
 @Component({
@@ -58,30 +66,30 @@ export default class SelectName extends Vue {
   onChange() {}
 
   get selectedItem() {
-    return this.items.findIndex((item) => item.id === this.value);
+    const value = this.value;
+    return this.items.findIndex((v) => v.id === value);
   }
   set selectedItem(value: number) {
-    if (0 <= value) {
-      this.$emit("update:value", this.items[value].id);
-    } else {
-      this.$emit("update:value", "");
-    }
+    this.$emit("update:value", this.items[value]?.id || "");
     this.onChange();
   }
 
+  get selectItems() {
+    const group = this.group;
+    const i18n = this.$i18n;
+    return this.items.map((v) => ({
+      ...v,
+      title: i18n.t(group + "." + v.name),
+      subtitle: v.comment || "-",
+    }));
+  }
+
   get name() {
-    return this.getName(this.items.find((item) => item.id === this.value));
-  }
-
-  getComment(item?: SelectItem) {
-    return item?.comment || "-";
-  }
-
-  getName(item?: SelectItem) {
-    if (item) {
-      return this.$t(this.group + "." + item.name);
-    }
-    return this.$t("general.none");
+    const value = this.value;
+    return (
+      this.selectItems.find((v) => v.id === value)?.title ||
+      this.$t("general.none")
+    );
   }
 }
 </script>

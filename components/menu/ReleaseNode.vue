@@ -38,7 +38,6 @@
         v-else
         :key="index"
         :value="true"
-        :group="true"
         :title="data.title"
         :items="data.items"
         class="list-item-node"
@@ -73,7 +72,7 @@ export type IReleaseNode = { readonly [key in string]: IReleaseLeaf };
 export default class ReleaseNode extends Vue {
   @Prop({ required: true }) title!: string;
   @Prop({ required: true }) items!: IReleaseLeaf;
-  @Prop({ default: false }) group!: boolean;
+  @Prop({ default: true }) group!: boolean;
 
   get appendIcon() {
     return this.group ? "" : mdiChevronDown;

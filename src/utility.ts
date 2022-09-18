@@ -37,3 +37,9 @@ export const Arrayable: Arrayable = {
         return value;
     },
 };
+
+export const MakeRange = (min: number, max: number) => {
+    return Arrayable.make(max - min + 1, (_, i) => ({
+        value: min + i,
+    }));
+};

@@ -2,9 +2,8 @@
   <v-select
     v-bind="$attrs"
     v-on="$listeners"
-    v-model="refType"
     :menu-props="{ auto: true, transition: false }"
-    :items="items"
+    :items="types"
     item-value="type"
     dense
     hide-details
@@ -33,7 +32,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { AnyElementType } from "~/src/const";
-import ChipElement from "~/components/ChipElement.vue";
+import ChipElement from "~/components/input/ChipElement.vue";
 
 @Component({
   name: "SelectElement",
@@ -41,21 +40,14 @@ import ChipElement from "~/components/ChipElement.vue";
   inheritAttrs: false,
 })
 export default class SelectElement extends Vue {
-  @Prop({ required: true }) type!: AnyElementType;
-  @Prop({ required: true }) types!: AnyElementType[];
+  // @Prop({ required: true }) value!: AnyElementType;
+  @Prop({ required: true }) items!: AnyElementType[];
 
-  get items() {
-    return this.types.map((val) => ({
-      text: this.$t("element." + (val || "none")),
-      type: val,
+  get types() {
+    return this.items.map((v) => ({
+      text: this.$t("element." + (v || "none")),
+      type: v,
     }));
-  }
-
-  get refType() {
-    return this.type;
-  }
-  set refType(value: AnyElementType) {
-    this.$emit("update:type", value);
   }
 }
 </script>

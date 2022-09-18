@@ -1,7 +1,5 @@
 <template>
-  <v-chip v-bind="$attrs" v-on="$listeners" :color="$elementBGColor(element)">{{
-    $t("element." + element)
-  }}</v-chip>
+  <v-chip v-bind="$attrs" v-on="$listeners" :color="color">{{ text }}</v-chip>
 </template>
 
 <style lang="scss" scoped>
@@ -23,5 +21,13 @@ import { ElementType } from "~/src/const";
 })
 export default class ChipElement extends Vue {
   @Prop({ required: true }) element!: ElementType;
+
+  get text() {
+    return this.$t("element." + this.element);
+  }
+
+  get color() {
+    return this.$elementBGColor(this.element);
+  }
 }
 </script>

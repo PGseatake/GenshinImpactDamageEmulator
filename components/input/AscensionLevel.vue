@@ -10,7 +10,6 @@
     dense
     hide-details
     item-text="value"
-    class="ma-0"
   />
 </template>
 
@@ -34,7 +33,7 @@ import { mdiMenuDown } from "@mdi/js";
 import * as Ascension from "~/src/ascension";
 import { Arrayable } from "~/src/utility";
 
-type LevelText = { readonly value: string };
+type LevelText = { value: string };
 
 const LevelTexts = (() => {
   const make = (min: number, max: number) => {
@@ -60,7 +59,12 @@ const LevelTexts = (() => {
 export default class AscensionLevel extends Vue {
   @Prop({ default: "" }) label!: string;
 
-  readonly items = LevelTexts;
-  readonly icon = mdiMenuDown;
+  get items() {
+    return LevelTexts;
+  }
+
+  get icon() {
+    return mdiMenuDown;
+  }
 }
 </script>

@@ -3,6 +3,7 @@
     v-bind="$attrs"
     :title="title"
     :items="root.items"
+    :group="false"
     class="list-item-root"
   />
 </template>

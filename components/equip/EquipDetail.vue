@@ -38,20 +38,22 @@ div.detail {
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { SelectItem } from "~/components/SelectName.vue";
+import { SelectItem } from "~/components/input/SelectName.vue";
 
 @Component({
   name: "EquipDetail",
   components: {
-    SelectName: () => import("~/components/SelectName.vue"),
+    SelectName: () => import("~/components/input/SelectName.vue"),
   },
   inheritAttrs: false,
 })
 export default class EquipDetail extends Vue {
+  // @Prop({ required: true }) value!: string;
   @Prop({ required: true }) items!: ReadonlyArray<SelectItem>;
 
   get item() {
-    return this.items.find((item) => item.id === this.$attrs.value);
+    const value = this.$attrs.value;
+    return this.items.find((item) => item.id === value);
   }
 
   get comment() {

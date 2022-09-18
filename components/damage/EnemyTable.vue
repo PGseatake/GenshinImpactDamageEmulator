@@ -18,19 +18,18 @@
       <!-- 元素選択 -->
       <v-col v-if="elements" cols="auto">
         <select-element
-          :type.sync="data.elem"
-          :types="elements"
+          v-model="data.elem"
+          :items="elements"
           :label="$t('general.element')"
           @change="onChangeElement"
         />
       </v-col>
       <!-- レベル -->
       <v-col cols="auto">
-        <select-range
+        <select-range-k
           v-model="data.level"
+          :items="levels"
           :label="$t('general.level')"
-          :min="1"
-          :max="150"
           @change="onChangeData"
         />
       </v-col>
@@ -134,7 +133,8 @@ import Enemy, {
   IEnemyInfo,
   IEnemyData,
 } from "~/src/enemy";
-import ChipElement from "~/components/ChipElement.vue";
+import ChipElement from "~/components/input/ChipElement.vue";
+import { MakeRange } from "~/src/utility";
 
 type TextValue = {
   name: EnemyName;
@@ -145,7 +145,7 @@ type TextValue = {
   name: "EnemyTable",
   components: {
     ChipElement,
-    SelectRange: () => import("~/components/SelectRange.vue"),
+    SelectRangeK: () => import("~/components/input/SelectRangeK.vue"),
     SelectElement: () => import("~/components/damage/SelectElement.vue"),
   },
   inheritAttrs: false,
@@ -164,6 +164,10 @@ export default class EnemyTable extends Vue {
 
   @Emit("change")
   onChange(data: IEnemyData) {}
+
+  get levels() {
+    return MakeRange(1, 150);
+  }
 
   get headers() {
     return [

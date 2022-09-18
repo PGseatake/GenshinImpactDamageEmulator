@@ -74,7 +74,7 @@
         :items="names"
         :value.sync="append"
         :comment="comment"
-        :commentable="false"
+        :full="false"
         :dense="false"
       />
     </dialog-append>
@@ -181,13 +181,13 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { mdiDelete, mdiPlaylistPlus } from "@mdi/js";
 import { Team, ITeamData } from "~/src/team";
-import { SelectItem } from "~/components/SelectName.vue";
+import { SelectItem } from "~/components/input/SelectName.vue";
 import Pagination from "~/src/pagination";
 
 @Component({
   name: "PageTeam",
   components: {
-    NameComment: () => import("~/components/NameComment.vue"),
+    NameComment: () => import("~/components/input/NameComment.vue"),
     Resonance: () => import("~/components/equip/Resonance.vue"),
     EquipDetail: () => import("~/components/equip/EquipDetail.vue"),
     DialogAppend: () => import("~/components/dialog/DialogAppend.vue"),
