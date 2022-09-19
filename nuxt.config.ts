@@ -75,6 +75,14 @@ export default {
     //     lastmod: new Date(),
     //   }
     // }],
+    ['nuxt-compress', {
+      gzip: {
+        threshold: 8192,
+      },
+      brotli: {
+        threshold: 8192,
+      },
+    }],
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
